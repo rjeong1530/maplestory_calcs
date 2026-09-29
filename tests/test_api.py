@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from api import app
 import maplestory_potential as calculator
+import maplestory_flames as flames
 
 
 class ApiTests(unittest.TestCase):
@@ -69,6 +70,46 @@ class ApiTests(unittest.TestCase):
         result = self.calculate(percentiles=[.8]).json()
         self.assertEqual(len(result['cube_estimates']), 1)
         self.assertEqual(result['cube_estimates'][0]['target_probability'], .8)
+
+    def flame_payload(self, **overrides):
+        config = {
+            'equipment_level': 200, 'equipment_type': 'weapon',
+            'boss_equipment': True, 'flame_type': 'black',
+            'main_stat': 'STR', 'secondary_stats': ['DEX'], 'offense_stat': 'ATT',
+            'weights': {'all_stat_pct_value': 10, 'secondary_stat_per_main': 10, 'attack_value': 3},
+        }
+        config.update(overrides)
+        return {'config': config, 'target_score': 500}
+
+    def test_flame_weapon_parameters(self):
+        stages = flames.generate_weapon_offense_by_stage(200, 295)
+        for overrides in [
+            {'base_weapon_offense': 295},
+            {'weapon_offense_by_stage': stages},
+            {'base_weapon_offense': 1, 'weapon_offense_by_stage': stages},
+            {'equipment_type': 'armor'},
+        ]:
+            with self.subTest(overrides=overrides):
+                payload = self.flame_payload(**overrides)
+                response = self.client.post('/api/flame-probability', json=payload)
+                self.assertEqual(response.status_code, 200, response.text)
+                config = dict(payload['config'])
+                config['weights'] = flames.ScoreWeights(**config['weights'])
+                expected = flames.FlameProbabilityEngine(flames.FlameConfig(**config)).probability_at_least(500)
+                self.assertAlmostEqual(response.json()['probability'], expected)
+
+    def test_invalid_flame_weapon_parameters(self):
+        for overrides in [
+            {}, {'base_weapon_offense': 0}, {'base_weapon_offense': -1},
+            {'base_weapon_offense': 'Infinity'},
+            {'weapon_offense_by_stage': {'4': -1}},
+            {'weapon_offense_by_stage': {'4': 'Infinity'}},
+            {'weapon_offense_by_stage': {'invalid': 78}},
+            {'weapon_offense_by_stage': {'4': 78}},
+        ]:
+            with self.subTest(overrides=overrides):
+                response = self.client.post('/api/flame-probability', json=self.flame_payload(**overrides))
+                self.assertEqual(response.status_code, 422, response.text)
 
 
 if __name__ == '__main__':

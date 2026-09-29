@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from './api'
 import CalculatorForm from './components/CalculatorForm'
+import FlameCalculator from './components/FlameCalculator'
 import Results from './components/Results'
 import './App.css'
 
@@ -11,6 +12,7 @@ export default function App() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
+  const [calculator, setCalculator] = useState('potential')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -44,22 +46,55 @@ export default function App() {
       <header className="page-header">
         <span className="eyebrow">MAPLESTORY · POTENTIAL LAB</span>
         <h1>Plan your next roll.</h1>
-        <p>Set your ideal potentials and see the odds of getting them together.</p>
-        <span className="badge">Legendary main potential · KMS tables</span>
+        <p>Choose a calculator to estimate your odds.</p>
+        <nav aria-label="Calculator" className="calculator-tabs">
+          <button
+            type="button"
+            aria-pressed={calculator === 'potential'}
+            onClick={() => setCalculator('potential')}
+          >
+            Potential
+          </button>
+          <button
+            type="button"
+            aria-pressed={calculator === 'flame'}
+            onClick={() => setCalculator('flame')}
+          >
+            Flames
+          </button>
+        </nav>
       </header>
-      {optionsError ? (
+
+      {calculator === 'flame' ? (
+        <FlameCalculator />
+      ) : optionsError ? (
         <div className="panel" role="alert">
           <p className="error">{optionsError}</p>
-          <button onClick={() => { setOptionsError(''); setRetry(value => value + 1) }}>Retry connection</button>
+          <button onClick={() => {
+            setOptionsError('')
+            setRetry(value => value + 1)
+          }}>
+            Retry connection
+          </button>
         </div>
-      ) : !options ? <p role="status">Loading calculator options…</p> : (
-        <div className="calculator-grid">
-          <CalculatorForm options={options} busy={busy} onCalculate={calculate}
-            onChange={() => { setResult(null); setError('') }} />
-          <Results result={result} busy={busy} error={error} />
-        </div>
+      ) : !options ? (
+        <p role="status">Loading calculator options…</p>
+      ) : (
+        <>
+          <div className="calculator-grid">
+            <CalculatorForm
+              options={options}
+              busy={busy}
+              onCalculate={calculate}
+              onChange={() => { setResult(null); setError('') }}
+            />
+            <Results result={result} busy={busy} error={error} />
+          </div>
+          <footer>
+            Independent-roll estimates. Tier-ups, keep/replace decisions, and meso costs are not included.
+          </footer>
+        </>
       )}
-      <footer>Independent-roll estimates. Tier-ups, keep/replace decisions, and meso costs are not included.</footer>
     </main>
   )
 }

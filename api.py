@@ -8,7 +8,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 import maplestory_potential as calculator
-
+import maplestory_flames as flames
 
 app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
 
@@ -91,3 +91,66 @@ def probability(request: CalculationRequest):
     return CalculationResult(probability=chance, percentage=chance * 100,
                              one_in=1 / chance if chance else None,
                              cube_estimates=estimates)
+
+
+class FlameWeightsRequest(RequestModel):
+    all_stat_pct_value: float
+    secondary_stat_per_main: float
+    attack_value: float
+
+
+class FlameConfigRequest(RequestModel):
+    equipment_level: int
+    equipment_type: str
+    boss_equipment: bool
+    flame_type: str
+    main_stat: str
+    secondary_stats: tuple[str, ...]
+    offense_stat: str
+    weights: FlameWeightsRequest
+    base_weapon_offense: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+    weapon_offense_by_stage: dict[int, Annotated[float, Field(ge=0, allow_inf_nan=False)]] | None = None
+
+
+class FlameProbabilityRequest(RequestModel):
+    config: FlameConfigRequest
+    target_score: float = Field(allow_inf_nan=False)
+
+
+class FlameProbabilityResult(BaseModel):
+    target_score: float
+    probability: float
+    percentage: float
+    one_in: float | None
+
+
+@app.post('/api/flame-probability', response_model=FlameProbabilityResult)
+def flame_probability(request: FlameProbabilityRequest):
+    """Probability of meeting the target flame score on one roll."""
+    data = request.config
+    try:
+        config = flames.FlameConfig(
+            equipment_level=data.equipment_level,
+            equipment_type=data.equipment_type,
+            boss_equipment=data.boss_equipment,
+            flame_type=data.flame_type,
+            main_stat=data.main_stat,
+            secondary_stats=data.secondary_stats,
+            offense_stat=data.offense_stat,
+            weights=flames.ScoreWeights(**data.weights.model_dump()),
+            base_weapon_offense=data.base_weapon_offense,
+            weapon_offense_by_stage=data.weapon_offense_by_stage,
+        )
+        chance = flames.FlameProbabilityEngine(config).probability_at_least(
+            request.target_score
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+
+    chance = min(1.0, max(0.0, chance))
+    return FlameProbabilityResult(
+        target_score=request.target_score,
+        probability=chance,
+        percentage=chance * 100,
+        one_in=1 / chance if chance else None,
+    )
