@@ -1,3 +1,4 @@
+"""Probability model and bundled data tests."""
 import math
 import unittest
 from unittest.mock import patch

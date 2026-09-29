@@ -15,11 +15,28 @@ build/
 dist/
 *.egg-info/
 
+# Node dependencies and Vite caches
+node_modules/
+.vite/
+.vite-temp/
+dist-ssr/
+*.tsbuildinfo
+
+# Local runtime logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
 # Test coverage
 .coverage
 .coverage.*
 htmlcov/
 coverage.xml
+coverage/
 
 # Local secrets (keep example configuration shareable)
 .env
