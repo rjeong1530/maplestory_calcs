@@ -1,0 +1,84 @@
+import math
+import unittest
+import maplestory_potential as m
+
+
+class PotentialTests(unittest.TestCase):
+    def test_shield_categories(self):
+        for cube in m.CUBE_TYPES:
+            for level in m.SUPPORTED_LEVELS:
+                force = m._data()[f'{cube}|force shield|{level}']
+                self.assertEqual(force, m._data()[f'{cube}|soul ring|{level}'])
+                for equipment in ('force shield', 'soul ring', 'shield'):
+                    self.assertIn(f'{cube}|{equipment}|{level}', m._data())
+            for equipment in ('force shield', 'soul ring', 'shield'):
+                self.assertGreater(m.probability_at_least('ATT_PCT', 21,
+                    equipment_type=equipment, level=150, cube_type=cube), 0)
+        self.assertEqual(m.get_potentials_by_line('force_shield'),
+                         m.get_potentials_by_line('force shield'))
+
+    def test_all_tables_and_complete_roll_mass(self):
+        for key, raw in m._data().items():
+            cube, equipment, level = key.split('|')
+            with self.subTest(key=key):
+                if raw is None:
+                    with self.assertRaises(ValueError):
+                        m.get_potentials_by_line(equipment, int(level), cube)
+                    continue
+                table = m.get_potentials_by_line(equipment, int(level), cube)
+                for rows in raw:
+                    self.assertAlmostEqual(sum(p for _, p in rows), 1, delta=0.0001)
+                self.assertAlmostEqual(math.fsum(p for _, p in m._rolls(table)), 1)
+
+    def test_restrictions_and_conditional_probability(self):
+        p = m.Potential
+        table = {
+            1: [p(1, 'Legendary', 'skill', .5, {}, 'decent_skill'), p(1, 'Legendary', 'stat', .5, {})],
+            2: [p(2, 'Unique', 'skill', .5, {}, 'decent_skill'), p(2, 'Unique', 'stat', .5, {})],
+            3: [p(3, 'Unique', 'stat', 1, {})],
+        }
+        rolls = list(m._rolls(table))
+        self.assertEqual(len(rolls), 3)
+        self.assertEqual([prob for _, prob in rolls], [.5, .25, .25])
+
+    def test_cube_tiers(self):
+        for cube, primes in [('red', (1, .1, .01)), ('black', (1, .2, .05))]:
+            table = m.get_potentials_by_line('hat', 150, cube)
+            for line, prime in enumerate(primes, 1):
+                self.assertAlmostEqual(sum(p.probability for p in table[line]
+                    if p.source_tier == 'Legendary'), prime, delta=.00002)
+
+    def test_equipment_and_level_effects(self):
+        self.assertGreater(m.probability_at_least('ATT_PCT', 30, equipment_type='weapon'), 0)
+        self.assertEqual(m.probability_at_least('ATT_PCT', 1, equipment_type='hat'), 0)
+        self.assertGreater(m.probability_at_least('CRIT_DAMAGE_PCT', 8, equipment_type='gloves'), 0)
+        self.assertEqual(m.probability_cooldown_at_least(1, equipment_type='shoes'), 0)
+        self.assertGreater(m.probability_cooldown_at_least(2), 0)
+        self.assertEqual(m.get_potentials_by_line('hat', 100)[1][0].effects['STR_PCT'], 12)
+        self.assertGreater(m.probability_at_least('BOSS_DAMAGE_PCT', 40, equipment_type='weapon'), 0)
+        self.assertGreater(m.probability_at_least('IED_PCT', 40, equipment_type='emblem'), 0)
+        self.assertEqual(m.get_potentials_by_line('hat', 250)[1][0].effects['STR_PCT'], 13)
+
+    def test_matching_and_exact(self):
+        matches = m.matching_combinations('STR_PCT', 30, mode='exact')
+        self.assertAlmostEqual(sum(x['probability'] for x in matches), m.probability_exact('STR_PCT', 30))
+        self.assertGreaterEqual(m.probability_at_least('STR_PCT', 30), m.probability_exact('STR_PCT', 30))
+        self.assertEqual(m.probability_at_least('STR_PCT', 1000), 0)
+
+    def test_validation(self):
+        for options in [dict(level=99), dict(equipment_type='bad'), dict(cube_type='bad')]:
+            with self.assertRaises(ValueError):
+                m.probability_at_least('STR_PCT', 30, **options)
+        with self.assertRaises(ValueError):
+            m.probability_at_least('typo', 30)
+        with self.assertRaises(ValueError):
+            m.matching_combinations('STR_PCT', 1000, 'bad')
+        self.assertEqual(m.cubes_for_probability(.5, .75), 2)
+
+    def test_ied_stacking(self):
+        p = m.Potential(1, 'Legendary', 'IED', 1, {'IED_PCT': 40})
+        self.assertAlmostEqual(m._total((p, p), 'IED_PCT'), 64)
+
+
+if __name__ == '__main__':
+    unittest.main()
