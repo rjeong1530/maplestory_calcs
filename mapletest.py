@@ -7,13 +7,14 @@ from maplestory_potential import (
 )
 
 
-# 30%+ effective STR
+# At least 13% effective STR and 4 seconds of cooldown reduction on one roll
 # All Stat automatically counts toward STR
 equipment_type = "hat"  # e.g. "weapon", "gloves", "secondary weapon"
-level = 150             # 100, 140, 150, 160, 200, 250
-cube_type = "red"     # "red" or "black" (current KMS reset rates)
+level = 250             # 100, 140, 150, 160, 200, 250
+cube_type = "black"     # "red" or "black" (current KMS reset rates)
 chance = probability_at_least(
-    "STR_PCT", 30,
+    "STR_PCT", 13,
+    "COOLDOWN_SEC", 4,
     equipment_type=equipment_type,
     level=level,
     cube_type=cube_type,

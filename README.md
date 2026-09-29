@@ -19,6 +19,20 @@ attack_chance = probability_at_least(
 print(f"{chance:.6%}")
 ```
 
+Pass additional effect/target pairs to require **all targets on the same roll**:
+
+```python
+crit_and_str = probability_at_least(
+    "CRIT_DAMAGE_PCT", 8, "STR_PCT", 12, equipment_type="gloves"
+)
+attack_and_boss = probability_at_least(
+    "ATT_PCT", 12, "BOSS_DAMAGE_PCT", 40, equipment_type="weapon"
+)
+str_and_cooldown = probability_at_least(
+    "STR_PCT", 13, "COOLDOWN_SEC", 4, equipment_type="hat", level=250
+)
+```
+
 The same equipment, level and cube keywords work with `probability_exact`,
 `probability_cooldown_at_least`, and `matching_combinations`. Edit the three
 selection variables in `mapletest.py` for a simple example with roll-count estimates.
@@ -47,8 +61,9 @@ shield, soul ring, shield, outfit, belt, or heart, for either cube type.
 
 Effect keys are listed in `EFFECTS` in `maplestory_potential.py`. All Stat adds to
 each main stat. Ignore Enemy Defense (`IED_PCT`) combines multiplicatively.
-Cooldown uses negative seconds internally; use `probability_cooldown_at_least(2)`
-to ask for at least two seconds of reduction.
+Cooldown uses negative seconds internally; `probability_at_least("COOLDOWN_SEC", 2)`
+and `probability_cooldown_at_least(2)` both ask for at least two seconds of reduction.
+The cooldown target in `probability_at_least` must be nonnegative.
 
 Full Korean option names are retained for source fidelity, including untracked
 effects. The calculator enforces caps on decent skills, invincibility duration,
@@ -65,3 +80,8 @@ cube keep/replace decisions and meso costs are not modeled.
 Runtime calculations work offline with Python 3.10+. To refresh the snapshot,
 run `python fetch_potential_data.py` with internet access. A failed refresh leaves
 the previous snapshot intact.
+
+TODO:
+Refactor potentials for GMS
+Flame calculations
+Starforce calculations

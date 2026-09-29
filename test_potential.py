@@ -1,9 +1,39 @@
 import math
 import unittest
+from unittest.mock import patch
 import maplestory_potential as m
 
 
 class PotentialTests(unittest.TestCase):
+    def test_multiple_targets_on_same_roll(self):
+        p = m.Potential
+        table = {
+            1: [p(1, 'Legendary', 'crit', .5, {'CRIT_DAMAGE_PCT': 8}),
+                p(1, 'Legendary', 'str', .5, {'STR_PCT': 12})],
+            2: [p(2, 'Unique', 'all stat', .5, {'STR_PCT': 6, 'DEX_PCT': 6}),
+                p(2, 'Unique', 'other', .5, {})],
+            3: [p(3, 'Unique', 'other', 1, {})],
+        }
+        with patch.object(m, 'get_potentials_by_line', return_value=table):
+            self.assertEqual(m.probability_at_least('CRIT_DAMAGE_PCT', 8), .5)
+            self.assertEqual(m.probability_at_least('CRIT_DAMAGE_PCT', 8, 'STR_PCT', 6), .25)
+            self.assertEqual(m.probability_at_least('CRIT_DAMAGE_PCT', 8, 'STR_PCT', 12), 0)
+            self.assertEqual(m.probability_at_least(
+                'CRIT_DAMAGE_PCT', 8, 'STR_PCT', 6, 'DEX_PCT', 6), .25)
+
+    def test_multiple_target_validation(self):
+        for extra in [('ATT_PCT',), ('typo', 1), ('STR_PCT', float('nan')),
+                      ('STR_PCT', float('inf')), ('COOLDOWN_SEC', -4)]:
+            with self.subTest(extra=extra), self.assertRaises(ValueError):
+                m.probability_at_least('STR_PCT', 13, *extra)
+
+    def test_cooldown_reduction_target(self):
+        self.assertAlmostEqual(m.probability_at_least('COOLDOWN_SEC', 4),
+                               m.probability_cooldown_at_least(4))
+        chance = m.probability_at_least('STR_PCT', 13, 'COOLDOWN_SEC', 4, level=250)
+        self.assertGreater(chance, 0)
+        self.assertLessEqual(chance, m.probability_cooldown_at_least(4, level=250))
+
     def test_shield_categories(self):
         for cube in m.CUBE_TYPES:
             for level in m.SUPPORTED_LEVELS:

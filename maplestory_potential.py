@@ -136,11 +136,23 @@ def _matches(total, target, mode):
     return math.isclose(total, target, abs_tol=1e-9, rel_tol=0) or (mode == 'at_least' and total > target)
 
 
-def probability_at_least(effect, target, *, equipment_type='hat', level=150, cube_type='black'):
-    """All Stat contributes to main stats; IED stacks multiplicatively."""
-    _check(effect, target)
+def probability_at_least(effect, target, *additional_targets, equipment_type='hat', level=150, cube_type='black'):
+    """Meet all alternating effect/target pairs in the same three-line roll.
+
+    All Stat contributes to main stats; IED stacks multiplicatively.
+    COOLDOWN_SEC targets are nonnegative seconds of reduction.
+    """
+    if len(additional_targets) % 2:
+        raise ValueError('Each additional effect must have a target')
+    requirements = [(effect, target), *zip(additional_targets[::2], additional_targets[1::2])]
+    for key, minimum in requirements:
+        _check(key, minimum)
+        if key == 'COOLDOWN_SEC' and minimum < 0:
+            raise ValueError('COOLDOWN_SEC target must be nonnegative seconds of reduction')
     table = get_potentials_by_line(equipment_type, level, cube_type)
-    return math.fsum(p for combo, p in _rolls(table) if _matches(_total(combo, effect), target, 'at_least'))
+    return math.fsum(p for combo, p in _rolls(table) if all(
+        _matches(_total(combo, key) * (-1 if key == 'COOLDOWN_SEC' else 1), minimum, 'at_least')
+        for key, minimum in requirements))
 
 
 def probability_exact(effect, target, *, equipment_type='hat', level=150, cube_type='black'):
