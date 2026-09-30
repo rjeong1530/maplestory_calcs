@@ -179,15 +179,47 @@ Default discovery (`python -m unittest -v`) also works from the repository root.
 api.py                                  FastAPI endpoints and request models
 maplestory_potential.py                 Potential probability calculator
 maplestory_flames.py                    Flame eligibility, values, and probability engine
+starforce_calculator.py                 GMS Star Force expected-cost calculator
 potential_data.json                     Bundled potential probability tables
 fetch_potential_data.py                 Potential data refresh script
 fetch_equipment_data.py                 Equipment catalog and boss-reward refresh script
 frontend/src/components/                React calculator, flame, and equipment views
 frontend/src/data/equipment_140_250.json Equipment catalog used by the equipment picker
-tests/                                  Automated calculator and API tests
+tests/                                  Automated calculator, API, and Star Force tests
 requirements.txt                        Runtime API dependencies
 requirements-dev.txt                    API and test dependencies
 ```
+
+## Star Force calculator
+
+`starforce_calculator.py` estimates expected meso cost, attempts, and booms to
+reach a target star. It uses the supplied GMS base-cost formula and transition
+probabilities, with the Enhancement Mode rates and cost multipliers supplied
+for 15★–21★ attempts. See the [GMS v269 patch notes](https://www.nexon.com/maplestory/news/update/41138/updated-6-30-v-269-ride-the-lightning-patch-notes)
+for the Enhancement Mode availability rules. For example:
+
+```powershell
+.\.venv\Scripts\python.exe starforce_calculator.py --level 200 --start 15 --target 22 --mode-18 2 --mode-19 3 --mode-20 4 --safeguard-15-17
+```
+
+The band-wide `--mode-15-17` and `--mode-18-21` options set defaults for their
+respective ranges. Optional `--mode-15` through `--mode-21` arguments override
+the mode for an individual transition (for example, `--mode-18 2` selects Mode
+2 from 18★ to 19★). GMS does not allow Enhancement Mode 4 from 15★ to 17★.
+Outside 15★–21★, the supplied base rates and base costs are used. The supplied
+rates include GMS's automatic Star Catching success-rate bonus.
+
+`--safeguard-15-17` safeguards attempts from 15★ to 17★: the cost is 3x base,
+booms are removed, and failed attempts maintain the current star. As in GMS,
+safeguarding resets Enhancement Mode to Mode 1 for these transitions.
+
+Expected values use a Markov-chain model: a failed attempt may maintain or
+decrease the star (failures maintain from 0★–9★ and 15★–21★; they decrease one
+star from 10★–14★ and 22★–29★). A boom restarts at `--boom-reset-star`
+(default 12). The reported expected mesos omit item replacement/recovery costs,
+event discounts, and other event modifiers. The calculator is for non-Superior
+equipment; equipment-specific maximum star limits are not inferred from item
+level.
 
 ## Frontend
 
@@ -256,4 +288,4 @@ equivalent `/api` reverse proxy to the FastAPI server.
 
 - [ ] List of expected cost of current equips
 - [ ] GMS potential refactor
-- [ ] Starforce calculator
+- [ ] Star Force calculator UI

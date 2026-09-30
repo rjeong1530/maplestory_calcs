@@ -1,0 +1,318 @@
+"""Estimate Global MapleStory Star Force costs and outcomes."""
+from __future__ import annotations
+
+import argparse
+from dataclasses import dataclass
+from typing import Mapping, Sequence
+
+
+# Probabilities are percentages supplied for Global MapleStory, including the
+# automatic Star Catching success-rate bonus.
+BASE_SUCCESS_AND_BOOM: dict[int, tuple[float, float]] = {
+    0: (99.75, 0.0),
+    1: (94.5, 0.0),
+    2: (89.25, 0.0),
+    3: (89.25, 0.0),
+    4: (84.0, 0.0),
+    5: (78.75, 0.0),
+    6: (73.5, 0.0),
+    7: (68.25, 0.0),
+    8: (63.0, 0.0),
+    9: (57.75, 0.0),
+    10: (52.5, 0.0),
+    11: (47.25, 0.0),
+    12: (42.0, 0.0),
+    13: (36.75, 0.0),
+    14: (31.5, 0.0),
+    15: (31.5, 2.055),
+    16: (31.5, 2.055),
+    17: (15.75, 6.74),
+    18: (15.75, 6.74),
+    19: (15.75, 8.425),
+    20: (31.5, 10.275),
+    21: (15.75, 12.6375),
+    22: (15.75, 16.85),
+    23: (10.5, 17.9),
+    24: (10.5, 17.9),
+    25: (10.5, 17.9),
+    26: (7.35, 18.53),
+    27: (5.25, 18.95),
+    28: (3.15, 19.37),
+    29: (1.05, 19.79),
+}
+
+# Starting star: mode -> (success %, boom %). Remaining probability maintains
+# the current star, as specified in the supplied GMS Enhancement Mode table.
+ENHANCEMENT_MODE_RATES: dict[int, dict[int, tuple[float, float]]] = {
+    15: {1: (31.5, 2.055), 2: (31.5, 1.37), 3: (31.5, 0.685), 4: (31.5, 0.0)},
+    16: {1: (31.5, 2.055), 2: (31.5, 1.37), 3: (31.5, 0.685), 4: (31.5, 0.0)},
+    17: {1: (15.75, 6.74), 2: (15.75, 4.2125), 3: (15.75, 1.685), 4: (15.75, 0.0)},
+    18: {1: (15.75, 6.74), 2: (12.6, 4.37), 3: (10.5, 1.79), 4: (8.4, 0.0)},
+    19: {1: (15.75, 8.425), 2: (12.6, 6.118), 3: (10.5, 3.58), 4: (8.4, 0.0)},
+    20: {1: (31.5, 10.275), 2: (26.25, 7.375), 3: (21.0, 3.95), 4: (15.75, 0.0)},
+    21: {1: (15.75, 12.6375), 2: (12.6, 8.74), 3: (10.5, 4.475), 4: (8.4, 0.0)},
+}
+
+MODE_COST_MULTIPLIERS: dict[int, dict[int, float]] = {
+    15: {1: 1.0, 2: 1.5, 3: 2.5, 4: 3.0},
+    16: {1: 1.0, 2: 1.5, 3: 2.5, 4: 3.0},
+    17: {1: 1.0, 2: 1.5, 3: 2.5, 4: 3.0},
+    18: {1: 1.0, 2: 2.0, 3: 3.5, 4: 6.5},
+    19: {1: 1.0, 2: 2.0, 3: 3.5, 4: 6.5},
+    20: {1: 1.0, 2: 2.0, 3: 3.5, 4: 6.5},
+    21: {1: 1.0, 2: 2.0, 3: 3.5, 4: 6.5},
+}
+
+
+@dataclass(frozen=True)
+class AttemptRates:
+    success: float
+    maintain: float
+    downgrade: float
+    boom: float
+
+
+@dataclass(frozen=True)
+class StarForceEstimate:
+    expected_cost: float
+    expected_attempts: float
+    expected_booms: float
+
+
+def starforce_base_cost(item_level: int, current_star: int) -> int:
+    """Return the supplied GMS base cost, rounded to the nearest 100 mesos."""
+    if type(item_level) is not int or item_level <= 0:
+        raise ValueError('Item level must be a positive integer.')
+    if type(current_star) is not int or not 0 <= current_star <= 29:
+        raise ValueError('Current Star Force must be between 0 and 29.')
+
+    level = item_level
+    star = current_star
+    if star <= 9:
+        raw = 1000 + level**3 * (star + 1) / 25
+    elif star == 10:
+        raw = 1000 + level**3 * 11**2.7 / 400
+    elif star == 11:
+        raw = 1000 + level**3 * 12**2.7 / 220
+    elif star == 12:
+        raw = 1000 + level**3 * 13**2.7 / 150
+    elif star == 13:
+        raw = 1000 + level**3 * 14**2.7 / 110
+    elif star == 14:
+        raw = 1000 + level**3 * 15**2.7 / 75
+    elif star in (15, 16):
+        raw = 1000 + level**3 * (star + 1)**2.7 / 200
+    elif star == 17:
+        raw = 1000 + level**3 * 18**2.7 / 150
+    elif star == 18:
+        raw = 1000 + level**3 * 19**2.7 / 70
+    elif star == 19:
+        raw = 1000 + level**3 * 20**2.7 / 45
+    elif star == 20:
+        raw = 1000 + level**3 * 21**2.7 / 200
+    elif star == 21:
+        raw = 1000 + level**3 * 22**2.7 / 125
+    else:
+        raw = 1000 + level**3 * (star + 1)**2.7 / 200
+    return int(round(raw / 100.0) * 100)
+
+
+def enhancement_mode_multiplier(star: int, mode: int, safeguard: bool = False) -> float:
+    """Return the mode cost multiplier for an attempt from ``star``."""
+    if type(mode) is not int or mode not in (1, 2, 3, 4):
+        raise ValueError('Enhancement mode must be 1, 2, 3, or 4.')
+    if type(star) is not int or star < 0:
+        raise ValueError('Star Force must be a nonnegative integer.')
+    if safeguard and 15 <= star <= 17:
+        return 3.0
+    if star in MODE_COST_MULTIPLIERS:
+        return MODE_COST_MULTIPLIERS[star][mode]
+    return 1.0
+
+
+def attempt_rates(star: int, mode: int = 1, safeguard: bool = False) -> AttemptRates:
+    """Return success, maintain, downgrade, and boom probabilities."""
+    if type(star) is not int or star not in BASE_SUCCESS_AND_BOOM:
+        raise ValueError('Current Star Force must be between 0 and 29.')
+    if type(mode) is not int or mode not in (1, 2, 3, 4):
+        raise ValueError('Enhancement mode must be 1, 2, 3, or 4.')
+    if type(safeguard) is not bool:
+        raise ValueError('Safeguard must be a boolean.')
+
+    if star in ENHANCEMENT_MODE_RATES:
+        if safeguard and 15 <= star <= 17:
+            mode = 1
+        if mode == 4 and 15 <= star <= 17:
+            raise ValueError(
+                'GMS Enhancement Mode 4 is unavailable for attempts from 15 to 17 stars.'
+            )
+        success_pct, boom_pct = ENHANCEMENT_MODE_RATES[star][mode]
+    else:
+        success_pct, boom_pct = BASE_SUCCESS_AND_BOOM[star]
+
+    success = success_pct / 100.0
+    boom = boom_pct / 100.0
+    if safeguard and 15 <= star <= 17:
+        boom = 0.0
+    failure = 1.0 - success - boom
+    if failure < -1e-12:
+        raise ValueError(f'Invalid probability table at {star} stars in mode {mode}.')
+
+    # Failures from 10–14 and 22+ lose one star in the supplied GMS model.
+    if 10 <= star <= 14 or star >= 22:
+        return AttemptRates(success, 0.0, max(0.0, failure), boom)
+    return AttemptRates(success, max(0.0, failure), 0.0, boom)
+
+
+def _solve_linear_system(matrix: list[list[float]], vector: list[float]) -> list[float]:
+    """Solve a small dense system using Gaussian elimination with pivoting."""
+    size = len(vector)
+    augmented = [row[:] + [value] for row, value in zip(matrix, vector)]
+    for column in range(size):
+        pivot = max(range(column, size), key=lambda row: abs(augmented[row][column]))
+        if abs(augmented[pivot][column]) < 1e-14:
+            raise ValueError('Could not solve the expected-value equations.')
+        augmented[column], augmented[pivot] = augmented[pivot], augmented[column]
+        divisor = augmented[column][column]
+        augmented[column] = [value / divisor for value in augmented[column]]
+        for row in range(size):
+            if row == column:
+                continue
+            factor = augmented[row][column]
+            if factor:
+                augmented[row] = [
+                    value - factor * pivot_value
+                    for value, pivot_value in zip(augmented[row], augmented[column])
+                ]
+    return [augmented[row][-1] for row in range(size)]
+
+
+def estimate_starforce(
+    item_level: int,
+    start_star: int,
+    target_star: int,
+    mode_15_17: int = 1,
+    mode_18_21: int = 1,
+    boom_reset_star: int = 12,
+    mode_by_star: Mapping[int, int] | None = None,
+    safeguard_15_17: bool = False,
+) -> StarForceEstimate:
+    """Estimate expected spend, attempts, and booms until reaching a target.
+
+    A boom is modeled as replacing/recovering the item at ``boom_reset_star``.
+    Item acquisition or recovery costs, discounts, and event modifiers are not
+    included. Individual mode choices override the corresponding band mode.
+    Safeguarding 15★–17★ costs 3x the base cost, disables booms, and uses
+    Mode 1 rates, as GMS resets Modes 2–3 when safeguarding is enabled.
+    """
+    if type(item_level) is not int or item_level <= 0:
+        raise ValueError('Item level must be a positive integer.')
+    if type(start_star) is not int or not 0 <= start_star <= 29:
+        raise ValueError('Starting Star Force must be between 0 and 29.')
+    if type(target_star) is not int or not 1 <= target_star <= 30:
+        raise ValueError('Target Star Force must be between 1 and 30.')
+    if target_star <= start_star:
+        raise ValueError('Target Star Force must be greater than starting Star Force.')
+    if type(boom_reset_star) is not int or not 0 <= boom_reset_star <= 29:
+        raise ValueError('Boom reset star must be between 0 and 29.')
+    if type(mode_15_17) is not int or mode_15_17 not in (1, 2, 3):
+        raise ValueError('Mode for 15–17 star attempts must be 1, 2, or 3.')
+    if type(mode_18_21) is not int or mode_18_21 not in (1, 2, 3, 4):
+        raise ValueError('Mode for 18–21 star attempts must be 1, 2, 3, or 4.')
+    if type(safeguard_15_17) is not bool:
+        raise ValueError('safeguard_15_17 must be a boolean.')
+    if mode_by_star is None:
+        mode_by_star = {}
+    if not isinstance(mode_by_star, Mapping):
+        raise ValueError('mode_by_star must be a mapping of star numbers to modes.')
+    for star, mode in mode_by_star.items():
+        if type(star) is not int or star not in range(15, 22):
+            raise ValueError('Per-star modes can only be set for transitions from 15 to 21 stars.')
+        allowed_modes = (1, 2, 3) if star <= 17 else (1, 2, 3, 4)
+        if type(mode) is not int or mode not in allowed_modes:
+            raise ValueError(f'Invalid enhancement mode {mode!r} for transition from {star} stars.')
+
+    modes = [
+        mode_by_star.get(
+            star,
+            mode_15_17 if 15 <= star <= 17 else
+            mode_18_21 if 18 <= star <= 21 else 1,
+        )
+        for star in range(target_star)
+    ]
+    state_count = target_star
+    matrix = [[float(row == column) for column in range(state_count)]
+              for row in range(state_count)]
+    attempt_costs = []
+    boom_probabilities = []
+
+    for star, mode in enumerate(modes):
+        safeguard = safeguard_15_17 and 15 <= star <= 17
+        rates = attempt_rates(star, mode, safeguard=safeguard)
+        multiplier = enhancement_mode_multiplier(star, mode, safeguard=safeguard)
+        attempt_costs.append(starforce_base_cost(item_level, star) * multiplier)
+        boom_probabilities.append(rates.boom)
+        destinations = (
+            (star + 1, rates.success),
+            (star, rates.maintain),
+            (star - 1, rates.downgrade),
+            (boom_reset_star, rates.boom),
+        )
+        for destination, probability in destinations:
+            if probability and destination < target_star:
+                matrix[star][destination] -= probability
+
+    expected_cost = _solve_linear_system(matrix, attempt_costs)[start_star]
+    expected_attempts = _solve_linear_system(matrix, [1.0] * state_count)[start_star]
+    expected_booms = _solve_linear_system(matrix, boom_probabilities)[start_star]
+    return StarForceEstimate(expected_cost, expected_attempts, expected_booms)
+
+
+def main(argv: Sequence[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--level', type=int, required=True, help='Equipment required level')
+    parser.add_argument('--start', type=int, default=0, help='Starting star (default: 0)')
+    parser.add_argument('--target', type=int, required=True, help='Target star')
+    parser.add_argument('--mode-15-17', type=int, choices=(1, 2, 3), default=1,
+                        help='Mode used from 15 through 17 stars (default: 1)')
+    parser.add_argument('--mode-18-21', type=int, choices=(1, 2, 3, 4), default=1,
+                        help='Mode used from 18 through 21 stars (default: 1)')
+    for star in range(15, 22):
+        choices = (1, 2, 3) if star <= 17 else (1, 2, 3, 4)
+        parser.add_argument(
+            f'--mode-{star}',
+            type=int,
+            choices=choices,
+            default=None,
+            help=f'Override mode for the attempt from {star} to {star + 1} stars',
+        )
+    parser.add_argument('--safeguard-15-17', action='store_true',
+                        help='Safeguard attempts from 15 to 17 stars (3x cost, no booms)')
+    parser.add_argument('--boom-reset-star', type=int, default=12,
+                        help='Star level after a boom/replacement (default: 12)')
+    args = parser.parse_args(argv)
+
+    try:
+        estimate = estimate_starforce(
+            item_level=args.level,
+            start_star=args.start,
+            target_star=args.target,
+            mode_15_17=args.mode_15_17,
+            mode_18_21=args.mode_18_21,
+            boom_reset_star=args.boom_reset_star,
+            mode_by_star={
+                star: mode for star in range(15, 22)
+                if (mode := getattr(args, f'mode_{star}')) is not None
+            },
+            safeguard_15_17=args.safeguard_15_17,
+        )
+    except ValueError as error:
+        parser.error(str(error))
+
+    print(f'Expected mesos:    {estimate.expected_cost:,.0f}')
+    print(f'Expected attempts: {estimate.expected_attempts:,.2f}')
+    print(f'Expected booms:    {estimate.expected_booms:,.3f}')
+
+
+if __name__ == '__main__':
+    main()
