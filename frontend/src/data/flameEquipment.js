@@ -20,9 +20,8 @@ export const SLOT_LABELS = {
   belt: 'Belt', bottom: 'Bottom', gloves: 'Gloves', cape: 'Cape', shoes: 'Shoes',
   android: 'Android', heart: 'Heart',
 }
-// Special flameable shoulder/medal exceptions are not included in this starter catalog.
 export const FLAME_SLOTS = new Set(['hat', 'pendant', 'face', 'eye', 'earring', 'weapon',
-  'top', 'pocket', 'belt', 'bottom', 'gloves', 'cape', 'shoes'])
+  'top', 'pocket', 'belt', 'bottom', 'gloves', 'cape', 'shoes', 'medal'])
 
 const POTENTIAL_EQUIPMENT_TYPES = {
   weapon: 'weapon',

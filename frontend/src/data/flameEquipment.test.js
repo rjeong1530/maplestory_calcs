@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  equipmentChoices, equipInSlot, compatibleEquipment, CLASS_FAMILIES,
+  equipmentChoices, equipInSlot, compatibleEquipment, CLASS_FAMILIES, FLAME_SLOTS,
   potentialEquipmentType,
 } from './flameEquipment.js'
 import { CLASS_WEAPONS } from './flameWeapons.js'
@@ -25,6 +25,9 @@ test('real armor and accessories are filtered by slot and class', () => {
   assert.ok(equipmentChoices('ring-1', 'Hero').length > 0)
   assert.ok(equipmentChoices('emblem', 'Hero').length > 0)
   assert.ok(equipmentChoices('medal', 'Hero').length > 0)
+  assert.ok(FLAME_SLOTS.has('medal'))
+  assert.ok(equipmentChoices('medal', 'Hero').every(item =>
+    item.config.equipment_type === 'armor' && !item.needsFlameType))
   assert.ok(equipmentChoices('shoulder', 'Hero').length > 0)
   assert.deepEqual(equipmentChoices('pendant-2', 'Hero'), equipmentChoices('pendant-1', 'Bishop'))
   assert.ok(equipmentChoices('pendant-2', 'Hero').every(item => !item.needsFlameType))

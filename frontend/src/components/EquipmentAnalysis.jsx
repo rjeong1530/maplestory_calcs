@@ -122,9 +122,13 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
     }
   }
 
-  function flameValueText(values) {
-    return values.map(({ value }) => Number.isInteger(value) ? value : Number(value.toFixed(2)))
-      .join(' + ')
+  function flameValueText(values, option) {
+    const formattedValues = values.map(({ value }) =>
+      Number.isInteger(value) ? value : Number(value.toFixed(2)))
+    const text = formattedValues.join(' + ')
+    return option.endsWith('_PCT') || values.some(({ stat }) => stat.endsWith('_PCT'))
+      ? `${text}%`
+      : text
   }
 
   function formatFlameTotal(value) {
@@ -226,11 +230,11 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
                                       {stageValue ? <button type="button"
                                         className="flame-value-cell"
                                         aria-pressed={isSelected}
-                                        aria-label={`${FLAME_LABELS[row.option] || row.option}, tier ${stage}: ${flameValueText(stageValue.values)}`}
+                                        aria-label={`${FLAME_LABELS[row.option] || row.option}, tier ${stage}: ${flameValueText(stageValue.values, row.option)}`}
                                         disabled={!isSelected && flameLines.length >= 4
                                           && !flameLines.some(line => line.option === row.option)}
                                         onClick={() => toggleFlame(row.option, stage)}>
-                                        {flameValueText(stageValue.values)}
+                                        {flameValueText(stageValue.values, row.option)}
                                       </button> : '—'}
                                     </td>
                                   )
