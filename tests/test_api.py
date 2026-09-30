@@ -23,6 +23,74 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get('/api/options').json()['effects'], list(calculator.EFFECTS))
         self.assertEqual(self.client.get('/openapi.json').status_code, 200)
 
+    def test_item_options_are_filtered_by_level_and_equipment_type(self):
+        response = self.client.get('/api/item-options', params={
+            'level': 150, 'potential_equipment_type': 'hat', 'flame_equipment_type': 'armor',
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        options = response.json()
+        self.assertEqual(options['flame_tier_ranges']['black'], [4, 7])
+        self.assertTrue(options['potential']['available'])
+        self.assertIn('COOLDOWN_SEC', options['potential']['effects'])
+        self.assertIn('ALL_STAT_PCT', options['potential']['effects'])
+        self.assertNotIn('ATT_PCT', options['potential']['effects'])
+        potential_line_values = options['potential']['values_by_line']
+        self.assertEqual([row['line'] for row in potential_line_values], [1, 2, 3])
+        self.assertEqual(
+            potential_line_values[0]['values']['STR_PCT'],
+            sorted({
+                value
+                for option in calculator.get_potentials_by_line('hat', 150, 'black')[1]
+                for effect, value in option.effects.items()
+                if effect == 'STR_PCT' and '올스탯' not in option.name
+            }),
+        )
+        self.assertEqual(potential_line_values[1]['values']['ALL_STAT_PCT'], [6.0, 9.0])
+        for line_values in potential_line_values:
+            for stat in ('STR_PCT', 'DEX_PCT', 'INT_PCT', 'LUK_PCT'):
+                self.assertNotIn(6.0, line_values['values'][stat])
+        self.assertIn('ALL_STAT_PCT', options['flame_options'])
+        all_stat = next(row for row in options['flame_values'] if row['option'] == 'ALL_STAT_PCT')
+        self.assertEqual(all_stat['values'][0], {
+            'stage': 3, 'values': [{'stat': 'ALL_STAT_PCT', 'value': 3.0}],
+        })
+
+        response = self.client.get('/api/item-options', params={
+            'level': 50, 'flame_equipment_type': 'armor',
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        flame_options = response.json()['flame_options']
+        self.assertNotIn('ATT', flame_options)
+        self.assertNotIn('MATT', flame_options)
+        self.assertNotIn('ALL_STAT_PCT', flame_options)
+
+        response = self.client.get('/api/item-options', params={
+            'level': 200, 'flame_equipment_type': 'weapon',
+            'boss_equipment': True, 'offense_stat': 'MATT', 'base_weapon_offense': 347,
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        weapon_values = response.json()['flame_values']
+        self.assertNotIn('ATT', {row['option'] for row in weapon_values})
+        magic_attack = next(row for row in weapon_values if row['option'] == 'MATT')
+        self.assertGreater(magic_attack['values'][0]['values'][0]['value'], 0)
+
+        response = self.client.get('/api/item-options', params={
+            'level': 200, 'flame_equipment_type': 'armor', 'boss_equipment': True,
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        options = response.json()
+        defense = next(row for row in options['flame_values'] if row['option'] == 'DEF')
+        self.assertEqual(defense['values'][0]['values'][0]['value'], 33.0)
+        reduction = next(row for row in options['flame_values'] if row['option'] == 'LEVEL_REDUCTION')
+        self.assertEqual(reduction['values'][0]['values'][0]['value'], -15.0)
+
+        response = self.client.get('/api/item-options', params={
+            'level': 250, 'potential_equipment_type': 'emblem',
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertFalse(response.json()['potential']['available'])
+        self.assertEqual(response.json()['potential']['values_by_line'], [])
+
     def test_multiple_targets_and_estimates(self):
         for equipment, level, first, second in [
             ('hat', 250, ('STR_PCT', 13), ('COOLDOWN_SEC', 4)),
@@ -97,6 +165,28 @@ class ApiTests(unittest.TestCase):
                 config['weights'] = flames.ScoreWeights(**config['weights'])
                 expected = flames.FlameProbabilityEngine(flames.FlameConfig(**config)).probability_at_least(500)
                 self.assertAlmostEqual(response.json()['probability'], expected)
+
+    def test_boss_damage_flame_weight(self):
+        payload = self.flame_payload(base_weapon_offense=295, weights={
+            'all_stat_pct_value': 0, 'secondary_stat_per_main': 10,
+            'attack_value': 0, 'boss_damage_pct_value': 100,
+        })
+        # Only boss damage can reach 500; all its black-flame tiers do so.
+        response = self.client.post('/api/flame-probability', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertAlmostEqual(response.json()['probability'], 4 / 19)
+        payload['config']['weights']['boss_damage_pct_value'] = 0
+        response = self.client.post('/api/flame-probability', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()['probability'], 0)
+
+    def test_invalid_boss_damage_weight(self):
+        for value in [-1, 'Infinity', 'NaN']:
+            with self.subTest(value=value):
+                payload = self.flame_payload(base_weapon_offense=295)
+                payload['config']['weights']['boss_damage_pct_value'] = value
+                response = self.client.post('/api/flame-probability', json=payload)
+                self.assertEqual(response.status_code, 422, response.text)
 
     def test_invalid_flame_weapon_parameters(self):
         for overrides in [

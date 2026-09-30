@@ -66,6 +66,136 @@ def options():
     }
 
 
+@app.get('/api/item-options')
+def item_options(
+    level: int,
+    potential_equipment_type: str | None = None,
+    flame_equipment_type: str | None = None,
+    cube_type: str = 'black',
+    boss_equipment: bool = True,
+    offense_stat: str = 'ATT',
+    base_weapon_offense: Annotated[float, Field(gt=0, allow_inf_nan=False)] | None = None,
+):
+    """Return the potential effects and flame options available for one item."""
+    if type(level) is not int or level <= 0:
+        raise HTTPException(status_code=422, detail='level must be a positive integer')
+    if cube_type not in calculator.CUBE_TYPES:
+        raise HTTPException(status_code=422, detail=f'cube_type must be one of {calculator.CUBE_TYPES}')
+    if potential_equipment_type and potential_equipment_type not in calculator.EQUIPMENT_TYPES:
+        raise HTTPException(
+            status_code=422, detail=f'potential_equipment_type must be one of {calculator.EQUIPMENT_TYPES}'
+        )
+    if flame_equipment_type and flame_equipment_type not in ('armor', 'weapon'):
+        raise HTTPException(status_code=422, detail="flame_equipment_type must be 'armor' or 'weapon'")
+
+    potential = {'available': False, 'effects': [], 'values_by_line': []}
+    if potential_equipment_type and level in calculator.SUPPORTED_LEVELS:
+        try:
+            table = calculator.get_potentials_by_line(potential_equipment_type, level, cube_type)
+        except ValueError as error:
+            if not str(error).startswith('Nexon lists no equipment/probability table'):
+                raise HTTPException(status_code=422, detail=str(error)) from error
+        else:
+            effects = {
+                effect for rows in table.values() for option in rows for effect in option.effects
+            }
+            if any('올스탯' in option.name for rows in table.values() for option in rows):
+                effects.add('ALL_STAT_PCT')
+            ordered_effects = [effect for effect in calculator.EFFECTS if effect in effects]
+            if 'ALL_STAT_PCT' in effects:
+                ordered_effects.insert(4, 'ALL_STAT_PCT')
+            values_by_line = []
+            for line, rows in table.items():
+                line_values = {}
+                for option in rows:
+                    if '올스탯' in option.name:
+                        all_stat_value = next(iter(option.effects.values()), None)
+                        if all_stat_value is not None:
+                            line_values.setdefault('ALL_STAT_PCT', set()).add(all_stat_value)
+                        continue
+                    for effect, value in option.effects.items():
+                        line_values.setdefault(effect, set()).add(value)
+                values_by_line.append({
+                    'line': line,
+                    'values': {
+                        effect: sorted(values)
+                        for effect, values in line_values.items()
+                    },
+                })
+            potential = {
+                'available': True,
+                'effects': ordered_effects,
+                'values_by_line': values_by_line,
+            }
+
+    flame_options = []
+    flame_stages = []
+    flame_tier_ranges = {}
+    flame_values = []
+    if flame_equipment_type:
+        try:
+            flame_options = list(flames.eligible_option_types(flame_equipment_type, level))
+        except ValueError as error:
+            raise HTTPException(status_code=422, detail=str(error)) from error
+        if offense_stat not in ('ATT', 'MATT'):
+            raise HTTPException(status_code=422, detail="offense_stat must be 'ATT' or 'MATT'")
+        if flame_equipment_type == 'weapon' and (
+            base_weapon_offense is None or base_weapon_offense <= 0
+        ):
+            raise HTTPException(
+                status_code=422, detail='Weapon flame values require positive base_weapon_offense'
+            )
+
+        tier_modifier = 2 if boss_equipment else 0
+        flame_tier_ranges = {
+            flame_type: [
+                min(tiers) + tier_modifier,
+                max(tiers) + tier_modifier,
+            ]
+            for flame_type, tiers in flames.FLAME_TIER_PROBABILITIES.items()
+        }
+        flame_stages = sorted({
+            stage
+            for minimum, maximum in flame_tier_ranges.values()
+            for stage in range(minimum, maximum + 1)
+        })
+        config = flames.FlameConfig(
+            equipment_level=level,
+            equipment_type=flame_equipment_type,
+            boss_equipment=boss_equipment,
+            flame_type='black',
+            main_stat='STR',
+            offense_stat=offense_stat,
+            base_weapon_offense=base_weapon_offense,
+        )
+        for option in flame_options:
+            if flame_equipment_type == 'weapon' and option in ('ATT', 'MATT') and option != offense_stat:
+                continue
+            values_by_stage = []
+            for stage in flame_stages:
+                if option == 'LEVEL_REDUCTION':
+                    values = {option: float(-5 * stage)}
+                elif option == 'DEF':
+                    values = {option: float(flames.single_stat_coefficient(level) * stage)}
+                elif option in ('MOVE_SPEED', 'JUMP', 'DAMAGE_PCT'):
+                    values = {option: float(stage)}
+                else:
+                    values = flames.option_values(option, stage, config)
+                values_by_stage.append({
+                    'stage': stage,
+                    'values': [{'stat': stat, 'value': value} for stat, value in values.items()],
+                })
+            flame_values.append({'option': option, 'values': values_by_stage})
+
+    return {
+        'potential': potential,
+        'flame_options': flame_options,
+        'flame_stages': flame_stages,
+        'flame_tier_ranges': flame_tier_ranges,
+        'flame_values': flame_values,
+    }
+
+
 @app.post('/api/probability', response_model=CalculationResult)
 def probability(request: CalculationRequest):
     """Probability that all minimum targets are met on one roll.
@@ -97,6 +227,7 @@ class FlameWeightsRequest(RequestModel):
     all_stat_pct_value: float
     secondary_stat_per_main: float
     attack_value: float
+    boss_damage_pct_value: float = Field(default=0, ge=0, allow_inf_nan=False)
 
 
 class FlameConfigRequest(RequestModel):

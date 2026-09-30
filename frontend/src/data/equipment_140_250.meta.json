@@ -1,0 +1,70 @@
+{
+  "source": "https://maplestory.io",
+  "region": "GMS",
+  "version": "270",
+  "source_url": "https://maplestory.io/api/GMS/270/item?overallCategoryFilter=Equip&minLevelFilter=140&maxLevelFilter=250",
+  "retrieved_at": "2026-09-30T18:00:47.271658+00:00",
+  "min_level": 140,
+  "max_level": 250,
+  "item_count": 640,
+  "class_semantics": "Broad reqJob class families, not exact playable jobs. All means no family restriction. Weapon type and special job restrictions may further limit eligibility.",
+  "coverage": "Named Equip entries in the inclusive level range from this GMS snapshot, with armor and weapons restricted to the documented sets and series. Other equipment is unfiltered. Includes legacy/event and mount equipment; presence does not imply current obtainability. Newer patches or other regions may contain additional items.",
+  "slot_semantics": "Overall has its own slot value; shields and kataras use secondary. Repeated ring/pendant positions share one slot type.",
+  "counts_by_slot": {
+    "badge": 4,
+    "belt": 25,
+    "bottom": 10,
+    "cape": 15,
+    "earring": 14,
+    "emblem": 1,
+    "eye": 6,
+    "face": 8,
+    "gloves": 15,
+    "hat": 24,
+    "heart": 2,
+    "medal": 140,
+    "mount": 3,
+    "overall": 10,
+    "pendant": 18,
+    "pocket": 9,
+    "ring": 15,
+    "secondary": 50,
+    "shoes": 15,
+    "shoulder": 15,
+    "top": 10,
+    "weapon": 231
+  },
+  "armor_filter": {
+    "sets": [
+      "Chaos Root Abyss",
+      "AbsoLab",
+      "Arcane Umbra",
+      "Eternal"
+    ],
+    "slots": [
+      "bottom",
+      "cape",
+      "gloves",
+      "hat",
+      "overall",
+      "shoes",
+      "shoulder",
+      "top"
+    ],
+    "includes": "CRA Royal hats, Eagle Eye tops, Trixter bottoms, and Chaos Root Abyss boss hats."
+  },
+  "weapon_filter": {
+    "series": [
+      "Fafnir",
+      "AbsoLab",
+      "Arcane Umbra",
+      "Genesis",
+      "Destiny"
+    ],
+    "scope": "Main weapons and kataras; other secondary equipment is unchanged.",
+    "includes": "Sealed Genesis and AbsoLabV variants."
+  },
+  "deduplication": "Exact item name; retain the entry with the lowest item ID.",
+  "boss_reward_semantics": "MapleStory.io item-detail metaInfo.bossReward; missing or non-boolean values default to false.",
+  "filtered_at": "2026-09-30T18:00:47.272662+00:00"
+}

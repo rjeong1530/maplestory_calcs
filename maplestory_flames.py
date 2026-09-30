@@ -54,10 +54,12 @@ class ScoreWeights:
       10 secondary stat = 1 point
       1% all stat       = 10 points
       1 ATT/MATT        = 3 points
+      1% boss damage    = 10 points
     '''
     all_stat_pct_value: float = 10.0
     secondary_stat_per_main: float = 10.0
     attack_value: float = 3.0
+    boss_damage_pct_value: float = 10.0
 
     def secondary_value(self, amount: float) -> float:
         if self.secondary_stat_per_main <= 0:
@@ -295,10 +297,13 @@ def option_values(option_type: str, stage: int, config: FlameConfig) -> Dict[str
         # Wrong offensive stat for the character (e.g. MATT on an ATT class).
         return {option_type: 0.0}
 
+    if option_type == 'BOSS_DAMAGE_PCT':
+        return {'BOSS_DAMAGE_PCT': float(2 * stage)}
+
     # These still occupy a flame-option slot but score 0 under this formula.
     if option_type in {
         'LEVEL_REDUCTION', 'DEF', 'MOVE_SPEED', 'JUMP',
-        'BOSS_DAMAGE_PCT', 'DAMAGE_PCT',
+        'DAMAGE_PCT',
     }:
         return {option_type: 0.0}
 
@@ -314,6 +319,7 @@ def score_values(values: Mapping[str, float], config: FlameConfig) -> float:
 
     score += values.get('ALL_STAT_PCT', 0.0) * config.weights.all_stat_pct_value
     score += values.get(config.offense_stat, 0.0) * config.weights.attack_value
+    score += values.get('BOSS_DAMAGE_PCT', 0.0) * config.weights.boss_damage_pct_value
     return score
 
 

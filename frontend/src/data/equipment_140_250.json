@@ -1,0 +1,7049 @@
+[
+  {
+    "itemid": 1003719,
+    "name": "Chaos Pierre Hat",
+    "slot": "hat",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Hat",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1003720,
+    "name": "Chaos Von Bon Helmet",
+    "slot": "hat",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Hat",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1003721,
+    "name": "Chaos Queen's Tiara",
+    "slot": "hat",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Hat",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1003722,
+    "name": "Chaos Vellum's Helm",
+    "slot": "hat",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Hat",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1003797,
+    "name": "Royal Warrior Helm",
+    "slot": "hat",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1003798,
+    "name": "Royal Dunwitch Hat",
+    "slot": "hat",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1003799,
+    "name": "Royal Ranger Beret",
+    "slot": "hat",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1003800,
+    "name": "Royal Assassin Hood",
+    "slot": "hat",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1003801,
+    "name": "Royal Wanderer Hat",
+    "slot": "hat",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004422,
+    "name": "AbsoLab Knight Helm",
+    "slot": "hat",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004423,
+    "name": "AbsoLab Mage Crown",
+    "slot": "hat",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004424,
+    "name": "AbsoLab Archer Hood",
+    "slot": "hat",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004425,
+    "name": "AbsoLab Bandit Cap",
+    "slot": "hat",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004426,
+    "name": "AbsoLab Pirate Fedora",
+    "slot": "hat",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004808,
+    "name": "Arcane Umbra Knight Hat",
+    "slot": "hat",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004809,
+    "name": "Arcane Umbra Mage Hat",
+    "slot": "hat",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004810,
+    "name": "Arcane Umbra Archer Hat",
+    "slot": "hat",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004811,
+    "name": "Arcane Umbra Thief Hat",
+    "slot": "hat",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1004812,
+    "name": "Arcane Umbra Pirate Hat",
+    "slot": "hat",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1005980,
+    "name": "Eternal Knight Helm",
+    "slot": "hat",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1005981,
+    "name": "Eternal Mage Hat",
+    "slot": "hat",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1005982,
+    "name": "Eternal Archer Hat",
+    "slot": "hat",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1005983,
+    "name": "Eternal Thief Bandana",
+    "slot": "hat",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1005984,
+    "name": "Eternal Pirate Hat",
+    "slot": "hat",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Hat",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1012394,
+    "name": "FrontierB Black Chicle",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Face Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1012395,
+    "name": "FrontierC White Chicle",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 145,
+    "equipment_type": "Face Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1012438,
+    "name": "Sweetwater Tattoo",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Face Accessory",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1012439,
+    "name": "Commerci Tattoo",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Face Accessory",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1012632,
+    "name": "Berserked",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Face Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1012757,
+    "name": "Twilight Mark",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Face Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1012902,
+    "name": "Red Beryl Face Accessory",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Face Accessory",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1012911,
+    "name": "Original Sin of Pride",
+    "slot": "face",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Face Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1022211,
+    "name": "Sweetwater Monocle",
+    "slot": "eye",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Eye Decoration",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1022212,
+    "name": "Commerci Glasses",
+    "slot": "eye",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Eye Decoration",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1022237,
+    "name": "Bounty Legend's Sunglasses",
+    "slot": "eye",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Eye Decoration",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1022277,
+    "name": "Papulatus Mark",
+    "slot": "eye",
+    "class": [
+      "All"
+    ],
+    "level": 145,
+    "equipment_type": "Eye Decoration",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1022278,
+    "name": "Magic Eyepatch",
+    "slot": "eye",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Eye Decoration",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1022375,
+    "name": "Red Beryl Eye Accessory",
+    "slot": "eye",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Eye Decoration",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032183,
+    "name": "Shaman Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032191,
+    "name": "Alien Fragment Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032200,
+    "name": "Meister Earring",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Earrings",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1032217,
+    "name": "Inverse Jewel Earring",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Earrings",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1032222,
+    "name": "Reinforced Gollux Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032223,
+    "name": "Superior Gollux Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032224,
+    "name": "Sweetwater Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032225,
+    "name": "Commerci Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032232,
+    "name": "Ocean Glow Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Earrings",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1032246,
+    "name": "Bounty Legend's Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032314,
+    "name": "Numenal's Willpower",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1032316,
+    "name": "Commanding Force Earring",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Earrings",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1032330,
+    "name": "Estella Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Earrings",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1032361,
+    "name": "Red Beryl Earrings",
+    "slot": "earring",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Earrings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1042254,
+    "name": "Eagle Eye Warrior Armor",
+    "slot": "top",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042255,
+    "name": "Eagle Eye Dunwitch Robe",
+    "slot": "top",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042256,
+    "name": "Eagle Eye Ranger Cowl",
+    "slot": "top",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042257,
+    "name": "Eagle Eye Assassin Shirt",
+    "slot": "top",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042258,
+    "name": "Eagle Eye Wanderer Coat",
+    "slot": "top",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042433,
+    "name": "Eternal Knight Armor",
+    "slot": "top",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042434,
+    "name": "Eternal Mage Robe",
+    "slot": "top",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042435,
+    "name": "Eternal Archer Hood",
+    "slot": "top",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042436,
+    "name": "Eternal Thief Shirt",
+    "slot": "top",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1042437,
+    "name": "Eternal Pirate Coat",
+    "slot": "top",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Top",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1052882,
+    "name": "AbsoLab Knight Suit",
+    "slot": "overall",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1052887,
+    "name": "AbsoLab Mage Suit",
+    "slot": "overall",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1052888,
+    "name": "AbsoLab Archer Suit",
+    "slot": "overall",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1052889,
+    "name": "AbsoLab Bandit Suit",
+    "slot": "overall",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1052890,
+    "name": "AbsoLab Pirate Suit",
+    "slot": "overall",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1053063,
+    "name": "Arcane Umbra Knight Suit",
+    "slot": "overall",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1053064,
+    "name": "Arcane Umbra Mage Suit",
+    "slot": "overall",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1053065,
+    "name": "Arcane Umbra Archer Suit",
+    "slot": "overall",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1053066,
+    "name": "Arcane Umbra Thief Suit",
+    "slot": "overall",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1053067,
+    "name": "Arcane Umbra Pirate Suit",
+    "slot": "overall",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Overall",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062165,
+    "name": "Trixter Warrior Pants",
+    "slot": "bottom",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062166,
+    "name": "Trixter Dunwitch Pants",
+    "slot": "bottom",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062167,
+    "name": "Trixter Ranger Pants",
+    "slot": "bottom",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062168,
+    "name": "Trixter Assassin Pants",
+    "slot": "bottom",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062169,
+    "name": "Trixter Wanderer Pants",
+    "slot": "bottom",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062285,
+    "name": "Eternal Knight Pants",
+    "slot": "bottom",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062286,
+    "name": "Eternal Mage Pants",
+    "slot": "bottom",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062287,
+    "name": "Eternal Archer Pants",
+    "slot": "bottom",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062288,
+    "name": "Eternal Thief Pants",
+    "slot": "bottom",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1062289,
+    "name": "Eternal Pirate Pants",
+    "slot": "bottom",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Bottom",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073030,
+    "name": "AbsoLab Knight Shoes",
+    "slot": "shoes",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073032,
+    "name": "AbsoLab Mage Shoes",
+    "slot": "shoes",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073033,
+    "name": "AbsoLab Archer Shoes",
+    "slot": "shoes",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073034,
+    "name": "AbsoLab Bandit Shoes",
+    "slot": "shoes",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073035,
+    "name": "AbsoLab Pirate Shoes",
+    "slot": "shoes",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073158,
+    "name": "Arcane Umbra Knight Shoes",
+    "slot": "shoes",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073159,
+    "name": "Arcane Umbra Mage Shoes",
+    "slot": "shoes",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073160,
+    "name": "Arcane Umbra Archer Shoes",
+    "slot": "shoes",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073161,
+    "name": "Arcane Umbra Thief Shoes",
+    "slot": "shoes",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073162,
+    "name": "Arcane Umbra Pirate Shoes",
+    "slot": "shoes",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073629,
+    "name": "Eternal Knight Shoes",
+    "slot": "shoes",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073630,
+    "name": "Eternal Mage Shoes",
+    "slot": "shoes",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073631,
+    "name": "Eternal Archer Shoes",
+    "slot": "shoes",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073632,
+    "name": "Eternal Thief Shoes",
+    "slot": "shoes",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1073633,
+    "name": "Eternal Pirate Shoes",
+    "slot": "shoes",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Shoes",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082636,
+    "name": "AbsoLab Knight Gloves",
+    "slot": "gloves",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082637,
+    "name": "AbsoLab Mage Gloves",
+    "slot": "gloves",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082638,
+    "name": "AbsoLab Archer Gloves",
+    "slot": "gloves",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082639,
+    "name": "AbsoLab Bandit Gloves",
+    "slot": "gloves",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082640,
+    "name": "AbsoLab Pirate Gloves",
+    "slot": "gloves",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082695,
+    "name": "Arcane Umbra Knight Gloves",
+    "slot": "gloves",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082696,
+    "name": "Arcane Umbra Mage Gloves",
+    "slot": "gloves",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082697,
+    "name": "Arcane Umbra Archer Gloves",
+    "slot": "gloves",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082698,
+    "name": "Arcane Umbra Thief Gloves",
+    "slot": "gloves",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082699,
+    "name": "Arcane Umbra Pirate Gloves",
+    "slot": "gloves",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082760,
+    "name": "Eternal Knight Gloves",
+    "slot": "gloves",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Glove",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1082761,
+    "name": "Eternal Mage Gloves",
+    "slot": "gloves",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082762,
+    "name": "Eternal Archer Gloves",
+    "slot": "gloves",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082763,
+    "name": "Eternal Thief Gloves",
+    "slot": "gloves",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1082764,
+    "name": "Eternal Pirate Gloves",
+    "slot": "gloves",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Glove",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1092113,
+    "name": "Terminus Defender",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092123,
+    "name": "Astra Sacred Aegis",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092126,
+    "name": "Astra Arcane Shield",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092129,
+    "name": "Astra Bane Shield",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092132,
+    "name": "Astra Topaz Aegis",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092135,
+    "name": "Astra Ruby Shield",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092138,
+    "name": "Astra Honor Shield",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092141,
+    "name": "Astra Umbral Shield",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092144,
+    "name": "Astra Leaf Shield",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1098006,
+    "name": "Princess No's Soul Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1098012,
+    "name": "Astra Soul Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099011,
+    "name": "Princess No's Accursed Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099023,
+    "name": "Astra Force Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1102775,
+    "name": "AbsoLab Knight Cape",
+    "slot": "cape",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102794,
+    "name": "AbsoLab Mage Cape",
+    "slot": "cape",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102795,
+    "name": "AbsoLab Archer Cape",
+    "slot": "cape",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102796,
+    "name": "AbsoLab Bandit Cape",
+    "slot": "cape",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102797,
+    "name": "AbsoLab Pirate Cape",
+    "slot": "cape",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102940,
+    "name": "Arcane Umbra Knight Cape",
+    "slot": "cape",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102941,
+    "name": "Arcane Umbra Mage Cape",
+    "slot": "cape",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102942,
+    "name": "Arcane Umbra Archer Cape",
+    "slot": "cape",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102943,
+    "name": "Arcane Umbra Thief Cape",
+    "slot": "cape",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1102944,
+    "name": "Arcane Umbra Pirate Cape",
+    "slot": "cape",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1103433,
+    "name": "Eternal Knight Cape",
+    "slot": "cape",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1103434,
+    "name": "Eternal Mage Cape",
+    "slot": "cape",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1103435,
+    "name": "Eternal Archer Cape",
+    "slot": "cape",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1103436,
+    "name": "Eternal Thief Cape",
+    "slot": "cape",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1103437,
+    "name": "Eternal Pirate Cape",
+    "slot": "cape",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Cape",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1112022,
+    "name": "Bounty Legend's Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1112597,
+    "name": "Cygnus Kohinoor Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113038,
+    "name": "Alien Fragment Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113055,
+    "name": "Meister Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Ring",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1113074,
+    "name": "Reinforced Gollux Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113075,
+    "name": "Superior Gollux Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113078,
+    "name": "Sweetwater Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113155,
+    "name": "Kanna's Treasure",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113269,
+    "name": "Breath of Divinity",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113305,
+    "name": "Glona's Heart",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1113306,
+    "name": "Endless Terror",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Ring",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1113313,
+    "name": "Guardian Angel Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Ring",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1113316,
+    "name": "Dawn Guardian Angel Ring",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Ring",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1113341,
+    "name": "Whisper of the Source",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Ring",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1113360,
+    "name": "Blissful Nightmare",
+    "slot": "ring",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Ring",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122012,
+    "name": "Timeless Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122085,
+    "name": "VIP Necklace",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 145,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122150,
+    "name": "Dominator Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pendant",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122256,
+    "name": "Alien Fragment Necklace",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122257,
+    "name": "FrontierB Black Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pendant",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122258,
+    "name": "FrontierC White Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 145,
+    "equipment_type": "Pendant",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122266,
+    "name": "Reinforced Engraved Gollux Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122267,
+    "name": "Superior Engraved Gollux Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122269,
+    "name": "Sweetwater Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122272,
+    "name": "Commerci Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122289,
+    "name": "Bounty Legend's Necklace",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122296,
+    "name": "Reaper's Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 144,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122430,
+    "name": "Source of Suffering",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Pendant",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122438,
+    "name": "Legacy of Light",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122439,
+    "name": "Legacy of Darkness",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1122443,
+    "name": "Daybreak Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pendant",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122447,
+    "name": "Oath of Death",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Pendant",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1122453,
+    "name": "Red Beryl Pendant",
+    "slot": "pendant",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Pendant",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132156,
+    "name": "Amaterasu's Belt",
+    "slot": "belt",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132157,
+    "name": "Oyamatsumi's Belt",
+    "slot": "belt",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132158,
+    "name": "Ame-no-Uzume's Belt",
+    "slot": "belt",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132159,
+    "name": "Tsukuyomi's Belt",
+    "slot": "belt",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132160,
+    "name": "Susano-o's Belt",
+    "slot": "belt",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132174,
+    "name": "Tyrant Hyades Belt",
+    "slot": "belt",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132175,
+    "name": "Tyrant Hermes Belt",
+    "slot": "belt",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132176,
+    "name": "Tyrant Charon Belt",
+    "slot": "belt",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132177,
+    "name": "Tyrant Lycaon Belt",
+    "slot": "belt",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132178,
+    "name": "Tyrant Altair Belt",
+    "slot": "belt",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132230,
+    "name": "Alien Fragment Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132233,
+    "name": "Gold Label Knight Belt",
+    "slot": "belt",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132235,
+    "name": "FrontierB Black Buckle",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132236,
+    "name": "FrontierC White Buckle",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 145,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132245,
+    "name": "Reinforced Engraved Gollux Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132246,
+    "name": "Superior Engraved Gollux Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132247,
+    "name": "Sweetwater Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132248,
+    "name": "Commerci Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132260,
+    "name": "Sakura Conqueror Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132272,
+    "name": "Golden Clover Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132275,
+    "name": "Ayame's Treasure",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132296,
+    "name": "Enraged Zakum Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132308,
+    "name": "Dreamy Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Belt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1132313,
+    "name": "Delgrund's Honor",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1132336,
+    "name": "Red Beryl Belt",
+    "slot": "belt",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Belt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142009,
+    "name": "Gallant Warrior",
+    "slot": "medal",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142010,
+    "name": "Wiseman",
+    "slot": "medal",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142011,
+    "name": "Lord Sniper",
+    "slot": "medal",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142012,
+    "name": "Legendary Thief",
+    "slot": "medal",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142013,
+    "name": "King Pirate",
+    "slot": "medal",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142133,
+    "name": "Aran the Hero",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142158,
+    "name": "Hero's Successor",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142246,
+    "name": "Special Training Master",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142340,
+    "name": "Ruler of Elves",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142345,
+    "name": "Vengeance Incarnate",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142379,
+    "name": "Master Thief Phantom",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142395,
+    "name": "Phoenix of Azwan",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 170,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142396,
+    "name": "Hilla Specialist",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 170,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142397,
+    "name": "Light of Azwan",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 170,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142403,
+    "name": "True Knight of Light",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142483,
+    "name": "Adversary of Destiny",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142488,
+    "name": "Ascendant",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142494,
+    "name": "Master of the Razor Gale",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142499,
+    "name": "Superstar",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142510,
+    "name": "Master of Onmyoudou",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142525,
+    "name": "Dimension Defender",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142526,
+    "name": "Dimension Master",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142527,
+    "name": "Hilla's Dignity",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142528,
+    "name": "Magnus's Pride",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142529,
+    "name": "Bold Indifference",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142530,
+    "name": "By Land, Sea, and Air",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142557,
+    "name": "Ultimate Avenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142572,
+    "name": "Archdemon",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142579,
+    "name": "Last One Home",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142597,
+    "name": "Cygnus Constellation",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142618,
+    "name": "An Equal Among Giants",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142635,
+    "name": "Child of the Goddess",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142662,
+    "name": "Commerci Citizen",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142672,
+    "name": "Forgotten Hero",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142741,
+    "name": "Hieizan's Storyteller ",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142751,
+    "name": "Bounty Legend",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142834,
+    "name": "Blade of Sengoku",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142835,
+    "name": "Spirit of Sengoku",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142856,
+    "name": "Sensei",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142867,
+    "name": "King: Master of Space and Time",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142869,
+    "name": "Maple Forest Ranger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142870,
+    "name": "Maple Forest Protector",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142912,
+    "name": "Shaolin Temple Savior",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1142991,
+    "name": "Reboot 2 Pioneer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143000,
+    "name": "Butterfly Dreams",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143005,
+    "name": "Jackpot Entertainment Co-CEO",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143029,
+    "name": "Vanquisher Of Nightmares",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143030,
+    "name": "White M-Forcer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143050,
+    "name": "Student of the Ryuul",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143057,
+    "name": "Pioneer of Destiny",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143082,
+    "name": "Wings of Brilliance",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143089,
+    "name": "Fox Point Ranger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143102,
+    "name": "Consuming Abyss",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143105,
+    "name": "The True Abyss",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143124,
+    "name": "Rise from Ruins",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143125,
+    "name": "Twilight Warrior",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143130,
+    "name": "Emblem of the Alliance",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143131,
+    "name": "Void Vanquisher",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143136,
+    "name": "One with the Labyrinth",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143139,
+    "name": "Eternal Light",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143141,
+    "name": "Defying Destiny",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143153,
+    "name": "Detective Rave's Honorary Assistant",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 175,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143165,
+    "name": "Heir of the Ancients",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143183,
+    "name": "Indomitable Spirit",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143190,
+    "name": "Krakian Chaser",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 170,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143191,
+    "name": "Legend of Crimsonwood Mountain",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143192,
+    "name": "Naricain's Revival",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 190,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143193,
+    "name": "Barricade Brothers",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143199,
+    "name": "Sword of the Light",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143211,
+    "name": "Astral Whale",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143214,
+    "name": "Sengoku Guardian",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143218,
+    "name": "Waiting for the Sword's Owner",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143219,
+    "name": "Salvation In Your Own Hands",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143225,
+    "name": "The Divine Fist",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143232,
+    "name": "Darkness Chaser",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143244,
+    "name": "Slow and Steady",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143251,
+    "name": "Hope Bringer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143284,
+    "name": "Hundun's Pallbearer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143296,
+    "name": "Wind of Vengeance",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143305,
+    "name": "One Who Arrived in Paradise",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143308,
+    "name": "HYPER BURNING",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143310,
+    "name": "Promise to Meet Again",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143318,
+    "name": "The Eternal Tree's Guardian",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143343,
+    "name": "Blossom of Hope",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143345,
+    "name": "Great Tree Memories",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143348,
+    "name": "The Legend of Mitra",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143353,
+    "name": "Black Heaven Adversary",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143361,
+    "name": "Silent Crusade Elite",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143366,
+    "name": "One Who Fought the Sun",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143367,
+    "name": "Liberator of the Guardian",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143368,
+    "name": "Seasons Anew",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143369,
+    "name": "Discoverer of the Source",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143370,
+    "name": "Master of the Source",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143379,
+    "name": "Delver of the Deep",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143382,
+    "name": "Destiny's Adversary",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143386,
+    "name": "Azmoth Explorer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143407,
+    "name": "HYPER BURNING MAX",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143408,
+    "name": "CW Season 1 - Bronze",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143409,
+    "name": "CW Season 1 - Silver",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143410,
+    "name": "CW Season 1 - Gold",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143411,
+    "name": "CW Season 1 - Emerald",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143412,
+    "name": "CW Season 1 - Diamond",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143413,
+    "name": "CW Season 1 - Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143441,
+    "name": "Guide of the Stars",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143443,
+    "name": "Hieizan's Startouched",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 180,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143458,
+    "name": "Kind Wanderer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143459,
+    "name": "CW Season 2 - Bronze",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143460,
+    "name": "CW Season 2 - Silver",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143461,
+    "name": "CW Season 2 - Gold",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143462,
+    "name": "CW Season 2 - Platinum",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143463,
+    "name": "CW Season 2 - Emerald",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143464,
+    "name": "CW Season 2 - Diamond",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143465,
+    "name": "CW Season 2 - Master",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143466,
+    "name": "CW Season 2 - Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143471,
+    "name": "Immortal Legacy",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1143482,
+    "name": "Wakebringer",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143492,
+    "name": "Friend of Twenteena",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143493,
+    "name": "CW Season 3 - Bronze",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143494,
+    "name": "CW Season 3 - Silver",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143495,
+    "name": "CW Season 3 - Gold",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143496,
+    "name": "CW Season 3 - Platinum",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143497,
+    "name": "CW Season 3 - Emerald",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143498,
+    "name": "CW Season 3 - Diamond",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143499,
+    "name": "CW Season 3 - Master",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143500,
+    "name": "CW Season 3 - Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143502,
+    "name": "1st Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143503,
+    "name": "2nd Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143504,
+    "name": "3rd Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143505,
+    "name": "4th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143506,
+    "name": "5th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143507,
+    "name": "6th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143508,
+    "name": "7th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143509,
+    "name": "8th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143510,
+    "name": "9th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143511,
+    "name": "10th Challenger",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 250,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143513,
+    "name": "Soul Partner",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143521,
+    "name": "Gluttony's End",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143524,
+    "name": "Requiem of the Gods",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1143544,
+    "name": "Savior of Helia",
+    "slot": "medal",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1152174,
+    "name": "AbsoLab Knight Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152176,
+    "name": "AbsoLab Mage Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152177,
+    "name": "AbsoLab Archer Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152178,
+    "name": "AbsoLab Bandit Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152179,
+    "name": "AbsoLab Pirate Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152196,
+    "name": "Arcane Umbra Knight Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152197,
+    "name": "Arcane Umbra Mage Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152198,
+    "name": "Arcane Umbra Archer Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152199,
+    "name": "Arcane Umbra Thief Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152200,
+    "name": "Arcane Umbra Pirate Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152212,
+    "name": "Eternal Knight Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152213,
+    "name": "Eternal Mage Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152214,
+    "name": "Eternal Archer Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152215,
+    "name": "Eternal Thief Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1152216,
+    "name": "Eternal Pirate Shoulder",
+    "slot": "shoulder",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Shoulder Accessory",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1162018,
+    "name": "Inverse Codex",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Pocket Item",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1162025,
+    "name": "Pink Holy Cup",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pocket Item",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1162032,
+    "name": "Gold Richie's Handkerchief",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Pocket Item",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1162035,
+    "name": "Headmaster Oda Pin",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Pocket Item",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1162070,
+    "name": "Sengoku Shodan Pin",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Pocket Item",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1162080,
+    "name": "Cursed Red Spellbook",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Pocket Item",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1162081,
+    "name": "Cursed Blue Spellbook",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Pocket Item",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1162082,
+    "name": "Cursed Green Spellbook",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Pocket Item",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1162083,
+    "name": "Cursed Yellow Spellbook",
+    "slot": "pocket",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Pocket Item",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1182060,
+    "name": "Ghost Ship Exorcist",
+    "slot": "badge",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Badge",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1182273,
+    "name": "Sengoku Hakase Badge",
+    "slot": "badge",
+    "class": [
+      "All"
+    ],
+    "level": 160,
+    "equipment_type": "Badge",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1182285,
+    "name": "Genesis Badge",
+    "slot": "badge",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Badge",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1182306,
+    "name": "Shackles of Resentment",
+    "slot": "badge",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Badge",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1190302,
+    "name": "Crystal Maple Leaf Emblem",
+    "slot": "emblem",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Emblem",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1212063,
+    "name": "Fafnir Mana Cradle",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Shining Rod",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1212115,
+    "name": "AbsoLab Shining Rod",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Shining Rod",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1212120,
+    "name": "Arcane Umbra Shining Rod",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shining Rod",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1212128,
+    "name": "Sealed Genesis Shining Rod",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shining Rod",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1212129,
+    "name": "Genesis Shining Rod",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Shining Rod",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1212142,
+    "name": "Destiny Shining Rod",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Shining Rod",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1213016,
+    "name": "Fafnir Mercy",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Bladecaster",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1213017,
+    "name": "AbsoLab Bladecaster",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Bladecaster",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1213018,
+    "name": "Arcane Umbra Bladecaster",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Bladecaster",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1213021,
+    "name": "Sealed Genesis Bladecaster",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Bladecaster",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1213022,
+    "name": "Genesis Bladecaster",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Bladecaster",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1213053,
+    "name": "Destiny Bladecaster",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Bladecaster",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1214016,
+    "name": "Fafnir Nightchaser",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Breath Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1214017,
+    "name": "AbsoLab Whispershot",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Breath Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1214018,
+    "name": "Arcane Umbra Whispershot",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Breath Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1214021,
+    "name": "Sealed Genesis Whispershot",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Breath Shooter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1214022,
+    "name": "Genesis Whispershot",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Breath Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1214049,
+    "name": "Destiny Whispershot",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Breath Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1222058,
+    "name": "Fafnir Angelic Shooter",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Soul Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1222109,
+    "name": "AbsoLab Soul Shooter",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Soul Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1222113,
+    "name": "Arcane Umbra Soul Shooter",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Soul Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1222121,
+    "name": "Sealed Genesis Soul Shooter",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Soul Shooter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1222122,
+    "name": "Genesis Soul Shooter",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Soul Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1222135,
+    "name": "Destiny Soul Shooter",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Soul Shooter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1232057,
+    "name": "Fafnir Death Bringer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Desperado",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1232109,
+    "name": "AbsoLab Desperado",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Desperado",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1232113,
+    "name": "Arcane Umbra Desperado",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Desperado",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1232121,
+    "name": "Sealed Genesis Desperado",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Desperado",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1232122,
+    "name": "Genesis Desperado",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Desperado",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1232135,
+    "name": "Destiny Desperado",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Desperado",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1242060,
+    "name": "Fafnir Split Edge",
+    "slot": "weapon",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Whip Blade",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1242116,
+    "name": "AbsoLab Whip Blade",
+    "slot": "weapon",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Whip Blade",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1242121,
+    "name": "Arcane Umbra Energy Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Whip Blade",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1242138,
+    "name": "Sealed Genesis Energy Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Whip Blade",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1242139,
+    "name": "Genesis Energy Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Whip Blade",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1242160,
+    "name": "Destiny Energy Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Whip Blade",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1252015,
+    "name": "Fafnir Memorial Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Scepter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1252093,
+    "name": "AbsoLab Memorial Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Scepter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1252098,
+    "name": "Arcane Umbra Memorial Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Scepter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1252105,
+    "name": "Sealed Genesis Memorial Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Scepter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1252106,
+    "name": "Genesis Memorial Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Scepter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1252129,
+    "name": "Destiny Memorial Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Scepter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1262016,
+    "name": "Fafnir Psy-limiter",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Psy-limiter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1262017,
+    "name": "AbsoLab Psy-limiter",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Psy-limiter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1262039,
+    "name": "Arcane Umbra Psy-limiter",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Psy-limiter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1262050,
+    "name": "Sealed Genesis Psy-limiter",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Psy-limiter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1262051,
+    "name": "Genesis Psy-limiter",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Psy-limiter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1262065,
+    "name": "Destiny Psy-limiter",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Psy-limiter",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1272015,
+    "name": "Fafnir Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Chain",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1272016,
+    "name": "AbsoLab Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Chain",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1272017,
+    "name": "Arcane Umbra Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Chain",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1272038,
+    "name": "AbsoLabV Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Chain",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1272039,
+    "name": "Sealed Genesis Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Chain",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1272040,
+    "name": "Genesis Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Chain",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1272054,
+    "name": "Destiny Chain",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Chain",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1282015,
+    "name": "Fafnir Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Gauntlet",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1282016,
+    "name": "AbsoLab Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Gauntlet",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1282017,
+    "name": "Arcane Umbra Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Gauntlet",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1282038,
+    "name": "AbsoLabV Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Gauntlet",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1282039,
+    "name": "Sealed Genesis Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Gauntlet",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1282040,
+    "name": "Genesis Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Gauntlet",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1282054,
+    "name": "Destiny Lucent Gauntlet",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Gauntlet",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1292016,
+    "name": "Fafnir Dragon Ritual Fan",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Ritual Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1292017,
+    "name": "AbsoLab Monster Ritual Fan",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Ritual Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1292018,
+    "name": "Arcane Umbra Super Ritual Fan",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Ritual Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1292021,
+    "name": "Sealed Genesis Ritual Fan",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Ritual Fan",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1292022,
+    "name": "Genesis Ritual Fan",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Ritual Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1292050,
+    "name": "Destiny Ritual Fan",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Ritual Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1302275,
+    "name": "Fafnir Mistilteinn",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "One-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1302333,
+    "name": "AbsoLab Saber",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "One-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1302343,
+    "name": "Arcane Umbra Saber",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1302354,
+    "name": "Sealed Genesis Saber",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Sword",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1302355,
+    "name": "Genesis Saber",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1302373,
+    "name": "Destiny Saber",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "One-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1312153,
+    "name": "Fafnir Twin Cleaver",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "One-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1312199,
+    "name": "AbsoLab Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "One-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1312203,
+    "name": "Arcane Umbra Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1312212,
+    "name": "Sealed Genesis Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Axe",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1312213,
+    "name": "Genesis Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1312226,
+    "name": "Destiny Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "One-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1322203,
+    "name": "Fafnir Guardian Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "One-Handed Blunt Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1322250,
+    "name": "AbsoLab Bit Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "One-Handed Blunt Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1322255,
+    "name": "Arcane Umbra Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Blunt Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1322263,
+    "name": "Sealed Genesis Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Blunt Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1322264,
+    "name": "Genesis Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "One-Handed Blunt Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1322279,
+    "name": "Destiny Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "One-Handed Blunt Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1332225,
+    "name": "Fafnir Damascus",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Dagger",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1332274,
+    "name": "AbsoLab Blade Lord",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Dagger",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1332279,
+    "name": "Arcane Umbra Dagger",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Dagger",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1332288,
+    "name": "Sealed Genesis Dagger",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Dagger",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1332289,
+    "name": "Genesis Dagger",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Dagger",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1332303,
+    "name": "Destiny Dagger",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Dagger",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1342082,
+    "name": "Fafnir Rapid Edge",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Katara",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1342101,
+    "name": "AbsoLab Katara",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Katara",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1342104,
+    "name": "Arcane Umbra Katara",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Katara",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1352009,
+    "name": "Princess No's Accursed Arrow",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 140,
+    "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352109,
+    "name": "Princess No's Carte",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 140,
+    "equipment_type": "Card",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352206,
+    "name": "Princess No's Medal",
+    "slot": "medal",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352216,
+    "name": "Princess No's Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Rosary",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352226,
+    "name": "Princess No's Flower Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Iron Chain",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352236,
+    "name": "Princess No's Flaming Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352246,
+    "name": "Princess No's Damp Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352256,
+    "name": "Princess No's Golden Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352266,
+    "name": "Princess No's Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 140,
+    "equipment_type": "Arrow Fletching",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352276,
+    "name": "Princess No's Wreath",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 140,
+    "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352286,
+    "name": "Princess No's Purple Shadow",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 140,
+    "equipment_type": "Dagger Scabbard",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352296,
+    "name": "Princess No's Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 140,
+    "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352406,
+    "name": "Princess No's Soul Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Orb",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352506,
+    "name": "Princess No's Dragon Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352606,
+    "name": "Princess No's Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Soul Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352707,
+    "name": "Princess No's Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Magnum",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352807,
+    "name": "Princess No's Wakizashi",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Kodachi",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352815,
+    "name": "Princess No's Leaf",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Whistle",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352824,
+    "name": "Princess No's Orion Fist",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Jett Fists",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352906,
+    "name": "Princess No's Skull Armor",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352916,
+    "name": "Princess No's Falcon Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Ballast",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352928,
+    "name": "Princess No's Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352935,
+    "name": "Princess No's Flower Ballast",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Mass",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352945,
+    "name": "Princess No's Dragon Legacy",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352957,
+    "name": "Princess No's Accursed Marble",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Magic Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352967,
+    "name": "Princess No's Arrowhead",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 140,
+    "equipment_type": "Arrowhead",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352975,
+    "name": "Princess No's Floral Jewel",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 140,
+    "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353006,
+    "name": "Princess No's Controller",
+    "slot": "secondary",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Core Controller",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353105,
+    "name": "Princess No's Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353205,
+    "name": "Princess No's Oriental King Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Chess Piece",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353306,
+    "name": "Princess No's Transmitter",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 140,
+    "equipment_type": "Transmitter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353405,
+    "name": "Princess No's Megaton Charges",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Charges",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353505,
+    "name": "Princess No's Lucent Wings",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Wings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353606,
+    "name": "Princess No's Path",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Path",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353707,
+    "name": "Princess No's Immortal Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 140,
+    "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1362090,
+    "name": "Fafnir Ciel Claire",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Cane",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1362135,
+    "name": "AbsoLab Forked Cane",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Cane",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1362140,
+    "name": "Arcane Umbra Cane",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Cane",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1362147,
+    "name": "Fafnir Claire Ciel",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Cane",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1362148,
+    "name": "Sealed Genesis Cane",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Cane",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1362149,
+    "name": "Genesis Cane",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Cane",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1362161,
+    "name": "Destiny Cane",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Cane",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1372177,
+    "name": "Fafnir Mana Taker",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Wand",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1372222,
+    "name": "AbsoLab Spellsong Wand",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Wand",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1372228,
+    "name": "Arcane Umbra Wand",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Wand",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1372236,
+    "name": "Sealed Genesis Wand",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Wand",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1372237,
+    "name": "Genesis Wand",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Wand",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1372251,
+    "name": "Destiny Wand",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Wand",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1382208,
+    "name": "Fafnir Mana Crown",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Staff",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1382259,
+    "name": "AbsoLab Spellsong Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Staff",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1382265,
+    "name": "Arcane Umbra Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Staff",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1382273,
+    "name": "Sealed Genesis Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Staff",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1382274,
+    "name": "Genesis Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Staff",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1382287,
+    "name": "Destiny Staff",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Staff",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1402196,
+    "name": "Fafnir Penitent Tears",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1402251,
+    "name": "AbsoLab Broad Saber",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1402259,
+    "name": "Arcane Umbra Two-handed Sword",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1402267,
+    "name": "Sealed Genesis Two-handed Sword",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1402268,
+    "name": "Genesis Two-handed Sword",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1402290,
+    "name": "Destiny Two-handed Sword",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1403016,
+    "name": "Fafnir Martial Brace",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1403017,
+    "name": "AbsoLab Martial Brace",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1403018,
+    "name": "Arcane Umbra Martial Brace",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1403021,
+    "name": "Sealed Genesis Martial Brace",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1403022,
+    "name": "Genesis Martial Brace",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1403052,
+    "name": "Destiny Martial Brace",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1404016,
+    "name": "Fafnir Chakram",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1404017,
+    "name": "AbsoLab Chakram",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1404018,
+    "name": "Arcane Umbra Chakram",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1404021,
+    "name": "Sealed Genesis Eclipse",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1404022,
+    "name": "Genesis Eclipse",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1404046,
+    "name": "Destiny Chakram",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Two-Handed Sword",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1412135,
+    "name": "Fafnir Battle Cleaver",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Two-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1412177,
+    "name": "AbsoLab Broad Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Two-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1412181,
+    "name": "Arcane Umbra Two-handed Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1412188,
+    "name": "Sealed Genesis Two-handed Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Axe",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1412189,
+    "name": "Genesis Two-handed Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1412197,
+    "name": "Destiny Two-handed Axe",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Two-Handed Axe",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1422140,
+    "name": "Fafnir Lightning Striker",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Two-Handed Blunt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1422184,
+    "name": "AbsoLab Broad Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Two-Handed Blunt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1422189,
+    "name": "Arcane Umbra Two-handed Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Blunt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1422196,
+    "name": "Sealed Genesis Two-handed Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Blunt",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1422197,
+    "name": "Genesis Two-handed Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Two-Handed Blunt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1422208,
+    "name": "Destiny Two-handed Hammer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Two-Handed Blunt",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1432167,
+    "name": "Fafnir Brionak",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1432214,
+    "name": "AbsoLab Piercing Spear",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1432218,
+    "name": "Arcane Umbra Spear",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1432226,
+    "name": "Sealed Genesis Spear",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Spear",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1432227,
+    "name": "Genesis Spear",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1432240,
+    "name": "Destiny Spear",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1433019,
+    "name": "Fafnir Gram",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1433021,
+    "name": "AbsoLab Gram",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1433022,
+    "name": "Arcane Umbra Gram",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1433023,
+    "name": "Sealed Genesis Gram",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Spear",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1433024,
+    "name": "Genesis Gram",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1433025,
+    "name": "Destiny Gram",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Spear",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1442223,
+    "name": "Fafnir Moon Glaive",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Pole Arm",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1442268,
+    "name": "AbsoLab Hellslayer",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Pole Arm",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1442274,
+    "name": "Arcane Umbra Polearm",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Pole Arm",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1442284,
+    "name": "Sealed Genesis Polearm",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Pole Arm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1442285,
+    "name": "Genesis Polearm",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Pole Arm",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1442299,
+    "name": "Destiny Polearm",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Pole Arm",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1452205,
+    "name": "Fafnir Wind Chaser",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1452252,
+    "name": "AbsoLab Sureshot Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1452257,
+    "name": "Arcane Umbra Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1452265,
+    "name": "Sealed Genesis Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Bow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1452266,
+    "name": "Genesis Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1452285,
+    "name": "Destiny Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1462193,
+    "name": "Fafnir Windwing Shooter",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Crossbow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1462239,
+    "name": "AbsoLab Crossbow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Crossbow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1462243,
+    "name": "Arcane Umbra Crossbow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Crossbow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1462251,
+    "name": "Sealed Genesis Crossbow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Crossbow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1462252,
+    "name": "Genesis Crossbow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Crossbow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1462268,
+    "name": "Destiny Crossbow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Crossbow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1472214,
+    "name": "Fafnir Risk Holder",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 150,
+    "equipment_type": "Claw",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1472261,
+    "name": "AbsoLab Revenge Guard",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Claw",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1472265,
+    "name": "Arcane Umbra Guards",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Claw",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1472266,
+    "name": "AbsoLab Revenge Guards",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Claw",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1472274,
+    "name": "Sealed Genesis Guards",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Claw",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1472275,
+    "name": "Genesis Guards",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Claw",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1472288,
+    "name": "Destiny Guards",
+    "slot": "weapon",
+    "class": [
+      "Thief"
+    ],
+    "level": 250,
+    "equipment_type": "Claw",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1482168,
+    "name": "Fafnir Perry Talon",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Knuckle",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1482216,
+    "name": "AbsoLab Blast Knuckle",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Knuckle",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1482221,
+    "name": "Arcane Umbra Knuckle",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Knuckle",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1482231,
+    "name": "Sealed Genesis Claw",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Knuckle",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1482232,
+    "name": "Genesis Claw",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Knuckle",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1482234,
+    "name": "Arcane Umbra Claw",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Knuckle",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1482245,
+    "name": "Destiny Claw",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Knuckle",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1492179,
+    "name": "Fafnir Zeliska",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Gun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1492231,
+    "name": "AbsoLab Point Gun",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Gun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1492235,
+    "name": "Arcane Umbra Pistol",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Gun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1492244,
+    "name": "Sealed Genesis Pistol",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Gun",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1492245,
+    "name": "Genesis Pistol",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Gun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1492259,
+    "name": "Destiny Pistol",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Gun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1522094,
+    "name": "Fafnir Dual Windwing",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Dual Bowgun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1522138,
+    "name": "AbsoLab Dual Bowguns",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Dual Bowgun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1522143,
+    "name": "Arcane Umbra Dual Bowguns",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Dual Bowgun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1522151,
+    "name": "Sealed Genesis Dual Bowguns",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Dual Bowgun",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1522152,
+    "name": "Genesis Dual Bowguns",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Dual Bowgun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1522164,
+    "name": "Destiny Dual Bowguns",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Dual Bowgun",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1532098,
+    "name": "Fafnir Lost Cannon",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 150,
+    "equipment_type": "Hand Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1532144,
+    "name": "AbsoLab Blast Cannon",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 160,
+    "equipment_type": "Hand Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1532150,
+    "name": "Arcane Umbra Siege Gun",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Hand Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1532156,
+    "name": "Sealed Genesis Siege Gun",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Hand Cannon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1532157,
+    "name": "Genesis Siege Gun",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Hand Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1532170,
+    "name": "Destiny Blast Cannon",
+    "slot": "weapon",
+    "class": [
+      "Pirate"
+    ],
+    "level": 250,
+    "equipment_type": "Hand Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1542063,
+    "name": "Fafnir Raven Katana",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Katana",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1542108,
+    "name": "AbsoLab Katana",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Katana",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1542117,
+    "name": "Arcane Umbra Katana",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Katana",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1542127,
+    "name": "Sealed Genesis Katana",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Katana",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1542128,
+    "name": "Genesis Katana",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Katana",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1542149,
+    "name": "Destiny Katana",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Katana",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1552063,
+    "name": "Fafnir Indigo Fan",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 150,
+    "equipment_type": "Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1552110,
+    "name": "AbsoLab Summoner",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1552119,
+    "name": "Arcane Umbra Fan",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1552129,
+    "name": "Sealed Genesis Fan",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Fan",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1552130,
+    "name": "Genesis Fan",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1552152,
+    "name": "Destiny Fan",
+    "slot": "weapon",
+    "class": [
+      "Magician"
+    ],
+    "level": 250,
+    "equipment_type": "Fan",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1562010,
+    "name": "Genesis Lapis",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Lapis",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1562011,
+    "name": "Destiny Lapis",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Lapis",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1572010,
+    "name": "Genesis Lazuli",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Lazuli",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1572011,
+    "name": "Destiny Lazuli",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Lazuli",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1582016,
+    "name": "Fafnir Big Mountain",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 150,
+    "equipment_type": "Arm Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1582017,
+    "name": "AbsoLab Pile God",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 160,
+    "equipment_type": "Arm Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1582023,
+    "name": "Arcane Umbra Ellaha",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Arm Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1582043,
+    "name": "Sealed Genesis Ellaha",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Arm Cannon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1582044,
+    "name": "Genesis Ellaha",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Arm Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1582058,
+    "name": "Destiny Ellaha",
+    "slot": "weapon",
+    "class": [
+      "Warrior"
+    ],
+    "level": 250,
+    "equipment_type": "Arm Cannon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1592018,
+    "name": "Fafnir Ancient Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 150,
+    "equipment_type": "Ancient Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1592019,
+    "name": "AbsoLab Ancient Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 160,
+    "equipment_type": "Ancient Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1592020,
+    "name": "Arcane Umbra Ancient Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Ancient Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1592021,
+    "name": "Sealed Genesis Ancient Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Ancient Bow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1592022,
+    "name": "Genesis Ancient Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Ancient Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1592049,
+    "name": "Destiny Ancient Bow",
+    "slot": "weapon",
+    "class": [
+      "Bowman"
+    ],
+    "level": 250,
+    "equipment_type": "Ancient Bow",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1672069,
+    "name": "Outlaw Heart",
+    "slot": "heart",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Mechanical Heart",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1672095,
+    "name": "Total Control",
+    "slot": "heart",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Mechanical Heart",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1902002,
+    "name": "Red Draco",
+    "slot": "mount",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Mount",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1902017,
+    "name": "Werewolf",
+    "slot": "mount",
+    "class": [
+      "All"
+    ],
+    "level": 150,
+    "equipment_type": "Mount",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1902018,
+    "name": "Ryko",
+    "slot": "mount",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Mount",
+    "boss_reward": false
+  }
+]

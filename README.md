@@ -180,10 +180,23 @@ level, and cube type, add one or more minimum potential targets, and click
 Cooldown targets use positive seconds of reduction. Editing inputs clears
 the previous result so that displayed odds always match the submitted form.
 
+The Flames calculator can record the current potential lines and flame options
+for each equipped item. These selections are saved with the equipment cookie.
+The Equipment tab has its own MapleStory class selector, independent from the
+class used by the Flames calculator; both class selections persist in the cookie.
+Potential effects are limited to published tables when available, and flame
+options follow the flame engine's level and armor/weapon eligibility rules.
+Equipment catalog entries include MapleStory.io's `metaInfo.bossReward` value,
+which the equipment selector uses for boss-flame tiers; absent or unavailable
+flags default to false. Run `python fetch_equipment_data.py` to refresh the
+catalog and its boss-reward values.
+
 Vite forwards `/api` requests to
 `http://127.0.0.1:8000` during development; run the API in a second terminal.
 React components can call `fetch('/api/options')` or POST JSON to
-`/api/probability`. Production hosting needs an equivalent `/api` reverse proxy.
+`/api/probability`. `GET /api/item-options` returns eligible potential effects
+and flame options for an item level and equipment type. Production hosting needs
+an equivalent `/api` reverse proxy.
 
 TODO:
 Refactor potentials for GMS

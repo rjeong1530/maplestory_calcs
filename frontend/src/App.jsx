@@ -62,11 +62,18 @@ export default function App() {
           >
             Flames
           </button>
+          <button
+            type="button"
+            aria-pressed={calculator === 'equipment'}
+            onClick={() => setCalculator('equipment')}
+          >
+            Equipment
+          </button>
         </nav>
       </header>
 
-      {calculator === 'flame' ? (
-        <FlameCalculator />
+      {calculator !== 'potential' ? (
+        <FlameCalculator activeTab={calculator} onTabChange={setCalculator} />
       ) : optionsError ? (
         <div className="panel" role="alert">
           <p className="error">{optionsError}</p>
@@ -98,4 +105,3 @@ export default function App() {
     </main>
   )
 }
-

@@ -245,12 +245,33 @@ th:last-child {
   accent-color: #a0e4b3;
   margin: 0;
 }
-.flame-target {
+.flame-settings > label.flame-target {
+  margin-top: 28px;
   margin-bottom: 28px;
+  font-size: 20px;
+  color: #e9edf5;
+  gap: 12px;
 }
-.flame-settings > label { margin-bottom: 16px; }
-.flame-weapon-settings { margin: 20px 0; padding: 16px; border: 1px solid #39465b; border-radius: 8px; }
-.flame-weapon-settings .hint { margin-bottom: 0; line-height: 1.6; }
+.flame-target input {
+  padding: 18px 16px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #a0e4b3;
+  border-color: #779084;
+}
+.flame-settings > label {
+  margin-bottom: 16px;
+}
+.flame-weapon-settings {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #39465b;
+  border-radius: 8px;
+}
+.flame-weapon-settings .hint {
+  margin-bottom: 0;
+  line-height: 1.6;
+}
 .error {
   color: #ffb6b6;
   background: #38242d;
