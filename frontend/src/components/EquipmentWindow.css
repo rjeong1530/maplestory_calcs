@@ -18,10 +18,16 @@
 }
 .equipment-window-heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
+}
+.equipment-transfer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .equipment-window-heading h2,
 .equipment-window-heading h3 {

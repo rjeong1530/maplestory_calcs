@@ -10,6 +10,12 @@ planning MapleStory potential and flame rolls. The web app has three sections:
 - **Equipment** lets you select gear, record its current potential and flame
   lines, and review combined flame stats.
 
+Use **Export JSON** in the Equipment tab to download your current equipment
+class, items, Star Force, potentials, and flames. **Import JSON** restores an
+exported file and replaces the current equipment set and equipment class.
+Invalid files leave the current set unchanged. Calculator score weights and
+upgrade settings are not included in equipment exports.
+
 Equipment, recorded lines, class selections, and flame score weights are saved
 in a browser cookie for one year. The calculators are estimates based on the
 bundled data and rules described below; they do not model every in-game reset

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { CLASS_WEAPONS, WEAPON_KINDS, WEAPON_SERIES, getWeaponConfig } from '../data/flameWeapons'
-import { maxStarForceForEquipment } from '../data/starforce'
+import { restoreEquipment, serializeEquipment, exportEquipment, importEquipment } from '../data/equipmentSave'
 import EquipmentWindow from './EquipmentWindow'
 import EquipmentUpgradePlan from './EquipmentUpgradePlan'
 import { restoreUpgradeSettings } from '../data/equipmentUpgrade'
-import { equipInSlot, compatibleEquipment, equipmentChoices } from '../data/flameEquipment'
+import { equipInSlot, compatibleEquipment } from '../data/flameEquipment'
 
 const count = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
 const percentage = value => value > 0 && value < 0.000001
@@ -99,33 +99,6 @@ function readEquipmentCookie() {
   }
 }
 
-function restoreEquipment(savedEquipment, mapleClass) {
-  return Object.entries(savedEquipment || {}).reduce((equipment, [slot, savedItem]) => {
-    if (!savedItem || typeof savedItem.id !== 'number') return equipment
-    const item = equipmentChoices(slot, mapleClass).find(choice => choice.id === savedItem.id)
-    if (!item) return equipment
-    const restoredItem = item.needsFlameType && typeof savedItem.boss_equipment === 'boolean'
-      ? { ...item, config: { ...item.config, boss_equipment: savedItem.boss_equipment } }
-      : item
-    const maxStarForce = maxStarForceForEquipment(restoredItem)
-    const currentStarForce = Number.isInteger(savedItem.current_star_force)
-      ? Math.min(maxStarForce, Math.max(0, savedItem.current_star_force)) : 0
-    return equipInSlot(equipment, slot, {
-      ...restoredItem,
-      currentStarForce,
-      ...(Array.isArray(savedItem.current_potential)
-        ? { currentPotential: savedItem.current_potential.slice(0, 3) } : {}),
-      ...(Array.isArray(savedItem.current_flames)
-        ? { currentFlames: savedItem.current_flames.slice(0, 4) } : {}),
-      ...(typeof savedItem.current_flame_type === 'string'
-        && ['powerful', 'black', 'abyssal'].includes(savedItem.current_flame_type)
-        ? { currentFlameType: savedItem.current_flame_type } : {}),
-      ...(typeof savedItem.current_boss_equipment === 'boolean'
-        ? { currentBossEquipment: savedItem.current_boss_equipment } : {}),
-    })
-  }, {})
-}
-
 function restoreScoreWeights(savedWeights) {
   return Object.fromEntries(SCORE_WEIGHT_FIELDS.map(field => {
     const value = savedWeights?.[field]
@@ -155,16 +128,7 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
     restoreUpgradeSettings(savedSelection.upgrade_settings))
 
   useEffect(() => {
-    const savedEquipment = Object.fromEntries(Object.entries(equipment).map(([slot, item]) => [slot, {
-      id: item.id,
-      current_star_force: item.currentStarForce ?? 0,
-      ...(item.needsFlameType ? { boss_equipment: item.config.boss_equipment } : {}),
-      ...(item.currentPotential ? { current_potential: item.currentPotential } : {}),
-      ...(item.currentFlames ? { current_flames: item.currentFlames } : {}),
-      ...(item.currentFlameType ? { current_flame_type: item.currentFlameType } : {}),
-      ...(typeof item.currentBossEquipment === 'boolean'
-        ? { current_boss_equipment: item.currentBossEquipment } : {}),
-    }]))
+    const savedEquipment = serializeEquipment(equipment)
     document.cookie = `${EQUIPMENT_COOKIE}=${encodeURIComponent(JSON.stringify({
       maple_class: form.maple_class,
       equipment_class: equipmentClass,
@@ -219,6 +183,15 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
     const compatible = compatibleEquipment(equipment, value)
     setEquipment(compatible)
     if (!compatible[activeSlot]) setActiveSlot(null)
+  }
+
+  function importEquipmentJson(text) {
+    const imported = importEquipment(text)
+    setEquipmentClass(imported.equipmentClass)
+    setEquipment(imported.equipment)
+    setActiveSlot(null)
+    setResult(null)
+    setError('')
   }
 
   function update(event) {
@@ -282,7 +255,9 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
         onMapleClassChange={updateEquipmentClass} equipment={equipment}
         activeSlot={activeSlot} onActivate={setActiveSlot} onSelect={selectEquipment}
         onRemove={removeEquipment} busy={busy} classStats={CLASS_STATS[equipmentClass]}
-        onUpdateEquipmentRoll={updateEquipmentRoll} />
+        onUpdateEquipmentRoll={updateEquipmentRoll}
+        onExport={() => exportEquipment(equipment, equipmentClass)}
+        onImport={importEquipmentJson} />
       <EquipmentUpgradePlan equipment={equipment} equipmentClass={equipmentClass}
         classStats={CLASS_STATS[equipmentClass]} flameWeights={form}
         settings={upgradeSettings} onSettingsChange={setUpgradeSettings}
