@@ -217,6 +217,16 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(row['mode_costs']['1'], base_cost)
         for star in (15, 16, 17):
             self.assertIsNone(rows[star]['mode_costs']['4'])
+            self.assertIsNone(rows[star]['mode_rates']['4'])
+            self.assertEqual(rows[star]['safeguard_rates']['boom'], 0)
+        for row in rows:
+            for rates in [*row['mode_rates'].values(), row['safeguard_rates']]:
+                if rates is not None:
+                    self.assertAlmostEqual(sum(rates.values()), 1)
+        self.assertAlmostEqual(rows[18]['mode_rates']['4']['success'], .084)
+        self.assertEqual(rows[18]['mode_rates']['4']['boom'], 0)
+        self.assertEqual(rows[22]['mode_rates']['1']['downgrade'], 0)
+        self.assertGreater(rows[22]['mode_rates']['1']['maintain'], 0)
         self.assertEqual(
             rows[18]['mode_costs']['4'],
             int(starforce.starforce_base_cost(200, 18) * 6.5),

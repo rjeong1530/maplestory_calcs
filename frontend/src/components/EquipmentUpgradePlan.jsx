@@ -57,7 +57,7 @@ export default function EquipmentUpgradePlan({
     <section className="panel upgrade-plan" aria-labelledby="upgrade-heading">
       <span className="eyebrow">YOUR NEXT UPGRADE</span>
       <h2 id="upgrade-heading">Equipment upgrade order</h2>
-      <p className="hint">Compare one attempt on each equipped item for {equipmentClass}:
+      <p className="hint">Compare the expected cost of the next improvement on each equipped item for {equipmentClass}:
         {' '}{classStats.main} main, {classStats.secondary.join(' / ')} secondary, {classStats.offense}.
         Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
       <form onSubmit={submit}>
@@ -114,7 +114,7 @@ export default function EquipmentUpgradePlan({
             </select>
           </label>
         </div>
-        <p className="hint">Scores are weighted stat points. Negative gain means an expected loss.
+        <p className="hint">Scores are weighted stat points. Gain is measured at the next star or first better roll.
           Efficiency is displayed per 1M mesos to make small values readable.</p>
         {rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
           role="region" aria-label={`${CATEGORIES[category]} upgrade rankings`}>
@@ -122,7 +122,7 @@ export default function EquipmentUpgradePlan({
             <caption>{CATEGORIES[category]} — {ORDERS[order]}</caption>
             <thead><tr><th scope="col">#</th><th scope="col">Equipment</th>
               <th scope="col">Current score</th><th scope="col">Expected gain</th>
-              <th scope="col">Mesos / attempt</th><th scope="col">Gain / 1M mesos</th></tr></thead>
+              <th scope="col">Expected mesos to improve</th><th scope="col">Gain / 1M mesos</th></tr></thead>
             <tbody>{rows.map((entry, index) => <tr key={entry.slot}>
               <td>{index + 1}</td><th scope="row">{entry.name}
                 <small>{slotName(entry.slot)}{entry.next_star != null
@@ -152,7 +152,10 @@ export default function EquipmentUpgradePlan({
         <p>Potential assumes Legendary equipment and uses bundled KMS probabilities, without tier-ups.
           Black cubes and black flames keep the better score. Red cubes replace the current potential.
           Star Force includes boom recovery but excludes replacement costs, safeguards and events.
-          These are one-attempt comparisons, not the cost of reaching a target upgrade.</p>
+          Star Force costs cover reaching the next star regardless of spare availability.
+          Potential and flame costs cover rolling until the score exceeds the recorded score:
+          cost per roll divided by the chance of improvement. Their expected gain is the average
+          gain among better rolls. Red cube results can be worse while working toward that improvement.</p>
         <p>Unsupported estimates are listed with reasons. HP-based Star Force scoring and some weapon
           Star Force tables are unavailable. Superior Gollux items remain eligible.</p>
       </details>

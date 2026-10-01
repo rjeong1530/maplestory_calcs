@@ -4,6 +4,9 @@ import { apiRequest } from '../api'
 const formatMesos = value => new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 }).format(value)
+const formatRate = value => new Intl.NumberFormat('en-US', {
+  style: 'percent', maximumFractionDigits: 4,
+}).format(value)
 
 const initialForm = {
   item_level: '200',
@@ -238,6 +241,52 @@ export default function StarForceCalculator() {
                 </table>
               </div>
             )}
+      </section>
+      <section className="panel starforce-cost-panel">
+        <div className="section-heading starforce-cost-heading">
+          <h2>Success, fail and boom chances</h2>
+          <span>ALL FOUR MODES</span>
+        </div>
+        <p className="hint">Compare modes without safeguard. Mode 4 is unavailable from 15★ to 17★.
+          Rates outside 15★–21★ are identical across modes. Fail excludes booms;
+          failures lose one star from 10★–14★ and 22★ onward, and otherwise keep the current star.</p>
+        {costsBusy ? <p role="status">Loading rates…</p>
+          : costsError ? <p className="error" role="alert">{costsError}</p>
+            : costRows && <>
+              <div className="starforce-table-wrap" tabIndex="0" role="region" aria-label="Star Force rates by mode">
+                <table className="starforce-table">
+                  <caption>Chance per attempt for every star transition and enhancement mode</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col" rowSpan="2">Transition</th>
+                      {[1, 2, 3, 4].map(mode => <th scope="colgroup" colSpan="3" key={mode}>Mode {mode}</th>)}
+                    </tr>
+                    <tr>{[1, 2, 3, 4].flatMap(mode => ['Success', 'Fail', 'Boom'].map(outcome => (
+                      <th scope="col" key={`${mode}-${outcome}`}>{outcome}</th>
+                    )))}</tr>
+                  </thead>
+                  <tbody>{costRows.map(row => (
+                    <tr key={row.star}>
+                      <th scope="row">{row.star}★ to {row.star + 1}★</th>
+                      {[1, 2, 3, 4].flatMap(mode => {
+                        const rates = row.mode_rates[String(mode)]
+                        return rates
+                          ? [rates.success, rates.maintain + rates.downgrade, rates.boom].map((rate, index) => (
+                            <td key={`${mode}-${index}`}>{formatRate(rate)}</td>
+                          ))
+                          : [<td key={mode} colSpan="3">N/A</td>]
+                      })}
+                    </tr>
+                  ))}</tbody>
+                </table>
+              </div>
+              <p className="hint">Safeguard overrides the selected mode with Mode 1 and removes booms:</p>
+              <ul className="hint">{costRows.filter(row => row.safeguard_rates).map(row => (
+                <li key={row.star}>{row.star}★ to {row.star + 1}★: success {formatRate(row.safeguard_rates.success)},
+                  {' '}fail {formatRate(row.safeguard_rates.maintain + row.safeguard_rates.downgrade)},
+                  {' '}boom {formatRate(row.safeguard_rates.boom)}.</li>
+              ))}</ul>
+            </>}
       </section>
     </>
   )

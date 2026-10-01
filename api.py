@@ -3,6 +3,7 @@
 Run from the repository root: python -m uvicorn api:app --reload
 """
 from typing import Annotated, Literal
+from dataclasses import asdict
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -384,7 +385,7 @@ def flame_probability(request: FlameProbabilityRequest):
 
 @app.get('/api/starforce-costs')
 def starforce_costs(level: Annotated[int, Field(gt=0)]):
-    """Return per-tap costs by starting star and Enhancement Mode."""
+    """Return per-tap costs and outcome rates by star and Enhancement Mode."""
     try:
         base_costs = starforce.starforce_costs_by_star(level)
     except ValueError as error:
@@ -396,6 +397,17 @@ def starforce_costs(level: Annotated[int, Field(gt=0)]):
             {
                 'star': current_star,
                 'base_cost': base_cost,
+                'mode_rates': {
+                    str(mode): (
+                        None if current_star in (15, 16, 17) and mode == 4
+                        else asdict(starforce.attempt_rates(current_star, mode))
+                    )
+                    for mode in range(1, 5)
+                },
+                'safeguard_rates': (
+                    asdict(starforce.attempt_rates(current_star, safeguard=True))
+                    if current_star in (15, 16, 17) else None
+                ),
                 'mode_costs': {
                     str(mode): (
                         None

@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from equipment_upgrade import equipment_upgrade_plan, maximum_star_force, starforce_weighted_score
+import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
@@ -105,13 +106,37 @@ class EquipmentUpgradeTests(unittest.TestCase):
         }
 
     @patch('equipment_upgrade._potential_score_distribution', return_value={0: .5, 200: .5})
-    def test_cube_replacement_and_gollux_eligibility(self, distribution):
-        for cube, expected_gain in [('red', -20), ('black', 40)]:
+    def test_cubes_cost_until_better_roll_and_gollux_eligibility(self, distribution):
+        for cube, cost in [('red', 24_000_000), ('black', 44_000_000)]:
             result = equipment_upgrade_plan(self.plan_request(cube_type=cube))
             self.assertEqual(result['excluded_superior_equipment'], [])
             entry = result['rankings']['potential']['largest_gain_first'][0]
-            self.assertEqual(entry['expected_score_gain'], expected_gain)
-            self.assertEqual(entry['gain_per_meso'], expected_gain / entry['action_cost_mesos'])
+            self.assertEqual(entry['expected_score_gain'], 80)
+            self.assertEqual(entry['action_cost_mesos'], cost)
+            self.assertEqual(entry['expected_attempts'], 2)
+            self.assertEqual(entry['gain_per_meso'], 80 / cost)
+
+    @patch('equipment_upgrade._potential_score_distribution', return_value={0: 1})
+    def test_starforce_cost_includes_retries_and_boom_recovery(self, distribution):
+        request = self.plan_request()
+        request['equipment'][0]['current_star_force'] = 20
+        entry = equipment_upgrade_plan(request)['rankings']['starforce']['largest_gain_first'][0]
+        estimate = starforce.estimate_starforce(item_level=150, start_star=20, target_star=21)
+        self.assertAlmostEqual(entry['action_cost_mesos'], estimate.expected_cost)
+        self.assertGreater(entry['action_cost_mesos'], starforce.starforce_base_cost(150, 20))
+        self.assertAlmostEqual(entry['expected_score_gain'], 11 + 14 * 3)
+
+    @patch('equipment_upgrade._current_flame_score', return_value=100)
+    @patch('equipment_upgrade._flame_score_distribution',
+           return_value={0: .5, 100: .25, 120: .125, 160: .125})
+    @patch('equipment_upgrade._potential_score_distribution', return_value={0: 1})
+    def test_flames_exclude_equal_and_worse_rolls(self, *mocks):
+        request = self.plan_request()
+        request['equipment'][0]['slot'] = 'hat'
+        entry = equipment_upgrade_plan(request)['rankings']['flames']['largest_gain_first'][0]
+        self.assertEqual(entry['action_cost_mesos'], 12_000_000)
+        self.assertEqual(entry['expected_attempts'], 4)
+        self.assertEqual(entry['expected_score_gain'], 40)
 
     def test_missing_weapon_attack_and_invalid_stars_are_reported(self):
         weapon = {'name': 'Weapon', 'slot': 'weapon', 'equipment_level': 200,
@@ -130,7 +155,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
         self.assertIn('HP-based', result['rankings']['starforce']['unavailable'][0]['note'])
         self.assertGreater(result['rankings']['potential']['largest_gain_first'][0]['expected_score_gain'], 0)
 
-    @patch('equipment_upgrade._potential_score_distribution', return_value={0: 1})
+    @patch('equipment_upgrade._potential_score_distribution', return_value={0: .5, 200: .5})
     def test_multiple_items_are_ordered_by_score_and_gain(self, distribution):
         request = self.plan_request(cube_type='red')
         first = request['equipment'][0]
@@ -139,6 +164,14 @@ class EquipmentUpgradeTests(unittest.TestCase):
         for ranking in equipment_upgrade_plan(request)['rankings']['potential'].values():
             if ranking:
                 self.assertEqual(ranking[0]['name'], 'Weak Ring')
+
+    @patch('equipment_upgrade._potential_score_distribution', return_value={0: .5, 120: .5})
+    def test_no_better_potential_is_unavailable(self, distribution):
+        ranking = equipment_upgrade_plan(self.plan_request())['rankings']['potential']
+        self.assertEqual(ranking['largest_gain_first'], [])
+        self.assertEqual(ranking['gain_per_meso_first'], [])
+        self.assertIsNone(ranking['unavailable'][0]['action_cost_mesos'])
+        self.assertIn('No better', ranking['unavailable'][0]['note'])
 
 
 if __name__ == '__main__':

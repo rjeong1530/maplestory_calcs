@@ -147,31 +147,45 @@ For example, POST this JSON to `/api/equipment-upgrade-plan` (or use `/docs`):
   "offense_stat": "ATT",
   "cube_type": "black",
   "flame_weights": {
-    "all_stat_pct_value": 10, "secondary_stat_per_main": 10,
-    "attack_value": 3, "boss_damage_pct_value": 10
+    "all_stat_pct_value": 10,
+    "secondary_stat_per_main": 10,
+    "attack_value": 3,
+    "boss_damage_pct_value": 10
   },
   "potential_weights": {
-    "base_stat_pct_value": 10, "attack_pct_value": 10,
+    "base_stat_pct_value": 10,
+    "attack_pct_value": 10,
     "crit_damage_pct_value": 8
   },
-  "equipment": [{
-    "name": "Arcane Warrior Hat", "slot": "hat", "equipment_level": 200,
-    "equipment_type": "armor", "potential_equipment_type": "hat",
-    "current_star_force": 17, "boss_equipment": true,
-    "current_potential": [{"effect": "STR_PCT", "value": 12}],
-    "current_flames": [{"option": "STR", "stage": 6}]
-  }]
+  "equipment": [
+    {
+      "name": "Arcane Warrior Hat",
+      "slot": "hat",
+      "equipment_level": 200,
+      "equipment_type": "armor",
+      "potential_equipment_type": "hat",
+      "current_star_force": 17,
+      "boss_equipment": true,
+      "current_potential": [{ "effect": "STR_PCT", "value": 12 }],
+      "current_flames": [{ "option": "STR", "stage": 6 }]
+    }
+  ]
 }
 ```
 
 Each category in `rankings` returns `weakest_first`, `largest_gain_first`,
 `gain_per_meso_first`, and `unavailable` (with reasons). Scores are weighted
-stat points, not damage percentages. Gains measure one attempt, not the cost
-of reaching a target. Potential assumes an already-Legendary item, without
-tier-up modeling: black cubes retain the higher score, whereas red cubes replace
-the roll and can have negative expected gain. Black flames retain the higher
-score. Costs use the supplied planning assumptions above, without discounts.
-Star Force includes boom recovery but excludes replacement costs and events.
+stat points, not damage percentages. `action_cost_mesos` is the expected total
+spend to the next star or first roll strictly above the recorded weighted score.
+For potential and flames, cost is the price per roll divided by the probability
+of improvement, and gain is the average gain conditional on a better roll.
+Equal and worse rolls count toward the cost but do not complete the upgrade.
+Potential assumes an already-Legendary item, without tier-up modeling. Red cubes
+can temporarily worsen the potential before reaching a better roll. Black cubes
+and black flames retain the higher score. Outcomes with no possible improvement
+are unavailable. Costs use the supplied planning assumptions, without discounts.
+Star Force includes retries and boom recovery regardless of spare availability,
+but excludes replacement costs and events.
 Weapons need `base_weapon_offense`; level-250 weapons and weapon estimates
 above 25 stars are unavailable. HP-based Star Force scoring is also unavailable.
 Superior means the Elite Heliseum/Nova/Tyrant enhancement system; Superior
@@ -275,9 +289,8 @@ rates include GMS's automatic Star Catching success-rate bonus.
 booms are removed, and failed attempts maintain the current star. As in GMS,
 safeguarding resets Enhancement Mode to Mode 1 for these transitions.
 
-Expected values use a Markov-chain model: a failed attempt may maintain or
-decrease the star (failures maintain from 0★–9★ and 15★–21★; they decrease one
-star from 10★–14★ and 22★–29★). On destruction, recovered stars are 12★ for
+Expected values use a Markov-chain model: non-destructive failures maintain
+the current star at every level. On destruction, recovered stars are 12★ for
 15★–19★, 15★ for 20★, 17★ for 21★–22★, 19★ for 23★–25★, and 20★ for
 26★–30★. `--boom-reset-star` overrides this table with one recovery level for
 all booms. The reported expected mesos omit item replacement/recovery costs,
@@ -353,4 +366,4 @@ equivalent `/api` reverse proxy to the FastAPI server.
 - [ ] List of expected cost of current equips
 - [ ] GMS potential refactor
 - [x] Star Force calculator
-- [ ] Verify starforce costs
+- [x] Verify starforce costs

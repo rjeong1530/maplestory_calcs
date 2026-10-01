@@ -181,9 +181,8 @@ def attempt_rates(star: int, mode: int = 1, safeguard: bool = False) -> AttemptR
     if failure < -1e-12:
         raise ValueError(f'Invalid probability table at {star} stars in mode {mode}.')
 
-    # Failures from 10–14 and 22+ lose one star in the supplied GMS model.
-    if 10 <= star <= 14 or star >= 22:
-        return AttemptRates(success, 0.0, max(0.0, failure), boom)
+    # Non-destructive failures maintain the current star at every level.
+    # Only destruction sends the item back to its recovery star.
     return AttemptRates(success, max(0.0, failure), 0.0, boom)
 
 

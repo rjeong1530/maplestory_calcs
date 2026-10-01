@@ -294,6 +294,23 @@ def _potential_score_distribution(
     )
 
 
+def _next_improvement(distribution: Mapping[float, float], current: float,
+                      roll_cost: float) -> dict[str, Any]:
+    """Expected spend and conditional gain until the first strictly better roll."""
+    better = [(score, probability) for score, probability in distribution.items()
+              if score > current + 1e-9 and probability > 0]
+    probability = fsum(chance for _, chance in better)
+    if not probability:
+        return {'expected_score_gain': None, 'action_cost_mesos': None,
+                'gain_per_meso': None, 'expected_attempts': None,
+                'note': 'No better weighted score is available.'}
+    gain = fsum((score - current) * chance for score, chance in better) / probability
+    cost = roll_cost / probability
+    return {'expected_score_gain': gain, 'action_cost_mesos': cost,
+            'gain_per_meso': gain / cost, 'expected_attempts': 1 / probability,
+            'improvement_probability': probability}
+
+
 def _rank_category(entries: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     scoreable = [entry for entry in entries if entry['current_score'] is not None]
     upgradable = [entry for entry in entries if entry['expected_score_gain'] is not None]
@@ -312,7 +329,7 @@ def _rank_category(entries: list[dict[str, Any]]) -> dict[str, list[dict[str, An
 
 
 def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
-    """Rank each equipped item by current score, next-action gain, and efficiency."""
+    """Rank items by current score, gain at the next improvement, and expected spend."""
     main_stat = request['main_stat']
     secondary_stats = tuple(request['secondary_stats'])
     offense_stat = request['offense_stat']
@@ -351,25 +368,17 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
             elif current_star >= cap:
                 starforce_entry['note'] = 'Already at the equipment Star Force cap.'
             else:
-                rates = starforce.attempt_rates(current_star, mode=1)
-                reset_star = starforce.boom_recovery_star(current_star)
-                destinations = (
-                    (current_star + 1, rates.success),
-                    (current_star, rates.maintain),
-                    (current_star - 1, rates.downgrade),
-                    (reset_star, rates.boom),
+                gain = starforce_weighted_score(
+                    item, current_star + 1, main_stat, secondary_stats, offense_stat, flame_weights,
+                ) - current_sf_score
+                estimate = starforce.estimate_starforce(
+                    item_level=level, start_star=current_star, target_star=current_star + 1,
                 )
-                expected_after = fsum(
-                    probability * starforce_weighted_score(
-                        item, destination, main_stat, secondary_stats, offense_stat, flame_weights,
-                    )
-                    for destination, probability in destinations if probability
-                )
-                gain = expected_after - current_sf_score
-                cost = starforce.starforce_base_cost(level, current_star)
+                cost = estimate.expected_cost
                 starforce_entry.update({
                     'expected_score_gain': gain,
                     'action_cost_mesos': cost,
+                    'expected_attempts': estimate.expected_attempts,
                     'gain_per_meso': gain / cost if cost else None,
                     'next_star': current_star + 1,
                     'enhancement_mode': 1,
@@ -385,7 +394,7 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
         potential_entry = {
             'name': name, 'slot': item['slot'],
             'current_score': potential_current if item.get('potential_equipment_type') else None,
-            'expected_score_gain': None, 'action_cost_mesos': cube_cost,
+            'expected_score_gain': None, 'action_cost_mesos': None,
             'gain_per_meso': None, 'note': None,
         }
         potential_type = item.get('potential_equipment_type')
@@ -395,13 +404,7 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                     potential_type, level, cube_type,
                     tuple(sorted(potential_effect_weights.items())),
                 )
-                after_roll = fsum(
-                    probability * (max(potential_current, score) if cube_type == 'black' else score)
-                    for score, probability in distribution.items()
-                )
-                gain = after_roll - potential_current
-                potential_entry['expected_score_gain'] = gain
-                potential_entry['gain_per_meso'] = gain / cube_cost
+                potential_entry.update(_next_improvement(distribution, potential_current, cube_cost))
             except ValueError as error:
                 potential_entry['note'] = str(error)
         else:
@@ -410,7 +413,7 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
 
         flame_entry = {
             'name': name, 'slot': item['slot'], 'current_score': None,
-            'expected_score_gain': None, 'action_cost_mesos': BLACK_FLAME_COST,
+            'expected_score_gain': None, 'action_cost_mesos': None,
             'gain_per_meso': None, 'note': None,
         }
         if slot in FLAME_SLOTS:
@@ -424,16 +427,8 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                     main_stat, secondary_stats, offense_stat,
                     tuple(sorted(flame_weights.items())), item.get('base_weapon_offense'),
                 )
-                after_roll = fsum(
-                    probability * max(flame_current, score)
-                    for score, probability in distribution.items()
-                )
-                gain = after_roll - flame_current
-                flame_entry.update({
-                    'current_score': flame_current,
-                    'expected_score_gain': gain,
-                    'gain_per_meso': gain / BLACK_FLAME_COST,
-                })
+                flame_entry['current_score'] = flame_current
+                flame_entry.update(_next_improvement(distribution, flame_current, BLACK_FLAME_COST))
             except (ValueError, KeyError) as error:
                 flame_entry['note'] = str(error)
         else:

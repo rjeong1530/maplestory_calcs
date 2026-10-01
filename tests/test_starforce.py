@@ -58,11 +58,26 @@ class StarForceCalculatorTests(unittest.TestCase):
             with self.subTest(star=star), self.assertRaises(ValueError):
                 attempt_rates(star, 4)
 
-    def test_base_failures_drop_stars_in_the_standard_ranges(self):
-        self.assertGreater(attempt_rates(10).downgrade, 0)
-        self.assertGreater(attempt_rates(14).downgrade, 0)
-        self.assertGreater(attempt_rates(22).downgrade, 0)
-        self.assertEqual(attempt_rates(9).downgrade, 0)
+    def test_non_destructive_failures_always_maintain_stars(self):
+        for star in range(30):
+            with self.subTest(star=star):
+                rates = attempt_rates(star)
+                self.assertEqual(rates.downgrade, 0)
+                self.assertAlmostEqual(rates.maintain, 1 - rates.success - rates.boom)
+
+    def test_standard_estimates_match_lostara_reference(self):
+        # https://lostara.com/sf/index.html, checked 2026-10-01:
+        # level 200, Mode 1, Star Catch on, no events or MVP discounts.
+        # These fixtures cover low-star retries, boom recovery, and 22+ failures.
+        for start, target, cost, booms in (
+            (0, 15, 995_038_089.6920172, 0.0),
+            (15, 22, 31_922_944_103.602966, 7.380757762983629),
+            (22, 23, 34_688_255_377.368706, 8.821938459931166),
+        ):
+            with self.subTest(start=start, target=target):
+                estimate = estimate_starforce(200, start, target)
+                self.assertAlmostEqual(estimate.expected_cost, cost, delta=0.01)
+                self.assertAlmostEqual(estimate.expected_booms, booms, places=9)
 
     def test_expected_cost_for_one_transition_includes_retries(self):
         estimate = estimate_starforce(100, 0, 1)
