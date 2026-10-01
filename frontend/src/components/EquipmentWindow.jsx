@@ -134,7 +134,8 @@ export default function EquipmentWindow({
             : 'Select a slot to choose equipment.'}
       </p>
       {selected && activeSlot && (
-        <div className="equipped-item-analyses">
+        <details className="equipped-item-analyses" open>
+          <summary>Equipment stat selection</summary>
           <h3>{SLOT_LABELS[activeSlot.split('-')[0]]}
             {activeSlot.includes('-') ? ` ${activeSlot.split('-')[1]}` : ''} — {selected.name}
           </h3>
@@ -142,14 +143,12 @@ export default function EquipmentWindow({
           <EquipmentAnalysis key={`${activeSlot}-${selected.id}`} slot={activeSlot} item={selected}
             offenseStat={classStats.offense}
             onChange={updates => onUpdateEquipmentRoll(activeSlot, updates)} />
-        </div>
+        </details>
       )}
       {pickerSlot && (
         <div className="equipment-picker">
           <div className="equipment-window-heading">
             <h3>Choose {SLOT_LABELS[type].toLowerCase()}</h3>
-            <button type="button" onClick={() => setPickerSlot(null)}
-              aria-label="Close equipment picker">Close</button>
           </div>
           <label className="equipment-dropdown">Equipment for {equipmentClass}
             <select disabled={busy || !choices.length}

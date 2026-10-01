@@ -1,6 +1,18 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { maxStarForceForEquipment } from './starforce.js'
+import { maxStarForceForEquipment, supportsStarForce } from './starforce.js'
+
+test('medals, badges and non-Astra secondaries or shields have no Star Force controls', () => {
+  for (const name of ['Crystal Ventus Badge', 'Ghost Ship Exorcist', 'Sengoku Hakase Badge']) {
+    assert.equal(supportsStarForce({ slot: 'badge', name }), false)
+  }
+  assert.equal(supportsStarForce({ slot: 'medal', name: 'Astra Medal' }), false)
+  for (const slot of ['secondary', 'shield']) {
+    assert.equal(supportsStarForce({ slot, name: 'Deimos Shield' }), false)
+    assert.equal(supportsStarForce({ slot, name: 'Astra Arcane Shield' }), true)
+  }
+  assert.equal(supportsStarForce({ slot: 'hat', name: 'Arcane Hat' }), true)
+})
 
 const item = (level, name = 'Equipment') => ({ name, config: { equipment_level: level } })
 

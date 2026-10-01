@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { FLAME_SLOTS, potentialEquipmentType } from '../data/flameEquipment'
-import { maxStarForceForEquipment } from '../data/starforce'
+import { maxStarForceForEquipment, supportsStarForce } from '../data/starforce'
 
 const POTENTIAL_LABELS = {
   STR_PCT: 'STR %', DEX_PCT: 'DEX %', INT_PCT: 'INT %', LUK_PCT: 'LUK %',
@@ -34,6 +34,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
   const potentialType = potentialEquipmentType(slot, item)
   const supportsFlames = FLAME_SLOTS.has(item.slot)
   const maximumStarForce = maxStarForceForEquipment(item)
+  const canStarForce = supportsStarForce(item, slot)
   const currentStarForce = Math.min(item.currentStarForce ?? 0, maximumStarForce)
   const optionsKey = JSON.stringify([
     item.config.equipment_level, item.config.equipment_type, potentialType, supportsFlames,
@@ -192,6 +193,41 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
                   })}
                 </div>
               )}
+          {canStarForce && <>
+          <h4>Star Force enhancement modes</h4>
+          <p className="hint">Choose the mode for each star upgrade. These choices apply to upgrade order costs,
+            including recovery. Safeguard at 15–17 stars uses Mode 1 and prevents booms.</p>
+          <div className="starforce-mode-wrap">
+            <table className="starforce-mode-table equipment-mode-table">
+              <thead><tr><th scope="col">Stars</th><th scope="col">Enhancement mode</th></tr></thead>
+              <tbody>{Array.from({ length: Math.max(0, Math.min(maximumStarForce, 22) - 15) }, (_, index) => index + 15).map(star => (
+                <tr key={star}>
+                  <th scope="row">{star}★ to {star + 1}★</th>
+                  <td>
+                    <select aria-label={`Equipment enhancement mode from ${star} stars`}
+                      disabled={item.starForceSafeguards?.[star] === true}
+                      value={item.starForceSafeguards?.[star] ? 1 : item.starForceModes?.[star] ?? 1}
+                      onChange={event => onChange({ starForceModes: {
+                        ...item.starForceModes, [star]: Number(event.target.value),
+                      } })}>
+                      {(star <= 17 ? [1, 2, 3] : [1, 2, 3, 4]).map(mode => (
+                        <option key={mode} value={mode}>Mode {mode}</option>
+                      ))}
+                    </select>
+                    {star <= 17 && <label className="equipment-safeguard-control">
+                      <input type="checkbox" checked={item.starForceSafeguards?.[star] ?? false}
+                        aria-label={`Safeguard equipment from ${star} stars`}
+                        onChange={event => onChange({ starForceSafeguards: {
+                          ...item.starForceSafeguards, [star]: event.target.checked,
+                        } })} />
+                      Safeguard
+                    </label>}
+                  </td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+          </>}
         </section>
 
         <section>
@@ -275,7 +311,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
                 )}
         </section>
       </div>
-      <section className="current-starforce-section" aria-label="Current Star Force">
+      {canStarForce ? <section className="current-starforce-section" aria-label="Current Star Force">
         <div>
           <h4>Current Star Force</h4>
           <p className="hint">Maximum for level {item.config.equipment_level}: {maximumStarForce}★</p>
@@ -288,7 +324,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
             <span>/ {maximumStarForce}★</span>
           </span>
         </label>
-      </section>
+      </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
     </div>
   )
 }

@@ -20,6 +20,34 @@ class EquipmentUpgradeTests(unittest.TestCase):
         self.assertEqual(maximum_star_force(150, 'Superior Gollux Belt'), 30)
         self.assertEqual(maximum_star_force(150, 'Tyrant Belt'), 15)
 
+    def test_item_modes_apply_to_upgrade_and_recovery_costs(self):
+        modes = {15: 3, 18: 4}
+        safeguards = {15: True, 16: False, 17: True}
+        result = equipment_upgrade_plan({
+            'main_stat': 'STR', 'secondary_stats': (), 'offense_stat': 'ATT',
+            'cube_type': 'black', 'flame_weights': self.flame_weights,
+            'potential_weights': {'base_stat_pct_value': 10, 'attack_pct_value': 10,
+                                  'crit_damage_pct_value': 8},
+            'equipment': [{'name': 'Arcane Hat', 'slot': 'hat', 'equipment_level': 200,
+                           'equipment_type': 'armor', 'current_star_force': 15,
+                           'mode_by_star': modes, 'safeguard_by_star': safeguards}],
+        })
+        rows = result['rankings']['starforce']['gain_per_meso_first']
+        row = next(row for row in rows if row['start_star'] == 18)
+        expected = starforce.estimate_starforce(
+            item_level=200, start_star=18, target_star=19, mode_by_star=modes,
+            safeguard_by_star=safeguards)
+        self.assertAlmostEqual(row['action_cost_mesos'], expected.expected_cost)
+        self.assertEqual(row['enhancement_mode'], 4)
+        protected = next(row for row in rows if row['start_star'] == 15)
+        self.assertTrue(protected['safeguard'])
+        self.assertEqual(protected['enhancement_mode'], 1)
+        self.assertAlmostEqual(protected['action_cost_mesos'], starforce.estimate_starforce(
+            item_level=200, start_star=15, target_star=16, mode_by_star=modes,
+            safeguard_by_star=safeguards).expected_cost)
+        self.assertNotEqual(row['action_cost_mesos'], starforce.estimate_starforce(
+            item_level=200, start_star=18, target_star=19).expected_cost)
+
     def test_starforce_weighted_score_uses_level_band_bonuses(self):
         item = {
             'slot': 'hat', 'equipment_level': 200,
@@ -30,12 +58,10 @@ class EquipmentUpgradeTests(unittest.TestCase):
             55 * 1.1 + 12 * 3,
         )
 
-    def test_badge_score_uses_class_stats_without_armor_attack_bonuses(self):
+    def test_badges_do_not_support_starforce(self):
         badge = {'slot': 'badge', 'equipment_level': 160, 'equipment_type': 'armor'}
-        self.assertEqual(
-            starforce_weighted_score(badge, 16, 'STR', (), 'ATT', self.flame_weights),
-            53,
-        )
+        with self.assertRaisesRegex(ValueError, 'badge equipment cannot be Star Forced'):
+            starforce_weighted_score(badge, 16, 'STR', (), 'ATT', self.flame_weights)
 
     def test_weapon_stat_table_gaps_are_not_extrapolated(self):
         weapon = {'slot': 'weapon', 'equipment_level': 250, 'equipment_type': 'weapon',
@@ -80,9 +106,10 @@ class EquipmentUpgradeTests(unittest.TestCase):
         self.assertEqual(result['cost_assumptions_mesos']['red_cube'], 12_000_000)
         for category in ('starforce', 'flames', 'potential'):
             ranking = result['rankings'][category]
-            self.assertEqual(len(ranking['weakest_first']), 1)
-            self.assertEqual(len(ranking['largest_gain_first']), 1)
-            self.assertEqual(len(ranking['gain_per_meso_first']), 1)
+            count = 15 if category == 'starforce' else 1
+            self.assertEqual(len(ranking['weakest_first']), count)
+            self.assertEqual(len(ranking['largest_gain_first']), count)
+            self.assertEqual(len(ranking['gain_per_meso_first']), count)
             self.assertIsNotNone(ranking['largest_gain_first'][0]['expected_score_gain'])
 
     def test_armor_attack_accumulates_through_22_stars(self):
@@ -120,11 +147,61 @@ class EquipmentUpgradeTests(unittest.TestCase):
     def test_starforce_cost_includes_retries_and_boom_recovery(self, distribution):
         request = self.plan_request()
         request['equipment'][0]['current_star_force'] = 20
-        entry = equipment_upgrade_plan(request)['rankings']['starforce']['largest_gain_first'][0]
+        entries = equipment_upgrade_plan(request)['rankings']['starforce']['largest_gain_first']
+        entry = next(entry for entry in entries if entry['start_star'] == 20)
         estimate = starforce.estimate_starforce(item_level=150, start_star=20, target_star=21)
         self.assertAlmostEqual(entry['action_cost_mesos'], estimate.expected_cost)
         self.assertGreater(entry['action_cost_mesos'], starforce.starforce_base_cost(150, 20))
         self.assertAlmostEqual(entry['expected_score_gain'], 11 + 14 * 3)
+
+    def test_starforce_ranks_multiple_marginal_steps_across_items(self):
+        items = [
+            {'name': 'Magic Eyepatch', 'slot': 'eye', 'equipment_level': 160,
+             'equipment_type': 'armor', 'current_star_force': 15},
+            {'name': 'Twilight Mark', 'slot': 'face', 'equipment_level': 140,
+             'equipment_type': 'armor', 'current_star_force': 17},
+        ]
+        with patch('equipment_upgrade._flame_score_distribution', return_value={0: 1}):
+            result = equipment_upgrade_plan(self.plan_request(equipment=items))
+        rows = result['rankings']['starforce']['gain_per_meso_first']
+        self.assertEqual(len(rows), 28)
+        self.assertEqual(len({(row['slot'], row['start_star']) for row in rows}), 28)
+        self.assertEqual([row['gain_per_meso'] for row in rows],
+                         sorted((row['gain_per_meso'] for row in rows), reverse=True))
+        for item in items:
+            for start in range(item['current_star_force'], 30):
+                row = next(row for row in rows
+                           if row['slot'] == item['slot'] and row['start_star'] == start)
+                expected = starforce.estimate_starforce(item['equipment_level'], start, start + 1)
+                score_before = starforce_weighted_score(
+                    item, start, 'STR', (), 'ATT', self.flame_weights)
+                score_after = starforce_weighted_score(
+                    item, start + 1, 'STR', (), 'ATT', self.flame_weights)
+                self.assertEqual(row['current_star_force'], item['current_star_force'])
+                self.assertEqual(row['next_star'], start + 1)
+                self.assertEqual(row['current_score'], score_before)
+                self.assertAlmostEqual(row['expected_score_gain'], score_after - score_before)
+                self.assertAlmostEqual(row['action_cost_mesos'], expected.expected_cost)
+                self.assertAlmostEqual(row['gain_per_meso'],
+                                       (score_after - score_before) / expected.expected_cost)
+        self.assertEqual(items[0]['current_star_force'], 15)
+
+    def test_starforce_steps_stop_at_caps_and_preserve_supported_weapon_steps(self):
+        for item, targets, unavailable in (
+            ({'name': 'Ghost Ship Exorcist', 'slot': 'badge', 'equipment_level': 150,
+              'equipment_type': 'armor', 'current_star_force': 20}, [], True),
+            ({'name': 'Ghost Ship Exorcist', 'slot': 'badge', 'equipment_level': 150,
+              'equipment_type': 'armor', 'current_star_force': 22}, [], True),
+            ({'name': 'Weapon', 'slot': 'weapon', 'equipment_level': 200,
+              'equipment_type': 'weapon', 'base_weapon_offense': 300,
+              'current_star_force': 23}, [24, 25], True),
+        ):
+            with self.subTest(item=item), patch(
+                'equipment_upgrade._flame_score_distribution', return_value={0: 1}
+            ):
+                ranking = equipment_upgrade_plan(self.plan_request(equipment=[item]))['rankings']['starforce']
+                self.assertEqual(sorted(row['next_star'] for row in ranking['largest_gain_first']), targets)
+                self.assertEqual(bool(ranking['unavailable']), unavailable)
 
     @patch('equipment_upgrade._current_flame_score', return_value=100)
     @patch('equipment_upgrade._flame_score_distribution',

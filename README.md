@@ -136,7 +136,8 @@ For runtime-only installs, use `requirements.txt` instead.
   weights, new potential weights (`base_stat_pct_value`, `attack_pct_value`,
   `crit_damage_pct_value`), and `cube_type`. Superior equipment is excluded.
   Black flames cost 3M mesos; red and black cubes cost 12M and 22M. Potential
-  roll odds use the bundled KMS tables. Star Force gain estimates use Mode 1.
+  roll odds use the bundled KMS tables. Star Force estimates use each item's
+  `mode_by_star` settings (Mode 1 by default), including during recovery.
 
 The upgrade-plan endpoint is stateless; it takes the equipment saved in the browser.
 In the **Equipment** tab, use **Equipment upgrade order** below the tracker to
@@ -182,7 +183,14 @@ For example, POST this JSON to `/api/equipment-upgrade-plan` (or use `/docs`):
 Each category in `rankings` returns `weakest_first`, `largest_gain_first`,
 `gain_per_meso_first`, and `unavailable` (with reasons). Scores are weighted
 stat points, not damage percentages. `action_cost_mesos` is the expected total
-spend to the next star or first roll strictly above the recorded weighted score.
+spend for the listed one-star step or first roll strictly above the recorded weighted score.
+Star Force returns multiple rows per item, from its recorded stars to the equipment
+cap or available stat tables. `current_star_force` retains the recorded stars;
+`start_star` and `next_star` identify each step. `current_score` is the score at
+that step's starting star. Gains and costs are marginal, excluding earlier steps.
+Later steps require completing those earlier steps even if they rank higher by
+gain per meso. The UI marks these prerequisites; rankings are comparisons of
+individual steps rather than a sequence that skips prerequisites.
 For potential and flames, cost is the price per roll divided by the probability
 of improvement, and gain is the average gain conditional on a better roll.
 Equal and worse rolls count toward the cost but do not complete the upgrade.
@@ -346,7 +354,12 @@ ranges from equipment type, item level, and boss-equipment status.
 
 ### Equipment
 
-Select gear in the equipment window. The item editor shows its available
+Select gear in the equipment window. Below the potential inputs, choose enhancement
+modes for each star transition. Modes 1–3 are available from 15–17 stars and
+modes 1–4 from 18–21; other transitions use standard rates. Safeguard can be
+enabled separately at 15–17 stars; it uses Mode 1 and prevents booms. These settings are
+saved and exported with the item and used by the upgrade rankings.
+The item editor shows its available
 potential values when a published table exists, and its eligible flame tiers
 and values. Select up to three current potential lines and four current flame
 lines; combined flame stats are shown below the flame table. Flameable slots

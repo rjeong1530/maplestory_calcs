@@ -308,9 +308,14 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(result['cost_assumptions_mesos']['red_cube'], 12_000_000)
         for category in ('starforce', 'flames', 'potential'):
             rankings = result['rankings'][category]
-            self.assertEqual(len(rankings['weakest_first']), 1)
-            self.assertEqual(len(rankings['largest_gain_first']), 1)
-            self.assertEqual(len(rankings['gain_per_meso_first']), 1)
+            count = 15 if category == 'starforce' else 1
+            self.assertEqual(len(rankings['weakest_first']), count)
+            self.assertEqual(len(rankings['largest_gain_first']), count)
+            self.assertEqual(len(rankings['gain_per_meso_first']), count)
+        sf_rows = result['rankings']['starforce']['gain_per_meso_first']
+        self.assertEqual({row['start_star'] for row in sf_rows}, set(range(15, 30)))
+        self.assertTrue(all(row['next_star'] == row['start_star'] + 1 for row in sf_rows))
+        self.assertTrue(all(row['current_star_force'] == 15 for row in sf_rows))
 
         for secondary in (['DEX', 'DEX'], ['STR']):
             response = self.client.post('/api/equipment-upgrade-plan',

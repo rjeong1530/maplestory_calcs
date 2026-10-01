@@ -5,7 +5,8 @@ import { exportEquipment, importEquipment, serializeEquipment } from './equipmen
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
 const recordedHat = {
-  ...hat, currentStarForce: 22,
+  ...hat, currentStarForce: 22, starForceModes: { 15: 3, 18: 4 },
+  starForceSafeguards: { 15: true, 16: false, 17: true },
   currentPotential: [{ effect: 'STR_PCT', value: '12' }, { effect: '', value: '' }],
   currentFlames: [{ option: 'STR', stage: 6 }, { option: 'ALL_STAT_PCT', stage: '5' }],
   currentFlameType: 'black', currentBossEquipment: true,
@@ -36,6 +37,10 @@ test('malformed imports and invalid rolls are rejected before returning equipmen
     saved => { saved.equipment.hat.id = -1 },
     saved => { saved.equipment.hat.current_star_force = 31 },
     saved => { saved.equipment.hat.current_star_force = -1 },
+    saved => { saved.equipment.hat.mode_by_star = { 15: 4 } },
+    saved => { saved.equipment.hat.mode_by_star = { 22: 2 } },
+    saved => { saved.equipment.hat.safeguard_by_star = { 18: true } },
+    saved => { saved.equipment.hat.safeguard_by_star = { 15: 'true' } },
     saved => { saved.equipment.hat.current_potential = [null] },
     saved => { saved.equipment.hat.current_potential[0].value = {} },
     saved => { saved.equipment.hat.current_flames[0].stage = 8 },

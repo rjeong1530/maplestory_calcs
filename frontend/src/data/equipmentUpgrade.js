@@ -43,6 +43,8 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       equipment_type: item.config.equipment_type,
       potential_equipment_type: potentialEquipmentType(slot, item),
       current_star_force: item.currentStarForce ?? 0,
+      mode_by_star: item.starForceModes ?? {},
+      safeguard_by_star: item.starForceSafeguards ?? {},
       boss_equipment: item.currentBossEquipment ?? item.config.boss_equipment ?? false,
       base_weapon_offense: item.config.base_weapon_offense ?? null,
       current_potential: (item.currentPotential || [])

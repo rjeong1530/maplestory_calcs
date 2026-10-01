@@ -7,7 +7,6 @@ import './EquipmentUpgradePlan.css'
 const CATEGORIES = { starforce: 'Star Force', flames: 'Flames', potential: 'Potential' }
 const ORDERS = {
   weakest_first: 'Weakest current score',
-  largest_gain_first: 'Largest expected gain',
   gain_per_meso_first: 'Best gain per meso',
 }
 const number = value => value == null ? 'Unavailable'
@@ -23,7 +22,7 @@ export default function EquipmentUpgradePlan({
   equipment, equipmentClass, classStats, flameWeights, settings, onSettingsChange, onFlameWeightChange,
 }) {
   const [category, setCategory] = useState('starforce')
-  const [order, setOrder] = useState('largest_gain_first')
+  const [order, setOrder] = useState('gain_per_meso_first')
   const [request, setRequest] = useState(null)
   const controllerRef = useRef(null)
   const payload = buildUpgradeRequest(equipment, classStats, flameWeights, settings)
@@ -32,7 +31,8 @@ export default function EquipmentUpgradePlan({
   const busy = current?.status === 'loading'
   const result = current?.result
   const rankings = result?.rankings[category]
-  const rows = rankings?.[order] || []
+  const rankedRows = rankings?.[order] || []
+  const rows = category === 'starforce' ? rankedRows.slice(0, 20) : rankedRows
 
   useEffect(() => () => controllerRef.current?.abort(), [requestKey])
 
@@ -57,7 +57,7 @@ export default function EquipmentUpgradePlan({
     <section className="panel upgrade-plan" aria-labelledby="upgrade-heading">
       <span className="eyebrow">YOUR NEXT UPGRADE</span>
       <h2 id="upgrade-heading">Equipment upgrade order</h2>
-      <p className="hint">Compare the expected cost of the next improvement on each equipped item for {equipmentClass}:
+      <p className="hint">Compare future Star Force steps and the next roll improvement on each equipped item for {equipmentClass}:
         {' '}{classStats.main} main, {classStats.secondary.join(' / ')} secondary, {classStats.offense}.
         Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
       <form onSubmit={submit}>
@@ -69,7 +69,7 @@ export default function EquipmentUpgradePlan({
               <option value="red">Red cube — 12M mesos</option>
             </select>
           </label>
-          <p className="hint">Black flames: 3M mesos per roll. Star Force: Mode 1.</p>
+          <p className="hint">Black flames: 3M mesos per roll. Star Force uses each item's enhancement modes.</p>
         </div>
         <fieldset className="upgrade-weights">
           <legend>Potential score weights</legend>
@@ -114,32 +114,42 @@ export default function EquipmentUpgradePlan({
             </select>
           </label>
         </div>
-        <p className="hint">Scores are weighted stat points. Gain is measured at the next star or first better roll.
-          Efficiency is displayed per 1M mesos to make small values readable.</p>
+        <p className="hint">Scores are weighted stat points. Gain is measured for each star step or first better roll.
+          Efficiency is displayed as flame score gain per 100M mesos.</p>
+        {category === 'starforce' && <p className="hint">
+          Showing the top {rows.length} of {rankedRows.length} upgrades in the selected order.{' '}
+          Each row compares one additional star. Later steps require reaching their starting star first;
+          costs and gains exclude those earlier steps. Rows are sorted by the selected metric, so
+          prerequisites may appear lower in the table.
+        </p>}
         {rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
           role="region" aria-label={`${CATEGORIES[category]} upgrade rankings`}>
           <table className="upgrade-table">
             <caption>{CATEGORIES[category]} — {ORDERS[order]}</caption>
             <thead><tr><th scope="col">#</th><th scope="col">Equipment</th>
-              <th scope="col">Current score</th><th scope="col">Expected gain</th>
-              <th scope="col">Expected mesos to improve</th><th scope="col">Gain / 1M mesos</th></tr></thead>
-            <tbody>{rows.map((entry, index) => <tr key={entry.slot}>
+              <th scope="col">{category === 'starforce' ? 'Score before step' : 'Current score'}</th><th scope="col">Expected gain</th>
+              <th scope="col">Expected mesos to improve</th><th scope="col">Flame score / 100M mesos</th></tr></thead>
+            <tbody>{rows.map((entry, index) => <tr key={`${entry.slot}-${entry.start_star ?? 'roll'}`}>
               <td>{index + 1}</td><th scope="row">{entry.name}
                 <small>{slotName(entry.slot)}{entry.next_star != null
-                  ? ` · ${entry.current_star_force} → ${entry.next_star} stars` : ''}</small>
+                  ? ` · ${entry.start_star ?? entry.current_star_force} → ${entry.next_star} stars` : ''}</small>
+                {entry.start_star > entry.current_star_force && <small>
+                  Currently {entry.current_star_force}★ · Requires {entry.start_star}★ first
+                </small>}
                 {entry.note && <small>{entry.note}</small>}
               </th>
               <td>{number(entry.current_score)}</td>
               <td className={entry.expected_score_gain < 0 ? 'upgrade-loss' : ''}>{signed(entry.expected_score_gain)}</td>
               <td>{number(entry.action_cost_mesos)}</td>
-              <td>{signed(entry.gain_per_meso == null ? null : entry.gain_per_meso * 1_000_000)}</td>
+              <td>{signed(entry.gain_per_meso == null ? null : entry.gain_per_meso * 100_000_000)}</td>
             </tr>)}</tbody>
           </table>
         </div> : <p role="status">No eligible items for this ranking. Check the unavailable estimates below.</p>}
         {rankings.unavailable?.length > 0 && <details className="upgrade-notes">
           <summary>Unavailable {CATEGORIES[category]} estimates ({rankings.unavailable.length})</summary>
           <ul>{rankings.unavailable.map(entry => <li key={entry.slot}>
-            <strong>{entry.name}</strong> ({slotName(entry.slot)}): {entry.note}
+            <strong>{entry.name}</strong> ({slotName(entry.slot)}
+            {entry.next_star != null ? ` · ${entry.start_star} → ${entry.next_star} stars` : ''}): {entry.note}
           </li>)}</ul>
         </details>}
         {result.excluded_superior_equipment.length > 0 && <p className="hint">
@@ -151,8 +161,10 @@ export default function EquipmentUpgradePlan({
         <summary>How these estimates work</summary>
         <p>Potential assumes Legendary equipment and uses bundled KMS probabilities, without tier-ups.
           Black cubes and black flames keep the better score. Red cubes replace the current potential.
-          Star Force includes boom recovery but excludes replacement costs, safeguards and events.
-          Star Force costs cover reaching the next star regardless of spare availability.
+          Star Force uses each item's selected enhancement modes and safeguards, including during boom recovery,
+          but excludes replacement costs and events.
+          Star Force lists successive one-star upgrades up to the equipment cap or available stat tables.
+          Each step's cost covers reaching its target star from its starting star regardless of spare availability.
           Potential and flame costs cover rolling until the score exceeds the recorded score:
           cost per roll divided by the chance of improvement. Their expected gain is the average
           gain among better rolls. Red cube results can be worse while working toward that improvement.</p>

@@ -150,7 +150,8 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
       const selected = previous?.id === item.id
         ? { ...item, currentPotential: previous.currentPotential, currentFlames: previous.currentFlames,
           currentFlameType: previous.currentFlameType, currentBossEquipment: previous.currentBossEquipment,
-          currentStarForce: previous.currentStarForce ?? 0 }
+          currentStarForce: previous.currentStarForce ?? 0, starForceModes: previous.starForceModes,
+          starForceSafeguards: previous.starForceSafeguards }
         : { ...item, currentStarForce: 0, currentPotential: [], currentFlames: [], currentFlameType: form.flame_type,
           currentBossEquipment: item.config.boss_equipment ?? form.boss_equipment }
       return equipInSlot(current, slot, selected)

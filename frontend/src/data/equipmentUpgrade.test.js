@@ -9,6 +9,8 @@ const weights = { all_stat_pct_value: '10', secondary_stat_per_main: '10',
 test('upgrade requests preserve duplicate slots and convert recorded rolls to API fields', () => {
   const ring = { name: 'Ring', config: { equipment_level: 150, equipment_type: 'armor',
     boss_equipment: true }, currentStarForce: 17, currentBossEquipment: false,
+  starForceModes: { 15: 2, 18: 4 },
+  starForceSafeguards: { 15: true, 17: false },
   currentPotential: [{ effect: 'INT_PCT', value: '12' }, { effect: '', value: '' },
     { effect: 'ALL_STAT_PCT', value: '' }],
   currentFlames: [{ option: 'INT', stage: '6' }] }
@@ -22,6 +24,8 @@ test('upgrade requests preserve duplicate slots and convert recorded rolls to AP
   assert.deepEqual(request.equipment.map(item => item.slot), ['ring-1', 'ring-2'])
   assert.deepEqual(request.equipment.map(item => item.current_star_force), [17, 15])
   assert.equal(request.equipment[0].boss_equipment, false)
+  assert.deepEqual(request.equipment[0].mode_by_star, { 15: 2, 18: 4 })
+  assert.deepEqual(request.equipment[0].safeguard_by_star, { 15: true, 17: false })
   assert.equal(request.equipment[0].potential_equipment_type, 'accessory')
   assert.deepEqual(request.equipment[0].current_potential, [{ effect: 'INT_PCT', value: 12 }])
   assert.deepEqual(request.equipment[0].current_flames, [{ option: 'INT', stage: 6 }])

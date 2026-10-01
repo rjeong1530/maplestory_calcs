@@ -314,6 +314,25 @@ class CurrentFlameLine(RequestModel):
 
 
 class UpgradeEquipmentRequest(RequestModel):
+    safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
+
+    @field_validator('safeguard_by_star')
+    @classmethod
+    def supported_starforce_safeguards(cls, value):
+        if any(star not in (15, 16, 17) for star in value):
+            raise ValueError('Safeguard is only available from 15 to 17 stars.')
+        return value
+
+    mode_by_star: dict[int, Annotated[int, Field(strict=True)]] = Field(default_factory=dict)
+
+    @field_validator('mode_by_star')
+    @classmethod
+    def supported_starforce_modes(cls, value):
+        for star, mode in value.items():
+            if star not in range(15, 22) or mode not in (range(1, 4) if star <= 17 else range(1, 5)):
+                raise ValueError('Invalid per-star enhancement mode.')
+        return value
+
     name: str = Field(min_length=1)
     slot: str = Field(min_length=1)
     equipment_level: int = Field(gt=0, strict=True)

@@ -16,7 +16,7 @@ FLAME_SLOTS = {
     'hat', 'pendant', 'face', 'eye', 'earring', 'weapon', 'top', 'pocket',
     'belt', 'bottom', 'gloves', 'cape', 'shoes', 'medal',
 }
-NON_STARFORCE_SLOTS = {'emblem', 'medal', 'pocket', 'android'}
+NON_STARFORCE_SLOTS = {'emblem', 'medal', 'badge', 'pocket', 'android'}
 
 _CLASS_STATS_BEFORE_16 = (0, 2, 4, 6, 8, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40)
 _CLASS_STATS_BY_STAR_AND_LEVEL = {
@@ -157,6 +157,8 @@ def starforce_weighted_score(
     item_level = item['equipment_level']
     if slot in NON_STARFORCE_SLOTS:
         raise ValueError(f'{slot} equipment cannot be Star Forced.')
+    if slot in ('secondary', 'shield') and not item.get('name', '').lower().startswith('astra '):
+        raise ValueError('Only Astra secondaries and shields are eligible for Star Force upgrades.')
     if main_stat == 'HP' or 'HP' in secondary_stats:
         raise ValueError('HP-based Star Force scores are not yet supported.')
     if star > maximum_star_force(item_level, item.get('name', '')):
@@ -169,8 +171,6 @@ def starforce_weighted_score(
 
     if item['equipment_type'] == 'weapon':
         attack = _weapon_attack_bonus(item_level, item.get('base_weapon_offense'), star)
-    elif slot == 'badge':
-        attack = 0
     elif star <= 15:
         attack = _GLOVE_ATTACK_BY_STAR[star] if slot == 'gloves' else 0
     else:
@@ -329,7 +329,7 @@ def _rank_category(entries: list[dict[str, Any]]) -> dict[str, list[dict[str, An
 
 
 def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
-    """Rank items by current score, gain at the next improvement, and expected spend."""
+    """Rank future Star Force steps and each item's next roll improvement."""
     main_stat = request['main_stat']
     secondary_stats = tuple(request['secondary_stats'])
     offense_stat = request['offense_stat']
@@ -352,40 +352,49 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
             continue
 
         current_star = item['current_star_force']
-        starforce_entry = {
+        starforce_base_entry = {
             'name': name, 'slot': item['slot'], 'current_star_force': current_star,
             'current_score': None, 'expected_score_gain': None,
             'action_cost_mesos': None, 'gain_per_meso': None, 'note': None,
         }
-        try:
-            current_sf_score = starforce_weighted_score(
-                item, current_star, main_stat, secondary_stats, offense_stat, flame_weights,
-            )
-            starforce_entry['current_score'] = current_sf_score
-            cap = maximum_star_force(level, name)
-            if slot in NON_STARFORCE_SLOTS:
-                starforce_entry['note'] = f'{slot} equipment cannot be Star Forced.'
-            elif current_star >= cap:
-                starforce_entry['note'] = 'Already at the equipment Star Force cap.'
-            else:
-                gain = starforce_weighted_score(
-                    item, current_star + 1, main_stat, secondary_stats, offense_stat, flame_weights,
-                ) - current_sf_score
-                estimate = starforce.estimate_starforce(
-                    item_level=level, start_star=current_star, target_star=current_star + 1,
+        cap = maximum_star_force(level, name)
+        # Keep one unavailable row for capped/unsupported items. Otherwise rank
+        # each marginal step independently, retaining the recorded starting star.
+        for start_star in range(current_star, max(current_star + 1, cap)):
+            starforce_entry = {**starforce_base_entry, 'start_star': start_star}
+            if start_star < cap:
+                starforce_entry['next_star'] = start_star + 1
+            try:
+                current_sf_score = starforce_weighted_score(
+                    item, start_star, main_stat, secondary_stats, offense_stat, flame_weights,
                 )
-                cost = estimate.expected_cost
-                starforce_entry.update({
-                    'expected_score_gain': gain,
-                    'action_cost_mesos': cost,
-                    'expected_attempts': estimate.expected_attempts,
-                    'gain_per_meso': gain / cost if cost else None,
-                    'next_star': current_star + 1,
-                    'enhancement_mode': 1,
-                })
-        except (ValueError, KeyError) as error:
-            starforce_entry['note'] = str(error)
-        results['starforce'].append(starforce_entry)
+                starforce_entry['current_score'] = current_sf_score
+                if start_star >= cap:
+                    starforce_entry['note'] = 'Already at the equipment Star Force cap.'
+                else:
+                    gain = starforce_weighted_score(
+                        item, start_star + 1, main_stat, secondary_stats, offense_stat, flame_weights,
+                    ) - current_sf_score
+                    estimate = starforce.estimate_starforce(
+                        item_level=level, start_star=start_star, target_star=start_star + 1,
+                        mode_by_star=item.get('mode_by_star', {}),
+                        safeguard_by_star=item.get('safeguard_by_star', {}),
+                    )
+                    cost = estimate.expected_cost
+                    starforce_entry.update({
+                        'expected_score_gain': gain,
+                        'action_cost_mesos': cost,
+                        'expected_attempts': estimate.expected_attempts,
+                        'gain_per_meso': gain / cost if cost else None,
+                        'enhancement_mode': 1 if item.get('safeguard_by_star', {}).get(start_star, False)
+                        else item.get('mode_by_star', {}).get(start_star, 1),
+                        'safeguard': item.get('safeguard_by_star', {}).get(start_star, False),
+                    })
+            except (ValueError, KeyError) as error:
+                starforce_entry['note'] = str(error)
+            results['starforce'].append(starforce_entry)
+            if starforce_entry['expected_score_gain'] is None:
+                break
 
         potential_current = _potential_current_score(
             item.get('current_potential', []), main_stat, secondary_stats,
@@ -442,7 +451,10 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
         'potential_keeps_better_result': cube_type == 'black',
         'black_flame_keeps_better_result': True,
         'starforce_replacement_cost_included': False,
-        'starforce_enhancement_mode': 1,
+        'starforce_enhancement_mode': None if any(
+            any(mode != 1 for mode in item.get('mode_by_star', {}).values())
+            for item in request['equipment']
+        ) else 1,
         'cost_assumptions_mesos': {
             'black_flame': BLACK_FLAME_COST,
             'red_cube': CUBE_COSTS['red'],

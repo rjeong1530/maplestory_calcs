@@ -3,6 +3,12 @@ const LIMITED_SWEETWATER_ITEMS = new Set([
 ])
 const LIMITED_BADGES = new Set(['Ghost Ship Exorcist', 'Sengoku Hakase Badge'])
 
+export function supportsStarForce(item, slot = item?.slot ?? '') {
+  const type = slot.split('-')[0]
+  return !['medal', 'badge'].includes(type)
+    && (!['secondary', 'shield'].includes(type) || /^Astra\b/i.test(item?.name ?? ''))
+}
+
 export function maxStarForceForEquipment(item) {
   const level = item?.config?.equipment_level
   if (!Number.isInteger(level) || level < 0) return 0

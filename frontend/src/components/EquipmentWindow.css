@@ -122,6 +122,19 @@
   margin: 0 0 8px;
   font-size: 15px;
 }
+.equipped-item-analyses > summary {
+  cursor: pointer;
+  color: #e9edf5;
+  font-size: 15px;
+  font-weight: 600;
+}
+.equipped-item-analyses[open] > summary {
+  margin-bottom: 14px;
+}
+.equipped-item-analyses > summary:focus-visible {
+  outline: 2px solid #a0e4b3;
+  outline-offset: 4px;
+}
 .equipped-item-analyses > .hint {
   margin-bottom: 14px;
 }
@@ -180,6 +193,37 @@
 .current-potential-section select,
 .current-potential-lines input {
   padding: 7px 8px;
+}
+.equipment-analysis .equipment-mode-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  font-size: 12px;
+}
+.equipment-analysis .equipment-mode-table th,
+.equipment-analysis .equipment-mode-table td {
+  width: 50%;
+  padding: 6px 4px;
+}
+.equipment-analysis .equipment-mode-table td select {
+  width: 100%;
+  max-width: 90px;
+  min-width: 0;
+  padding: 5px 4px;
+  font-size: 12px;
+}
+.equipment-analysis .equipment-safeguard-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 5px 0 0;
+  font-size: 11px;
+}
+.equipment-safeguard-control input {
+  width: auto;
+  margin: 0;
 }
 .current-potential-lines .current-stat-row {
   grid-template-columns: minmax(0, 1fr) 68px;

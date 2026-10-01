@@ -5,6 +5,8 @@ export function serializeEquipment(equipment) {
   return Object.fromEntries(Object.entries(equipment).map(([slot, item]) => [slot, {
     id: item.id,
     current_star_force: item.currentStarForce ?? 0,
+    ...(item.starForceModes ? { mode_by_star: item.starForceModes } : {}),
+    ...(item.starForceSafeguards ? { safeguard_by_star: item.starForceSafeguards } : {}),
     ...(item.needsFlameType ? { boss_equipment: item.config.boss_equipment } : {}),
     ...(item.currentPotential ? { current_potential: item.currentPotential } : {}),
     ...(item.currentFlames ? { current_flames: item.currentFlames } : {}),
@@ -46,6 +48,13 @@ export function importEquipment(text) {
     if (!choice) throw new Error(`Equipment in ${slot} is unavailable for ${saved.equipment_class}.`)
     if (!Number.isInteger(item.current_star_force) || item.current_star_force < 0
       || item.current_star_force > maxStarForceForEquipment(choice)) invalid()
+    if (item.mode_by_star !== undefined && (!isObject(item.mode_by_star)
+      || Object.entries(item.mode_by_star).some(([star, mode]) =>
+        !/^(15|16|17|18|19|20|21)$/.test(star)
+        || !Number.isInteger(mode) || mode < 1 || mode > (Number(star) <= 17 ? 3 : 4)))) invalid()
+    if (item.safeguard_by_star !== undefined && (!isObject(item.safeguard_by_star)
+      || Object.entries(item.safeguard_by_star).some(([star, enabled]) =>
+        !/^(15|16|17)$/.test(star) || typeof enabled !== 'boolean'))) invalid()
     for (const key of ['boss_equipment', 'current_boss_equipment']) {
       if (item[key] !== undefined && typeof item[key] !== 'boolean') invalid()
     }
@@ -89,6 +98,15 @@ export function restoreEquipment(savedEquipment, mapleClass) {
     return equipInSlot(equipment, slot, {
       ...restoredItem,
       currentStarForce,
+      ...(isObject(savedItem.safeguard_by_star) ? { starForceSafeguards: Object.fromEntries(
+        Object.entries(savedItem.safeguard_by_star).filter(([star, enabled]) =>
+          /^(15|16|17)$/.test(star) && typeof enabled === 'boolean'),
+      ) } : {}),
+      ...(isObject(savedItem.mode_by_star) ? { starForceModes: Object.fromEntries(
+        Object.entries(savedItem.mode_by_star).filter(([star, mode]) =>
+          /^(15|16|17|18|19|20|21)$/.test(star)
+          && Number.isInteger(mode) && mode >= 1 && mode <= (Number(star) <= 17 ? 3 : 4)),
+      ) } : {}),
       ...(Array.isArray(savedItem.current_potential)
         ? { currentPotential: savedItem.current_potential.slice(0, 3) } : {}),
       ...(Array.isArray(savedItem.current_flames)
