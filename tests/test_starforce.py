@@ -2,9 +2,11 @@ import unittest
 
 from starforce_calculator import (
     attempt_rates,
+    boom_recovery_star,
     enhancement_mode_multiplier,
     estimate_starforce,
     starforce_base_cost,
+    starforce_costs_by_star,
 )
 
 
@@ -12,6 +14,13 @@ class StarForceCalculatorTests(unittest.TestCase):
     def test_base_cost_rounds_to_nearest_hundred(self):
         self.assertEqual(starforce_base_cost(150, 0), 136_000)
         self.assertEqual(starforce_base_cost(150, 15) % 100, 0)
+
+    def test_costs_by_star_returns_base_cost_for_each_tap(self):
+        costs = starforce_costs_by_star(150)
+        self.assertEqual(set(costs), set(range(30)))
+        for star, cost in costs.items():
+            with self.subTest(star=star):
+                self.assertEqual(cost, starforce_base_cost(150, star))
 
     def test_mode_multipliers_change_by_star_band(self):
         self.assertEqual(enhancement_mode_multiplier(15, 2), 1.5)
@@ -68,10 +77,18 @@ class StarForceCalculatorTests(unittest.TestCase):
         self.assertAlmostEqual(estimate.expected_cost, expected_cost, delta=0.001)
         self.assertEqual(estimate.expected_booms, 0.0)
 
-    def test_default_boom_resets_to_12_stars(self):
-        default_reset = estimate_starforce(200, 21, 22)
+    def test_boom_recovery_star_matches_supplied_ranges(self):
+        for destroyed_star, expected_star in (
+            (15, 12), (19, 12), (20, 15), (21, 17), (22, 17),
+            (23, 19), (25, 19), (26, 20), (30, 20),
+        ):
+            with self.subTest(destroyed_star=destroyed_star):
+                self.assertEqual(boom_recovery_star(destroyed_star), expected_star)
+
+    def test_boom_reset_star_can_override_recovery_table(self):
+        table_default = estimate_starforce(200, 21, 22)
         explicit_reset = estimate_starforce(200, 21, 22, boom_reset_star=12)
-        self.assertEqual(default_reset, explicit_reset)
+        self.assertNotEqual(table_default, explicit_reset)
 
     def test_individual_star_mode_overrides_band_mode(self):
         individual_mode = estimate_starforce(
@@ -95,6 +112,19 @@ class StarForceCalculatorTests(unittest.TestCase):
         )
         self.assertEqual(estimate.expected_booms, 0.0)
 
+    def test_safeguard_can_be_selected_per_star(self):
+        estimate = estimate_starforce(200, 15, 16, mode_by_star={15: 3},
+                                      safeguard_by_star={15: True})
+        self.assertAlmostEqual(
+            estimate.expected_cost,
+            starforce_base_cost(200, 15) * 3 / 0.315,
+            delta=0.001,
+        )
+        self.assertEqual(estimate.expected_booms, 0.0)
+
+        unguarded = estimate_starforce(200, 15, 16, safeguard_by_star={15: False})
+        self.assertGreater(unguarded.expected_booms, 0.0)
+
     def test_invalid_requests_are_rejected(self):
         with self.assertRaises(ValueError):
             starforce_base_cost(0, 0)
@@ -104,6 +134,10 @@ class StarForceCalculatorTests(unittest.TestCase):
             estimate_starforce(150, 0, 19, mode_15_17=4)
         with self.assertRaises(ValueError):
             estimate_starforce(150, 0, 22, mode_by_star={15: 4})
+        with self.assertRaises(ValueError):
+            estimate_starforce(150, 0, 22, safeguard_by_star={18: True})
+        with self.assertRaises(ValueError):
+            estimate_starforce(150, 0, 22, safeguard_by_star={15: 1})
 
 
 if __name__ == '__main__':

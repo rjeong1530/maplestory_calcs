@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { CLASS_WEAPONS, WEAPON_KINDS, WEAPON_SERIES, getWeaponConfig } from '../data/flameWeapons'
+import { maxStarForceForEquipment } from '../data/starforce'
 import EquipmentWindow from './EquipmentWindow'
+import EquipmentUpgradePlan from './EquipmentUpgradePlan'
+import { restoreUpgradeSettings } from '../data/equipmentUpgrade'
 import { equipInSlot, compatibleEquipment, equipmentChoices } from '../data/flameEquipment'
 
 const count = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
@@ -104,8 +107,12 @@ function restoreEquipment(savedEquipment, mapleClass) {
     const restoredItem = item.needsFlameType && typeof savedItem.boss_equipment === 'boolean'
       ? { ...item, config: { ...item.config, boss_equipment: savedItem.boss_equipment } }
       : item
+    const maxStarForce = maxStarForceForEquipment(restoredItem)
+    const currentStarForce = Number.isInteger(savedItem.current_star_force)
+      ? Math.min(maxStarForce, Math.max(0, savedItem.current_star_force)) : 0
     return equipInSlot(equipment, slot, {
       ...restoredItem,
+      currentStarForce,
       ...(Array.isArray(savedItem.current_potential)
         ? { currentPotential: savedItem.current_potential.slice(0, 3) } : {}),
       ...(Array.isArray(savedItem.current_flames)
@@ -144,10 +151,13 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
   const [equipment, setEquipment] = useState(() =>
     restoreEquipment(savedSelection.equipment, savedEquipmentClass))
   const [activeSlot, setActiveSlot] = useState(null)
+  const [upgradeSettings, setUpgradeSettings] = useState(() =>
+    restoreUpgradeSettings(savedSelection.upgrade_settings))
 
   useEffect(() => {
     const savedEquipment = Object.fromEntries(Object.entries(equipment).map(([slot, item]) => [slot, {
       id: item.id,
+      current_star_force: item.currentStarForce ?? 0,
       ...(item.needsFlameType ? { boss_equipment: item.config.boss_equipment } : {}),
       ...(item.currentPotential ? { current_potential: item.currentPotential } : {}),
       ...(item.currentFlames ? { current_flames: item.currentFlames } : {}),
@@ -160,8 +170,9 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
       equipment_class: equipmentClass,
       equipment: savedEquipment,
       score_weights: Object.fromEntries(SCORE_WEIGHT_FIELDS.map(field => [field, form[field]])),
+      upgrade_settings: upgradeSettings,
     }))}; Path=/; Max-Age=31536000; SameSite=Lax`
-  }, [equipment, equipmentClass, form.maple_class, ...SCORE_WEIGHT_FIELDS.map(field => form[field])])
+  }, [equipment, equipmentClass, form, upgradeSettings])
 
   const classStats = CLASS_STATS[form.maple_class]
   const isWeapon = form.equipment_type === 'weapon'
@@ -174,8 +185,9 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
       const previous = current[slot]
       const selected = previous?.id === item.id
         ? { ...item, currentPotential: previous.currentPotential, currentFlames: previous.currentFlames,
-          currentFlameType: previous.currentFlameType, currentBossEquipment: previous.currentBossEquipment }
-        : { ...item, currentPotential: [], currentFlames: [], currentFlameType: form.flame_type,
+          currentFlameType: previous.currentFlameType, currentBossEquipment: previous.currentBossEquipment,
+          currentStarForce: previous.currentStarForce ?? 0 }
+        : { ...item, currentStarForce: 0, currentPotential: [], currentFlames: [], currentFlameType: form.flame_type,
           currentBossEquipment: item.config.boss_equipment ?? form.boss_equipment }
       return equipInSlot(current, slot, selected)
     })
@@ -264,12 +276,22 @@ export default function FlameCalculator({ activeTab, onTabChange }) {
 
   return (
     activeTab === 'equipment' ? (
+      <>
       <EquipmentWindow equipmentClass={equipmentClass}
         mapleClasses={Object.keys(CLASS_STATS).sort()}
         onMapleClassChange={updateEquipmentClass} equipment={equipment}
         activeSlot={activeSlot} onActivate={setActiveSlot} onSelect={selectEquipment}
-        onRemove={removeEquipment} busy={busy} classStats={classStats}
+        onRemove={removeEquipment} busy={busy} classStats={CLASS_STATS[equipmentClass]}
         onUpdateEquipmentRoll={updateEquipmentRoll} />
+      <EquipmentUpgradePlan equipment={equipment} equipmentClass={equipmentClass}
+        classStats={CLASS_STATS[equipmentClass]} flameWeights={form}
+        settings={upgradeSettings} onSettingsChange={setUpgradeSettings}
+        onFlameWeightChange={(key, value) => {
+          setForm(current => ({ ...current, [key]: value }))
+          setResult(null)
+          setError('')
+        }} />
+      </>
     ) : (
       <div className="calculator-grid">
         <div className="equipment-tab-link">

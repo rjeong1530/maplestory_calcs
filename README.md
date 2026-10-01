@@ -117,6 +117,68 @@ For runtime-only installs, use `requirements.txt` instead.
 - `POST /api/probability`: probability of meeting every target on the same roll.
 - `POST /api/flame-probability`: probability of reaching a target flame score
   on one roll with the supplied equipment, class stats, flame type, and weights.
+- `GET /api/starforce-costs?level=200`: per-tap base costs and Enhancement
+  Mode 1–4 costs for transitions from 0★ through 29★. Mode 4 is `null` from
+  15★–17★ because it is unavailable there.
+- `POST /api/starforce-estimate`: expected mesos, attempts, and booms to reach a
+  target Star Force. The request accepts `item_level`, `start_star`,
+  `target_star`, optional `mode_by_star` and `safeguard_by_star` mappings, and
+  an optional `boom_reset_star` override.
+- `POST /api/equipment-upgrade-plan`: weakest-first, largest expected-gain, and
+  score-gain-per-meso rankings for Star Force, Flames, and Potential. Send the
+  equipped items, current stars/potential/flames, class stats, existing flame
+  weights, new potential weights (`base_stat_pct_value`, `attack_pct_value`,
+  `crit_damage_pct_value`), and `cube_type`. Superior equipment is excluded.
+  Black flames cost 3M mesos; red and black cubes cost 12M and 22M. Potential
+  roll odds use the bundled KMS tables. Star Force gain estimates use Mode 1.
+
+The upgrade-plan endpoint is stateless; it takes the equipment saved in the browser.
+In the **Equipment** tab, use **Equipment upgrade order** below the tracker to
+adjust score weights, choose a cube, and calculate rankings. Switch between
+Star Force, Flames, and Potential and select a ranking order. The panel uses the
+equipment class and recorded rolls, saves planning settings with the equipment,
+and asks for a recalculation when inputs change. Unavailable estimates include reasons.
+For example, POST this JSON to `/api/equipment-upgrade-plan` (or use `/docs`):
+
+```json
+{
+  "main_stat": "STR",
+  "secondary_stats": ["DEX"],
+  "offense_stat": "ATT",
+  "cube_type": "black",
+  "flame_weights": {
+    "all_stat_pct_value": 10, "secondary_stat_per_main": 10,
+    "attack_value": 3, "boss_damage_pct_value": 10
+  },
+  "potential_weights": {
+    "base_stat_pct_value": 10, "attack_pct_value": 10,
+    "crit_damage_pct_value": 8
+  },
+  "equipment": [{
+    "name": "Arcane Warrior Hat", "slot": "hat", "equipment_level": 200,
+    "equipment_type": "armor", "potential_equipment_type": "hat",
+    "current_star_force": 17, "boss_equipment": true,
+    "current_potential": [{"effect": "STR_PCT", "value": 12}],
+    "current_flames": [{"option": "STR", "stage": 6}]
+  }]
+}
+```
+
+Each category in `rankings` returns `weakest_first`, `largest_gain_first`,
+`gain_per_meso_first`, and `unavailable` (with reasons). Scores are weighted
+stat points, not damage percentages. Gains measure one attempt, not the cost
+of reaching a target. Potential assumes an already-Legendary item, without
+tier-up modeling: black cubes retain the higher score, whereas red cubes replace
+the roll and can have negative expected gain. Black flames retain the higher
+score. Costs use the supplied planning assumptions above, without discounts.
+Star Force includes boom recovery but excludes replacement costs and events.
+Weapons need `base_weapon_offense`; level-250 weapons and weapon estimates
+above 25 stars are unavailable. HP-based Star Force scoring is also unavailable.
+Superior means the Elite Heliseum/Nova/Tyrant enhancement system; Superior
+Gollux items remain eligible. Stat bonuses and equipment caps follow the
+[Star Force tables](https://maplestorywiki.net/w/Star_Force_Enhancement/Stat_Tables)
+and [enhancement rules](https://maplestorywiki.net/w/Star_Force_Enhancement);
+cube replacement follows the [cube descriptions](https://maplestorywiki.net/w/Cube).
 
 For example, to load level-150 armor options, request:
 
@@ -215,11 +277,13 @@ safeguarding resets Enhancement Mode to Mode 1 for these transitions.
 
 Expected values use a Markov-chain model: a failed attempt may maintain or
 decrease the star (failures maintain from 0★–9★ and 15★–21★; they decrease one
-star from 10★–14★ and 22★–29★). A boom restarts at `--boom-reset-star`
-(default 12). The reported expected mesos omit item replacement/recovery costs,
+star from 10★–14★ and 22★–29★). On destruction, recovered stars are 12★ for
+15★–19★, 15★ for 20★, 17★ for 21★–22★, 19★ for 23★–25★, and 20★ for
+26★–30★. `--boom-reset-star` overrides this table with one recovery level for
+all booms. The reported expected mesos omit item replacement/recovery costs,
 event discounts, and other event modifiers. The calculator is for non-Superior
-equipment; equipment-specific maximum star limits are not inferred from item
-level.
+equipment and does not infer item-level caps. The Equipment tracker records each
+item's Star Force and applies level-based maximums plus known equipment exceptions.
 
 ## Frontend
 
@@ -288,4 +352,5 @@ equivalent `/api` reverse proxy to the FastAPI server.
 
 - [ ] List of expected cost of current equips
 - [ ] GMS potential refactor
-- [ ] Star Force calculator UI
+- [x] Star Force calculator
+- [ ] Verify starforce costs

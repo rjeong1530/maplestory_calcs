@@ -28,6 +28,25 @@ class PotentialTests(unittest.TestCase):
             with self.subTest(extra=extra), self.assertRaises(ValueError):
                 m.probability_at_least('STR_PCT', 13, *extra)
 
+    def test_weighted_score_distribution(self):
+        potential = m.Potential
+        table = {
+            1: [potential(1, 'Legendary', 'crit', .5, {'CRIT_DAMAGE_PCT': 8}),
+                potential(1, 'Legendary', 'str', .5, {'STR_PCT': 12})],
+            2: [potential(2, 'Unique', 'att', 1, {'ATT_PCT': 9})],
+            3: [potential(3, 'Unique', 'none', 1, {})],
+        }
+        with patch.object(m, 'get_potentials_by_line', return_value=table):
+            distribution = m.weighted_score_distribution({
+                'CRIT_DAMAGE_PCT': 2, 'STR_PCT': 1, 'ATT_PCT': 3,
+            })
+        self.assertEqual(distribution, {39.0: .5, 43.0: .5})
+
+    def test_weighted_score_distribution_rejects_invalid_weights(self):
+        for weights in ({'unknown': 1}, {'STR_PCT': -1}, {'STR_PCT': float('inf')}):
+            with self.subTest(weights=weights), self.assertRaises(ValueError):
+                m.weighted_score_distribution(weights)
+
     def test_cooldown_reduction_target(self):
         self.assertAlmostEqual(m.probability_at_least('COOLDOWN_SEC', 4),
                                m.probability_cooldown_at_least(4))

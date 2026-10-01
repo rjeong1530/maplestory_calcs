@@ -2,13 +2,15 @@
 
 Run from the repository root: python -m uvicorn api:app --reload
 """
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 import maplestory_potential as calculator
 import maplestory_flames as flames
+import starforce_calculator as starforce
+import equipment_upgrade
 
 app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
 
@@ -255,6 +257,99 @@ class FlameProbabilityResult(BaseModel):
     one_in: float | None
 
 
+class StarForceEstimateRequest(RequestModel):
+    item_level: int = Field(gt=0, strict=True)
+    start_star: int = Field(ge=0, le=29, strict=True)
+    target_star: int = Field(ge=1, le=30, strict=True)
+    mode_15_17: int = Field(default=1, ge=1, le=3, strict=True)
+    mode_18_21: int = Field(default=1, ge=1, le=4, strict=True)
+    boom_reset_star: int | None = Field(default=None, ge=0, le=29, strict=True)
+    mode_by_star: dict[int, Annotated[int, Field(strict=True)]] = Field(default_factory=dict)
+    safeguard_15_17: bool = Field(default=False, strict=True)
+    safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
+
+
+class StarForceEstimateResult(BaseModel):
+    expected_cost: float
+    expected_attempts: float
+    expected_booms: float
+
+
+class UpgradeFlameWeightsRequest(RequestModel):
+    all_stat_pct_value: float = Field(ge=0, allow_inf_nan=False)
+    secondary_stat_per_main: float = Field(gt=0, allow_inf_nan=False)
+    attack_value: float = Field(ge=0, allow_inf_nan=False)
+    boss_damage_pct_value: float = Field(ge=0, allow_inf_nan=False)
+
+
+class UpgradePotentialWeightsRequest(RequestModel):
+    base_stat_pct_value: float = Field(ge=0, allow_inf_nan=False)
+    attack_pct_value: float = Field(ge=0, allow_inf_nan=False)
+    crit_damage_pct_value: float = Field(ge=0, allow_inf_nan=False)
+
+
+class CurrentPotentialLine(RequestModel):
+    effect: str
+    value: float = Field(allow_inf_nan=False)
+
+    @field_validator('effect')
+    @classmethod
+    def supported_effect(cls, value):
+        if value not in (*calculator.EFFECTS, 'ALL_STAT_PCT'):
+            raise ValueError('Unknown potential effect.')
+        return value
+
+
+class CurrentFlameLine(RequestModel):
+    option: str
+    stage: int = Field(ge=1, le=10, strict=True)
+
+    @field_validator('option')
+    @classmethod
+    def supported_option(cls, value):
+        if value not in (*flames.ARMOR_OPTION_TYPES, *flames.WEAPON_OPTION_TYPES):
+            raise ValueError('Unknown flame option.')
+        return value
+
+
+class UpgradeEquipmentRequest(RequestModel):
+    name: str = Field(min_length=1)
+    slot: str = Field(min_length=1)
+    equipment_level: int = Field(gt=0, strict=True)
+    equipment_type: Literal['armor', 'weapon']
+    potential_equipment_type: str | None = None
+    current_star_force: int = Field(ge=0, le=30, strict=True)
+    current_potential: list[CurrentPotentialLine] = Field(default_factory=list, max_length=3)
+    current_flames: list[CurrentFlameLine] = Field(default_factory=list, max_length=4)
+    boss_equipment: bool = False
+    base_weapon_offense: float | None = Field(default=None, gt=0, allow_inf_nan=False)
+
+    @field_validator('potential_equipment_type')
+    @classmethod
+    def supported_potential_type(cls, value):
+        if value is not None and value not in calculator.EQUIPMENT_TYPES:
+            raise ValueError(f'potential_equipment_type must be one of {calculator.EQUIPMENT_TYPES}')
+        return value
+
+
+class EquipmentUpgradePlanRequest(RequestModel):
+    main_stat: Literal['STR', 'DEX', 'INT', 'LUK', 'HP']
+    secondary_stats: tuple[Literal['STR', 'DEX', 'INT', 'LUK', 'HP'], ...] = Field(max_length=3)
+    offense_stat: Literal['ATT', 'MATT']
+    cube_type: Literal['red', 'black'] = 'black'
+    flame_weights: UpgradeFlameWeightsRequest
+    potential_weights: UpgradePotentialWeightsRequest
+    equipment: list[UpgradeEquipmentRequest] = Field(min_length=1, max_length=40)
+
+    @model_validator(mode='after')
+    def distinct_stats(self):
+        if len(set(self.secondary_stats)) != len(self.secondary_stats):
+            raise ValueError('secondary_stats must be distinct.')
+        if self.main_stat in self.secondary_stats:
+            raise ValueError('main_stat must not appear in secondary_stats.')
+        return self
+
+
 @app.post('/api/flame-probability', response_model=FlameProbabilityResult)
 def flame_probability(request: FlameProbabilityRequest):
     """Probability of meeting the target flame score on one roll."""
@@ -285,3 +380,65 @@ def flame_probability(request: FlameProbabilityRequest):
         percentage=chance * 100,
         one_in=1 / chance if chance else None,
     )
+
+
+@app.get('/api/starforce-costs')
+def starforce_costs(level: Annotated[int, Field(gt=0)]):
+    """Return per-tap costs by starting star and Enhancement Mode."""
+    try:
+        base_costs = starforce.starforce_costs_by_star(level)
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+
+    return {
+        'item_level': level,
+        'costs_by_star': [
+            {
+                'star': current_star,
+                'base_cost': base_cost,
+                'mode_costs': {
+                    str(mode): (
+                        None
+                        if current_star in (15, 16, 17) and mode == 4
+                        else int(base_cost * starforce.enhancement_mode_multiplier(current_star, mode))
+                    )
+                    for mode in range(1, 5)
+                },
+            }
+            for current_star, base_cost in base_costs.items()
+        ],
+    }
+
+
+@app.post('/api/starforce-estimate', response_model=StarForceEstimateResult)
+def starforce_estimate(request: StarForceEstimateRequest):
+    """Estimate expected mesos, attempts, and booms to reach a target star."""
+    try:
+        estimate = starforce.estimate_starforce(
+            item_level=request.item_level,
+            start_star=request.start_star,
+            target_star=request.target_star,
+            mode_15_17=request.mode_15_17,
+            mode_18_21=request.mode_18_21,
+            boom_reset_star=request.boom_reset_star,
+            mode_by_star=request.mode_by_star,
+            safeguard_15_17=request.safeguard_15_17,
+            safeguard_by_star=request.safeguard_by_star,
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+
+    return StarForceEstimateResult(
+        expected_cost=estimate.expected_cost,
+        expected_attempts=estimate.expected_attempts,
+        expected_booms=estimate.expected_booms,
+    )
+
+
+@app.post('/api/equipment-upgrade-plan')
+def equipment_upgrade_plan(request: EquipmentUpgradePlanRequest):
+    """Rank equipped items by current score, expected gain, and meso efficiency."""
+    try:
+        return equipment_upgrade.equipment_upgrade_plan(request.model_dump())
+    except (ValueError, KeyError) as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error

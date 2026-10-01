@@ -407,10 +407,36 @@ class FlameProbabilityEngine:
         )
 
     def score_distribution(self, decimals: int = 4) -> Dict[float, float]:
+        option_count_probabilities = self.option_count_probabilities()
+        maximum_count = max(option_count_probabilities)
+        distributions: list[Dict[float, float]] = [dict() for _ in range(maximum_count + 1)]
+        distributions[0] = {0.0: 1.0}
+
+        for option_index, option_type in enumerate(self.option_pool):
+            option_scores: Dict[float, float] = {}
+            for raw_stage, stage_probability in self.raw_tier_probabilities.items():
+                stage = final_stage(raw_stage, self.config.boss_equipment)
+                # Preserve fractional weights until the complete roll is scored.
+                score = round(score_option(option_type, stage, self.config).score, 12)
+                option_scores[score] = option_scores.get(score, 0.0) + stage_probability
+
+            previous_count = min(maximum_count - 1, option_index)
+            for count in range(previous_count + 1, 0, -1):
+                for previous_score, previous_probability in distributions[count - 1].items():
+                    for option_score, option_probability in option_scores.items():
+                        score = round(previous_score + option_score, 12)
+                        distributions[count][score] = distributions[count].get(score, 0.0) + (
+                            previous_probability * option_probability
+                        )
+
         distribution: Dict[float, float] = {}
-        for outcome in self.iter_outcomes():
-            score = round(outcome.score, decimals)
-            distribution[score] = distribution.get(score, 0.0) + outcome.probability
+        for count, count_probability in option_count_probabilities.items():
+            subset_probability = count_probability / comb(len(self.option_pool), count)
+            for score, probability in distributions[count].items():
+                score = round(score, decimals)
+                distribution[score] = distribution.get(score, 0.0) + (
+                    subset_probability * probability
+                )
         return dict(sorted(distribution.items()))
 
     def top_matching_outcomes(self, target_score: float, limit: int = 20) -> list[FlameOutcome]:

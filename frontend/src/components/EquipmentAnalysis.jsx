@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { FLAME_SLOTS, potentialEquipmentType } from '../data/flameEquipment'
+import { maxStarForceForEquipment } from '../data/starforce'
 
 const POTENTIAL_LABELS = {
   STR_PCT: 'STR %', DEX_PCT: 'DEX %', INT_PCT: 'INT %', LUK_PCT: 'LUK %',
@@ -32,6 +33,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
 
   const potentialType = potentialEquipmentType(slot, item)
   const supportsFlames = FLAME_SLOTS.has(item.slot)
+  const maximumStarForce = maxStarForceForEquipment(item)
+  const currentStarForce = Math.min(item.currentStarForce ?? 0, maximumStarForce)
   const optionsKey = JSON.stringify([
     item.config.equipment_level, item.config.equipment_type, potentialType, supportsFlames,
     bossEquipment, item.config.base_weapon_offense,
@@ -108,6 +111,14 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
   function updateBossEquipment(value) {
     setBossEquipment(value)
     onChange({ currentBossEquipment: value })
+  }
+
+  function updateStarForce(value) {
+    if (value === '') return
+    const starForce = Number(value)
+    if (Number.isInteger(starForce)) {
+      onChange({ currentStarForce: Math.min(maximumStarForce, Math.max(0, starForce)) })
+    }
   }
 
   function toggleFlame(option, stage) {
@@ -264,6 +275,20 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
                 )}
         </section>
       </div>
+      <section className="current-starforce-section" aria-label="Current Star Force">
+        <div>
+          <h4>Current Star Force</h4>
+          <p className="hint">Maximum for level {item.config.equipment_level}: {maximumStarForce}★</p>
+        </div>
+        <label className="current-starforce-control">Current stars
+          <span className="current-starforce-input">
+            <input type="number" min="0" max={maximumStarForce} step="1"
+              aria-label="Current Star Force"
+              value={currentStarForce} onChange={event => updateStarForce(event.target.value)} />
+            <span>/ {maximumStarForce}★</span>
+          </span>
+        </label>
+      </section>
     </div>
   )
 }

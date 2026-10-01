@@ -68,6 +68,7 @@ export default function EquipmentWindow({
       </div>
       <p className="equipment-summary" aria-live="polite">
         {selected ? <><strong>{selected.name}</strong><br />Level {selected.config.equipment_level}
+          {` · ${selected.currentStarForce ?? 0}★ Star Force`}
           {selected.needsFlameType ? ' · Check the Boss equipment setting below for this accessory.'
             : ` · ${selected.config.boss_equipment ? 'Boss' : 'Normal'} flames`}</>
           : activeSlot

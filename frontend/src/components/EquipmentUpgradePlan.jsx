@@ -1,0 +1,161 @@
+import { useEffect, useRef, useState } from 'react'
+import { apiRequest } from '../api'
+import { SLOT_LABELS } from '../data/flameEquipment'
+import { buildUpgradeRequest, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
+import './EquipmentUpgradePlan.css'
+
+const CATEGORIES = { starforce: 'Star Force', flames: 'Flames', potential: 'Potential' }
+const ORDERS = {
+  weakest_first: 'Weakest current score',
+  largest_gain_first: 'Largest expected gain',
+  gain_per_meso_first: 'Best gain per meso',
+}
+const number = value => value == null ? 'Unavailable'
+  : new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 }).format(value)
+const signed = value => value == null ? 'Unavailable'
+  : `${value > 0 ? '+' : ''}${number(value)}`
+const slotName = slot => {
+  const [type, index] = slot.split('-')
+  return `${SLOT_LABELS[type] || type}${index ? ` ${index}` : ''}`
+}
+
+export default function EquipmentUpgradePlan({
+  equipment, equipmentClass, classStats, flameWeights, settings, onSettingsChange, onFlameWeightChange,
+}) {
+  const [category, setCategory] = useState('starforce')
+  const [order, setOrder] = useState('largest_gain_first')
+  const [request, setRequest] = useState(null)
+  const controllerRef = useRef(null)
+  const payload = buildUpgradeRequest(equipment, classStats, flameWeights, settings)
+  const requestKey = JSON.stringify(payload)
+  const current = request?.key === requestKey ? request : null
+  const busy = current?.status === 'loading'
+  const result = current?.result
+  const rankings = result?.rankings[category]
+  const rows = rankings?.[order] || []
+
+  useEffect(() => () => controllerRef.current?.abort(), [requestKey])
+
+  async function submit(event) {
+    event.preventDefault()
+    controllerRef.current?.abort()
+    const controller = new AbortController()
+    controllerRef.current = controller
+    setRequest({ key: requestKey, status: 'loading' })
+    try {
+      const data = await apiRequest('/api/equipment-upgrade-plan', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestKey,
+        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+      })
+      if (!controller.signal.aborted) setRequest({ key: requestKey, status: 'done', result: data })
+    } catch (error) {
+      if (!controller.signal.aborted) setRequest({ key: requestKey, status: 'error', error: error.message })
+    }
+  }
+
+  return (
+    <section className="panel upgrade-plan" aria-labelledby="upgrade-heading">
+      <span className="eyebrow">YOUR NEXT UPGRADE</span>
+      <h2 id="upgrade-heading">Equipment upgrade order</h2>
+      <p className="hint">Compare one attempt on each equipped item for {equipmentClass}:
+        {' '}{classStats.main} main, {classStats.secondary.join(' / ')} secondary, {classStats.offense}.
+        Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
+      <form onSubmit={submit}>
+        <div className="upgrade-controls">
+          <label>Potential cube
+            <select value={settings.cube_type}
+              onChange={event => onSettingsChange({ ...settings, cube_type: event.target.value })}>
+              <option value="black">Black cube — 22M mesos</option>
+              <option value="red">Red cube — 12M mesos</option>
+            </select>
+          </label>
+          <p className="hint">Black flames: 3M mesos per roll. Star Force: Mode 1.</p>
+        </div>
+        <fieldset className="upgrade-weights">
+          <legend>Potential score weights</legend>
+          {Object.entries(POTENTIAL_WEIGHT_LABELS).map(([key, label]) => (
+            <label key={key}>{label}
+              <input type="number" min="0" step="any" required value={settings[key]}
+                onChange={event => onSettingsChange({ ...settings, [key]: event.target.value })} />
+            </label>
+          ))}
+        </fieldset>
+        <fieldset className="upgrade-weights">
+          <legend>Shared flame and Star Force weights</legend>
+          {Object.entries(FLAME_WEIGHT_LABELS).map(([key, label]) => (
+            <label key={key}>{label}
+              <input type="number" min={key === 'secondary_stat_per_main' ? '0.000001' : '0'}
+                step="any" required value={flameWeights[key]}
+                onChange={event => onFlameWeightChange(key, event.target.value)} />
+            </label>
+          ))}
+        </fieldset>
+        <button type="submit" className="primary" disabled={busy || !payload.equipment.length}>
+          {busy ? 'Calculating upgrade order…' : 'Calculate upgrade order'}
+        </button>
+      </form>
+      {!payload.equipment.length && <p className="hint">Equip an item above to compare upgrades.</p>}
+      <div aria-live="polite">
+        {busy && <p role="status">Calculating expected gains for {payload.equipment.length} items…</p>}
+        {request && !current && <p className="hint">Inputs changed. Calculate again to refresh the rankings.</p>}
+      </div>
+      {current?.error && <p className="error" role="alert">{current.error}</p>}
+      {result && <>
+        <div className="upgrade-results-controls">
+          <div className="calculator-tabs" role="group" aria-label="Upgrade category">
+            {Object.entries(CATEGORIES).map(([key, label]) => (
+              <button type="button" key={key} aria-pressed={category === key}
+                onClick={() => setCategory(key)}>{label}</button>
+            ))}
+          </div>
+          <label>Rank by
+            <select value={order} onChange={event => setOrder(event.target.value)}>
+              {Object.entries(ORDERS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
+            </select>
+          </label>
+        </div>
+        <p className="hint">Scores are weighted stat points. Negative gain means an expected loss.
+          Efficiency is displayed per 1M mesos to make small values readable.</p>
+        {rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
+          role="region" aria-label={`${CATEGORIES[category]} upgrade rankings`}>
+          <table className="upgrade-table">
+            <caption>{CATEGORIES[category]} — {ORDERS[order]}</caption>
+            <thead><tr><th scope="col">#</th><th scope="col">Equipment</th>
+              <th scope="col">Current score</th><th scope="col">Expected gain</th>
+              <th scope="col">Mesos / attempt</th><th scope="col">Gain / 1M mesos</th></tr></thead>
+            <tbody>{rows.map((entry, index) => <tr key={entry.slot}>
+              <td>{index + 1}</td><th scope="row">{entry.name}
+                <small>{slotName(entry.slot)}{entry.next_star != null
+                  ? ` · ${entry.current_star_force} → ${entry.next_star} stars` : ''}</small>
+                {entry.note && <small>{entry.note}</small>}
+              </th>
+              <td>{number(entry.current_score)}</td>
+              <td className={entry.expected_score_gain < 0 ? 'upgrade-loss' : ''}>{signed(entry.expected_score_gain)}</td>
+              <td>{number(entry.action_cost_mesos)}</td>
+              <td>{signed(entry.gain_per_meso == null ? null : entry.gain_per_meso * 1_000_000)}</td>
+            </tr>)}</tbody>
+          </table>
+        </div> : <p role="status">No eligible items for this ranking. Check the unavailable estimates below.</p>}
+        {rankings.unavailable?.length > 0 && <details className="upgrade-notes">
+          <summary>Unavailable {CATEGORIES[category]} estimates ({rankings.unavailable.length})</summary>
+          <ul>{rankings.unavailable.map(entry => <li key={entry.slot}>
+            <strong>{entry.name}</strong> ({slotName(entry.slot)}): {entry.note}
+          </li>)}</ul>
+        </details>}
+        {result.excluded_superior_equipment.length > 0 && <p className="hint">
+          Excluded Superior equipment: {result.excluded_superior_equipment
+            .map(entry => `${entry.name} (${slotName(entry.slot)})`).join(', ')}.
+        </p>}
+      </>}
+      <details className="upgrade-notes">
+        <summary>How these estimates work</summary>
+        <p>Potential assumes Legendary equipment and uses bundled KMS probabilities, without tier-ups.
+          Black cubes and black flames keep the better score. Red cubes replace the current potential.
+          Star Force includes boom recovery but excludes replacement costs, safeguards and events.
+          These are one-attempt comparisons, not the cost of reaching a target upgrade.</p>
+        <p>Unsupported estimates are listed with reasons. HP-based Star Force scoring and some weapon
+          Star Force tables are unavailable. Superior Gollux items remain eligible.</p>
+      </details>
+    </section>
+  )
+}

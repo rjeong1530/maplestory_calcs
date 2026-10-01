@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from api import app
 import maplestory_potential as calculator
 import maplestory_flames as flames
+import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):
@@ -162,7 +163,8 @@ class ApiTests(unittest.TestCase):
                 response = self.client.post('/api/flame-probability', json=payload)
                 self.assertEqual(response.status_code, 200, response.text)
                 config = dict(payload['config'])
-                config['weights'] = flames.ScoreWeights(**config['weights'])
+                # The HTTP contract defaults omitted boss damage weight to zero.
+                config['weights'] = flames.ScoreWeights(boss_damage_pct_value=0, **config['weights'])
                 expected = flames.FlameProbabilityEngine(flames.FlameConfig(**config)).probability_at_least(500)
                 self.assertAlmostEqual(response.json()['probability'], expected)
 
@@ -200,6 +202,135 @@ class ApiTests(unittest.TestCase):
             with self.subTest(overrides=overrides):
                 response = self.client.post('/api/flame-probability', json=self.flame_payload(**overrides))
                 self.assertEqual(response.status_code, 422, response.text)
+
+    def test_starforce_costs_by_level_and_mode(self):
+        response = self.client.get('/api/starforce-costs', params={'level': 200})
+        self.assertEqual(response.status_code, 200, response.text)
+        result = response.json()
+        self.assertEqual(result['item_level'], 200)
+        rows = result['costs_by_star']
+        self.assertEqual(len(rows), 30)
+        for row in rows:
+            star = row['star']
+            base_cost = starforce.starforce_base_cost(200, star)
+            self.assertEqual(row['base_cost'], base_cost)
+            self.assertEqual(row['mode_costs']['1'], base_cost)
+        for star in (15, 16, 17):
+            self.assertIsNone(rows[star]['mode_costs']['4'])
+        self.assertEqual(
+            rows[18]['mode_costs']['4'],
+            int(starforce.starforce_base_cost(200, 18) * 6.5),
+        )
+        self.assertEqual(self.client.get('/api/starforce-costs', params={'level': 0}).status_code, 422)
+
+    def test_starforce_estimate(self):
+        payload = {'item_level': 100, 'start_star': 0, 'target_star': 1}
+        response = self.client.post('/api/starforce-estimate', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        result = response.json()
+        expected = starforce.estimate_starforce(100, 0, 1)
+        self.assertAlmostEqual(result['expected_cost'], expected.expected_cost)
+        self.assertAlmostEqual(result['expected_attempts'], expected.expected_attempts)
+        self.assertAlmostEqual(result['expected_booms'], expected.expected_booms)
+
+    def test_starforce_estimate_accepts_per_star_modes_and_safeguards(self):
+        payload = {
+            'item_level': 200,
+            'start_star': 15,
+            'target_star': 18,
+            'mode_by_star': {'15': 3, '16': 2, '17': 1},
+            'safeguard_by_star': {'15': True, '16': False, '17': True},
+        }
+        response = self.client.post('/api/starforce-estimate', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        expected = starforce.estimate_starforce(
+            200, 15, 18,
+            mode_by_star={15: 3, 16: 2, 17: 1},
+            safeguard_by_star={15: True, 16: False, 17: True},
+        )
+        self.assertAlmostEqual(response.json()['expected_cost'], expected.expected_cost)
+        self.assertAlmostEqual(response.json()['expected_booms'], expected.expected_booms)
+
+    def test_invalid_starforce_estimate(self):
+        valid_request = {'item_level': 200, 'start_star': 15, 'target_star': 22}
+        for overrides in (
+            {'item_level': 0},
+            {'target_star': 15},
+            {'target_star': 31},
+            {'mode_15_17': 4},
+            {'mode_by_star': {'22': 2}},
+            {'safeguard_15_17': 'true'},
+            {'safeguard_by_star': {'18': True}},
+            {'safeguard_by_star': {'15': 'true'}},
+        ):
+            with self.subTest(overrides=overrides):
+                payload = {**valid_request, **overrides}
+                response = self.client.post('/api/starforce-estimate', json=payload)
+                self.assertEqual(response.status_code, 422, response.text)
+
+    def test_equipment_upgrade_plan_endpoint(self):
+        payload = {
+            'main_stat': 'STR',
+            'secondary_stats': ['DEX'],
+            'offense_stat': 'ATT',
+            'cube_type': 'red',
+            'flame_weights': {
+                'all_stat_pct_value': 10, 'secondary_stat_per_main': 10,
+                'attack_value': 3, 'boss_damage_pct_value': 10,
+            },
+            'potential_weights': {
+                'base_stat_pct_value': 10, 'attack_pct_value': 10,
+                'crit_damage_pct_value': 8,
+            },
+            'equipment': [{
+                'name': 'Arcane Warrior Hat', 'slot': 'hat',
+                'equipment_level': 200, 'equipment_type': 'armor',
+                'potential_equipment_type': 'hat', 'current_star_force': 15,
+                'current_potential': [{'effect': 'STR_PCT', 'value': 12}],
+                'current_flames': [], 'boss_equipment': True,
+            }],
+        }
+        response = self.client.post('/api/equipment-upgrade-plan', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        result = response.json()
+        self.assertEqual(result['cube_type'], 'red')
+        self.assertEqual(result['cost_assumptions_mesos']['black_flame'], 3_000_000)
+        self.assertEqual(result['cost_assumptions_mesos']['red_cube'], 12_000_000)
+        for category in ('starforce', 'flames', 'potential'):
+            rankings = result['rankings'][category]
+            self.assertEqual(len(rankings['weakest_first']), 1)
+            self.assertEqual(len(rankings['largest_gain_first']), 1)
+            self.assertEqual(len(rankings['gain_per_meso_first']), 1)
+
+        for secondary in (['DEX', 'DEX'], ['STR']):
+            response = self.client.post('/api/equipment-upgrade-plan',
+                                        json={**payload, 'secondary_stats': secondary})
+            self.assertEqual(response.status_code, 422, response.text)
+
+        payload['equipment'][0].update(slot='weapon', equipment_type='weapon',
+                                       base_weapon_offense=None)
+        response = self.client.post('/api/equipment-upgrade-plan', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertTrue(response.json()['rankings']['starforce']['unavailable'][0]['note'])
+
+    def test_equipment_upgrade_plan_rejects_bad_weights(self):
+        payload = {
+            'main_stat': 'STR', 'secondary_stats': ['DEX'], 'offense_stat': 'ATT',
+            'flame_weights': {
+                'all_stat_pct_value': 10, 'secondary_stat_per_main': 10,
+                'attack_value': 3, 'boss_damage_pct_value': 10,
+            },
+            'potential_weights': {
+                'base_stat_pct_value': -1, 'attack_pct_value': 10,
+                'crit_damage_pct_value': 8,
+            },
+            'equipment': [{
+                'name': 'Test Hat', 'slot': 'hat', 'equipment_level': 200,
+                'equipment_type': 'armor', 'current_star_force': 0,
+            }],
+        }
+        response = self.client.post('/api/equipment-upgrade-plan', json=payload)
+        self.assertEqual(response.status_code, 422, response.text)
 
 
 if __name__ == '__main__':

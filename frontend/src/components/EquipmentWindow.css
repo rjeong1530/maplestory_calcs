@@ -131,6 +131,42 @@
 .equipment-analysis-sections > section {
   min-width: 0;
 }
+.current-starforce-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  border-top: 1px solid #39465b;
+  margin-top: 14px;
+  padding-top: 14px;
+}
+.current-starforce-section h4 {
+  margin: 0 0 5px;
+  font-size: 14px;
+}
+.current-starforce-section .hint {
+  margin: 0;
+  font-size: 11px;
+}
+.current-starforce-control {
+  min-width: 130px;
+  margin: 0;
+}
+.current-starforce-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.current-starforce-input input {
+  width: 80px;
+  padding: 7px 8px;
+}
+.current-starforce-input > span {
+  color: #a7b4c9;
+  font-size: 12px;
+  white-space: nowrap;
+}
 .current-potential-section > label {
   gap: 5px;
   font-size: 11px;
@@ -263,7 +299,9 @@
 .equipment-picker h3 {
   font-size: 14px;
 }
-.equipment-dropdown { margin: 12px 0; }
+.equipment-dropdown {
+  margin: 12px 0;
+}
 @media (max-width: 480px) {
   .equipment-window {
     padding: 10px;

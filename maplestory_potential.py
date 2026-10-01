@@ -119,6 +119,65 @@ def _rolls(table):
     yield from visit((), 1.0, {})
 
 
+def weighted_score_distribution(
+    effect_weights: dict[str, float],
+    *,
+    equipment_type='hat',
+    level=150,
+    cube_type='black',
+) -> dict[float, float]:
+    """Return the exact score distribution for one three-line potential roll."""
+    for effect, weight in effect_weights.items():
+        if effect not in EFFECTS:
+            raise ValueError(f'effect must be one of {EFFECTS}')
+        if isinstance(weight, bool) or not math.isfinite(weight) or weight < 0:
+            raise ValueError('effect weights must be finite nonnegative numbers')
+
+    table = get_potentials_by_line(equipment_type, level, cube_type)
+    line_options = {}
+    for line, potentials in table.items():
+        grouped = {}
+        for option in potentials:
+            score = math.fsum(
+                option.effects.get(effect, 0.0) * weight
+                for effect, weight in effect_weights.items()
+            )
+            key = (round(score, 8), option.restriction)
+            grouped[key] = grouped.get(key, 0.0) + option.probability
+        line_options[line] = [
+            (score, restriction, probability)
+            for (score, restriction), probability in grouped.items()
+        ]
+
+    restriction_names = tuple(LIMITS)
+
+    @lru_cache(maxsize=None)
+    def rolls_from(line, counts):
+        if line == 4:
+            return ((0.0, 1.0),)
+        counts_by_restriction = dict(zip(restriction_names, counts))
+        available = [
+            option for option in line_options[line]
+            if not option[1] or counts_by_restriction[option[1]] < LIMITS[option[1]]
+        ]
+        mass = math.fsum(probability for _, _, probability in available)
+        result = {}
+        for score, restriction, probability in available:
+            next_counts = list(counts)
+            if restriction:
+                index = restriction_names.index(restriction)
+                next_counts[index] += 1
+            for remaining_score, remaining_probability in rolls_from(line + 1, tuple(next_counts)):
+                total_score = round(score + remaining_score, 8)
+                result[total_score] = result.get(total_score, 0.0) + (
+                    probability / mass * remaining_probability
+                )
+        return tuple(result.items())
+
+    initial_counts = (0,) * len(restriction_names)
+    return dict(sorted(rolls_from(1, initial_counts)))
+
+
 def _total(combo, effect):
     if effect == 'IED_PCT':
         return 100 * (1 - math.prod(1 - get_effect(p, effect) / 100 for p in combo))

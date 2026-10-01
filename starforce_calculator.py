@@ -117,6 +117,29 @@ def starforce_base_cost(item_level: int, current_star: int) -> int:
     return int(round(raw / 100.0) * 100)
 
 
+def starforce_costs_by_star(item_level: int) -> dict[int, int]:
+    """Return the base cost per tap from each star level, 0★ through 29★."""
+    return {
+        star: starforce_base_cost(item_level, star)
+        for star in range(30)
+    }
+
+
+def boom_recovery_star(destroyed_star: int) -> int:
+    """Return the recovered Star Force level for an item destroyed at this star."""
+    if type(destroyed_star) is not int or not 0 <= destroyed_star <= 30:
+        raise ValueError('Destroyed Star Force must be between 0 and 30.')
+    if destroyed_star <= 19:
+        return 12
+    if destroyed_star == 20:
+        return 15
+    if destroyed_star <= 22:
+        return 17
+    if destroyed_star <= 25:
+        return 19
+    return 20
+
+
 def enhancement_mode_multiplier(star: int, mode: int, safeguard: bool = False) -> float:
     """Return the mode cost multiplier for an attempt from ``star``."""
     if type(mode) is not int or mode not in (1, 2, 3, 4):
@@ -193,17 +216,20 @@ def estimate_starforce(
     target_star: int,
     mode_15_17: int = 1,
     mode_18_21: int = 1,
-    boom_reset_star: int = 12,
+    boom_reset_star: int | None = None,
     mode_by_star: Mapping[int, int] | None = None,
     safeguard_15_17: bool = False,
+    safeguard_by_star: Mapping[int, bool] | None = None,
 ) -> StarForceEstimate:
     """Estimate expected spend, attempts, and booms until reaching a target.
 
-    A boom is modeled as replacing/recovering the item at ``boom_reset_star``.
+    A boom recovers the star level based on the star where it occurred. Set
+    ``boom_reset_star`` to override that recovery level for every boom.
     Item acquisition or recovery costs, discounts, and event modifiers are not
     included. Individual mode choices override the corresponding band mode.
     Safeguarding 15★–17★ costs 3x the base cost, disables booms, and uses
     Mode 1 rates, as GMS resets Modes 2–3 when safeguarding is enabled.
+    ``safeguard_by_star`` overrides the band-wide safeguard setting per star.
     """
     if type(item_level) is not int or item_level <= 0:
         raise ValueError('Item level must be a positive integer.')
@@ -213,7 +239,8 @@ def estimate_starforce(
         raise ValueError('Target Star Force must be between 1 and 30.')
     if target_star <= start_star:
         raise ValueError('Target Star Force must be greater than starting Star Force.')
-    if type(boom_reset_star) is not int or not 0 <= boom_reset_star <= 29:
+    if (boom_reset_star is not None and
+            (type(boom_reset_star) is not int or not 0 <= boom_reset_star <= 29)):
         raise ValueError('Boom reset star must be between 0 and 29.')
     if type(mode_15_17) is not int or mode_15_17 not in (1, 2, 3):
         raise ValueError('Mode for 15–17 star attempts must be 1, 2, or 3.')
@@ -221,6 +248,15 @@ def estimate_starforce(
         raise ValueError('Mode for 18–21 star attempts must be 1, 2, 3, or 4.')
     if type(safeguard_15_17) is not bool:
         raise ValueError('safeguard_15_17 must be a boolean.')
+    if safeguard_by_star is None:
+        safeguard_by_star = {}
+    if not isinstance(safeguard_by_star, Mapping):
+        raise ValueError('safeguard_by_star must be a mapping of star numbers to booleans.')
+    for star, safeguard in safeguard_by_star.items():
+        if type(star) is not int or star not in (15, 16, 17):
+            raise ValueError('Per-star safeguards can only be set for attempts from 15 to 17 stars.')
+        if type(safeguard) is not bool:
+            raise ValueError(f'Invalid safeguard value {safeguard!r} for attempt from {star} stars.')
     if mode_by_star is None:
         mode_by_star = {}
     if not isinstance(mode_by_star, Mapping):
@@ -247,7 +283,7 @@ def estimate_starforce(
     boom_probabilities = []
 
     for star, mode in enumerate(modes):
-        safeguard = safeguard_15_17 and 15 <= star <= 17
+        safeguard = safeguard_by_star.get(star, safeguard_15_17 and 15 <= star <= 17)
         rates = attempt_rates(star, mode, safeguard=safeguard)
         multiplier = enhancement_mode_multiplier(star, mode, safeguard=safeguard)
         attempt_costs.append(starforce_base_cost(item_level, star) * multiplier)
@@ -256,7 +292,8 @@ def estimate_starforce(
             (star + 1, rates.success),
             (star, rates.maintain),
             (star - 1, rates.downgrade),
-            (boom_reset_star, rates.boom),
+            (boom_reset_star if boom_reset_star is not None else
+             boom_recovery_star(star), rates.boom),
         )
         for destination, probability in destinations:
             if probability and destination < target_star:
@@ -288,8 +325,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     parser.add_argument('--safeguard-15-17', action='store_true',
                         help='Safeguard attempts from 15 to 17 stars (3x cost, no booms)')
-    parser.add_argument('--boom-reset-star', type=int, default=12,
-                        help='Star level after a boom/replacement (default: 12)')
+    parser.add_argument('--boom-reset-star', type=int, default=None,
+                        help='Override the recovered star level for every boom')
     args = parser.parse_args(argv)
 
     try:

@@ -272,6 +272,122 @@ th:last-child {
   margin-bottom: 0;
   line-height: 1.6;
 }
+.starforce-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+}
+.starforce-form {
+  min-width: 0;
+}
+.starforce-settings-heading {
+  margin: 28px 0 12px;
+}
+.starforce-settings-heading h2 {
+  margin: 0;
+}
+.starforce-mode-wrap {
+  overflow-x: auto;
+}
+.starforce-mode-table {
+  min-width: 440px;
+  margin: 0;
+}
+.starforce-mode-table th,
+.starforce-mode-table td {
+  padding: 8px 10px;
+  vertical-align: middle;
+}
+.starforce-mode-table th:first-child,
+.starforce-mode-table td:first-child {
+  text-align: left;
+}
+.starforce-mode-table th:last-child,
+.starforce-mode-table td:last-child {
+  text-align: center;
+}
+.starforce-mode-table td select {
+  padding: 8px;
+}
+.starforce-safeguard-control {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+}
+.starforce-safeguard-control input {
+  width: 16px;
+  height: 16px;
+  accent-color: #a0e4b3;
+  margin: 0;
+}
+.starforce-not-applicable {
+  color: #a7b4c9;
+  font-size: 12px;
+}
+.starforce-rules-note {
+  margin: 12px 0 24px;
+}
+.starforce-metrics {
+  display: grid;
+  gap: 18px;
+  margin: 30px 0 0;
+}
+.starforce-metrics div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #2d3748;
+}
+.starforce-metrics dt {
+  color: #a7b4c9;
+  font-size: 13px;
+}
+.starforce-metrics dd {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.starforce-cost-panel {
+  margin-top: 24px;
+}
+.starforce-cost-heading {
+  margin-top: 0;
+}
+.starforce-cost-heading h2 {
+  margin: 0;
+}
+.starforce-table-wrap {
+  max-height: 480px;
+  overflow: auto;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+}
+.starforce-table {
+  min-width: 700px;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.starforce-table th,
+.starforce-table td {
+  padding: 11px 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+.starforce-table th:first-child,
+.starforce-table td:first-child {
+  text-align: left;
+}
+.starforce-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #171f2e;
+}
 .error {
   color: #ffb6b6;
   background: #38242d;
@@ -299,6 +415,37 @@ footer {
   }
   .flame-fields {
     grid-template-columns: 1fr;
+  }
+  .starforce-fields {
+    grid-template-columns: 1fr;
+  }
+  .starforce-mode-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+  .starforce-mode-table th,
+  .starforce-mode-table td {
+    padding: 8px 4px;
+  }
+  .starforce-mode-table th:first-child,
+  .starforce-mode-table td:first-child {
+    width: 31.5%;
+  }
+  .starforce-mode-table th:nth-child(2),
+  .starforce-mode-table td:nth-child(2) {
+    width: 38.5%;
+  }
+  .starforce-mode-table th:last-child,
+  .starforce-mode-table td:last-child {
+    width: 30%;
+  }
+  .starforce-mode-table td select {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+  .starforce-safeguard-control {
+    gap: 4px;
   }
   .equipment-grid {
     grid-template-columns: 1fr 1fr;
