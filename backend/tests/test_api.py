@@ -92,6 +92,23 @@ class ApiTests(unittest.TestCase):
         self.assertFalse(response.json()['potential']['available'])
         self.assertEqual(response.json()['potential']['values_by_line'], [])
 
+    def test_item_options_use_gms_potential_values(self):
+        for cube in calculator.CUBE_TYPES:
+            for level in (150, 160, 200, 250):
+                with self.subTest(cube=cube, level=level):
+                    response = self.client.get('/api/item-options', params={
+                        'level': level, 'potential_equipment_type': 'hat', 'cube_type': cube,
+                    })
+                    self.assertEqual(response.status_code, 200, response.text)
+                    rows = response.json()['potential']['values_by_line']
+                    prime = 12.0 if level == 150 else 13.0
+                    self.assertEqual(rows[0]['values']['STR_PCT'], [prime])
+                    for row in rows[1:]:
+                        self.assertEqual(row['values']['STR_PCT'], [prime - 3, prime])
+                        self.assertEqual(row['values']['ALL_STAT_PCT'], [prime - 6, prime - 3])
+                    self.assertEqual(rows[0]['values']['MAX_HP_PCT'],
+                                     [13.0 if level == 250 else 12.0])
+
     def test_multiple_targets_and_estimates(self):
         for equipment, level, first, second in [
             ('hat', 250, ('STR_PCT', 13), ('COOLDOWN_SEC', 4)),

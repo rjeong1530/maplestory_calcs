@@ -6,6 +6,49 @@ from backend.calc import maplestory_potential as m
 
 
 class PotentialTests(unittest.TestCase):
+    def test_gms_values_preserve_source_probabilities_and_tiers(self):
+        for cube in m.CUBE_TYPES:
+            for level in (150, 160, 200, 250):
+                with self.subTest(cube=cube, level=level):
+                    table = m.get_potentials_by_line('weapon', level, cube)
+                    prime = 12 if level == 150 else 13
+                    unique = prime - 3
+                    for effect in ('STR_PCT', 'DEX_PCT', 'INT_PCT', 'LUK_PCT',
+                                   'ATT_PCT', 'MAGIC_ATT_PCT', 'DAMAGE_PCT', 'CRIT_RATE_PCT'):
+                        self.assertEqual(max(p.effects.get(effect, 0) for p in table[1]), prime)
+                        self.assertEqual(max(p.effects.get(effect, 0) for p in table[2]
+                                             if p.source_tier == 'Unique'), unique)
+                    all_stat = next(p for p in table[1] if p.name.startswith('올스탯'))
+                    self.assertEqual(set(all_stat.effects.values()), {unique})
+                    self.assertEqual(table[1][0].name, f'STR +{prime}%')
+                    raw = m._data()[f'{cube}|weapon|{level}']
+                    for line, rows in enumerate(raw, 1):
+                        total = math.fsum(prob for _, prob in rows)
+                        self.assertEqual([p.probability for p in table[line]],
+                                         [prob / total for _, prob in rows])
+                    primes = (1, .1, .01) if cube == 'red' else (1, .2, .05)
+                    for line, expected in enumerate(primes, 1):
+                        self.assertAlmostEqual(sum(p.probability for p in table[line]
+                            if p.source_tier == 'Legendary'), expected, delta=.00002)
+
+    def test_gms_exceptions_and_source_data_are_unchanged(self):
+        for level in (160, 200):
+            hat = m.get_potentials_by_line('hat', level)
+            for effect in ('MAX_HP_PCT', 'MAX_MP_PCT'):
+                self.assertEqual(max(p.effects.get(effect, 0) for p in hat[1]), 12)
+                self.assertEqual(max(p.effects.get(effect, 0) for p in hat[2]
+                                     if p.source_tier == 'Unique'), 9)
+            weapon = m.get_potentials_by_line('weapon', level)
+            for effect in ('BOSS_DAMAGE_PCT', 'IED_PCT'):
+                self.assertEqual(max(p.effects.get(effect, 0) for p in weapon[1]), 40)
+            gloves = m.get_potentials_by_line('gloves', level)
+            self.assertEqual(max(p.effects.get('CRIT_DAMAGE_PCT', 0) for p in gloves[1]), 8)
+            self.assertEqual(m._data()[f'black|hat|{level}'][0][0][0], 'STR +12%')
+            self.assertEqual(m.get_potentials_by_line('hat', level), hat)
+        self.assertEqual(m.probability_exact('STR_PCT', 39, level=150), 0)
+        self.assertGreater(m.probability_exact('STR_PCT', 39, level=160), 0)
+        self.assertIn(39, m.weighted_score_distribution({'STR_PCT': 1}, level=160))
+
     def test_multiple_targets_on_same_roll(self):
         p = m.Potential
         table = {

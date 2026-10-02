@@ -1,4 +1,4 @@
-"""Legendary KMS main potentials. Defaults: level 150 hat, black cube/reset.
+"""Legendary GMS main potential values with bundled KMS roll probabilities.
 
 Bundled Nexon tables; no network or third-party dependencies at runtime.
 See README.md for the probability model and limitations.
@@ -67,6 +67,14 @@ def _restriction(name):
     return ''
 
 
+def _gms_name(name, level):
+    """Convert the GMS 151–200 value band without changing the source pool."""
+    if 151 <= level <= 200 and re.fullmatch(
+            r'(?:STR|DEX|INT|LUK|올스탯|공격력|마력|최대 HP|최대 MP|데미지|크리티컬 확률) \+\d+%', name):
+        return re.sub(r'\d+(?=%$)', lambda match: str(int(match[0]) + 1), name)
+    return name
+
+
 @lru_cache(maxsize=1)
 def _data():
     return json.loads((Path(__file__).resolve().parents[1] / 'data' / 'potential_data.json').read_text(encoding='utf-8'))['tables']
@@ -93,6 +101,7 @@ def get_potentials_by_line(equipment_type='hat', level=150, cube_type='black'):
         for name, prob in rows:
             if name == raw[0][0][0]:
                 tier = 'Legendary'
+            name = _gms_name(name, level)
             result[line].append(Potential(line, tier, name, prob / total,
                 _effects(name), _restriction(name)))
     return result

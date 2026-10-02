@@ -1,32 +1,83 @@
-# MapleStory potential calculator
+# MapleStory equipment and upgrade calculators
 
 This repository contains a Python probability engine and a React web app for
-planning MapleStory potential and flame rolls. The web app has three sections:
+planning MapleStory potentials, flames, and Star Force upgrades. The web app has four sections:
 
 - **Potential** estimates the chance that all selected potential targets appear
   on the same three-line roll, plus independent-roll cube estimates.
 - **Flames** estimates the chance of reaching a target flame score for armor or
   weapons, using configurable stat weights.
+- **Star Force** shows per-tap costs and estimates mesos, attempts, and booms
+  for a target star count, with enhancement modes and safeguards.
 - **Equipment** lets you select gear, record its current potential and flame
-  lines, and review combined flame stats.
+  lines, review combined flame stats, and compare expected upgrade gains and costs.
 
 Use **Export JSON** in the Equipment tab to download your current equipment
 class, items, Star Force, potentials, and flames. **Import JSON** restores an
 exported file and replaces the current equipment set and equipment class.
-Invalid files leave the current set unchanged. Calculator score weights and
-upgrade settings are not included in equipment exports.
+Invalid files leave the current set unchanged. Per-item Star Force modes and
+safeguards are included; calculator score weights and upgrade-planner settings
+are not included in equipment exports.
 
 Equipment, recorded lines, class selections, and flame score weights are saved
 in a browser cookie for one year. The calculators are estimates based on the
 bundled data and rules described below; they do not model every in-game reset
 mechanic or item restriction.
 
-Calculates three-line **Legendary main potential** rolls using bundled KMS
-probability tables from [Nexon's disclosure](https://maplestory.nexon.com/Guide/OtherProbability/cube/black).
+## Quick start
+
+Requirements: Python 3.10+ and Node.js 20.19+ (20.x) or 22.12+ with npm, as
+required by the locked frontend dependencies. The commands below use Windows PowerShell.
+The repository root is the directory containing this README, `backend/`, and
+`frontend/` (in this checkout, `C:\Users\Ryan\maplestory_app`).
+
+In the first terminal, create the Python environment, install dependencies,
+and start the API:
+
+```powershell
+cd C:\Users\Ryan\maplestory_app
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
+.\.venv\Scripts\python.exe -m uvicorn backend.api.main:app --reload
+```
+
+In a second terminal, install the locked frontend dependencies and start Vite:
+
+```powershell
+cd C:\Users\Ryan\maplestory_app\frontend
+npm ci
+npm run dev
+```
+
+Open the URL printed by Vite. API documentation is available at
+http://127.0.0.1:8000/docs. Keep both terminals running. No database, API keys,
+or data refresh is required for local use; the data is bundled in the repository.
+Dependency installation requires internet access.
+
+Run backend commands from the repository root and frontend commands from
+`frontend/`. Examples using plain `python` assume the virtual environment is
+activated; otherwise use `.\.venv\Scripts\python.exe`. On macOS/Linux, use
+`python3 -m venv .venv` and `.venv/bin/python` in place of the Windows executable.
+
+## Potential calculator
+
+Calculates three-line **Legendary main potential** rolls with GMS line values
+using bundled KMS probability tables from [Nexon's disclosure](https://maplestory.nexon.com/Guide/OtherProbability/cube/black).
 Both [red](https://maplestory.nexon.com/Guide/OtherProbability/cube/red) and black
 cubes are supported. Current KMS meso potential resets use the black table.
-The default has changed from red to **black**; pass `cube_type="red"` explicitly
+The default is **black**; pass `cube_type="red"` explicitly
 for red cubes. This does not calculate tier-up or additional/bonus potential.
+
+GMS uses the higher stat-value band starting at level 151 instead of 201
+([level bands](https://maplestorywiki.net/w/Potential)). For the supported levels
+160 and 200, main stat, ATT/MATT, damage, and critical-rate percentages gain
+one percentage point: Legendary 12% → 13%, Unique 9% → 10%. All Stat becomes
+10%/7%. HP/MP/DEF retain their source values in this band, following the
+[documented GMS exceptions](https://forums.maplestory.nexon.net/discussion/33097/missing-maxhp-tier-4-potentials-on-main-potential).
+Boss damage, IED, critical damage, drop/meso, and cooldown values are unchanged.
+Levels 150 and below and 250 retain their source values. This conversion
+changes values only; line pools, roll probabilities, and restrictions remain
+KMS-based estimates, not independently verified GMS rates.
 
 ```python
 from backend.calc.maplestory_potential import probability_at_least
@@ -86,16 +137,18 @@ Cooldown uses negative seconds internally; `probability_at_least("COOLDOWN_SEC",
 and `probability_cooldown_at_least(2)` both ask for at least two seconds of reduction.
 The cooldown target in `probability_at_least` must be nonnegative.
 
-Full Korean option names are retained for source fidelity, including untracked
-effects. The calculator enforces caps on decent skills, invincibility duration,
+Korean option names are retained, with converted GMS values in returned lines.
+The bundled JSON remains the original KMS snapshot, so refreshing it preserves
+the runtime conversion. The calculator enforces caps on decent skills, invincibility duration,
 damage-ignore and invincibility-chance categories, renormalizing later pools.
 Published rounded probabilities are normalized to sum to one per line.
 
 These are probabilities of generated rolls, **not an exact simulation of a
 sequence of in-game resets**. Nexon also rejects an identical previous result;
 that rule depends on the starting potential and is not modeled here.
-`cubes_for_probability` therefore remains an independent-roll estimate. Black
-cube keep/replace decisions and meso costs are not modeled.
+`cubes_for_probability` therefore remains an independent-roll estimate. The
+Potential tab does not model keep/replace decisions or meso costs; the Equipment
+upgrade planner separately estimates the cost of obtaining a better score.
 
 `backend/data/potential_data.json` records the retrieval timestamp and all queried tables.
 Runtime calculations work offline with Python 3.10+. To refresh the snapshot,
@@ -173,7 +226,7 @@ For example, POST this JSON to `/api/equipment-upgrade-plan` (or use `/docs`):
       "potential_equipment_type": "hat",
       "current_star_force": 17,
       "boss_equipment": true,
-      "current_potential": [{ "effect": "STR_PCT", "value": 12 }],
+      "current_potential": [{ "effect": "STR_PCT", "value": 13 }],
       "current_flames": [{ "option": "STR", "stage": 6 }]
     }
   ]
@@ -252,7 +305,9 @@ and confirm it shows **MapleStory Potential Calculator** and the probability
 endpoint. You can also send `GET http://127.0.0.1:8000/api/health` to check
 that the API is reachable.
 
-Run calculator and API tests with:
+## Verification
+
+Run calculator and API tests from the repository root:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -263,24 +318,67 @@ Tests live in `backend/tests/`. Run a single suite with
 `python -m unittest backend.tests.test_potential -v` using the virtual environment.
 Default discovery (`python -m unittest -v`) also works from the repository root.
 
+Run the frontend data-helper tests, lint, and production build from `frontend/`:
+
+```powershell
+node --test src/data/*.test.js
+npm run lint
+npm run build
+```
+
+The frontend uses Node's built-in test runner; there is no `npm test` script.
+
 ## Project layout
 
 Run Python commands from the repository root using module paths (`python -m ...`).
 
 ```text
-backend/
-  api/main.py                 FastAPI endpoints and request models
-  calc/                       Potential, flame, Star Force, and upgrade calculators
-  data/potential_data.json    Bundled potential probability tables
-  scripts/                    Data refresh and accessory verification tools
-  examples/                   Runnable potential and flame examples
-  tests/                      Automated API, calculator, and data tests
-  requirements.txt            Runtime API dependencies
-  requirements-dev.txt        API and test dependencies
-frontend/
-  src/components/             React calculator, flame, and equipment views
-  src/data/                   Equipment catalog, frontend helpers, and their tests
+maplestory_app/
+  README.md
+  backend/
+    api/main.py                       FastAPI endpoints and request models
+    calc/
+      maplestory_potential.py          GMS values with KMS potential probabilities
+      maplestory_flames.py             Flame probabilities and scores
+      starforce_calculator.py          Star Force costs and expected outcomes
+      equipment_upgrade.py            Equipment upgrade scores and rankings
+    data/potential_data.json          Original KMS probability snapshot
+    examples/
+      potential.py                    Potential calculation examples
+      flames.py                       Flame calculation examples
+    scripts/
+      fetch_potential_data.py         Refresh the KMS probability snapshot
+      fetch_equipment_data.py         Refresh the frontend GMS equipment catalog
+      verify_accessories.py           Compare Nexon accessory probability tables
+    tests/                            Python unittest suites
+    requirements.txt                  FastAPI, Pydantic, and Uvicorn
+    requirements-dev.txt              Runtime dependencies plus HTTP test client
+  frontend/
+    index.html                        Vite HTML entry point
+    package.json                      Frontend dependencies and npm scripts
+    package-lock.json                 Locked dependency versions
+    vite.config.js                    React plugin and development API proxy
+    README.md                         Frontend-specific instructions
+    src/
+      main.jsx                        React entry point
+      App.jsx                         Calculator tabs and potential state
+      api.js                          Shared API request handling
+      App.css                         Application styles
+      index.css                       Shared styles
+      components/                     Calculator, equipment, and upgrade views
+      data/
+        equipment_140_250.json        Bundled GMS equipment catalog
+        equipment_140_250.meta.json   Catalog source and filtering metadata
+        flameEquipment.js            Equipment slots and class mappings
+        flameWeapons.js              Weapon flame configurations
+        starforce.js                 Equipment star caps and mode helpers
+        equipmentSave.js             Equipment import/export and restoration
+        equipmentUpgrade.js          Upgrade-planner request construction
+        *.test.js                    Node data-helper tests
 ```
+
+Python package directories also contain `__init__.py`. The local `.venv/`,
+`frontend/node_modules/`, and generated `frontend/dist/` are ignored by Git.
 
 Run the examples with `python -m backend.examples.potential` or
 `python -m backend.examples.flames`. The accessory verification tool runs with
@@ -342,6 +440,10 @@ requests to `http://127.0.0.1:8000`, so the API must be running as well.
 `npm run preview` serves that build locally, and `npm run lint` checks the
 JavaScript source.
 
+Use `npm ci` instead of `npm install` when installing the exact committed
+dependency versions. The development API proxy is configured in
+`frontend/vite.config.js`; the generated production files do not include it.
+
 ### Potential
 
 Select equipment, item level, and cube type; add minimum potential targets; then
@@ -389,6 +491,6 @@ equivalent `/api` reverse proxy to the FastAPI server.
 ## 📋 Upcoming Features / To-Do List
 
 - [ ] List of expected cost of current equips
-- [ ] GMS potential refactor
+- [x] GMS potential values (KMS roll probabilities retained)
 - [x] Star Force calculator
 - [x] Verify starforce costs
