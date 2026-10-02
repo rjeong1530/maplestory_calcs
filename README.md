@@ -20,6 +20,21 @@ Black Flames also has a matching cost chart at a fixed 3M mesos per flame;
 Abyssal Flames shows odds and counts only. Upgrade category selections are saved
 in the browser. Flame costs are fixed in the upgrade planner.
 
+Star Force's **Best gain per meso** order looks ahead one to six additional stars
+on each item and compares total weighted gain divided by total expected meso cost,
+including every prerequisite step. For items below 15 stars, it also compares
+targets from 16–21 stars (where supported), including the full cost of reaching
+those targets, so the six-star horizon does not hide post-15 gains.
+It selects the best range, then repeats from
+the planned star levels. Consecutive ranges for the same item merge into one row;
+earlier stars always come first. This is a rolling comparison, not a
+globally optimal spending plan.
+
+Set **Max Star Force for upgrades** beside an item's current stars to limit its
+upgrade recommendations. It defaults to the equipment cap and is saved with
+your equipment, including JSON exports. A limit at or below the current stars
+stops further Star Force recommendations for that item.
+
 Use **Export JSON** in the Equipment tab to download your current equipment
 class, items, Star Force, potentials, and flames. **Import JSON** restores an
 exported file and replaces the current equipment set and equipment class.

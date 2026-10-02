@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from './api'
 import CalculatorForm from './components/CalculatorForm'
-import FlameCalculator from './components/FlameCalculator'
+import EquipmentPlanner from './components/EquipmentPlanner'
 import Results from './components/Results'
 import StarForceCalculator from './components/StarForceCalculator'
 import './App.css'
@@ -83,7 +83,7 @@ export default function App() {
       {calculator === 'starforce' ? (
         <StarForceCalculator />
       ) : calculator !== 'potential' ? (
-        <FlameCalculator activeTab={calculator} onTabChange={setCalculator} />
+        <EquipmentPlanner activeTab={calculator} onTabChange={setCalculator} />
       ) : optionsError ? (
         <div className="panel" role="alert">
           <p className="error">{optionsError}</p>

@@ -31,6 +31,72 @@ export function restoreUpgradeSettings(saved) {
   }
 }
 
+// Compare the next six stars and, below 15, targets 16–21 to account for
+// post-15 gains. Include all prerequisite costs, then commit the winning range.
+export function orderStarforceSteps(entries) {
+  const queues = new Map()
+  entries.forEach((entry, priority) => {
+    if (!queues.has(entry.slot)) queues.set(entry.slot, [])
+    queues.get(entry.slot).push({ entry, priority })
+  })
+  for (const queue of queues.values()) {
+    queue.sort((a, b) => a.entry.start_star - b.entry.start_star)
+  }
+  const ordered = []
+  while (queues.size) {
+    let next
+    for (const queue of queues.values()) {
+      let gain = 0
+      let cost = 0
+      const startStar = queue[0].entry.start_star
+      const horizon = startStar < 15 ? 21 - startStar : 6
+      for (let index = 0; index < Math.min(horizon, queue.length); index++) {
+        const { entry } = queue[index]
+        if ((index > 0 && queue[index - 1].entry.next_star !== entry.start_star)
+          || entry.next_star !== entry.start_star + 1
+          || !Number.isFinite(entry.expected_score_gain)
+          || !Number.isFinite(entry.action_cost_mesos) || entry.action_cost_mesos <= 0) break
+        gain += entry.expected_score_gain
+        cost += entry.action_cost_mesos
+        // Traverse the bridge to 15 without treating it as an extra target.
+        if (index >= 6 && entry.next_star <= 15) continue
+        const efficiency = gain / cost
+        if (!next || efficiency > next.efficiency
+          || (efficiency === next.efficiency && queue[0].priority < next.priority)) {
+          next = { queue, count: index + 1, efficiency, priority: queue[0].priority }
+        }
+      }
+    }
+    if (!next) break
+    const slot = next.queue[0].entry.slot
+    ordered.push(...next.queue.splice(0, next.count).map(({ entry }) => entry))
+    if (!next.queue.length) queues.delete(slot)
+  }
+  return ordered
+}
+
+// Group after ranking so intervening items and nonsequential stars keep their place.
+export function combineStarforceSteps(entries) {
+  const groups = []
+  for (const entry of entries) {
+    const previous = groups.at(-1)
+    if (previous && previous.slot === entry.slot && previous.name === entry.name
+      && previous.next_star === entry.start_star && entry.next_star != null
+      && previous.expected_score_gain != null && entry.expected_score_gain != null
+      && previous.action_cost_mesos != null && entry.action_cost_mesos != null) {
+      previous.next_star = entry.next_star
+      previous.expected_score_gain += entry.expected_score_gain
+      previous.action_cost_mesos += entry.action_cost_mesos
+      previous.expected_attempts += entry.expected_attempts
+      previous.gain_per_meso = previous.action_cost_mesos
+        ? previous.expected_score_gain / previous.action_cost_mesos : null
+    } else {
+      groups.push({ ...entry })
+    }
+  }
+  return groups
+}
+
 export function buildUpgradeRequest(equipment, classStats, flameWeights, settings) {
   return {
     main_stat: classStats.main,
@@ -49,6 +115,7 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       equipment_type: item.config.equipment_type,
       potential_equipment_type: potentialEquipmentType(slot, item),
       current_star_force: item.currentStarForce ?? 0,
+      ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
       mode_by_star: item.starForceModes ?? {},
       safeguard_by_star: item.starForceSafeguards ?? {},
       boss_equipment: item.currentBossEquipment ?? item.config.boss_equipment ?? false,

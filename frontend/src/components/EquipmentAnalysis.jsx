@@ -324,6 +324,17 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
             <span>/ {maximumStarForce}★</span>
           </span>
         </label>
+        <label className="current-starforce-control">Max Star Force for upgrades
+          <input type="number" min="0" max={maximumStarForce} step="1"
+            value={item.maxStarForce ?? maximumStarForce}
+            onChange={event => {
+              const value = Number(event.target.value)
+              if (event.target.value !== '' && Number.isInteger(value)) {
+                onChange({ maxStarForce: Math.min(maximumStarForce, Math.max(0, value)) })
+              }
+            }} />
+          <small>Upgrade recommendations stop here.</small>
+        </label>
       </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
     </div>
   )

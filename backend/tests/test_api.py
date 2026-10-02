@@ -107,7 +107,7 @@ class ApiTests(unittest.TestCase):
                         self.assertEqual(row['values']['STR_PCT'], [prime - 3, prime])
                         self.assertEqual(row['values']['ALL_STAT_PCT'], [prime - 6, prime - 3])
                     self.assertEqual(rows[0]['values']['MAX_HP_PCT'],
-                                     [13.0 if level == 250 else 12.0])
+                                     [13.0 if level >= 160 else 12.0])
 
     def test_multiple_targets_and_estimates(self):
         for equipment, level, first, second in [

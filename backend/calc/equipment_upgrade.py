@@ -365,6 +365,9 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                 'action_cost_mesos': None, 'gain_per_meso': None, 'note': None,
             }
             cap = maximum_star_force(level, name)
+            planned_cap = item.get('max_star_force')
+            if planned_cap is not None:
+                cap = min(cap, planned_cap)
             # Keep one unavailable row for capped/unsupported items. Otherwise rank
             # each marginal step independently, retaining the recorded starting star.
             for start_star in range(current_star, max(current_star + 1, cap)):
@@ -377,7 +380,10 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                     )
                     starforce_entry['current_score'] = current_sf_score
                     if start_star >= cap:
-                        starforce_entry['note'] = 'Already at the equipment Star Force cap.'
+                        starforce_entry['note'] = (
+                            'Already at or above the selected maximum Star Force.'
+                            if planned_cap is not None else 'Already at the equipment Star Force cap.'
+                        )
                     else:
                         gain = starforce_weighted_score(
                             item, start_star + 1, main_stat, secondary_stats, offense_stat, flame_weights,

@@ -6,6 +6,18 @@ from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
+    def test_selected_maximum_limits_all_starforce_rankings(self):
+        request = self.plan_request(categories=['starforce'])
+        request['equipment'][0].update(current_star_force=10, max_star_force=17)
+        rankings = equipment_upgrade_plan(request)['rankings']['starforce']
+        rows = rankings['gain_per_meso_first']
+        self.assertEqual(sorted(row['next_star'] for row in rows), list(range(11, 18)))
+        for limit in (0, 10):
+            request['equipment'][0]['max_star_force'] = limit
+            rankings = equipment_upgrade_plan(request)['rankings']['starforce']
+            self.assertEqual(rankings['gain_per_meso_first'], [])
+            self.assertIn('selected maximum', rankings['unavailable'][0]['note'])
+
     @patch('backend.calc.equipment_upgrade.starforce.estimate_starforce')
     @patch('backend.calc.equipment_upgrade._potential_score_distribution')
     def test_selected_flames_use_abyssal_rates_and_skip_other_calculations(self, potential, sf):

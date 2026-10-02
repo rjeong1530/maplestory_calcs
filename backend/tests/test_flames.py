@@ -1,9 +1,48 @@
 import unittest
+from math import fsum, nextafter, inf
+from unittest.mock import patch
 
 from backend.calc.maplestory_flames import FlameConfig, FlameProbabilityEngine, ScoreWeights, score_option
 
 
 class FlameScoreTests(unittest.TestCase):
+    def test_fast_threshold_probability_matches_enumeration(self):
+        for flame_type in ('powerful', 'black', 'abyssal'):
+            for boss_equipment in (False, True):
+                for equipment_type in ('armor', 'weapon'):
+                    with self.subTest(flame_type=flame_type, boss=boss_equipment,
+                                      equipment_type=equipment_type):
+                        engine = FlameProbabilityEngine(FlameConfig(
+                            equipment_level=200, equipment_type=equipment_type,
+                            boss_equipment=boss_equipment, flame_type=flame_type,
+                            main_stat='STR', base_weapon_offense=295,
+                            weights=ScoreWeights(secondary_stat_per_main=3,
+                                                 attack_value=0.00006),
+                        ))
+                        engine.option_pool = ('STR', 'DEX', 'ATT', 'ALL_STAT_PCT')
+                        outcomes = list(engine.iter_outcomes())
+                        scores = sorted({outcome.score for outcome in outcomes})
+                        boundary = scores[len(scores) // 2]
+                        thresholds = (0, scores[0], boundary,
+                                      nextafter(boundary, -inf), nextafter(boundary, inf),
+                                      scores[-1], nextafter(scores[-1], inf))
+                        with patch.object(engine, 'iter_outcomes',
+                                          side_effect=AssertionError('Must not enumerate outcomes')):
+                            for target in thresholds:
+                                expected = fsum(outcome.probability for outcome in outcomes
+                                                if outcome.score >= target)
+                                self.assertAlmostEqual(engine.probability_at_least(target), expected)
+
+    def test_threshold_probability_does_not_round_small_scores(self):
+        engine = FlameProbabilityEngine(FlameConfig(
+            equipment_level=200, equipment_type='armor', boss_equipment=False,
+            flame_type='black', main_stat='STR', secondary_stats=(),
+            weights=ScoreWeights(attack_value=0.00000000000006),
+        ))
+        engine.option_pool = ('ATT',)
+        engine.option_count_probabilities = lambda: {1: 1.0}
+        self.assertAlmostEqual(engine.probability_at_least(0.00000000000013), 0.71)
+
     def test_boss_damage_tiers_and_weight(self):
         config = FlameConfig(
             equipment_level=200, equipment_type='weapon',

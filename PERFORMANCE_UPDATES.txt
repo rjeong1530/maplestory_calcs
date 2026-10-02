@@ -1,0 +1,28 @@
+Performance update - 2026-10-02
+Single flame calculator
+
+Changed probability_at_least() to use the aggregated score-distribution
+algorithm instead of enumerating every possible flame outcome.
+No new caching was added. Threshold calculations use unrounded scores to
+preserve fractional-score comparisons; the bulk planner's default rounding
+behavior remains unchanged.
+
+Local benchmark:
+- Level 150 armor, boss equipment, Black Flame, STR main stat,
+  default score weights, target score 120.
+- Previous outcome enumeration: 5.3214 seconds.
+- New uncached score distribution: approximately 0.0030 seconds.
+- Measured speedup: approximately 1,745 times faster.
+- Probability difference: 0.
+- This is one local calculation benchmark, not end-to-end API latency;
+  timings will vary by configuration and environment.
+
+Validation:
+- Flame regression tests passed, including fractional thresholds and
+  weapon calculations.
+- Added comparisons against outcome enumeration for all three flame types,
+  boss and non-boss equipment, armor and weapons, and score boundaries.
+- The initial broader 40-test run without failures.
+
+Implementation: backend/calc/maplestory_flames.py
+Regression tests: backend/tests/test_flames.py

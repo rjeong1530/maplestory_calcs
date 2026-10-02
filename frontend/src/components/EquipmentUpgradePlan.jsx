@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
-import { buildUpgradeRequest, UPGRADE_CATEGORIES, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
+import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, UPGRADE_CATEGORIES, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
 import './EquipmentUpgradePlan.css'
 import FlameUpgradeOrder from './FlameUpgradeOrder'
 
 const CATEGORIES = UPGRADE_CATEGORIES
 const ORDERS = {
-  weakest_first: 'Weakest current score',
   gain_per_meso_first: 'Best gain per meso',
 }
 const number = value => value == null ? 'Unavailable'
@@ -38,7 +37,8 @@ export default function EquipmentUpgradePlan({
   const rankedRows = category === 'flames'
     ? [...(rankings?.gain_per_meso_first || [])].sort((a, b) => b.improvement_probability - a.improvement_probability)
     : rankings?.[order] || []
-  const rows = category === 'starforce' ? rankedRows.slice(0, 20) : rankedRows
+  const groupedRows = category === 'starforce' ? combineStarforceSteps(orderStarforceSteps(rankedRows)) : rankedRows
+  const rows = category === 'starforce' ? groupedRows.slice(0, 20) : groupedRows
 
   useEffect(() => () => controllerRef.current?.abort(), [requestKey])
 
@@ -130,13 +130,17 @@ export default function EquipmentUpgradePlan({
             </select>
           </label>}
         </div>
-        {category !== 'flames' && <p className="hint">Scores are weighted stat points. Gain is measured for each star step or first better roll.
+        {category !== 'flames' && <p className="hint">Scores are weighted stat points. Gain is measured for each star range or first better roll.
           Efficiency is displayed as flame score gain per 100M mesos.</p>}
         {category === 'starforce' && <p className="hint">
-          Showing the top {rows.length} of {rankedRows.length} upgrades in the selected order.{' '}
-          Each row compares one additional star. Later steps require reaching their starting star first;
-          costs and gains exclude those earlier steps. Rows are sorted by the selected metric, so
-          prerequisites may appear lower in the table.
+          Showing the top {rows.length} of {groupedRows.length} upgrade ranges in the selected order.{' '}
+          Consecutive steps for the same item are combined, with total costs and gains for the range.
+          Later ranges require reaching their starting star first; costs and gains exclude those earlier steps.
+          Each item's earlier upgrades appear first. Best gain per meso compares ranges of one to six
+          additional stars per item. Items below 15 stars also compare targets from 16 to 21 stars to
+          account for post-15 gains. Every range uses total gain divided by total expected cost,
+          including all prerequisite steps. After choosing a range, it compares again from the new star levels. Consecutive ranges
+          for the same item are combined, so a displayed range may exceed six stars.
         </p>}
         {category === 'flames' ? <div className="flame-comparison">
           <div className="calculator-tabs flame-type-toggle" role="group" aria-label="Flame results to display">

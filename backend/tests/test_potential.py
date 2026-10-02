@@ -35,9 +35,9 @@ class PotentialTests(unittest.TestCase):
         for level in (160, 200):
             hat = m.get_potentials_by_line('hat', level)
             for effect in ('MAX_HP_PCT', 'MAX_MP_PCT'):
-                self.assertEqual(max(p.effects.get(effect, 0) for p in hat[1]), 12)
+                self.assertEqual(max(p.effects.get(effect, 0) for p in hat[1]), 13)
                 self.assertEqual(max(p.effects.get(effect, 0) for p in hat[2]
-                                     if p.source_tier == 'Unique'), 9)
+                                     if p.source_tier == 'Unique'), 10)
             weapon = m.get_potentials_by_line('weapon', level)
             for effect in ('BOSS_DAMAGE_PCT', 'IED_PCT'):
                 self.assertEqual(max(p.effects.get(effect, 0) for p in weapon[1]), 40)

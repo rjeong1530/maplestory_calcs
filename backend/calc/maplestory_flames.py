@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from itertools import combinations, product
-from math import ceil, comb, log
+from math import ceil, comb, fsum, log
 from typing import Dict, Iterable, Literal, Mapping, Tuple
 
 Stat = Literal['STR', 'DEX', 'INT', 'LUK']
@@ -391,10 +391,10 @@ class FlameProbabilityEngine:
                     )
 
     def probability_at_least(self, target_score: float) -> float:
-        return sum(
-            outcome.probability
-            for outcome in self.iter_outcomes()
-            if outcome.score >= target_score
+        return fsum(
+            probability
+            for score, probability in self.score_distribution(decimals=None).items()
+            if score >= target_score
         )
 
     def probability_between(self, minimum_score: float, maximum_score: float) -> float:
@@ -406,7 +406,8 @@ class FlameProbabilityEngine:
             if minimum_score <= outcome.score <= maximum_score
         )
 
-    def score_distribution(self, decimals: int = 4) -> Dict[float, float]:
+    def score_distribution(self, decimals: int | None = 4) -> Dict[float, float]:
+        """Aggregate roll scores; use None to preserve unrounded threshold comparisons."""
         option_count_probabilities = self.option_count_probabilities()
         maximum_count = max(option_count_probabilities)
         distributions: list[Dict[float, float]] = [dict() for _ in range(maximum_count + 1)]
@@ -417,14 +418,18 @@ class FlameProbabilityEngine:
             for raw_stage, stage_probability in self.raw_tier_probabilities.items():
                 stage = final_stage(raw_stage, self.config.boss_equipment)
                 # Preserve fractional weights until the complete roll is scored.
-                score = round(score_option(option_type, stage, self.config).score, 12)
+                score = score_option(option_type, stage, self.config).score
+                if decimals is not None:
+                    score = round(score, 12)
                 option_scores[score] = option_scores.get(score, 0.0) + stage_probability
 
             previous_count = min(maximum_count - 1, option_index)
             for count in range(previous_count + 1, 0, -1):
                 for previous_score, previous_probability in distributions[count - 1].items():
                     for option_score, option_probability in option_scores.items():
-                        score = round(previous_score + option_score, 12)
+                        score = previous_score + option_score
+                        if decimals is not None:
+                            score = round(score, 12)
                         distributions[count][score] = distributions[count].get(score, 0.0) + (
                             previous_probability * option_probability
                         )
@@ -433,7 +438,8 @@ class FlameProbabilityEngine:
         for count, count_probability in option_count_probabilities.items():
             subset_probability = count_probability / comb(len(self.option_pool), count)
             for score, probability in distributions[count].items():
-                score = round(score, decimals)
+                if decimals is not None:
+                    score = round(score, decimals)
                 distribution[score] = distribution.get(score, 0.0) + (
                     subset_probability * probability
                 )

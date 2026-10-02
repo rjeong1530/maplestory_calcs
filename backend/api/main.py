@@ -339,6 +339,7 @@ class UpgradeEquipmentRequest(RequestModel):
     equipment_type: Literal['armor', 'weapon']
     potential_equipment_type: str | None = None
     current_star_force: int = Field(ge=0, le=30, strict=True)
+    max_star_force: int | None = Field(default=None, ge=0, le=30, strict=True)
     current_potential: list[CurrentPotentialLine] = Field(default_factory=list, max_length=3)
     current_flames: list[CurrentFlameLine] = Field(default_factory=list, max_length=4)
     boss_equipment: bool = False

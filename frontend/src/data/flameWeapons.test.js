@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { CLASS_STATS } from './classStats.js'
 import test from 'node:test'
 import { CLASS_WEAPONS, WEAPON_SERIES, getWeaponConfig } from './flameWeapons.js'
 
 test('every class offered by the form has weapon data for all five series', () => {
-  const source = readFileSync(new URL('../components/FlameCalculator.jsx', import.meta.url), 'utf8')
-  const classSection = source.split('const CLASS_STATS = {')[1].split('\n}')[0]
-  const classes = [...classSection.matchAll(/^  (?:'([^']+)'|(\w+)): /gm)].map(match => match[1] || match[2])
+  const classes = Object.keys(CLASS_STATS)
   assert.ok(classes.length > 40)
   assert.deepEqual(Object.keys(CLASS_WEAPONS).sort(), classes.sort())
   assert.deepEqual(Object.keys(WEAPON_SERIES), ['fafnir', 'absolab', 'arcane', 'genesis', 'destiny'])

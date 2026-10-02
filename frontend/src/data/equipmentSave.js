@@ -5,6 +5,7 @@ export function serializeEquipment(equipment) {
   return Object.fromEntries(Object.entries(equipment).map(([slot, item]) => [slot, {
     id: item.id,
     current_star_force: item.currentStarForce ?? 0,
+    ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
     ...(item.starForceModes ? { mode_by_star: item.starForceModes } : {}),
     ...(item.starForceSafeguards ? { safeguard_by_star: item.starForceSafeguards } : {}),
     ...(item.needsFlameType ? { boss_equipment: item.config.boss_equipment } : {}),
@@ -48,6 +49,8 @@ export function importEquipment(text) {
     if (!choice) throw new Error(`Equipment in ${slot} is unavailable for ${saved.equipment_class}.`)
     if (!Number.isInteger(item.current_star_force) || item.current_star_force < 0
       || item.current_star_force > maxStarForceForEquipment(choice)) invalid()
+    if (item.max_star_force !== undefined && (!Number.isInteger(item.max_star_force)
+      || item.max_star_force < 0 || item.max_star_force > maxStarForceForEquipment(choice))) invalid()
     if (item.mode_by_star !== undefined && (!isObject(item.mode_by_star)
       || Object.entries(item.mode_by_star).some(([star, mode]) =>
         !/^(15|16|17|18|19|20|21)$/.test(star)
@@ -98,6 +101,9 @@ export function restoreEquipment(savedEquipment, mapleClass) {
     return equipInSlot(equipment, slot, {
       ...restoredItem,
       currentStarForce,
+      ...(Number.isInteger(savedItem.max_star_force) ? {
+        maxStarForce: Math.min(maxStarForce, Math.max(0, savedItem.max_star_force)),
+      } : {}),
       ...(isObject(savedItem.safeguard_by_star) ? { starForceSafeguards: Object.fromEntries(
         Object.entries(savedItem.safeguard_by_star).filter(([star, enabled]) =>
           /^(15|16|17)$/.test(star) && typeof enabled === 'boolean'),
