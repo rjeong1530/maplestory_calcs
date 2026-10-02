@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { apiRequest } from '../api'
+import { buildPotentialTargets } from '../data/potentialTargets'
 import TargetRow from './TargetRow'
 
 const percentiles = [50, 75, 90, 95, 99]
@@ -14,6 +16,37 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
   ])
   const [nextId, setNextId] = useState(2)
   const [selectedPercentiles, setSelectedPercentiles] = useState(percentiles)
+  const [itemOptions, setItemOptions] = useState(null)
+  const [retry, setRetry] = useState(0)
+  const optionsKey = new URLSearchParams({
+    potential_equipment_type: equipment, level: String(level), cube_type: cube,
+  }).toString()
+  const currentOptions = itemOptions?.key === optionsKey ? itemOptions : null
+  const loadingOptions = !currentOptions
+  const effects = (currentOptions?.potential?.effects ?? [])
+    .filter(effect => effect === 'ALL_STAT_PCT' || options.effects.includes(effect))
+  const availableTargets = targets.filter(row => effects.includes(row.effect))
+  const canCalculate = currentOptions?.potential?.available && availableTargets.length > 0
+
+  useEffect(() => {
+    const controller = new AbortController()
+    apiRequest(`/api/item-options?${optionsKey}`, {
+      signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+    }).then(data => {
+      if (controller.signal.aborted) return
+      const allowedEffects = data.potential.effects
+        .filter(effect => effect === 'ALL_STAT_PCT' || options.effects.includes(effect))
+      setTargets(rows => {
+        const validRows = rows.filter(row => allowedEffects.includes(row.effect))
+        return validRows.length || !allowedEffects.length
+          ? validRows : [{ id: 0, effect: allowedEffects[0], target: '1' }]
+      })
+      setItemOptions({ key: optionsKey, potential: data.potential })
+    }).catch(error => {
+      if (!controller.signal.aborted) setItemOptions({ key: optionsKey, error: error.message })
+    })
+    return () => controller.abort()
+  }, [optionsKey, options.effects, retry])
 
   function updateTarget(id, patch) {
     setTargets(rows => rows.map(row => row.id === id ? { ...row, ...patch } : row))
@@ -22,9 +55,10 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
 
   function submit(event) {
     event.preventDefault()
+    if (!canCalculate || busy) return
     onCalculate({
       equipment_type: equipment, level: Number(level), cube_type: cube,
-      targets: targets.map(({ effect, target }) => ({ effect, target: Number(target) })),
+      targets: buildPotentialTargets(availableTargets),
       percentiles: selectedPercentiles.map(value => value / 100),
     })
   }
@@ -52,17 +86,32 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
         </div>
         <div className="section-heading"><h2>Potential targets</h2><span>ALL must match</span></div>
         <p className="hint">Minimum totals across three lines. All Stat counts toward each main stat.</p>
+        {availableTargets.some(row => row.effect === 'ALL_STAT_PCT') && <p className="hint">
+          All Stat adds its percentage to STR, DEX, INT, and LUK targets, including your main and secondary stats.
+          These are combined stat totals; matching rolls do not need a specific All Stat line.
+        </p>}
+        {loadingOptions ? <p role="status">Loading obtainable potential lines…</p>
+          : currentOptions.error ? <div role="alert">
+            <p className="error">{currentOptions.error}</p>
+            <button type="button" onClick={() => {
+              setItemOptions(null)
+              setRetry(value => value + 1)
+            }}>Retry loading lines</button>
+          </div>
+            : !currentOptions.potential.available && <p className="hint">
+              No potential table is available for this equipment, level, and cube.
+            </p>}
         <div className="target-list">
-          {targets.map((row, index) => (
-            <TargetRow key={row.id} row={row} index={index} effects={options.effects}
-              usedEffects={targets.filter(item => item.id !== row.id).map(item => item.effect)}
-              onUpdate={patch => updateTarget(row.id, patch)} canRemove={targets.length > 1}
+          {availableTargets.map((row, index) => (
+            <TargetRow key={row.id} row={row} index={index} effects={effects}
+              usedEffects={availableTargets.filter(item => item.id !== row.id).map(item => item.effect)}
+              onUpdate={patch => updateTarget(row.id, patch)} canRemove={availableTargets.length > 1}
               onRemove={() => { setTargets(rows => rows.filter(item => item.id !== row.id)); onChange() }} />
           ))}
         </div>
-        <button type="button" className="secondary" disabled={targets.length >= options.effects.length}
+        <button type="button" className="secondary" disabled={!canCalculate || availableTargets.length >= effects.length}
           onClick={() => {
-            const effect = options.effects.find(value => !targets.some(row => row.effect === value))
+            const effect = effects.find(value => !availableTargets.some(row => row.effect === value))
             setTargets(rows => [...rows, { id: nextId, effect, target: '1' }])
             setNextId(value => value + 1)
             onChange()
@@ -82,9 +131,8 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             </label>
           ))}
         </div>
-        <button type="submit" className="primary">{busy ? 'Calculating…' : 'Calculate probability →'}</button>
+        <button type="submit" className="primary" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
       </fieldset>
     </form>
   )
 }
-

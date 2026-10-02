@@ -514,6 +514,8 @@ equivalent `/api` reverse proxy to the FastAPI server.
 ## 📋 Upcoming Features / To-Do List
 
 - [ ] List of expected cost of current equips
+- [ ] New Inner ability from KMS
+- [ ] Deploy
 - [x] GMS potential values (KMS roll probabilities retained)
 - [x] Star Force calculator
 - [x] Verify starforce costs
