@@ -2,7 +2,7 @@
 import math
 import unittest
 from unittest.mock import patch
-import maplestory_potential as m
+from backend.calc import maplestory_potential as m
 
 
 class PotentialTests(unittest.TestCase):

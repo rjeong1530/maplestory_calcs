@@ -1,6 +1,6 @@
 import unittest
 
-from maplestory_flames import FlameConfig, FlameProbabilityEngine, ScoreWeights, score_option
+from backend.calc.maplestory_flames import FlameConfig, FlameProbabilityEngine, ScoreWeights, score_option
 
 
 class FlameScoreTests(unittest.TestCase):

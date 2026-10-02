@@ -1,4 +1,4 @@
-from maplestory_potential import (
+from backend.calc.maplestory_potential import (
     probability_at_least,
     probability_exact,
     probability_cooldown_at_least,

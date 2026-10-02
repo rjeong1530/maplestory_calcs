@@ -1,6 +1,6 @@
 """HTTP interface for the bundled potential calculator.
 
-Run from the repository root: python -m uvicorn api:app --reload
+Run from the repository root: python -m uvicorn backend.api.main:app --reload
 """
 from typing import Annotated, Literal
 from dataclasses import asdict
@@ -8,10 +8,10 @@ from dataclasses import asdict
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-import maplestory_potential as calculator
-import maplestory_flames as flames
-import starforce_calculator as starforce
-import equipment_upgrade
+from backend.calc import maplestory_potential as calculator
+from backend.calc import maplestory_flames as flames
+from backend.calc import starforce_calculator as starforce
+from backend.calc import equipment_upgrade
 
 app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
 

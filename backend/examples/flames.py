@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from maplestory_flames import (
+from backend.calc.maplestory_flames import (
     FlameConfig,
     ScoreWeights,
     FlameProbabilityEngine,

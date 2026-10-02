@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from equipment_upgrade import equipment_upgrade_plan, maximum_star_force, starforce_weighted_score
-import starforce_calculator as starforce
+from backend.calc.equipment_upgrade import equipment_upgrade_plan, maximum_star_force, starforce_weighted_score
+from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
@@ -132,7 +132,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
             **overrides,
         }
 
-    @patch('equipment_upgrade._potential_score_distribution', return_value={0: .5, 200: .5})
+    @patch('backend.calc.equipment_upgrade._potential_score_distribution', return_value={0: .5, 200: .5})
     def test_cubes_cost_until_better_roll_and_gollux_eligibility(self, distribution):
         for cube, cost in [('red', 24_000_000), ('black', 44_000_000)]:
             result = equipment_upgrade_plan(self.plan_request(cube_type=cube))
@@ -143,7 +143,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
             self.assertEqual(entry['expected_attempts'], 2)
             self.assertEqual(entry['gain_per_meso'], 80 / cost)
 
-    @patch('equipment_upgrade._potential_score_distribution', return_value={0: 1})
+    @patch('backend.calc.equipment_upgrade._potential_score_distribution', return_value={0: 1})
     def test_starforce_cost_includes_retries_and_boom_recovery(self, distribution):
         request = self.plan_request()
         request['equipment'][0]['current_star_force'] = 20
@@ -161,7 +161,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
             {'name': 'Twilight Mark', 'slot': 'face', 'equipment_level': 140,
              'equipment_type': 'armor', 'current_star_force': 17},
         ]
-        with patch('equipment_upgrade._flame_score_distribution', return_value={0: 1}):
+        with patch('backend.calc.equipment_upgrade._flame_score_distribution', return_value={0: 1}):
             result = equipment_upgrade_plan(self.plan_request(equipment=items))
         rows = result['rankings']['starforce']['gain_per_meso_first']
         self.assertEqual(len(rows), 28)
@@ -197,16 +197,16 @@ class EquipmentUpgradeTests(unittest.TestCase):
               'current_star_force': 23}, [24, 25], True),
         ):
             with self.subTest(item=item), patch(
-                'equipment_upgrade._flame_score_distribution', return_value={0: 1}
+                'backend.calc.equipment_upgrade._flame_score_distribution', return_value={0: 1}
             ):
                 ranking = equipment_upgrade_plan(self.plan_request(equipment=[item]))['rankings']['starforce']
                 self.assertEqual(sorted(row['next_star'] for row in ranking['largest_gain_first']), targets)
                 self.assertEqual(bool(ranking['unavailable']), unavailable)
 
-    @patch('equipment_upgrade._current_flame_score', return_value=100)
-    @patch('equipment_upgrade._flame_score_distribution',
+    @patch('backend.calc.equipment_upgrade._current_flame_score', return_value=100)
+    @patch('backend.calc.equipment_upgrade._flame_score_distribution',
            return_value={0: .5, 100: .25, 120: .125, 160: .125})
-    @patch('equipment_upgrade._potential_score_distribution', return_value={0: 1})
+    @patch('backend.calc.equipment_upgrade._potential_score_distribution', return_value={0: 1})
     def test_flames_exclude_equal_and_worse_rolls(self, *mocks):
         request = self.plan_request()
         request['equipment'][0]['slot'] = 'hat'
@@ -232,7 +232,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
         self.assertIn('HP-based', result['rankings']['starforce']['unavailable'][0]['note'])
         self.assertGreater(result['rankings']['potential']['largest_gain_first'][0]['expected_score_gain'], 0)
 
-    @patch('equipment_upgrade._potential_score_distribution', return_value={0: .5, 200: .5})
+    @patch('backend.calc.equipment_upgrade._potential_score_distribution', return_value={0: .5, 200: .5})
     def test_multiple_items_are_ordered_by_score_and_gain(self, distribution):
         request = self.plan_request(cube_type='red')
         first = request['equipment'][0]
@@ -242,7 +242,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
             if ranking:
                 self.assertEqual(ranking[0]['name'], 'Weak Ring')
 
-    @patch('equipment_upgrade._potential_score_distribution', return_value={0: .5, 120: .5})
+    @patch('backend.calc.equipment_upgrade._potential_score_distribution', return_value={0: .5, 120: .5})
     def test_no_better_potential_is_unavailable(self, distribution):
         ranking = equipment_upgrade_plan(self.plan_request())['rankings']['potential']
         self.assertEqual(ranking['largest_gain_first'], [])

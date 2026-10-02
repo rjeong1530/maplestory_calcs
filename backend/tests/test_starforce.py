@@ -1,6 +1,6 @@
 import unittest
 
-from starforce_calculator import (
+from backend.calc.starforce_calculator import (
     attempt_rates,
     boom_recovery_star,
     enhancement_mode_multiplier,

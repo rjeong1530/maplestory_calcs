@@ -3,10 +3,10 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-from api import app
-import maplestory_potential as calculator
-import maplestory_flames as flames
-import starforce_calculator as starforce
+from backend.api.main import app
+from backend.calc import maplestory_potential as calculator
+from backend.calc import maplestory_flames as flames
+from backend.calc import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):

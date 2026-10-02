@@ -11,7 +11,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 BASE = 'https://maplestory.io'
-OUTPUT = Path(__file__).parent / 'frontend/src/data/equipment_140_250.json'
+OUTPUT = Path(__file__).resolve().parents[2] / 'frontend/src/data/equipment_140_250.json'
 SLOTS = {
     'Face Accessory': 'face', 'Eye Decoration': 'eye', 'Earrings': 'earring',
     'Pendant': 'pendant', 'Belt': 'belt', 'Medal': 'medal',

@@ -29,7 +29,7 @@ The default has changed from red to **black**; pass `cube_type="red"` explicitly
 for red cubes. This does not calculate tier-up or additional/bonus potential.
 
 ```python
-from maplestory_potential import probability_at_least
+from backend.calc.maplestory_potential import probability_at_least
 
 chance = probability_at_least(
     "STR_PCT", 30, equipment_type="hat", level=150, cube_type="red"
@@ -56,12 +56,12 @@ str_and_cooldown = probability_at_least(
 
 The same equipment, level and cube keywords work with `probability_exact`,
 `probability_cooldown_at_least`, and `matching_combinations`. Edit the three
-selection variables in `mapletest.py` for a simple example with roll-count estimates.
+selection variables in `backend/examples/potential.py` for a simple example with roll-count estimates.
 
 ```text
-python maplestory_potential.py --equipment gloves --level 200 --cube black --effect CRIT_DAMAGE_PCT --target 16
-python maplestory_potential.py --equipment "force shield" --level 150 --cube red --effect ATT_PCT --target 21
-python -m unittest discover -s tests -t . -v
+python -m backend.calc.maplestory_potential --equipment gloves --level 200 --cube black --effect CRIT_DAMAGE_PCT --target 16
+python -m backend.calc.maplestory_potential --equipment "force shield" --level 150 --cube red --effect ATT_PCT --target 21
+python -m unittest discover -s backend/tests -t . -v
 ```
 
 Levels: **100, 140, 150, 160, 200, 250**.
@@ -80,7 +80,7 @@ a descriptive `ValueError`; missing tables are never extrapolated.
 In this snapshot, level 250 has no table for emblem, secondary weapon, force
 shield, soul ring, shield, outfit, belt, or heart, for either cube type.
 
-Effect keys are listed in `EFFECTS` in `maplestory_potential.py`. All Stat adds to
+Effect keys are listed in `EFFECTS` in `backend/calc/maplestory_potential.py`. All Stat adds to
 each main stat. Ignore Enemy Defense (`IED_PCT`) combines multiplicatively.
 Cooldown uses negative seconds internally; `probability_at_least("COOLDOWN_SEC", 2)`
 and `probability_cooldown_at_least(2)` both ask for at least two seconds of reduction.
@@ -97,9 +97,9 @@ that rule depends on the starting potential and is not modeled here.
 `cubes_for_probability` therefore remains an independent-roll estimate. Black
 cube keep/replace decisions and meso costs are not modeled.
 
-`potential_data.json` records the retrieval timestamp and all queried tables.
+`backend/data/potential_data.json` records the retrieval timestamp and all queried tables.
 Runtime calculations work offline with Python 3.10+. To refresh the snapshot,
-run `python fetch_potential_data.py` with internet access. A failed refresh leaves
+run `python -m backend.scripts.fetch_potential_data` with internet access. A failed refresh leaves
 the previous snapshot intact.
 
 ## API
@@ -108,12 +108,12 @@ From the repository root, create a virtual environment and start FastAPI:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
-.\.venv\Scripts\python.exe -m uvicorn api:app --reload
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
+.\.venv\Scripts\python.exe -m uvicorn backend.api.main:app --reload
 ```
 
 Interactive API documentation: http://127.0.0.1:8000/docs.
-For runtime-only installs, use `requirements.txt` instead.
+For runtime-only installs, use `backend/requirements.txt` instead.
 
 - `GET /api/health`: health check.
 - `GET /api/options`: equipment types, levels, cube types, and effect keys.
@@ -255,41 +255,47 @@ that the API is reachable.
 Run calculator and API tests with:
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -t . -v
+.\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
 ```
 
-Tests live in `tests/`. Run a single suite with
-`python -m unittest tests.test_api -v` or
-`python -m unittest tests.test_potential -v` using the virtual environment.
+Tests live in `backend/tests/`. Run a single suite with
+`python -m unittest backend.tests.test_api -v` or
+`python -m unittest backend.tests.test_potential -v` using the virtual environment.
 Default discovery (`python -m unittest -v`) also works from the repository root.
 
 ## Project layout
 
+Run Python commands from the repository root using module paths (`python -m ...`).
+
 ```text
-api.py                                  FastAPI endpoints and request models
-maplestory_potential.py                 Potential probability calculator
-maplestory_flames.py                    Flame eligibility, values, and probability engine
-starforce_calculator.py                 GMS Star Force expected-cost calculator
-potential_data.json                     Bundled potential probability tables
-fetch_potential_data.py                 Potential data refresh script
-fetch_equipment_data.py                 Equipment catalog and boss-reward refresh script
-frontend/src/components/                React calculator, flame, and equipment views
-frontend/src/data/equipment_140_250.json Equipment catalog used by the equipment picker
-tests/                                  Automated calculator, API, and Star Force tests
-requirements.txt                        Runtime API dependencies
-requirements-dev.txt                    API and test dependencies
+backend/
+  api/main.py                 FastAPI endpoints and request models
+  calc/                       Potential, flame, Star Force, and upgrade calculators
+  data/potential_data.json    Bundled potential probability tables
+  scripts/                    Data refresh and accessory verification tools
+  examples/                   Runnable potential and flame examples
+  tests/                      Automated API, calculator, and data tests
+  requirements.txt            Runtime API dependencies
+  requirements-dev.txt        API and test dependencies
+frontend/
+  src/components/             React calculator, flame, and equipment views
+  src/data/                   Equipment catalog, frontend helpers, and their tests
 ```
+
+Run the examples with `python -m backend.examples.potential` or
+`python -m backend.examples.flames`. The accessory verification tool runs with
+`python -m backend.scripts.verify_accessories` and requires internet access.
 
 ## Star Force calculator
 
-`starforce_calculator.py` estimates expected meso cost, attempts, and booms to
+`backend/calc/starforce_calculator.py` estimates expected meso cost, attempts, and booms to
 reach a target star. It uses the supplied GMS base-cost formula and transition
 probabilities, with the Enhancement Mode rates and cost multipliers supplied
 for 15★–21★ attempts. See the [GMS v269 patch notes](https://www.nexon.com/maplestory/news/update/41138/updated-6-30-v-269-ride-the-lightning-patch-notes)
 for the Enhancement Mode availability rules. For example:
 
 ```powershell
-.\.venv\Scripts\python.exe starforce_calculator.py --level 200 --start 15 --target 22 --mode-18 2 --mode-19 3 --mode-20 4 --safeguard-15-17
+.\.venv\Scripts\python.exe -m backend.calc.starforce_calculator --level 200 --start 15 --target 22 --mode-18 2 --mode-19 3 --mode-20 4 --safeguard-15-17
 ```
 
 The band-wide `--mode-15-17` and `--mode-18-21` options set defaults for their
@@ -319,7 +325,7 @@ Use a current Node.js LTS release. Start the API in one terminal from the
 repository root:
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn api:app --reload
+.\.venv\Scripts\python.exe -m uvicorn backend.api.main:app --reload
 ```
 
 Then install frontend dependencies and start Vite in a second terminal:
@@ -373,8 +379,8 @@ Its boss-reward values come from item-detail `metaInfo.bossReward`; missing
 values default to false. Refresh bundled data with:
 
 ```powershell
-.\.venv\Scripts\python.exe fetch_potential_data.py
-.\.venv\Scripts\python.exe fetch_equipment_data.py
+.\.venv\Scripts\python.exe -m backend.scripts.fetch_potential_data
+.\.venv\Scripts\python.exe -m backend.scripts.fetch_equipment_data
 ```
 
 Both refresh commands need internet access. Production hosting needs an

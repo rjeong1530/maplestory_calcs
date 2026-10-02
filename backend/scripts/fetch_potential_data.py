@@ -61,5 +61,5 @@ if __name__ == '__main__':
                 print(f'Fetched {len(result)}/{len(jobs)} tables', flush=True)
     payload = dict(source=BASE, retrieved_at=datetime.now(timezone.utc).isoformat(),
                    grade='Legendary', tables=dict(sorted(result.items())))
-    Path(__file__).with_name('potential_data.json').write_text(
+    (Path(__file__).resolve().parents[1] / 'data' / 'potential_data.json').write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')

@@ -1,12 +1,12 @@
 """Check that the grouped accessory category matches Nexon's other accessories."""
 from concurrent.futures import ThreadPoolExecutor
-from fetch_potential_data import PARTS, LEVELS, fetch
+from backend.scripts.fetch_potential_data import PARTS, LEVELS, fetch
 import json
 from pathlib import Path
 
 if __name__ == '__main__':
     PARTS.update({'eye accessory': 16, 'earring': 17, 'ring': 18, 'pendant': 19})
-    data = json.loads(Path('potential_data.json').read_text(encoding='utf-8'))['tables']
+    data = json.loads((Path(__file__).resolve().parents[1] / 'data' / 'potential_data.json').read_text(encoding='utf-8'))['tables']
     jobs = [(c, e, l) for c in ('red', 'black')
             for e in ('eye accessory', 'earring', 'ring', 'pendant') for l in LEVELS]
     with ThreadPoolExecutor(max_workers=6) as pool:

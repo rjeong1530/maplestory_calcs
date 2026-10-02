@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import patch
 
-import fetch_equipment_data as importer
+from backend.scripts import fetch_equipment_data as importer
 
 
 class EquipmentDataTests(unittest.TestCase):

@@ -69,7 +69,7 @@ def _restriction(name):
 
 @lru_cache(maxsize=1)
 def _data():
-    return json.loads(Path(__file__).with_name('potential_data.json').read_text(encoding='utf-8'))['tables']
+    return json.loads((Path(__file__).resolve().parents[1] / 'data' / 'potential_data.json').read_text(encoding='utf-8'))['tables']
 
 
 def get_potentials_by_line(equipment_type='hat', level=150, cube_type='black'):

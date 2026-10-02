@@ -5,9 +5,9 @@ from functools import lru_cache
 from math import floor, fsum
 from typing import Any, Mapping
 
-import maplestory_flames as flames
-import maplestory_potential as potential
-import starforce_calculator as starforce
+from backend.calc import maplestory_flames as flames
+from backend.calc import maplestory_potential as potential
+from backend.calc import starforce_calculator as starforce
 
 
 BLACK_FLAME_COST = 3_000_000
