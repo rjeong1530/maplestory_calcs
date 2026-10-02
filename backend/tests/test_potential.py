@@ -6,6 +6,25 @@ from backend.calc import maplestory_potential as m
 
 
 class PotentialTests(unittest.TestCase):
+    def test_intermediate_levels_use_the_correct_potential_pool(self):
+        for cube in m.CUBE_TYPES:
+            for level, representative in ((110, 100), (119, 100), (120, 140),
+                                          (130, 140), (144, 140), (145, 140),
+                                          (151, 160), (180, 160), (201, 250), (225, 250)):
+                for equipment in ('hat', 'gloves', 'weapon'):
+                    with self.subTest(cube=cube, level=level, equipment=equipment):
+                        self.assertEqual(m.get_potentials_by_line(equipment, level, cube),
+                                         m.get_potentials_by_line(equipment, representative, cube))
+            self.assertEqual(m.get_potentials_by_line('secondary weapon', 110, cube),
+                             m.get_potentials_by_line('secondary weapon', 100, cube))
+            self.assertGreater(m.probability_at_least('ATT_PCT', 21,
+                equipment_type='secondary weapon', level=110, cube_type=cube), 0)
+            self.assertEqual(m.probability_at_least('COOLDOWN_SEC', 2, level=119, cube_type=cube),
+                             m.probability_at_least('COOLDOWN_SEC', 2, level=100, cube_type=cube))
+        for level in (99, 251, 110.0, True):
+            with self.assertRaises(ValueError):
+                m.get_potentials_by_line(level=level)
+
     def test_gms_values_preserve_source_probabilities_and_tiers(self):
         for cube in m.CUBE_TYPES:
             for level in (150, 160, 200, 250):
@@ -99,7 +118,7 @@ class PotentialTests(unittest.TestCase):
 
     def test_shield_categories(self):
         for cube in m.CUBE_TYPES:
-            for level in m.SUPPORTED_LEVELS:
+            for level in m.TABLE_LEVELS:
                 force = m._data()[f'{cube}|force shield|{level}']
                 self.assertEqual(force, m._data()[f'{cube}|soul ring|{level}'])
                 for equipment in ('force shield', 'soul ring', 'shield'):

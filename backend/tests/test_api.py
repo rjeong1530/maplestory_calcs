@@ -10,6 +10,37 @@ from backend.calc import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):
+    def test_intermediate_secondary_levels_support_options_and_calculation(self):
+        for level in (110, 130, 144, 145, 180):
+            with self.subTest(level=level):
+                response = self.client.get('/api/item-options', params={
+                    'level': level, 'potential_equipment_type': 'secondary weapon',
+                })
+                self.assertEqual(response.status_code, 200, response.text)
+                potential = response.json()['potential']
+                self.assertTrue(potential['available'])
+                self.assertIn('ATT_PCT', potential['effects'])
+                self.assertEqual(potential['values_by_line'][0]['values']['ATT_PCT'],
+                                 [13] if level >= 151 else [12])
+                response = self.client.post('/api/probability', json={
+                    'equipment_type': 'secondary weapon', 'level': level,
+                    'targets': [{'effect': 'ATT_PCT', 'target': 21}],
+                })
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertGreater(response.json()['probability'], 0)
+
+    def test_xenon_flame_primary_stats(self):
+        payload = self.flame_payload(equipment_type='armor', main_stat=['STR', 'DEX', 'LUK'],
+                                     secondary_stats=[])
+        payload['target_score'] = 100
+        response = self.client.post('/api/flame-probability', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertGreater(response.json()['probability'], 0)
+        payload['config']['secondary_stats'] = ['DEX']
+        self.assertEqual(self.client.post('/api/flame-probability', json=payload).status_code, 422)
+        payload['config'].update(main_stat=['STR', 'STR'], secondary_stats=[])
+        self.assertEqual(self.client.post('/api/flame-probability', json=payload).status_code, 422)
+
     def setUp(self):
         self.client = TestClient(app)
         self.addCleanup(self.client.close)

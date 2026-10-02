@@ -43,7 +43,8 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           </select>
         </label>
         <p className="hint">
-          Stats: {classStats.main} main, {classStats.secondary.join('/')} secondary,
+          Stats: {[classStats.main].flat().join(' / ')} primary,
+          {' '}{classStats.secondary.length ? `${classStats.secondary.join(' / ')} secondary` : 'no secondary stat'},
           {' '}{classStats.offense}
         </p>
 
@@ -127,7 +128,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
             required
           />
         </label>
-        <label>
+        {classStats.secondary.length > 0 && <label>
           Secondary stat per main stat
           <input
             name="secondary_stat_per_main"
@@ -137,7 +138,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
             onChange={update}
             required
           />
-        </label>
+        </label>}
         <label>
           Attack value
           <input

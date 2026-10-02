@@ -1,9 +1,10 @@
-"""Export the level 140-250 equipment catalog from MapleStory.io (stdlib only)."""
+"""Export level 140-250 equipment plus level 100-250 secondaries from MapleStory.io."""
 import argparse
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from itertools import repeat
+from http.client import HTTPException
 import json
 from pathlib import Path
 import time
@@ -29,7 +30,17 @@ CRA_HATS = {'Royal Warrior Helm', 'Royal Dunwitch Hat', 'Royal Ranger Beret',
 
 
 def keep_equipment(item):
-    if item['slot'] == 'weapon' or item['equipment_type'] == 'Katara':
+    if item['slot'] == 'secondary':
+        if not 100 <= item['level'] <= 250:
+            return False
+        if item['itemid'] // 10000 == 134:
+            return item['name'].startswith(('Fafnir ', 'AbsoLab ', 'Sweetwater ', 'Arcane Umbra ', 'Astra '))
+        # Ordinary shields occupy 1092xxx. Soul/Force Shields are separate
+        # job-specific secondaries, even though the source calls them Shields.
+        if item['itemid'] // 1000 == 1092:
+            return item['name'].startswith(('Astra ', 'Deimos ', 'Terminus '))
+        return True
+    if item['slot'] == 'weapon':
         return item['name'].startswith(('Fafnir ', 'AbsoLab ', 'AbsoLabV ',
                                         'Arcane Umbra ', 'Genesis ', 'Sealed Genesis ', 'Destiny '))
     if item['slot'] not in ARMOR_SLOTS:
@@ -54,13 +65,19 @@ def write_catalog(items, metadata):
         },
         'weapon_filter': {
             'series': ['Fafnir', 'AbsoLab', 'Arcane Umbra', 'Genesis', 'Destiny'],
-            'scope': 'Main weapons and kataras; other secondary equipment is unchanged.',
+            'scope': 'Main weapons only; secondaries, including kataras, are included from level 100.',
             'includes': 'Sealed Genesis and AbsoLabV variants.',
         },
         'deduplication': 'Exact item name; retain the entry with the lowest item ID.',
         'boss_reward_semantics': 'MapleStory.io item-detail metaInfo.bossReward; missing or non-boolean values default to false.',
         'filtered_at': datetime.now(timezone.utc).isoformat(),
-        'coverage': 'Named Equip entries in the inclusive level range from this GMS snapshot, with armor and weapons restricted to the documented sets and series. Other equipment is unfiltered. Includes legacy/event and mount equipment; presence does not imply current obtainability. Newer patches or other regions may contain additional items.',
+        'coverage': 'Level 140-250 equipment plus level 100-250 secondaries, including secondary item-ID ranges mislabeled Unknown by the source. Armor and main weapons retain their set/series filters. Includes legacy/event items; presence does not imply current obtainability.',
+        'secondary_min_level': 100,
+        'katara_filter': ['Fafnir', 'AbsoLab', 'Sweetwater', 'Arcane Umbra', 'Astra'],
+        'shield_filter': {
+            'series': ['Astra', 'Deimos', 'Terminus'],
+            'scope': 'Ordinary shields (1092xxx); Soul Shields and Force Shields are unchanged.',
+        },
         'counts_by_slot': dict(sorted(Counter(item['slot'] for item in filtered).items())),
     })
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -75,7 +92,7 @@ def fetch_json(url):
             request = Request(url, headers={'User-Agent': 'MapleEquipmentCatalog/1.0'})
             with urlopen(request, timeout=90) as response:
                 return json.load(response)
-        except (OSError, ValueError):
+        except (OSError, ValueError, HTTPException):
             if attempt == 2:
                 raise
             time.sleep(2 ** attempt)
@@ -120,13 +137,28 @@ def add_boss_reward_status(items, version):
     print(f'Boss reward status: {counts[True]} true, {counts[False]} false', flush=True)
 
 
+def is_secondary_id(item_id):
+    return item_id // 10000 in (109, 134, 135, 172)
+
+
+def in_catalog_scope(item):
+    level = item.get('requiredLevel')
+    if not isinstance(level, int):
+        return False
+    if is_secondary_id(item['id']):
+        return 100 <= level <= 250 and bool(item.get('name', '').strip())
+    return item.get('typeInfo', {}).get('overallCategory') == 'Equip' and 140 <= level <= 250
+
+
 def normalize(item):
     info = item['typeInfo']
     level = item['requiredLevel']
-    if info['overallCategory'] != 'Equip' or not 140 <= level <= 250:
+    if not in_catalog_scope(item):
         raise ValueError(f"Unexpected equipment/level: {item['id']}")
     category, kind = info['category'], info['subCategory']
-    slot = SLOTS.get(kind)
+    slot = 'secondary' if is_secondary_id(item['id']) else SLOTS.get(kind)
+    if slot == 'secondary' and kind == 'Unknown':
+        kind = 'Secondary Weapon'
     if slot is None:
         if category == 'Secondary Weapon':
             slot = 'secondary'
@@ -151,26 +183,38 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--version', help='GMS snapshot; defaults to newest ready numeric version')
     parser.add_argument('--filter-existing', action='store_true', help='Apply equipment filters locally without downloading')
+    parser.add_argument('--refresh-secondaries', action='store_true',
+                        help='Refresh secondary records only, preserving other bundled equipment')
     args = parser.parse_args()
     if args.filter_existing:
         write_catalog(json.loads(OUTPUT.read_text(encoding='utf-8')),
                       json.loads(OUTPUT.with_suffix('.meta.json').read_text(encoding='utf-8')))
         return
     version = args.version
+    existing_metadata = json.loads(OUTPUT.with_suffix('.meta.json').read_text(encoding='utf-8')) if args.refresh_secondaries else None
+    if args.refresh_secondaries and not version:
+        version = existing_metadata['version']
+    if args.refresh_secondaries and version != existing_metadata['version']:
+        raise ValueError('Secondary-only refresh must use the existing catalog version.')
     if not version:
         versions = fetch_json(f'{BASE}/api/wz')
         version = str(max(int(row['mapleVersionId']) for row in versions
                           if row['region'] == 'GMS' and row['isReady']
                           and row['mapleVersionId'].isdigit()))
     endpoint = f'{BASE}/api/GMS/{version}/item'
-    params = {'overallCategoryFilter': 'Equip', 'minLevelFilter': 140, 'maxLevelFilter': 250}
+    # Do not filter overallCategory: newer 135xxxx/172xxxx secondaries are
+    # reported as Unknown by the source's category lookup.
+    params = {'minLevelFilter': 100, 'maxLevelFilter': 250}
     items, seen = [], set()
     page_size = 500
+    start = 0
     while True:
-        page = fetch_json(f'{endpoint}?{urlencode(dict(params, startPosition=len(items), count=page_size))}')
+        page = fetch_json(f'{endpoint}?{urlencode(dict(params, startPosition=start, count=page_size))}')
         if not isinstance(page, list):
             raise ValueError('Expected a list of equipment')
         for raw in page:
+            if not in_catalog_scope(raw) or (args.refresh_secondaries and not is_secondary_id(raw['id'])):
+                continue
             item = normalize(raw)
             if item['itemid'] in seen:
                 raise ValueError('Duplicate item ID or repeated API page')
@@ -179,10 +223,17 @@ def main():
         print(f'GMS {version}: loaded {len(items)} equipment entries', flush=True)
         if len(page) < page_size:
             break
+        start += len(page)
     if not items:
         raise ValueError('Source returned no equipment; existing catalog was not overwritten')
     items.sort(key=lambda item: item['itemid'])
     add_boss_reward_status(items, version)
+    if args.refresh_secondaries:
+        existing = json.loads(OUTPUT.read_text(encoding='utf-8'))
+        existing_metadata['secondary_source_url'] = f'{endpoint}?{urlencode(params)}'
+        existing_metadata['secondaries_retrieved_at'] = datetime.now(timezone.utc).isoformat()
+        write_catalog([item for item in existing if item['slot'] != 'secondary'] + items, existing_metadata)
+        return
     metadata = {
         'source': BASE, 'region': 'GMS', 'version': version,
         'source_url': f'{endpoint}?{urlencode(params)}',

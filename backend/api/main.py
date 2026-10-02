@@ -238,7 +238,7 @@ class FlameConfigRequest(RequestModel):
     equipment_type: str
     boss_equipment: bool
     flame_type: str
-    main_stat: str
+    main_stat: str | Annotated[tuple[Literal['STR', 'DEX', 'INT', 'LUK'], ...], Field(min_length=1, max_length=3)]
     secondary_stats: tuple[str, ...]
     offense_stat: str
     weights: FlameWeightsRequest
@@ -356,7 +356,8 @@ class UpgradeEquipmentRequest(RequestModel):
 class EquipmentUpgradePlanRequest(RequestModel):
     categories: list[Literal['starforce', 'flames', 'potential']] = Field(
         default_factory=lambda: ['starforce', 'flames', 'potential'], min_length=1, max_length=3)
-    main_stat: Literal['STR', 'DEX', 'INT', 'LUK', 'HP']
+    main_stat: Literal['STR', 'DEX', 'INT', 'LUK', 'HP'] | Annotated[
+        tuple[Literal['STR', 'DEX', 'INT', 'LUK'], ...], Field(min_length=1, max_length=3)]
     secondary_stats: tuple[Literal['STR', 'DEX', 'INT', 'LUK', 'HP'], ...] = Field(max_length=3)
     offense_stat: Literal['ATT', 'MATT']
     cube_type: Literal['red', 'black'] = 'black'
@@ -368,7 +369,10 @@ class EquipmentUpgradePlanRequest(RequestModel):
     def distinct_stats(self):
         if len(set(self.secondary_stats)) != len(self.secondary_stats):
             raise ValueError('secondary_stats must be distinct.')
-        if self.main_stat in self.secondary_stats:
+        main_stats = flames.primary_stats(self.main_stat)
+        if len(set(main_stats)) != len(main_stats):
+            raise ValueError('primary stats must be distinct.')
+        if set(main_stats).intersection(self.secondary_stats):
             raise ValueError('main_stat must not appear in secondary_stats.')
         return self
 

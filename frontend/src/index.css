@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, 'Segoe UI', sans-serif;
+  font-family: Inter, "Segoe UI", sans-serif;
   color: #e9edf5;
   background: #0e1420;
   font-synthesis: none;
@@ -7,13 +7,42 @@
   -webkit-font-smoothing: antialiased;
   color-scheme: dark;
 }
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; }
-button, input, select { font: inherit; }
-button { cursor: pointer; }
-button:disabled { cursor: not-allowed; opacity: .5; }
-button, input, select { border-radius: 8px; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #a7e8ba; outline-offset: 3px; }
-h1, h2, h3, p { margin-top: 0; }
-p { line-height: 1.6; }
-
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+button,
+input,
+select {
+  border-radius: 8px;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #a7e8ba;
+  outline-offset: 3px;
+}
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+p {
+  line-height: 1.6;
+}

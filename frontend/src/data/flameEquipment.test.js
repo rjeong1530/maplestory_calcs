@@ -5,7 +5,73 @@ import {
   potentialEquipmentType,
 } from './flameEquipment.js'
 import { CLASS_WEAPONS } from './flameWeapons.js'
+import { SECONDARY_JOBS } from './secondaryEquipment.js'
 import catalog from './equipment_140_250.json' with { type: 'json' }
+
+test('every catalog secondary has explicit job restrictions', () => {
+  for (const item of catalog.filter(item => item.slot === 'secondary')) {
+    assert.ok(SECONDARY_JOBS[item.itemid]?.length, item.name)
+  }
+})
+
+test('all supported jobs retain Astra and eligible level-100 secondaries', () => {
+  for (const job of Object.keys(CLASS_WEAPONS)) {
+    const choices = equipmentChoices('secondary', job)
+    assert.ok(choices.some(item => item.name.startsWith('Astra ')), `${job}: Astra`)
+    if (job !== 'Dual Blade') {
+      assert.ok(choices.some(item => item.config.equipment_level === 100), `${job}: level 100`)
+    }
+    assert.ok(choices.every(item => SECONDARY_JOBS[item.id].includes(job)), job)
+  }
+  const xenon = equipmentChoices('secondary', 'Xenon')
+  assert.ok(xenon.some(item => item.name === 'Octa Core Controller'))
+  assert.ok(xenon.some(item => item.name === 'Astra Deca Core Controller'))
+  assert.ok(!equipmentChoices('secondary', 'Phantom').some(item => /Controller/.test(item.name)))
+  assert.ok(equipmentChoices('secondary', 'Dual Blade').some(item => item.name === 'Astra Katara'))
+})
+
+test('catalog retains only requested katara and ordinary shield series', () => {
+  assert.deepEqual(equipmentChoices('secondary', 'Dual Blade').map(item => item.name).sort(), [
+    'Fafnir Rapid Edge', 'AbsoLab Katara', 'Sweetwater Katara', 'Arcane Umbra Katara', 'Astra Katara',
+  ].sort())
+  const shields = catalog.filter(item => Math.floor(item.itemid / 1000) === 1092)
+  assert.ok(shields.some(item => item.name === 'Deimos Warrior Shield'))
+  assert.ok(shields.some(item => item.name === 'Terminus Defender'))
+  assert.ok(shields.some(item => item.name === 'Astra Sacred Aegis'))
+  assert.ok(shields.every(item => /^(Astra|Deimos|Terminus) /.test(item.name)))
+})
+
+test('secondaries distinguish jobs within the same family', () => {
+  const originalIds = new Set([1353006, 1342082, 1342101, 1342104, 1352296, 1352109, 1092126, 1352256, 1352236, 1352246, 1352226, 1098006, 1098012, 1099011, 1099023, 1092138, 1352945, 1092141, 1352957])
+  const ids = job => equipmentChoices('secondary', job).map(item => item.id).filter(id => originalIds.has(id)).sort()
+  assert.deepEqual(ids('Xenon'), [1353006])
+  assert.deepEqual(ids('Dual Blade'), [1342082, 1342101, 1342104])
+  assert.deepEqual(ids('NightLord'), [1352296])
+  assert.deepEqual(ids('Phantom'), [1352109])
+  assert.deepEqual(ids('Bishop'), [1092126, 1352256])
+  assert.deepEqual(ids('Arch Mage (Fire/Poison)'), [1092126, 1352236])
+  assert.deepEqual(ids('Arch Mage (Ice/Lightning)'), [1092126, 1352246])
+  assert.deepEqual(ids('Dark Knight'), [1352226])
+  assert.deepEqual(ids('Mihile'), [1098006, 1098012])
+  assert.deepEqual(ids('Demon Slayer'), [1099011, 1099023])
+  assert.deepEqual(ids('Demon Avenger'), ids('Demon Slayer'))
+  assert.deepEqual(ids('Evan'), [1092138, 1352945])
+  assert.deepEqual(ids('Battle Mage'), [1092141, 1352957])
+})
+
+test('Cygnus jewel is limited to the five Cygnus jobs despite its All family', () => {
+  const jobs = ['Dawn Warrior', 'Blaze Wizard', 'Wind Archer', 'Night Walker', 'Thunder Breaker']
+  for (const job of Object.keys(CLASS_WEAPONS)) {
+    assert.equal(equipmentChoices('secondary', job).some(item => item.id === 1352975), jobs.includes(job), job)
+  }
+})
+
+test('class changes remove another jobs secondary but preserve shared secondaries', () => {
+  const secondary = equipmentChoices('secondary', 'Xenon')[0]
+  assert.deepEqual(compatibleEquipment({ secondary }, 'Phantom'), {})
+  const shield = equipmentChoices('secondary', 'Bishop').find(item => item.id === 1092126)
+  assert.deepEqual(compatibleEquipment({ secondary: shield }, 'Arch Mage (Fire/Poison)'), { secondary: shield })
+})
 
 test('weapon picker filters by class and supplies calculator settings', () => {
   const weapons = equipmentChoices('weapon', 'Bishop')

@@ -149,7 +149,7 @@ for red cubes. This does not calculate tier-up or additional/bonus potential.
 
 GMS uses the higher stat-value band starting at level 151 instead of 201
 ([level bands](https://maplestorywiki.net/w/Potential)). For the supported levels
-160 and 200, main stat, ATT/MATT, damage, and critical-rate percentages gain
+151 through 200, main stat, ATT/MATT, damage, and critical-rate percentages gain
 one percentage point: Legendary 12% → 13%, Unique 9% → 10%. All Stat becomes
 10%/7%. HP/MP/DEF retain their source values in this band, following the
 [documented GMS exceptions](https://forums.maplestory.nexon.net/discussion/33097/missing-maxhp-tier-4-potentials-on-main-potential).
@@ -194,7 +194,14 @@ python -m backend.calc.maplestory_potential --equipment "force shield" --level 1
 python -m unittest discover -s backend/tests -t . -v
 ```
 
-Levels: **100, 140, 150, 160, 200, 250**.
+Levels: **every integer from 100 through 250**. The bundled source snapshots
+remain at 100, 140, 150, 160, 200, and 250. Intermediate equipment levels use
+the matching potential pool: 100-119 uses 100, 120-150 uses 140, 151-200 uses
+160, and 201-250 uses 250; exact snapshot levels retain their own tables.
+This preserves the extra hat/glove options unlocked at level 120. GMS stat
+values use the actual equipment level, including the increase at 151.
+For example, level-110 Maple Treasure secondaries use the level-100 pool
+in both the potential editor and upgrade calculations.
 
 Equipment: **weapon, emblem, secondary weapon, force shield, soul ring, shield, hat, top, bottom, outfit,
 shoes, gloves, cape, belt, shoulder accessory, accessory, heart**.
@@ -207,7 +214,7 @@ eye-accessory, earring, ring, and pendant tables. Availability of a particular
 accessory at a given level can differ; this selection represents the shared pool.
 Some equipment/level combinations do not exist in Nexon's disclosure and raise
 a descriptive `ValueError`; missing tables are never extrapolated.
-In this snapshot, level 250 has no table for emblem, secondary weapon, force
+In this snapshot, the 201-250 pool has no table for emblem, secondary weapon, force
 shield, soul ring, shield, outfit, belt, or heart, for either cube type.
 
 Effect keys are listed in `EFFECTS` in `backend/calc/maplestory_potential.py`. All Stat adds to
@@ -497,9 +504,29 @@ lines; combined flame stats are shown below the flame table. Flameable slots
 include medals. The Equipment class selector is independent of the class used
 in the Flames calculator.
 
+Secondary equipment is restricted by exact job through
+`frontend/src/data/secondaryEquipment.js`, in addition to the catalog's broad
+class families. These restrictions also apply when changing class, restoring
+saved equipment, or importing equipment JSON. Every bundled secondary has an
+explicit job mapping; new catalog secondaries require a mapping before they
+appear in the picker. Classes without a matching item in the bundled catalog
+show an empty secondary picker rather than another job's equipment.
+This filtering covers job eligibility, not main-weapon/shield pairing rules.
+
+Xenon uses STR, DEX, and LUK as equally weighted primary stats with no
+secondary stat. Flame scores and equipment upgrade rankings use all three;
+the secondary-stat weight control is hidden for Xenon. Potential All Stat %
+contributes to each primary stat, while the flame All Stat conversion remains
+controlled by the configured All Stat score weight.
+
 Selections, current lines, both class choices, and flame score weights are
 stored in the `maplestory-flame-equipment` browser cookie. The equipment
-catalog is a GMS snapshot of level-140-to-250 equipment from MapleStory.io.
+catalog is a GMS snapshot of level-140-to-250 equipment from MapleStory.io,
+with secondaries expanded to levels 100-250. The existing catalog filenames
+are retained. Secondary ID ranges include newer Astra records that the source
+labels `Unknown`. Kataras are limited to Fafnir, AbsoLab, Sweetwater, Arcane Umbra,
+and Astra. Ordinary shields are limited to Astra, Deimos, and Terminus;
+dedicated job secondaries such as Soul Shields and Force Shields are retained.
 Its boss-reward values come from item-detail `metaInfo.bossReward`; missing
 values default to false. Refresh bundled data with:
 
@@ -510,6 +537,16 @@ values default to false. Refresh bundled data with:
 
 Both refresh commands need internet access. Production hosting needs an
 equivalent `/api` reverse proxy to the FastAPI server.
+
+To refresh only secondaries using the existing catalog's GMS version:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.scripts.fetch_equipment_data --refresh-secondaries
+```
+
+This preserves other equipment and records the secondary source and retrieval
+time in the metadata. Add exact job mappings for any new secondary IDs in
+`frontend/src/data/secondaryEquipment.js`; the catalog coverage test checks this.
 
 ### Frontend routes
 

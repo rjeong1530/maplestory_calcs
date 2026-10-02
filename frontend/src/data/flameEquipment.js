@@ -1,4 +1,5 @@
 import { CLASS_WEAPONS, getWeaponConfig } from './flameWeapons.js'
+import { secondarySupportsJob } from './secondaryEquipment.js'
 import catalog from './equipment_140_250.json' with { type: 'json' }
 import catalogMetadata from './equipment_140_250.meta.json' with { type: 'json' }
 
@@ -84,6 +85,7 @@ export function equipmentChoices(slot, mapleClass) {
     .filter(([, classes]) => classes.includes(mapleClass)).map(([family]) => family)
   if (!families.length) return []
   return catalog.filter(item => (item.slot === type || (type === 'top' && item.slot === 'overall'))
+    && (type !== 'secondary' || secondarySupportsJob(item, mapleClass))
     && (item.class.includes('All') || item.class.some(family => families.includes(family))))
     .flatMap(item => {
       let config = {

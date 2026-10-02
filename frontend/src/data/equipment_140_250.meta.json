@@ -6,9 +6,9 @@
   "retrieved_at": "2026-09-30T18:00:47.271658+00:00",
   "min_level": 140,
   "max_level": 250,
-  "item_count": 470,
+  "item_count": 754,
   "class_semantics": "Broad reqJob class families, not exact playable jobs. All means no family restriction. Weapon type and special job restrictions may further limit eligibility.",
-  "coverage": "Named Equip entries in the inclusive level range from this GMS snapshot, with armor and weapons restricted to the documented sets and series. Other equipment is unfiltered. Includes legacy/event and mount equipment; presence does not imply current obtainability. Newer patches or other regions may contain additional items.",
+  "coverage": "Level 140-250 equipment plus level 100-250 secondaries, including secondary item-ID ranges mislabeled Unknown by the source. Armor and main weapons retain their set/series filters. Includes legacy/event items; presence does not imply current obtainability.",
   "slot_semantics": "Overall has its own slot value; shields and kataras use secondary. Repeated ring/pendant positions share one slot type.",
   "counts_by_slot": {
     "badge": 4,
@@ -28,7 +28,7 @@
     "pendant": 9,
     "pocket": 9,
     "ring": 11,
-    "secondary": 50,
+    "secondary": 334,
     "shoes": 15,
     "shoulder": 15,
     "top": 10,
@@ -61,10 +61,28 @@
       "Genesis",
       "Destiny"
     ],
-    "scope": "Main weapons and kataras; other secondary equipment is unchanged.",
+    "scope": "Main weapons only; secondaries, including kataras, are included from level 100.",
     "includes": "Sealed Genesis and AbsoLabV variants."
   },
   "deduplication": "Exact item name; retain the entry with the lowest item ID.",
   "boss_reward_semantics": "MapleStory.io item-detail metaInfo.bossReward; missing or non-boolean values default to false.",
-  "filtered_at": "2026-09-30T18:00:47.272662+00:00"
+  "filtered_at": "2026-10-02T20:32:10.084248+00:00",
+  "secondary_source_url": "https://maplestory.io/api/GMS/270/item?minLevelFilter=100&maxLevelFilter=250",
+  "secondaries_retrieved_at": "2026-10-02T20:27:26.841236+00:00",
+  "secondary_min_level": 100,
+  "katara_filter": [
+    "Fafnir",
+    "AbsoLab",
+    "Sweetwater",
+    "Arcane Umbra",
+    "Astra"
+  ],
+  "shield_filter": {
+    "series": [
+      "Astra",
+      "Deimos",
+      "Terminus"
+    ],
+    "scope": "Ordinary shields (1092xxx); Soul Shields and Force Shields are unchanged."
+  }
 }

@@ -6,6 +6,21 @@ from backend.calc.maplestory_flames import FlameConfig, FlameProbabilityEngine, 
 
 
 class FlameScoreTests(unittest.TestCase):
+    def test_xenon_primary_stats_are_equal_and_ignore_secondary_weight(self):
+        from backend.calc.maplestory_flames import score_values
+        for secondary_weight in (1, 10, 100):
+            config = FlameConfig(
+                equipment_level=200, equipment_type='armor', boss_equipment=True,
+                flame_type='black', main_stat=('STR', 'DEX', 'LUK'), secondary_stats=(),
+                weights=ScoreWeights(secondary_stat_per_main=secondary_weight),
+            )
+            for stat in ('STR', 'DEX', 'LUK'):
+                self.assertEqual(score_values({stat: 30}, config), 30)
+            self.assertEqual(score_values({'STR': 30, 'DEX': 20, 'LUK': 10, 'INT': 99}, config), 60)
+            self.assertEqual(score_option('STR+DEX', 5, config).score,
+                             sum(score_option('STR+DEX', 5, config).values.values()))
+            self.assertEqual(score_values({'ALL_STAT_PCT': 7}, config), 70)
+
     def test_fast_threshold_probability_matches_enumeration(self):
         for flame_type in ('powerful', 'black', 'abyssal'):
             for boss_equipment in (False, True):

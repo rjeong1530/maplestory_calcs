@@ -1,9 +1,17 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { equipmentChoices } from './flameEquipment.js'
-import { exportEquipment, importEquipment, serializeEquipment } from './equipmentSave.js'
+import { exportEquipment, importEquipment, serializeEquipment, restoreEquipment } from './equipmentSave.js'
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
+
+test('wrong-job secondaries are rejected on import and removed from saved equipment', () => {
+  const secondary = equipmentChoices('secondary', 'Xenon')[0]
+  const saved = serializeEquipment({ secondary })
+  assert.deepEqual(restoreEquipment(saved, 'Phantom'), {})
+  assert.throws(() => importEquipment(exportEquipment({ secondary }, 'Phantom')), /unavailable/)
+  assert.equal(importEquipment(exportEquipment({ secondary }, 'Xenon')).equipment.secondary.id, secondary.id)
+})
 const recordedHat = {
   ...hat, currentStarForce: 22, maxStarForce: 22, starForceModes: { 15: 3, 18: 4 },
   starForceSafeguards: { 15: true, 16: false, 17: true },

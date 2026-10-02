@@ -33,7 +33,7 @@ export const CLASS_STATS = {
   'Battle Mage': { main: 'INT', secondary: ['LUK'], offense: 'MATT' },
   'Wild Hunter': { main: 'DEX', secondary: ['STR'], offense: 'ATT' },
   Mechanic: { main: 'DEX', secondary: ['STR'], offense: 'ATT' },
-  Xenon: { main: 'STR', secondary: ['DEX', 'LUK'], offense: 'ATT' },
+  Xenon: { main: ['STR', 'DEX', 'LUK'], secondary: [], offense: 'ATT' },
   'Demon Slayer': { main: 'STR', secondary: ['DEX'], offense: 'ATT' },
   'Demon Avenger': { main: 'HP', secondary: ['STR'], offense: 'ATT' },
 
@@ -51,4 +51,3 @@ export const CLASS_STATS = {
   Hayato: { main: 'STR', secondary: ['DEX'], offense: 'ATT' },
   Kanna: { main: 'INT', secondary: ['LUK'], offense: 'MATT' },
 }
-

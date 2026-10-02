@@ -6,6 +6,39 @@ from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
+    def test_level_110_secondary_potential_upgrade(self):
+        request = self.plan_request(categories=['potential'])
+        request['equipment'][0].update(name='Maple Treasure Controller', slot='secondary',
+            equipment_level=110, potential_equipment_type='secondary weapon', current_star_force=0)
+        result = equipment_upgrade_plan(request)['rankings']['potential']
+        self.assertFalse(result['unavailable'])
+        self.assertGreater(result['gain_per_meso_first'][0]['improvement_probability'], 0)
+
+    def test_xenon_upgrade_scores_use_three_primary_stats(self):
+        from backend.calc.equipment_upgrade import _potential_current_score
+        from backend.api.main import EquipmentUpgradePlanRequest
+        request = self.plan_request(main_stat=['STR', 'DEX', 'LUK'], secondary_stats=[])
+        request = EquipmentUpgradePlanRequest(**request).model_dump()
+        item = request['equipment'][0]
+        item.update(name='Hat', slot='hat', potential_equipment_type='hat', boss_equipment=True)
+        item['current_flames'] = [{'option': stat, 'stage': 5} for stat in ('STR', 'DEX', 'LUK')]
+        settings = request['potential_weights']
+        for secondary_weight in (1, 100):
+            weights = {**self.flame_weights, 'secondary_stat_per_main': secondary_weight}
+            single = starforce_weighted_score(item, 10, 'STR', (), 'ATT', weights)
+            triple = starforce_weighted_score(item, 10, ('STR', 'DEX', 'LUK'), (), 'ATT', weights)
+            self.assertEqual(triple, 3 * single)
+            for stat in ('STR', 'DEX', 'LUK'):
+                score = _potential_current_score([{'effect': f'{stat}_PCT', 'value': 12}],
+                    ('STR', 'DEX', 'LUK'), (), 'ATT', weights, settings)
+                self.assertEqual(score, 12 * settings['base_stat_pct_value'])
+            score = _potential_current_score([{'effect': 'ALL_STAT_PCT', 'value': 7}],
+                ('STR', 'DEX', 'LUK'), (), 'ATT', weights, settings)
+            self.assertEqual(score, 21 * settings['base_stat_pct_value'])
+        result = equipment_upgrade_plan(request)
+        for category in ('flames', 'potential', 'starforce'):
+            self.assertFalse(result['rankings'][category]['unavailable'])
+
     def test_selected_maximum_limits_all_starforce_rankings(self):
         request = self.plan_request(categories=['starforce'])
         request['equipment'][0].update(current_star_force=10, max_star_force=17)

@@ -1232,6 +1232,39 @@
     "boss_reward": true
   },
   {
+    "itemid": 1092087,
+    "name": "Deimos Warrior Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 130,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092088,
+    "name": "Deimos Shadow Shield",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 130,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1092089,
+    "name": "Deimos Sage Shield",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 130,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
     "itemid": 1092113,
     "name": "Terminus Defender",
     "slot": "secondary",
@@ -1331,6 +1364,28 @@
     "boss_reward": false
   },
   {
+    "itemid": 1098003,
+    "name": "Soul Shield of Justice",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1098005,
+    "name": "Onyx Maple Soul Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
     "itemid": 1098006,
     "name": "Princess No's Soul Shield",
     "slot": "secondary",
@@ -1338,6 +1393,39 @@
       "Warrior"
     ],
     "level": 140,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1098007,
+    "name": "Frozen Soul Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1098008,
+    "name": "Maple Treasure Soul Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1098009,
+    "name": "Evolving Soul Shield of Justice",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
     "equipment_type": "Shield",
     "boss_reward": false
   },
@@ -1353,6 +1441,28 @@
     "boss_reward": false
   },
   {
+    "itemid": 1099004,
+    "name": "Force Shield of Extremes",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099010,
+    "name": "Onyx Maple Force Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
     "itemid": 1099011,
     "name": "Princess No's Accursed Shield",
     "slot": "secondary",
@@ -1360,6 +1470,50 @@
       "Warrior"
     ],
     "level": 140,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099013,
+    "name": "Frozen Force Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099014,
+    "name": "Maple Treasure Force Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099015,
+    "name": "Ruin Force Shield",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Shield",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1099016,
+    "name": "Evolving Force Shield of Extremes",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
     "equipment_type": "Shield",
     "boss_reward": false
   },
@@ -3196,6 +3350,17 @@
     "boss_reward": false
   },
   {
+    "itemid": 1342090,
+    "name": "Sweetwater Katara",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 160,
+    "equipment_type": "Katara",
+    "boss_reward": false
+  },
+  {
     "itemid": 1342101,
     "name": "AbsoLab Katara",
     "slot": "secondary",
@@ -3218,6 +3383,39 @@
     "boss_reward": true
   },
   {
+    "itemid": 1342121,
+    "name": "Astra Katara",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Katara",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352003,
+    "name": "Infinite Magic Arrows",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352008,
+    "name": "Onyx Maple Magic Arrows",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352009,
     "name": "Princess No's Accursed Arrow",
     "slot": "secondary",
@@ -3226,6 +3424,61 @@
     ],
     "level": 140,
     "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352010,
+    "name": "Frozen Magic Arrows",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352011,
+    "name": "Maple Treasure Magic Arrows",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 110,
+    "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352012,
+    "name": "Evolving Infinite Magic Arrows",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Arrow",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352103,
+    "name": "Carte Finale",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Card",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352108,
+    "name": "Carte Onyx Maple",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Card",
     "boss_reward": false
   },
   {
@@ -3240,6 +3493,72 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352110,
+    "name": "Carte Frozen",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Card",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352111,
+    "name": "Carte Maple Treasure",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 110,
+    "equipment_type": "Card",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352112,
+    "name": "Evolving Carte Dernier",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Card",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352202,
+    "name": "Virtues Medallion",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352203,
+    "name": "Evolving Virtues Medal",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352205,
+    "name": "Onyx Maple Medal",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352206,
     "name": "Princess No's Medal",
     "slot": "secondary",
@@ -3248,6 +3567,61 @@
     ],
     "level": 140,
     "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352207,
+    "name": "Frozen Medal",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352208,
+    "name": "Maple Treasure Medal",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Medal",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352212,
+    "name": "Sacred Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Rosary",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352213,
+    "name": "Evolving Sacred Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Rosary",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352215,
+    "name": "Onyx Maple Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Rosary",
     "boss_reward": false
   },
   {
@@ -3262,6 +3636,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352217,
+    "name": "Frozen Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Rosary",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352218,
+    "name": "Maple Treasure Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Rosary",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352222,
+    "name": "Berserk Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Iron Chain",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352223,
+    "name": "Evolving Berserk Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Iron Chain",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352225,
+    "name": "Onyx Maple Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Iron Chain",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352226,
     "name": "Princess No's Flower Chain",
     "slot": "secondary",
@@ -3273,6 +3702,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352227,
+    "name": "Frozen Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Iron Chain",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352228,
+    "name": "Maple Treasure Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Iron Chain",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352232,
+    "name": "Rusty Book <Epode>",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352233,
+    "name": "Evolving Rusty Book <Epode>",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352235,
+    "name": "Onyx Maple Rusty Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352236,
     "name": "Princess No's Flaming Book",
     "slot": "secondary",
@@ -3280,6 +3764,61 @@
       "Magician"
     ],
     "level": 140,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352237,
+    "name": "Frozen Rusty Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352238,
+    "name": "Maple Treasure Rusty Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352242,
+    "name": "Metallic Blue Book <Epode>",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352243,
+    "name": "Evolving Metallic Blue Book <Epode>",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352245,
+    "name": "Onyx Maple Metallic Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
     "equipment_type": "Spellbook",
     "boss_reward": false
   },
@@ -3295,6 +3834,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352247,
+    "name": "Frozen Metallic Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352248,
+    "name": "Maple Treasure Metallic Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352252,
+    "name": "White Gold Book <Epode>",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352253,
+    "name": "Evolving White Gold Book <Epode>",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352255,
+    "name": "Onyx Maple White Gold Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352256,
     "name": "Princess No's Golden Book",
     "slot": "secondary",
@@ -3303,6 +3897,61 @@
     ],
     "level": 140,
     "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352257,
+    "name": "Frozen White Gold Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352258,
+    "name": "Maple Treasure White Gold Book",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Spellbook",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352262,
+    "name": "Blasted Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrow Fletching",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352263,
+    "name": "Evolving Blasted Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrow Fletching",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352265,
+    "name": "Onyx Maple Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrow Fletching",
     "boss_reward": false
   },
   {
@@ -3317,6 +3966,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352267,
+    "name": "Frozen Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrow Fletching",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352268,
+    "name": "Maple Treasure Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 110,
+    "equipment_type": "Arrow Fletching",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352272,
+    "name": "True Shot",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352273,
+    "name": "Evolving True Shot",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352275,
+    "name": "Onyx Maple True Shot",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352276,
     "name": "Princess No's Wreath",
     "slot": "secondary",
@@ -3325,6 +4029,61 @@
     ],
     "level": 140,
     "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352277,
+    "name": "Frozen True Shot",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352278,
+    "name": "Maple Treasure True Shot",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 110,
+    "equipment_type": "Bow Thimble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352282,
+    "name": "Slashing Shadow",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Dagger Scabbard",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352283,
+    "name": "Evolving Slashing Shadow",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Dagger Scabbard",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352285,
+    "name": "Onyx Maple Shadow",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Dagger Scabbard",
     "boss_reward": false
   },
   {
@@ -3339,6 +4098,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352287,
+    "name": "Frozen Shadow",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Dagger Scabbard",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352288,
+    "name": "Maple Treasure Shadow",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 110,
+    "equipment_type": "Dagger Scabbard",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352292,
+    "name": "Death Sender Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352293,
+    "name": "Evolving Death Sender Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352295,
+    "name": "Onyx Maple Death Sender Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352296,
     "name": "Princess No's Charm",
     "slot": "secondary",
@@ -3347,6 +4161,61 @@
     ],
     "level": 140,
     "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352297,
+    "name": "Frozen Death Sender Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352298,
+    "name": "Maple Treasure Death Sender Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 110,
+    "equipment_type": "Charm",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352303,
+    "name": "Jett's Core",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Jett's Core",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352403,
+    "name": "Karma Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Orb",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352405,
+    "name": "Onyx Maple Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Orb",
     "boss_reward": false
   },
   {
@@ -3361,6 +4230,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352407,
+    "name": "Frozen Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Orb",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352408,
+    "name": "Maple Treasure Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Orb",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352409,
+    "name": "Evolving Karma Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Orb",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352503,
+    "name": "Nova Truth Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352505,
+    "name": "Nova Onyx Maple Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352506,
     "name": "Princess No's Dragon Essence",
     "slot": "secondary",
@@ -3369,6 +4293,61 @@
     ],
     "level": 140,
     "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352507,
+    "name": "Nova Frozen Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352508,
+    "name": "Maple Treasure Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352509,
+    "name": "Evolving Nova Truth Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Nova's Essence",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352604,
+    "name": "Green Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Soul Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352605,
+    "name": "Onyx Maple Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Soul Ring",
     "boss_reward": false
   },
   {
@@ -3383,6 +4362,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352607,
+    "name": "Frozen Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Soul Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352608,
+    "name": "Maple Treasure Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Soul Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352609,
+    "name": "Evolving Green Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Soul Ring",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352703,
+    "name": "Eternal Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Magnum",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352705,
+    "name": "Onyx Maple Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Magnum",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352707,
     "name": "Princess No's Magnum",
     "slot": "secondary",
@@ -3391,6 +4425,61 @@
     ],
     "level": 140,
     "equipment_type": "Magnum",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352708,
+    "name": "Frozen Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Magnum",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352709,
+    "name": "Maple Treasure Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Magnum",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352710,
+    "name": "Evolving Eternal Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352803,
+    "name": "Fire Phoenix Blade",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Kodachi",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352806,
+    "name": "Onyx Maple Blade",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Kodachi",
     "boss_reward": false
   },
   {
@@ -3405,6 +4494,39 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352809,
+    "name": "Frozen Tiger Blade",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Kodachi",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352813,
+    "name": "Golden Pearl Leaf",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Whistle",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352814,
+    "name": "Onyx Maple Pearl Leaf",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Whistle",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352815,
     "name": "Princess No's Leaf",
     "slot": "secondary",
@@ -3413,6 +4535,39 @@
     ],
     "level": 140,
     "equipment_type": "Whistle",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352817,
+    "name": "Frozen Leaf",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Whistle",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352818,
+    "name": "Maple Treasure Leaf",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Whistle",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352823,
+    "name": "Arcturus Fist",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Jett Fists",
     "boss_reward": false
   },
   {
@@ -3427,6 +4582,292 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352825,
+    "name": "Onyx Maple Claw",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Jett Fists",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352827,
+    "name": "Frozen Maple Claw",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Jett Fists",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352828,
+    "name": "Maple Treasure Fist",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Jett Fists",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352830,
+    "name": "Maple Treasure Kodachi",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352832,
+    "name": "Evolving Fire Phoenix Blade",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352840,
+    "name": "Evolving Golden Pearl Leaf",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352863,
+    "name": "Boundless Brace Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352864,
+    "name": "Frozen Brace Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352865,
+    "name": "Onyx Brace Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352866,
+    "name": "Evolving Brace Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352867,
+    "name": "Princess No's Brace Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352873,
+    "name": "Oort Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352874,
+    "name": "Frozen Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352875,
+    "name": "Onyx Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352876,
+    "name": "Evolving Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352877,
+    "name": "Maple Treasure Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352878,
+    "name": "Princess No's Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352883,
+    "name": "Imper Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352884,
+    "name": "Frozen Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352885,
+    "name": "Onyx Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352886,
+    "name": "Evolving Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352887,
+    "name": "Maple Treasure Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352888,
+    "name": "Princess No's Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352902,
+    "name": "Wrist Armor",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352903,
+    "name": "Evolving Wrist Armor",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352905,
+    "name": "Onyx Maple Wrist Armor",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352906,
     "name": "Princess No's Skull Armor",
     "slot": "secondary",
@@ -3435,6 +4876,61 @@
     ],
     "level": 140,
     "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352907,
+    "name": "Frozen Wrist Armor",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352908,
+    "name": "Maple Treasure Wrist Armor",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Wrist Band",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352912,
+    "name": "Falcon Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Ballast",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352913,
+    "name": "Evolving Falcon Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Ballast",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352915,
+    "name": "Onyx Maple Falcon Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Ballast",
     "boss_reward": false
   },
   {
@@ -3449,6 +4945,72 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352917,
+    "name": "Frozen Falcon Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Ballast",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352918,
+    "name": "Maple Treasure Falcon Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Ballast",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352922,
+    "name": "Center Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352923,
+    "name": "Evolving Center Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352926,
+    "name": "Reforged Center Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352927,
+    "name": "Onyx Maple Center Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352928,
     "name": "Princess No's Fire Bomb",
     "slot": "secondary",
@@ -3457,6 +5019,50 @@
     ],
     "level": 140,
     "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352929,
+    "name": "Frozen Center Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Powder Keg",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352932,
+    "name": "Dragon Mass",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Mass",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352933,
+    "name": "Evolving Dragon Mass",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Mass",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352934,
+    "name": "Onyx Maple Dragon Mass",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Mass",
     "boss_reward": false
   },
   {
@@ -3471,6 +5077,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352936,
+    "name": "Frozen Dragon Mass",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Mass",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352937,
+    "name": "Maple Treasure Dragon Mass",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 110,
+    "equipment_type": "Mass",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352942,
+    "name": "Dragon Master's Legacy",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352943,
+    "name": "Evolving Dragon Master's Legacy",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352944,
+    "name": "Onyx Maple Dragon Master's Legacy",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352945,
     "name": "Princess No's Dragon Legacy",
     "slot": "secondary",
@@ -3479,6 +5140,61 @@
     ],
     "level": 140,
     "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352946,
+    "name": "Frozen Dragon Master's Legacy",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352947,
+    "name": "Maple Treasure Legacy",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Document",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352952,
+    "name": "Maximizer Ball",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352953,
+    "name": "Evolving Maximizer Ball",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352955,
+    "name": "Onyx Maple Maximizer Ball",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Marble",
     "boss_reward": false
   },
   {
@@ -3493,6 +5209,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352958,
+    "name": "Frozen Maximizer Ball",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Magic Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352959,
+    "name": "Maple Treasure Equalizer Ball",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Magic Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352962,
+    "name": "Wild Heron",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrowhead",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352963,
+    "name": "Evolving Wild Heron",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrowhead",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352965,
+    "name": "Onyx Maple Wild Heron",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrowhead",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352967,
     "name": "Princess No's Arrowhead",
     "slot": "secondary",
@@ -3504,6 +5275,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1352968,
+    "name": "Frozen Wild Heron",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Arrowhead",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352969,
+    "name": "Maple Treasure Wild Beak",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 110,
+    "equipment_type": "Arrowhead",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352972,
+    "name": "Ereve Brilliance",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 100,
+    "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352973,
+    "name": "Evolving Ereve Brilliance",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 100,
+    "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352974,
+    "name": "Onyx Maple Ereve Brilliance",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 100,
+    "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
     "itemid": 1352975,
     "name": "Princess No's Floral Jewel",
     "slot": "secondary",
@@ -3512,6 +5338,63 @@
     ],
     "level": 140,
     "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352976,
+    "name": "Frozen Ereve Brilliance",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 100,
+    "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352977,
+    "name": "Maple Treasure Ereve Brilliance",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 110,
+    "equipment_type": "Jewel",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1352980,
+    "name": "Maple Treasure Center Fire Bomb",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353004,
+    "name": "Octa Core Controller",
+    "slot": "secondary",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Core Controller",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353005,
+    "name": "Onyx Maple Octo Core Controller",
+    "slot": "secondary",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Core Controller",
     "boss_reward": false
   },
   {
@@ -3527,6 +5410,64 @@
     "boss_reward": false
   },
   {
+    "itemid": 1353007,
+    "name": "Frozen Octo Core Controller",
+    "slot": "secondary",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Core Controller",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353008,
+    "name": "Maple Treasure Controller",
+    "slot": "secondary",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Core Controller",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353009,
+    "name": "Evolving Octo Core Controller",
+    "slot": "secondary",
+    "class": [
+      "Thief",
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Core Controller",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353103,
+    "name": "Golden Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353104,
+    "name": "Onyx Maple Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
     "itemid": 1353105,
     "name": "Princess No's Fox Marble",
     "slot": "secondary",
@@ -3535,6 +5476,61 @@
     ],
     "level": 140,
     "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353106,
+    "name": "Frozen Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353107,
+    "name": "Maple Treasure Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 110,
+    "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353108,
+    "name": "Evolving Golden Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Fox Marble",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353203,
+    "name": "Queen Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Chess Piece",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353204,
+    "name": "Frozen Queen Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Chess Piece",
     "boss_reward": false
   },
   {
@@ -3549,6 +5545,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1353206,
+    "name": "Maple Treasure Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 110,
+    "equipment_type": "Chess Piece",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353207,
+    "name": "Onyx Maple Queen Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Chess Piece",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353208,
+    "name": "Evolving Queen Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Chess Piece",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353303,
+    "name": "Transmitter Type-A",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Transmitter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353304,
+    "name": "Frozen Transmitter",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Transmitter",
+    "boss_reward": false
+  },
+  {
     "itemid": 1353306,
     "name": "Princess No's Transmitter",
     "slot": "secondary",
@@ -3557,6 +5608,50 @@
     ],
     "level": 140,
     "equipment_type": "Transmitter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353307,
+    "name": "Onyx Maple Transmitter",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Transmitter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353308,
+    "name": "Evolving Transmitter Type-A",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Transmitter",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353403,
+    "name": "Masterwork Charges",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Charges",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353404,
+    "name": "Frozen Charges",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Charges",
     "boss_reward": false
   },
   {
@@ -3571,6 +5666,50 @@
     "boss_reward": false
   },
   {
+    "itemid": 1353407,
+    "name": "Evolving Masterwork Charges",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Charges",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353408,
+    "name": "Onyx Maple Charges",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Charges",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353503,
+    "name": "Glory Lucent Wings",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Wings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353504,
+    "name": "Frozen Lucent Wings",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Wings",
+    "boss_reward": false
+  },
+  {
     "itemid": 1353505,
     "name": "Princess No's Lucent Wings",
     "slot": "secondary",
@@ -3579,6 +5718,61 @@
     ],
     "level": 140,
     "equipment_type": "Wings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353506,
+    "name": "Onyx Maple Lucent Wings",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Wings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353507,
+    "name": "Evolving Glory Lucent Wings",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Wings",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353603,
+    "name": "Ultimate Path",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Path",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353604,
+    "name": "Frozen Path",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Path",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353605,
+    "name": "Onyx Maple Path",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Path",
     "boss_reward": false
   },
   {
@@ -3593,6 +5787,61 @@
     "boss_reward": false
   },
   {
+    "itemid": 1353607,
+    "name": "Evolving Ultimate Path",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 100,
+    "equipment_type": "Path",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353703,
+    "name": "Perfect Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353704,
+    "name": "Frozen Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353705,
+    "name": "Evolving Perfect Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353706,
+    "name": "Onyx Maple Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
     "itemid": 1353707,
     "name": "Princess No's Immortal Relic",
     "slot": "secondary",
@@ -3601,6 +5850,435 @@
     ],
     "level": 140,
     "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353708,
+    "name": "Maple Treasure Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 110,
+    "equipment_type": "Relic",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353803,
+    "name": "Moonstone Fan Tassel",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353804,
+    "name": "Frozen Fan Tassel",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353805,
+    "name": "Onyx Maple Fan Tassel",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353806,
+    "name": "Evolving Moonstone Fan Tassel",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1353807,
+    "name": "Princess No's Fan Tassel",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354003,
+    "name": "Noble Bladebinder",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354004,
+    "name": "Frozen Shiny Bladebinder",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354005,
+    "name": "Onyx Maple Shiny Bladebinder",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354006,
+    "name": "Evolving Noble Bladebinder",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354007,
+    "name": "Princess No's Immortal Bladebinder",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354013,
+    "name": "D100 Custom Weapon Belt",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354014,
+    "name": "Frozen D100 Weapon Belt",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354015,
+    "name": "Onyx Maple D100 Weapon Belt",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354016,
+    "name": "Evolving D100 Weapon Belt",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354017,
+    "name": "Princess No's Immortal Weapon Belt",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354023,
+    "name": "Radiant Four-Jade Ornament",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354024,
+    "name": "Frozen Four-Jade Ornament",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354025,
+    "name": "Onyx Maple Four-Jade Ornament",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354026,
+    "name": "Evolving Four-Jade Ornament",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354027,
+    "name": "Princess No's Immortal Four-Jade Ornament",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354033,
+    "name": "Infinite Hex Seeker",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354034,
+    "name": "Frozen Infinite Hex Seeker",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354035,
+    "name": "Onyx Maple Infinite Hex Seeker",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354036,
+    "name": "Evolving Infinite Hex Seeker",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354037,
+    "name": "Princess No's Immortal Hex Seeker",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354043,
+    "name": "Violet Imugi Gem",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354044,
+    "name": "Onyx Imugi Gem",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354045,
+    "name": "Frozen Imugi Gem",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354046,
+    "name": "Evolving Violet Imugi Gem",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354049,
+    "name": "Princess No's Imugi Gem",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354303,
+    "name": "Shikigami Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354304,
+    "name": "Evolving Shikigami Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354305,
+    "name": "Frozen Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354306,
+    "name": "Onyx Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 100,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354307,
+    "name": "Princess No's Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 140,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1354308,
+    "name": "Pandemonium Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 160,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1354309,
+    "name": "Thousand Soul Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1354310,
+    "name": "Astra Talisman",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
     "boss_reward": false
   },
   {
@@ -5152,6 +7830,446 @@
     ],
     "level": 200,
     "equipment_type": "Mechanical Heart",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720000,
+    "name": "Astra Medallion",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720100,
+    "name": "Astra Rosary",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720200,
+    "name": "Astra Chain",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720600,
+    "name": "Astra Feather",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720700,
+    "name": "Astra Bullseye",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720800,
+    "name": "Astra Relic",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1720900,
+    "name": "Astra Charm",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721100,
+    "name": "Astra Wrist Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721200,
+    "name": "Astra Raven Eye",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721300,
+    "name": "Astra Incendiary",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721400,
+    "name": "Astra Topaz",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721600,
+    "name": "Astra Emerald",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721700,
+    "name": "Astra Obsidian",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721800,
+    "name": "Astra Sapphire",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1721900,
+    "name": "Astra White Tiger Pendulum",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1722100,
+    "name": "Astra Magic Arrows",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1722200,
+    "name": "Astra Carte",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1722300,
+    "name": "Astra Orb",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1722400,
+    "name": "Astra Fox Marble",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1722800,
+    "name": "Astra Wild Tusk",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1722900,
+    "name": "Astra Magnum",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723000,
+    "name": "Astra Deca Core Controller",
+    "slot": "secondary",
+    "class": [
+      "All"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723100,
+    "name": "Astra Charges",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723300,
+    "name": "Astra Nova Essence",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723400,
+    "name": "Astra Weapon Belt",
+    "slot": "secondary",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723500,
+    "name": "Astra Transmitter",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723600,
+    "name": "Astra Soul Ring",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723700,
+    "name": "Astra Hourglass",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723800,
+    "name": "Astra King Chess Piece",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1723900,
+    "name": "Astra Bladebinder",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1724000,
+    "name": "Astra Lucent Wings",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1724100,
+    "name": "Astra Hex Seeker",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1724200,
+    "name": "Astra Path",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1724300,
+    "name": "Astra Imugi Gem",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1724400,
+    "name": "Astra Four-Jade Ornament",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1724500,
+    "name": "Astra Diamond Fan Tassel",
+    "slot": "secondary",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1725000,
+    "name": "Astra Kodachi",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1725200,
+    "name": "Astra Brace Band",
+    "slot": "secondary",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1725300,
+    "name": "Astra Compass",
+    "slot": "secondary",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1725400,
+    "name": "Astra Keir",
+    "slot": "secondary",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Secondary Weapon",
     "boss_reward": false
   },
   {

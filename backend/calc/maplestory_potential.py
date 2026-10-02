@@ -10,7 +10,8 @@ import math
 from pathlib import Path
 import re
 
-SUPPORTED_LEVELS = (100, 140, 150, 160, 200, 250)
+TABLE_LEVELS = (100, 140, 150, 160, 200, 250)
+SUPPORTED_LEVELS = tuple(range(100, 251))
 EQUIPMENT_TYPES = ('weapon', 'emblem', 'secondary weapon', 'force shield',
     'soul ring', 'shield', 'hat', 'top',
     'bottom', 'outfit', 'shoes', 'gloves', 'cape', 'belt', 'shoulder accessory',
@@ -80,17 +81,36 @@ def _data():
     return json.loads((Path(__file__).resolve().parents[1] / 'data' / 'potential_data.json').read_text(encoding='utf-8'))['tables']
 
 
+def potential_table_level(level):
+    """Resolve intermediate levels without crossing option-pool boundaries.
+
+    Nexon's 110 tables match 100; its 120/130 tables match 140, including
+    the extra hat/glove lines unlocked at 120. GMS values are adjusted
+    separately using the actual equipment level, with the increase at 151.
+    """
+    if type(level) is not int or level not in SUPPORTED_LEVELS:
+        raise ValueError('level must be an integer from 100 to 250')
+    if level in TABLE_LEVELS:
+        return level
+    if level < 120:
+        return 100
+    if level <= 150:
+        return 140
+    if level <= 200:
+        return 160
+    return 250
+
+
 def get_potentials_by_line(equipment_type='hat', level=150, cube_type='black'):
     """Fresh tables; equipment names accept spaces or underscores."""
     equipment_type = equipment_type.lower().replace('_', ' ').strip()
     cube_type = cube_type.lower().strip()
     if equipment_type not in EQUIPMENT_TYPES:
         raise ValueError(f'equipment_type must be one of {EQUIPMENT_TYPES}')
-    if type(level) is not int or level not in SUPPORTED_LEVELS:
-        raise ValueError(f'level must be one of {SUPPORTED_LEVELS}')
+    table_level = potential_table_level(level)
     if cube_type not in CUBE_TYPES:
         raise ValueError(f'cube_type must be one of {CUBE_TYPES}')
-    raw = _data()[f'{cube_type}|{equipment_type}|{level}']
+    raw = _data()[f'{cube_type}|{equipment_type}|{table_level}']
     if raw is None:
         raise ValueError(f'Nexon lists no equipment/probability table for {equipment_type} at level {level}')
     result = {}

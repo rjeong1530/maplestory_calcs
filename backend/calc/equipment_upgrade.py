@@ -149,7 +149,7 @@ def _weapon_attack_bonus(item_level: int, base_attack: float, star: int) -> floa
 def starforce_weighted_score(
     item: Mapping[str, Any],
     star: int,
-    main_stat: str,
+    main_stat: str | tuple[str, ...],
     secondary_stats: tuple[str, ...],
     offense_stat: str,
     flame_weights: Mapping[str, float],
@@ -161,13 +161,14 @@ def starforce_weighted_score(
         raise ValueError(f'{slot} equipment cannot be Star Forced.')
     if slot in ('secondary', 'shield') and not item.get('name', '').lower().startswith('astra '):
         raise ValueError('Only Astra secondaries and shields are eligible for Star Force upgrades.')
-    if main_stat == 'HP' or 'HP' in secondary_stats:
+    main_stats = flames.primary_stats(main_stat)
+    if 'HP' in main_stats or 'HP' in secondary_stats:
         raise ValueError('HP-based Star Force scores are not yet supported.')
     if star > maximum_star_force(item_level, item.get('name', '')):
         raise ValueError('Current Star Force exceeds the equipment cap.')
     class_stat = _class_stat_bonus(item_level, star)
     stat_score = class_stat * (
-        1 + len([stat for stat in secondary_stats if stat != main_stat])
+        len(main_stats) + len([stat for stat in secondary_stats if stat not in main_stats])
         / flame_weights['secondary_stat_per_main']
     )
 
@@ -187,7 +188,7 @@ def starforce_weighted_score(
 
 
 def _potential_effect_weights(
-    main_stat: str,
+    main_stat: str | tuple[str, ...],
     secondary_stats: tuple[str, ...],
     offense_stat: str,
     flame_weights: Mapping[str, float],
@@ -196,9 +197,10 @@ def _potential_effect_weights(
     def effect(stat):
         return 'MAX_HP_PCT' if stat == 'HP' else f'{stat}_PCT'
 
-    weights = {effect(main_stat): potential_weights['base_stat_pct_value']}
+    main_stats = flames.primary_stats(main_stat)
+    weights = {effect(stat): potential_weights['base_stat_pct_value'] for stat in main_stats}
     for stat in secondary_stats:
-        if stat != main_stat:
+        if stat not in main_stats:
             weights[effect(stat)] = (
                 potential_weights['base_stat_pct_value']
                 / flame_weights['secondary_stat_per_main']
@@ -213,7 +215,7 @@ def _potential_effect_weights(
 
 def _potential_current_score(
     lines: list[Mapping[str, Any]],
-    main_stat: str,
+    main_stat: str | tuple[str, ...],
     secondary_stats: tuple[str, ...],
     offense_stat: str,
     flame_weights: Mapping[str, float],
@@ -236,7 +238,7 @@ def _potential_current_score(
 
 def _flame_config(
     item: Mapping[str, Any],
-    main_stat: str,
+    main_stat: str | tuple[str, ...],
     secondary_stats: tuple[str, ...],
     offense_stat: str,
     flame_weights: Mapping[str, float],
@@ -247,7 +249,7 @@ def _flame_config(
         equipment_type=item['equipment_type'],
         boss_equipment=item.get('boss_equipment', False),
         flame_type=flame_type,
-        main_stat='MAX_HP' if main_stat == 'HP' else main_stat,
+        main_stat=tuple('MAX_HP' if stat == 'HP' else stat for stat in flames.primary_stats(main_stat)),
         secondary_stats=tuple('MAX_HP' if stat == 'HP' else stat for stat in secondary_stats),
         offense_stat=offense_stat,
         weights=flames.ScoreWeights(**flame_weights),
@@ -269,7 +271,7 @@ def _flame_score_distribution(
     equipment_level: int,
     equipment_type: str,
     boss_equipment: bool,
-    main_stat: str,
+    main_stat: str | tuple[str, ...],
     secondary_stats: tuple[str, ...],
     offense_stat: str,
     weights: tuple[tuple[str, float], ...],
@@ -334,7 +336,7 @@ def _rank_category(entries: list[dict[str, Any]]) -> dict[str, list[dict[str, An
 
 def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
     """Rank future Star Force steps and each item's next roll improvement."""
-    main_stat = request['main_stat']
+    main_stat = flames.primary_stats(request['main_stat'])
     secondary_stats = tuple(request['secondary_stats'])
     offense_stat = request['offense_stat']
     flame_weights = request['flame_weights']

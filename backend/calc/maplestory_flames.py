@@ -73,7 +73,7 @@ class FlameConfig:
     equipment_type: EquipmentType
     boss_equipment: bool
     flame_type: FlameType
-    main_stat: Stat
+    main_stat: Stat | Tuple[Stat, ...]
     secondary_stats: Tuple[Stat, ...] = ('DEX',)
     offense_stat: OffenseStat = 'ATT'
     weights: ScoreWeights = field(default_factory=ScoreWeights)
@@ -310,11 +310,16 @@ def option_values(option_type: str, stage: int, config: FlameConfig) -> Dict[str
     raise ValueError(f'Unhandled option type: {option_type}')
 
 
+def primary_stats(main_stat: str | Tuple[str, ...]) -> Tuple[str, ...]:
+    return (main_stat,) if isinstance(main_stat, str) else tuple(main_stat)
+
+
 def score_values(values: Mapping[str, float], config: FlameConfig) -> float:
-    score = values.get(config.main_stat, 0.0)
+    main_stats = primary_stats(config.main_stat)
+    score = sum(values.get(stat, 0.0) for stat in main_stats)
 
     for secondary in config.secondary_stats:
-        if secondary != config.main_stat:
+        if secondary not in main_stats:
             score += config.weights.secondary_value(values.get(secondary, 0.0))
 
     score += values.get('ALL_STAT_PCT', 0.0) * config.weights.all_stat_pct_value
@@ -343,7 +348,10 @@ class FlameProbabilityEngine:
         self._validate()
 
     def _validate(self) -> None:
-        if self.config.main_stat in self.config.secondary_stats:
+        main_stats = primary_stats(self.config.main_stat)
+        if not main_stats or len(set(main_stats)) != len(main_stats):
+            raise ValueError('primary stats must be nonempty and distinct')
+        if set(main_stats).intersection(self.config.secondary_stats):
             raise ValueError('main_stat should not also appear in secondary_stats')
 
         if (

@@ -64,7 +64,8 @@ export default function EquipmentUpgradePlan({
       <span className="eyebrow">YOUR NEXT UPGRADE</span>
       <h2 id="upgrade-heading">Equipment upgrade order</h2>
       <p className="hint">Compare future Star Force steps and the next roll improvement on each equipped item for {equipmentClass}:
-        {' '}{classStats.main} main, {classStats.secondary.join(' / ')} secondary, {classStats.offense}.
+        {' '}{[classStats.main].flat().join(' / ')} primary,
+        {' '}{classStats.secondary.length ? `${classStats.secondary.join(' / ')} secondary` : 'no secondary stat'}, {classStats.offense}.
         Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
       <form onSubmit={submit}>
         <fieldset className="upgrade-categories">
@@ -97,7 +98,9 @@ export default function EquipmentUpgradePlan({
         </fieldset>
         <fieldset className="upgrade-weights">
           <legend>Shared flame and Star Force weights</legend>
-          {Object.entries(FLAME_WEIGHT_LABELS).map(([key, label]) => (
+          {Object.entries(FLAME_WEIGHT_LABELS)
+            .filter(([key]) => key !== 'secondary_stat_per_main' || classStats.secondary.length > 0)
+            .map(([key, label]) => (
             <label key={key}>{label}
               <input type="number" min={key === 'secondary_stat_per_main' ? '0.000001' : '0'}
                 step="any" required value={flameWeights[key]}

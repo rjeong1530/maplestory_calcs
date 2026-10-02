@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { CLASS_STATS } from './classStats.js'
 import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, restoreUpgradeSettings } from './equipmentUpgrade.js'
+
+test('Xenon requests carry three primary stats and no secondary stats', () => {
+  const request = buildUpgradeRequest({}, CLASS_STATS.Xenon, {}, restoreUpgradeSettings())
+  assert.deepEqual(request.main_stat, ['STR', 'DEX', 'LUK'])
+  assert.deepEqual(request.secondary_stats, [])
+  assert.equal(request.offense_stat, 'ATT')
+})
 
 const starStep = (start, overrides = {}) => ({
   name: 'Astra Sacred Aegis', slot: 'secondary', current_star_force: 0,
