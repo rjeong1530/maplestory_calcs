@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+from math import fsum, isfinite
 from typing import Mapping, Sequence
 
 
@@ -77,6 +78,38 @@ class StarForceEstimate:
     expected_cost: float
     expected_attempts: float
     expected_booms: float
+    attempt_estimates: tuple[dict, ...] = ()
+
+
+def _attempt_percentiles(transitions, start, percentiles):
+    """Quantiles of target hitting time, using powers of the transient matrix."""
+    if not percentiles:
+        return ()
+    size = len(transitions)
+
+    def advance(vector, matrix):
+        return [fsum(vector[i] * matrix[i][j] for i in range(size)) for j in range(size)]
+
+    initial = [float(i == start) for i in range(size)]
+    powers = [transitions]
+    # At most 2**52 attempts, so returned counts remain exact in JavaScript.
+    while fsum(advance(initial, powers[-1])) > 1 - max(percentiles) and len(powers) < 53:
+        matrix = powers[-1]
+        powers.append([advance(row, matrix) for row in matrix])
+    estimates = []
+    for percentile in percentiles:
+        threshold = 1 - percentile
+        if fsum(advance(initial, powers[-1])) > threshold:
+            estimates.append({'target_probability': percentile, 'attempts': None})
+            continue
+        vector, attempts = initial, 0
+        for exponent in range(len(powers) - 1, -1, -1):
+            candidate = advance(vector, powers[exponent])
+            if fsum(candidate) > threshold:
+                vector = candidate
+                attempts += 2 ** exponent
+        estimates.append({'target_probability': percentile, 'attempts': attempts + 1})
+    return tuple(estimates)
 
 
 def starforce_base_cost(item_level: int, current_star: int) -> int:
@@ -219,6 +252,7 @@ def estimate_starforce(
     mode_by_star: Mapping[int, int] | None = None,
     safeguard_15_17: bool = False,
     safeguard_by_star: Mapping[int, bool] | None = None,
+    percentiles: Sequence[float] = (),
 ) -> StarForceEstimate:
     """Estimate expected spend, attempts, and booms until reaching a target.
 
@@ -230,6 +264,8 @@ def estimate_starforce(
     Mode 1 rates, as GMS resets Modes 2–3 when safeguarding is enabled.
     ``safeguard_by_star`` overrides the band-wide safeguard setting per star.
     """
+    if any(isinstance(p, bool) or not isfinite(p) or not 0 < p < 1 for p in percentiles):
+        raise ValueError('Success chances must be between 0 and 1.')
     if type(item_level) is not int or item_level <= 0:
         raise ValueError('Item level must be a positive integer.')
     if type(start_star) is not int or not 0 <= start_star <= 29:
@@ -279,6 +315,7 @@ def estimate_starforce(
     matrix = [[float(row == column) for column in range(state_count)]
               for row in range(state_count)]
     attempt_costs = []
+    transitions = [[0.0] * state_count for _ in range(state_count)]
     boom_probabilities = []
 
     for star, mode in enumerate(modes):
@@ -297,11 +334,13 @@ def estimate_starforce(
         for destination, probability in destinations:
             if probability and destination < target_star:
                 matrix[star][destination] -= probability
+                transitions[star][destination] += probability
 
     expected_cost = _solve_linear_system(matrix, attempt_costs)[start_star]
     expected_attempts = _solve_linear_system(matrix, [1.0] * state_count)[start_star]
     expected_booms = _solve_linear_system(matrix, boom_probabilities)[start_star]
-    return StarForceEstimate(expected_cost, expected_attempts, expected_booms)
+    return StarForceEstimate(expected_cost, expected_attempts, expected_booms,
+                             _attempt_percentiles(transitions, start_star, percentiles))
 
 
 def main(argv: Sequence[str] | None = None) -> None:

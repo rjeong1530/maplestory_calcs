@@ -1,4 +1,5 @@
 import unittest
+from math import ceil, log1p
 
 from backend.calc.starforce_calculator import (
     attempt_rates,
@@ -11,6 +12,46 @@ from backend.calc.starforce_calculator import (
 
 
 class StarForceCalculatorTests(unittest.TestCase):
+    def test_success_chances_match_single_step_geometric_distribution(self):
+        chances = [.5, .75, .9, .95, .99]
+        result = estimate_starforce(200, 18, 19, mode_by_star={18: 4}, percentiles=chances)
+        for row in result.attempt_estimates:
+            self.assertEqual(row['attempts'], ceil(log1p(-row['target_probability']) / log1p(-.084)))
+        self.assertEqual(estimate_starforce(200, 0, 1).attempt_estimates, ())
+        for chance in (0, 1, float('nan'), float('inf'), -1):
+            with self.assertRaises(ValueError):
+                estimate_starforce(200, 0, 1, percentiles=[chance])
+
+    def test_success_chances_match_stepwise_probability_with_boom_recovery(self):
+        for safeguards in ({}, {15: True, 16: True, 17: True}):
+            chances = [.5, .75, .9, .99]
+            result = estimate_starforce(200, 15, 18, safeguard_by_star=safeguards, percentiles=chances)
+            pending = iter(result.attempt_estimates)
+            row = next(pending)
+            states = {15: 1.0}
+            cumulative = 0
+            for attempts in range(1, 10000):
+                next_states = {}
+                previous = cumulative
+                for star, mass in states.items():
+                    rates = attempt_rates(star, safeguard=safeguards.get(star, False))
+                    for destination, probability in ((star + 1, rates.success), (star, rates.maintain),
+                            (star - 1, rates.downgrade), (boom_recovery_star(star), rates.boom)):
+                        if not probability:
+                            continue
+                        if destination >= 18:
+                            cumulative += mass * probability
+                        else:
+                            next_states[destination] = next_states.get(destination, 0) + mass * probability
+                states = next_states
+                while row and cumulative >= row['target_probability']:
+                    self.assertLess(previous, row['target_probability'])
+                    self.assertEqual(row['attempts'], attempts)
+                    row = next(pending, None)
+                if row is None:
+                    break
+            self.assertIsNone(row)
+
     def test_base_cost_rounds_to_nearest_hundred(self):
         self.assertEqual(starforce_base_cost(150, 0), 136_000)
         self.assertEqual(starforce_base_cost(150, 15) % 100, 0)

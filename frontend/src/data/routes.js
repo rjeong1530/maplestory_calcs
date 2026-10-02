@@ -1,4 +1,5 @@
 export const PAGE_PATHS = {
+  home: '/',
   potential: '/calculators/potential',
   flame: '/calculators/flames',
   starforce: '/calculators/starforce',
@@ -7,7 +8,6 @@ export const PAGE_PATHS = {
 
 export function pageForPath(pathname) {
   const path = pathname.replace(/\/+$/, '') || '/'
-  if (path === '/') return 'potential'
   return Object.keys(PAGE_PATHS).find(page => PAGE_PATHS[page] === path) ?? null
 }
 

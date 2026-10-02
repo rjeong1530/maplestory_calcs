@@ -99,15 +99,6 @@ h1 {
 .page-header p {
   color: #a7b4c9;
 }
-.badge {
-  display: inline-block;
-  font-size: 12px;
-  padding: 7px 11px;
-  border: 1px solid #354133;
-  border-radius: 6px;
-  color: #d5d99a;
-  background: #242b25;
-}
 .calculator-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -208,21 +199,24 @@ button:hover:not(:disabled) {
   width: 100%;
   background: transparent;
 }
-.estimate-heading {
-  margin-top: 30px;
-}
 .percentiles {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
   margin-bottom: 28px;
 }
+.success-chances-heading {
+  font-size: 17px;
+  margin: 24px 0 10px;
+}
 .percentiles label {
   flex-direction: row;
   align-items: center;
   gap: 6px;
 }
-.percentiles input {
+.percentiles input,
+.flame-checkbox input,
+.starforce-safeguard-control input {
   width: 16px;
   height: 16px;
   accent-color: #a0e4b3;
@@ -307,7 +301,8 @@ th:last-child {
   margin-top: 22px;
   margin-bottom: 0;
 }
-.flame-fields {
+.flame-fields,
+.starforce-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 12px;
@@ -317,12 +312,6 @@ th:last-child {
   align-items: center;
   gap: 8px;
   margin-top: 18px;
-}
-.flame-checkbox input {
-  width: 16px;
-  height: 16px;
-  accent-color: #a0e4b3;
-  margin: 0;
 }
 .flame-settings > label.flame-target {
   margin-top: 28px;
@@ -350,11 +339,6 @@ th:last-child {
 .flame-weapon-settings .hint {
   margin-bottom: 0;
   line-height: 1.6;
-}
-.starforce-fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px 12px;
 }
 .starforce-form {
   min-width: 0;
@@ -393,12 +377,6 @@ th:last-child {
   justify-content: center;
   align-items: center;
   gap: 7px;
-}
-.starforce-safeguard-control input {
-  width: 16px;
-  height: 16px;
-  accent-color: #a0e4b3;
-  margin: 0;
 }
 .starforce-not-applicable {
   color: #a7b4c9;
@@ -492,9 +470,7 @@ footer {
   .panel {
     padding: 20px;
   }
-  .flame-fields {
-    grid-template-columns: 1fr;
-  }
+  .flame-fields,
   .starforce-fields {
     grid-template-columns: 1fr;
   }

@@ -9,8 +9,9 @@ const CATEGORIES = UPGRADE_CATEGORIES
 const ORDERS = {
   gain_per_meso_first: 'Best gain per meso',
 }
+const scoreFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 })
 const number = value => value == null ? 'Unavailable'
-  : new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 }).format(value)
+  : scoreFormat.format(value)
 const signed = value => value == null ? 'Unavailable'
   : `${value > 0 ? '+' : ''}${number(value)}`
 const slotName = slot => {

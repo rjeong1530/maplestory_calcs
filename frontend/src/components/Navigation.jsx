@@ -20,6 +20,8 @@ export default function Navigation({ activePage, onNavigate }) {
 
   return (
     <nav className="main-navigation" aria-label="Main navigation">
+      <a href={PAGE_PATHS.home} aria-current={activePage === 'home' ? 'page' : undefined}
+        onClick={event => onNavigate('home', event)}>Home</a>
       <details className="calculator-dropdown" ref={dropdown}
         onPointerEnter={event => {
           if (event.pointerType === 'mouse') event.currentTarget.setAttribute('open', '')

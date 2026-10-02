@@ -1,11 +1,14 @@
 import { CLASS_WEAPONS, WEAPON_KINDS, WEAPON_SERIES, getWeaponConfig } from '../data/flameWeapons'
 import { CLASS_STATS } from '../data/classStats'
+import { useState } from 'react'
+import { flamesForConfidence } from '../data/flameUpgrade'
+import SuccessChances from './SuccessChances'
+import { SUCCESS_CHANCES } from '../data/successChances'
 
-const count = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
-const percentage = value => value > 0 && value < 0.000001
-  ? value.toExponential(3) : new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 }).format(value)
+import { count, percentage } from '../data/numberFormat'
 
 export default function FlameCalculator({ form, setForm, calculation }) {
+  const [selectedChances, setSelectedChances] = useState(SUCCESS_CHANCES)
   const { busy, error, result, submit } = calculation
   const classStats = CLASS_STATS[form.maple_class]
   const isWeapon = form.equipment_type === 'weapon'
@@ -177,6 +180,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           />
         </label>
 
+        <SuccessChances selected={selectedChances} onChange={setSelectedChances} />
         <button type="submit" className="primary" disabled={busy}>
           {busy ? 'Calculating…' : 'Calculate odds'}
         </button>
@@ -202,6 +206,17 @@ export default function FlameCalculator({ form, setForm, calculation }) {
                 : `Approximately 1 in ${count(result.one_in)} rolls`}</p>
             {result.probability === 0 && <p className="hint">Try lowering your target score or changing the equipment.</p>}
             <p className="hint result-note">The chance per roll of reaching at least your target flame score.</p>
+            {selectedChances.length > 0 && <>
+              <table>
+                <caption>Flames to reach your chosen success chance</caption>
+                <thead><tr><th scope="col">Success chance</th><th scope="col">Flames</th></tr></thead>
+                <tbody>{selectedChances.map(chance => {
+                  const flames = flamesForConfidence(result.probability, chance / 100)
+                  return <tr key={chance}><td>{chance}%</td><td>{flames == null ? 'Unreachable' : count(flames)}</td></tr>
+                })}</tbody>
+              </table>
+              <p className="hint result-note">Chance of at least one roll reaching your target score, not a guaranteed number of flames.</p>
+            </>}
           </>
         )}
       </section>

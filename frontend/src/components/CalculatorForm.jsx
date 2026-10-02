@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { buildPotentialTargets } from '../data/potentialTargets'
 import TargetRow from './TargetRow'
+import SuccessChances from './SuccessChances'
+import { SUCCESS_CHANCES } from '../data/successChances'
 
-const percentiles = [50, 75, 90, 95, 99]
 const title = value => value.replaceAll('_', ' ').replace(/\b\w/g, letter => letter.toUpperCase())
 
 export default function CalculatorForm({ options, busy, onCalculate, onChange }) {
@@ -15,7 +16,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
     { id: 1, effect: 'COOLDOWN_SEC', target: '4' },
   ])
   const [nextId, setNextId] = useState(2)
-  const [selectedPercentiles, setSelectedPercentiles] = useState(percentiles)
+  const [selectedPercentiles, setSelectedPercentiles] = useState(SUCCESS_CHANCES)
   const [itemOptions, setItemOptions] = useState(null)
   const [retry, setRetry] = useState(0)
   const optionsKey = new URLSearchParams({
@@ -116,21 +117,10 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             setNextId(value => value + 1)
             onChange()
           }}>+ Add potential target</button>
-        <h2 className="estimate-heading">Cube estimates</h2>
-        <p className="hint">Choose the chances of success you want to reach.</p>
-        <div className="percentiles">
-          {percentiles.map(value => (
-            <label key={value}>
-              <input type="checkbox" checked={selectedPercentiles.includes(value)}
-                onChange={event => {
-                  setSelectedPercentiles(current => event.target.checked
-                    ? [...current, value].sort((a, b) => a - b) : current.filter(item => item !== value))
-                  onChange()
-                }} />
-              {value}%
-            </label>
-          ))}
-        </div>
+        <SuccessChances selected={selectedPercentiles} onChange={values => {
+          setSelectedPercentiles(values)
+          onChange()
+        }} />
         <button type="submit" className="primary" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
       </fieldset>
     </form>

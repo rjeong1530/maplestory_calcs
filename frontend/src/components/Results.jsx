@@ -1,6 +1,4 @@
-const count = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value)
-const percentage = value => value > 0 && value < 0.000001
-  ? value.toExponential(3) : new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 }).format(value)
+import { count, percentage } from '../data/numberFormat'
 
 export default function Results({ result, busy, error }) {
   return (

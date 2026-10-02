@@ -26,3 +26,50 @@ Validation:
 
 Implementation: backend/calc/maplestory_flames.py
 Regression tests: backend/tests/test_flames.py
+
+-----------------------------------------------------------------------
+Cleanup and performance update - 2026-10-02
+Project redundancy and optimization audit
+
+Changes:
+1. Extracted potential calculator state, API requests, and results from
+   App.jsx into components/PotentialCalculator.jsx.
+2. Added lazy imports for PotentialCalculator, StarForceCalculator, and
+   EquipmentPlanner. Added DeferredPage to mount each tool on its first
+   visit and retain that mounted page afterward. The initial landing page
+   no longer mounts hidden tools or starts their calculator API requests.
+3. Replaced the potential calculator's duplicate success-chance checkboxes
+   and percentage list with SuccessChances and SUCCESS_CHANCES, shared
+   with the flame and Star Force calculators.
+4. Added data/numberFormat.js to share integer and small-percentage
+   formatting between potential and flame results. Star Force also uses
+   the shared integer formatter for mesos.
+5. Moved Star Force rate, flame improvement chance, and equipment upgrade
+   score formatters out of per-value calls. Tables now reuse Intl formatters
+   instead of constructing one for every formatted value.
+6. Removed obsolete App.css rules for .badge and .estimate-heading.
+7. Combined identical flame and Star Force field-grid rules, including
+   their mobile layout rules, and combined matching checkbox styles.
+8. Merged duplicate button/input/select selector blocks in index.css.
+9. Removed unused EquipmentWindow.css selectors for potential-line inputs
+   and removable current-stat rows. Combined the identical equipment
+   analysis layouts into one max-width: 720px media query.
+10. Removed the obsolete flame-confidence h3 rule and the overridden
+    inline-block declaration on flame-type-badge in EquipmentUpgradePlan.css.
+11. Removed the second, redundant NON_STARFORCE_SLOTS validation in
+    backend/calc/equipment_upgrade.py. The initial validation remains.
+
+Production build comparison:
+- Initial JavaScript: 421.86 kB -> 226.65 kB (about 46% smaller).
+- Initial JavaScript, gzip: 104.60 kB -> 71.11 kB.
+- Initial CSS: 19.38 kB -> 8.84 kB; equipment CSS loads with its tool.
+- Calculator code still downloads when needed. These are initial bundle
+  sizes, not measured browser load-time improvements.
+
+Validation:
+- All 49 frontend data tests passed.
+- All 86 backend tests passed.
+- Frontend lint and production build passed after final edits.
+- Flame confidence/formatting tests passed after formatter changes.
+- Server-render smoke checks passed for the landing page, potential
+  calculator, Star Force calculator, and deferred mounting.

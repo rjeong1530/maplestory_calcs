@@ -259,6 +259,8 @@ class FlameProbabilityResult(BaseModel):
 
 
 class StarForceEstimateRequest(RequestModel):
+    percentiles: list[Annotated[float, Field(gt=0, lt=1, allow_inf_nan=False, strict=True)]] = Field(
+        default_factory=list, max_length=20)
     item_level: int = Field(gt=0, strict=True)
     start_star: int = Field(ge=0, le=29, strict=True)
     target_star: int = Field(ge=1, le=30, strict=True)
@@ -270,10 +272,16 @@ class StarForceEstimateRequest(RequestModel):
     safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
 
 
+class AttemptEstimate(BaseModel):
+    target_probability: float
+    attempts: int | None
+
+
 class StarForceEstimateResult(BaseModel):
     expected_cost: float
     expected_attempts: float
     expected_booms: float
+    attempt_estimates: list[AttemptEstimate] = Field(default_factory=list)
 
 
 class UpgradeFlameWeightsRequest(RequestModel):
@@ -462,6 +470,7 @@ def starforce_estimate(request: StarForceEstimateRequest):
             mode_by_star=request.mode_by_star,
             safeguard_15_17=request.safeguard_15_17,
             safeguard_by_star=request.safeguard_by_star,
+            percentiles=request.percentiles,
         )
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
@@ -470,6 +479,7 @@ def starforce_estimate(request: StarForceEstimateRequest):
         expected_cost=estimate.expected_cost,
         expected_attempts=estimate.expected_attempts,
         expected_booms=estimate.expected_booms,
+        attempt_estimates=estimate.attempt_estimates,
     )
 
 

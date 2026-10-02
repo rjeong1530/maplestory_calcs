@@ -180,8 +180,7 @@
   gap: 5px;
   font-size: 11px;
 }
-.current-potential-section select,
-.current-potential-lines input {
+.current-potential-section select {
   padding: 7px 8px;
 }
 .equipment-analysis .equipment-mode-table {
@@ -237,9 +236,6 @@
   align-items: end;
   gap: 10px;
   margin: 12px 0;
-}
-.current-stat-row:has(.remove) {
-  grid-template-columns: minmax(0, 1fr) 92px 30px;
 }
 .flame-tier-ranges {
   display: flex;
@@ -352,11 +348,8 @@
   .equipment-slot > span {
     font-size: 8px;
   }
-  .equipment-analysis-sections {
-    grid-template-columns: 1fr;
-  }
 }
-@media (min-width: 481px) and (max-width: 720px) {
+@media (max-width: 720px) {
   .equipment-analysis-sections {
     grid-template-columns: 1fr;
   }

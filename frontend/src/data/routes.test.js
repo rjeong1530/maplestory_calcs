@@ -3,7 +3,7 @@ import test from 'node:test'
 import { PAGE_PATHS, pageForPath, isPlainNavigation } from './routes.js'
 
 test('root and calculator/equipment URLs resolve to their pages', () => {
-  assert.equal(pageForPath('/'), 'potential')
+  assert.equal(pageForPath('/'), 'home')
   for (const [page, path] of Object.entries(PAGE_PATHS)) {
     assert.equal(pageForPath(path), page)
     assert.equal(pageForPath(`${path}/`), page)

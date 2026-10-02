@@ -10,6 +10,18 @@ from backend.calc import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):
+    def test_starforce_success_chance_estimates(self):
+        payload = {'item_level': 200, 'start_star': 18, 'target_star': 19,
+                   'mode_by_star': {'18': 4}, 'percentiles': [.5, .99]}
+        response = self.client.post('/api/starforce-estimate', json=payload)
+        self.assertEqual(response.status_code, 200, response.text)
+        rows = response.json()['attempt_estimates']
+        self.assertEqual([row['target_probability'] for row in rows], [.5, .99])
+        self.assertEqual([row['attempts'] for row in rows], [8, 53])
+        for value in (0, 1, -1):
+            payload['percentiles'] = [value]
+            self.assertEqual(self.client.post('/api/starforce-estimate', json=payload).status_code, 422)
+
     def test_intermediate_secondary_levels_support_options_and_calculation(self):
         for level in (110, 130, 144, 145, 180):
             with self.subTest(level=level):

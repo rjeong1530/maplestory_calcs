@@ -182,8 +182,6 @@ def starforce_weighted_score(
         if slot == 'gloves':
             attack += _GLOVE_ATTACK_BY_STAR[15]
 
-    if slot in NON_STARFORCE_SLOTS:
-        raise ValueError(f'{slot} equipment cannot be Star Forced.')
     return stat_score + attack * flame_weights['attack_value']
 
 

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
+import SuccessChances from './SuccessChances'
+import { SUCCESS_CHANCES } from '../data/successChances'
 
-const formatMesos = value => new Intl.NumberFormat('en-US', {
-  maximumFractionDigits: 0,
-}).format(value)
-const formatRate = value => new Intl.NumberFormat('en-US', {
+import { count as formatMesos } from '../data/numberFormat'
+const rateFormat = new Intl.NumberFormat('en-US', {
   style: 'percent', maximumFractionDigits: 4,
-}).format(value)
+})
+const formatRate = value => rateFormat.format(value)
 
 const initialForm = {
   item_level: '200',
@@ -18,6 +19,7 @@ const initialForm = {
 
 export default function StarForceCalculator() {
   const [form, setForm] = useState(initialForm)
+  const [selectedChances, setSelectedChances] = useState(SUCCESS_CHANCES)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
@@ -80,6 +82,7 @@ export default function StarForceCalculator() {
     setResult(null)
 
     const payload = {
+      percentiles: selectedChances.map(chance => chance / 100),
       item_level: Number(form.item_level),
       start_star: Number(form.start_star),
       target_star: Number(form.target_star),
@@ -164,6 +167,11 @@ export default function StarForceCalculator() {
             <p className="hint starforce-rules-note">
               Safeguarding applies only to selected 15★–17★ attempts. Boom recovery follows the star-specific rules.
             </p>
+            <SuccessChances selected={selectedChances} onChange={chances => {
+              setSelectedChances(chances)
+              setResult(null)
+              setError('')
+            }} />
             <button type="submit" className="primary" disabled={busy}>
               {busy ? 'Calculating…' : 'Calculate expected cost'}
             </button>
@@ -197,6 +205,19 @@ export default function StarForceCalculator() {
                       <dd>{result.expected_booms.toLocaleString('en-US', { maximumFractionDigits: 3 })}</dd>
                     </div>
                   </dl>
+                  {result.attempt_estimates?.length > 0 && <>
+                    <table>
+                      <caption>Attempts to reach your target stars</caption>
+                      <thead><tr><th scope="col">Success chance</th><th scope="col">Attempts</th></tr></thead>
+                      <tbody>{result.attempt_estimates.map(estimate => (
+                        <tr key={estimate.target_probability}>
+                          <td>{formatRate(estimate.target_probability)}</td>
+                          <td>{estimate.attempts == null ? 'Beyond calculation limit' : formatMesos(estimate.attempts)}</td>
+                        </tr>
+                      ))}</tbody>
+                    </table>
+                    <p className="hint result-note">Chance of reaching the target within this many attempts, including failed attempts and boom recovery. These are attempt counts, not meso budgets or guarantees.</p>
+                  </>}
                   <p className="hint result-note">
                     Expected mesos exclude item replacement costs, discounts, and event modifiers.
                   </p>

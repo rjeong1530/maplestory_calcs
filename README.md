@@ -490,6 +490,12 @@ single flame roll. Weapon flame values use the selected weapon configuration
 and its base offense. The flame engine determines eligible options and tier
 ranges from equipment type, item level, and boss-equipment status.
 
+The flame and Star Force calculators offer 50%, 75%, 90%, 95%, and 99%
+success-chance estimates. Flames show the rolls needed for at least one roll
+to meet the target score. Star Force shows the attempts needed to reach the
+target stars, including failures, safeguards, and boom recovery. These are
+attempt-count percentiles, not guaranteed counts or meso-budget percentiles.
+
 ### Equipment
 
 Select gear in the equipment window. Below the potential inputs, choose enhancement
@@ -550,7 +556,8 @@ time in the metadata. Add exact job mappings for any new secondary IDs in
 
 ### Frontend routes
 
-- `/` and `/calculators/potential`: potential calculator
+- `/`: landing page with links and descriptions for all four tools
+- `/calculators/potential`: potential calculator
 - `/calculators/flames`: flame calculator
 - `/calculators/starforce`: Star Force calculator
 - `/equipment`: equipment and upgrade planning

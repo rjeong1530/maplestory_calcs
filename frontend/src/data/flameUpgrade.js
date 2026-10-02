@@ -1,3 +1,5 @@
+const chanceFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 })
+
 export const FLAME_CONFIDENCES = [0.25, 0.5, 0.75, 0.99]
 
 export function flamesForConfidence(probability, confidence) {
@@ -10,7 +12,7 @@ export function formatFlameChance(probability) {
   const percent = probability * 100
   return `${percent > 0 && percent < 0.001
     ? percent.toPrecision(2)
-    : new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 }).format(percent)}%`
+    : chanceFormat.format(percent)}%`
 }
 
 export function costForConfidence(probability, confidence, costPerFlame) {
