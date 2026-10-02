@@ -12,6 +12,14 @@ planning MapleStory potentials, flames, and Star Force upgrades. The web app has
 - **Equipment** lets you select gear, record its current potential and flame
   lines, review combined flame stats, and compare expected upgrade gains and costs.
 
+In **Equipment upgrade order**, select Star Force, Flames, and/or Potential to
+calculate only those upgrade orders. Flames calculates both Black and Abyssal results;
+use the icon toggle to display either type instantly without recalculating.
+Each has flame counts for a 25%, 50%, 75%, or 99% chance of improvement.
+Black Flames also has a matching cost chart at a fixed 3M mesos per flame;
+Abyssal Flames shows odds and counts only. Upgrade category selections are saved
+in the browser. Flame costs are fixed in the upgrade planner.
+
 Use **Export JSON** in the Equipment tab to download your current equipment
 class, items, Star Force, potentials, and flames. **Import JSON** restores an
 exported file and replaces the current equipment set and equipment class.
@@ -58,6 +66,62 @@ Run backend commands from the repository root and frontend commands from
 `frontend/`. Examples using plain `python` assume the virtual environment is
 activated; otherwise use `.\.venv\Scripts\python.exe`. On macOS/Linux, use
 `python3 -m venv .venv` and `.venv/bin/python` in place of the Windows executable.
+
+## Project layout
+
+Run Python commands from the repository root using module paths (`python -m ...`).
+
+```text
+maplestory_app/
+  README.md
+  backend/
+    api/main.py                       FastAPI endpoints and request models
+    calc/
+      maplestory_potential.py          GMS values with KMS potential probabilities
+      maplestory_flames.py             Flame probabilities and scores
+      starforce_calculator.py          Star Force costs and expected outcomes
+      equipment_upgrade.py            Equipment upgrade scores and rankings
+    data/potential_data.json          Original KMS probability snapshot
+    examples/
+      potential.py                    Potential calculation examples
+      flames.py                       Flame calculation examples
+    scripts/
+      fetch_potential_data.py         Refresh the KMS probability snapshot
+      fetch_equipment_data.py         Refresh the frontend GMS equipment catalog
+      verify_accessories.py           Compare Nexon accessory probability tables
+    tests/                            Python unittest suites
+    requirements.txt                  FastAPI, Pydantic, and Uvicorn
+    requirements-dev.txt              Runtime dependencies plus HTTP test client
+  frontend/
+    index.html                        Vite HTML entry point
+    package.json                      Frontend dependencies and npm scripts
+    package-lock.json                 Locked dependency versions
+    vite.config.js                    React plugin and development API proxy
+    README.md                         Frontend-specific instructions
+    src/
+      main.jsx                        React entry point
+      App.jsx                         Calculator tabs and potential state
+      api.js                          Shared API request handling
+      App.css                         Application styles
+      index.css                       Shared styles
+      components/                     Calculator, equipment, and upgrade views
+      data/
+        equipment_140_250.json        Bundled GMS equipment catalog
+        equipment_140_250.meta.json   Catalog source and filtering metadata
+        flameEquipment.js            Equipment slots and class mappings
+        flameWeapons.js              Weapon flame configurations
+        starforce.js                 Equipment star caps and mode helpers
+        equipmentSave.js             Equipment import/export and restoration
+        equipmentUpgrade.js          Upgrade-planner request construction
+        *.test.js                    Node data-helper tests
+```
+
+Python package directories also contain `__init__.py`. The local `.venv/`,
+`frontend/node_modules/`, and generated `frontend/dist/` are ignored by Git.
+
+Run the examples with `python -m backend.examples.potential` or
+`python -m backend.examples.flames`. The accessory verification tool runs with
+`python -m backend.scripts.verify_accessories` and requires internet access.
 
 ## Potential calculator
 
@@ -154,6 +218,38 @@ upgrade planner separately estimates the cost of obtaining a better score.
 Runtime calculations work offline with Python 3.10+. To refresh the snapshot,
 run `python -m backend.scripts.fetch_potential_data` with internet access. A failed refresh leaves
 the previous snapshot intact.
+
+## Star Force calculator
+
+`backend/calc/starforce_calculator.py` estimates expected meso cost, attempts, and booms to
+reach a target star. It uses the supplied GMS base-cost formula and transition
+probabilities, with the Enhancement Mode rates and cost multipliers supplied
+for 15★–21★ attempts. See the [GMS v269 patch notes](https://www.nexon.com/maplestory/news/update/41138/updated-6-30-v-269-ride-the-lightning-patch-notes)
+for the Enhancement Mode availability rules. For example:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.calc.starforce_calculator --level 200 --start 15 --target 22 --mode-18 2 --mode-19 3 --mode-20 4 --safeguard-15-17
+```
+
+The band-wide `--mode-15-17` and `--mode-18-21` options set defaults for their
+respective ranges. Optional `--mode-15` through `--mode-21` arguments override
+the mode for an individual transition (for example, `--mode-18 2` selects Mode
+2 from 18★ to 19★). GMS does not allow Enhancement Mode 4 from 15★ to 17★.
+Outside 15★–21★, the supplied base rates and base costs are used. The supplied
+rates include GMS's automatic Star Catching success-rate bonus.
+
+`--safeguard-15-17` safeguards attempts from 15★ to 17★: the cost is 3x base,
+booms are removed, and failed attempts maintain the current star. As in GMS,
+safeguarding resets Enhancement Mode to Mode 1 for these transitions.
+
+Expected values use a Markov-chain model: non-destructive failures maintain
+the current star at every level. On destruction, recovered stars are 12★ for
+15★–19★, 15★ for 20★, 17★ for 21★–22★, 19★ for 23★–25★, and 20★ for
+26★–30★. `--boom-reset-star` overrides this table with one recovery level for
+all booms. The reported expected mesos omit item replacement/recovery costs,
+event discounts, and other event modifiers. The calculator is for non-Superior
+equipment and does not infer item-level caps. The Equipment tracker records each
+item's Star Force and applies level-based maximums plus known equipment exceptions.
 
 ## API
 
@@ -327,94 +423,6 @@ npm run build
 ```
 
 The frontend uses Node's built-in test runner; there is no `npm test` script.
-
-## Project layout
-
-Run Python commands from the repository root using module paths (`python -m ...`).
-
-```text
-maplestory_app/
-  README.md
-  backend/
-    api/main.py                       FastAPI endpoints and request models
-    calc/
-      maplestory_potential.py          GMS values with KMS potential probabilities
-      maplestory_flames.py             Flame probabilities and scores
-      starforce_calculator.py          Star Force costs and expected outcomes
-      equipment_upgrade.py            Equipment upgrade scores and rankings
-    data/potential_data.json          Original KMS probability snapshot
-    examples/
-      potential.py                    Potential calculation examples
-      flames.py                       Flame calculation examples
-    scripts/
-      fetch_potential_data.py         Refresh the KMS probability snapshot
-      fetch_equipment_data.py         Refresh the frontend GMS equipment catalog
-      verify_accessories.py           Compare Nexon accessory probability tables
-    tests/                            Python unittest suites
-    requirements.txt                  FastAPI, Pydantic, and Uvicorn
-    requirements-dev.txt              Runtime dependencies plus HTTP test client
-  frontend/
-    index.html                        Vite HTML entry point
-    package.json                      Frontend dependencies and npm scripts
-    package-lock.json                 Locked dependency versions
-    vite.config.js                    React plugin and development API proxy
-    README.md                         Frontend-specific instructions
-    src/
-      main.jsx                        React entry point
-      App.jsx                         Calculator tabs and potential state
-      api.js                          Shared API request handling
-      App.css                         Application styles
-      index.css                       Shared styles
-      components/                     Calculator, equipment, and upgrade views
-      data/
-        equipment_140_250.json        Bundled GMS equipment catalog
-        equipment_140_250.meta.json   Catalog source and filtering metadata
-        flameEquipment.js            Equipment slots and class mappings
-        flameWeapons.js              Weapon flame configurations
-        starforce.js                 Equipment star caps and mode helpers
-        equipmentSave.js             Equipment import/export and restoration
-        equipmentUpgrade.js          Upgrade-planner request construction
-        *.test.js                    Node data-helper tests
-```
-
-Python package directories also contain `__init__.py`. The local `.venv/`,
-`frontend/node_modules/`, and generated `frontend/dist/` are ignored by Git.
-
-Run the examples with `python -m backend.examples.potential` or
-`python -m backend.examples.flames`. The accessory verification tool runs with
-`python -m backend.scripts.verify_accessories` and requires internet access.
-
-## Star Force calculator
-
-`backend/calc/starforce_calculator.py` estimates expected meso cost, attempts, and booms to
-reach a target star. It uses the supplied GMS base-cost formula and transition
-probabilities, with the Enhancement Mode rates and cost multipliers supplied
-for 15★–21★ attempts. See the [GMS v269 patch notes](https://www.nexon.com/maplestory/news/update/41138/updated-6-30-v-269-ride-the-lightning-patch-notes)
-for the Enhancement Mode availability rules. For example:
-
-```powershell
-.\.venv\Scripts\python.exe -m backend.calc.starforce_calculator --level 200 --start 15 --target 22 --mode-18 2 --mode-19 3 --mode-20 4 --safeguard-15-17
-```
-
-The band-wide `--mode-15-17` and `--mode-18-21` options set defaults for their
-respective ranges. Optional `--mode-15` through `--mode-21` arguments override
-the mode for an individual transition (for example, `--mode-18 2` selects Mode
-2 from 18★ to 19★). GMS does not allow Enhancement Mode 4 from 15★ to 17★.
-Outside 15★–21★, the supplied base rates and base costs are used. The supplied
-rates include GMS's automatic Star Catching success-rate bonus.
-
-`--safeguard-15-17` safeguards attempts from 15★ to 17★: the cost is 3x base,
-booms are removed, and failed attempts maintain the current star. As in GMS,
-safeguarding resets Enhancement Mode to Mode 1 for these transitions.
-
-Expected values use a Markov-chain model: non-destructive failures maintain
-the current star at every level. On destruction, recovered stars are 12★ for
-15★–19★, 15★ for 20★, 17★ for 21★–22★, 19★ for 23★–25★, and 20★ for
-26★–30★. `--boom-reset-star` overrides this table with one recovery level for
-all booms. The reported expected mesos omit item replacement/recovery costs,
-event discounts, and other event modifiers. The calculator is for non-Superior
-equipment and does not infer item-level caps. The Equipment tracker records each
-item's Star Force and applies level-based maximums plus known equipment exceptions.
 
 ## Frontend
 

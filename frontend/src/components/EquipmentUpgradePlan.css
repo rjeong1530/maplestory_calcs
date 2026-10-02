@@ -26,7 +26,79 @@
 .upgrade-notes { margin-top: 20px; font-size: 13px; line-height: 1.7; color: #bcc8da; }
 .upgrade-notes summary { cursor: pointer; }
 .upgrade-notes li { margin-bottom: 8px; }
+.flame-order-heading { text-align: center; }
+.flame-type-badge {
+  display: inline-block;
+  padding: 10px 22px;
+  margin: 4px 0 14px;
+  border: 1px solid #7e9abb;
+  border-radius: 7px;
+  background: #456385;
+  font-size: 14px;
+  font-weight: 600;
+}
+.flame-order-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 0;
+  list-style: none;
+  padding: 8px 0;
+  margin: 20px 0 40px;
+}
+.flame-order-strip li { display: flex; align-items: center; }
+.flame-order-strip li:not(:last-child)::after {
+  content: '›';
+  color: #b8c5d8;
+  font-size: 26px;
+  margin: 0 8px;
+}
+.flame-order-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 58px;
+  padding: 5px;
+  border-radius: 6px;
+  color: #d6deeb;
+  text-decoration: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.flame-order-item:hover, .flame-order-item:focus-visible { background: #2b3b50; outline: 2px solid #7e9abb; }
+.flame-upgrade-order img { object-fit: contain; image-rendering: pixelated; vertical-align: middle; }
+.flame-icon-fallback { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 6px; background: #34445b; }
+.flame-confidence { max-width: 510px; margin: 0 auto; }
+.flame-confidence h3 { text-align: center; font-size: 15px; font-weight: 500; margin-bottom: 8px; line-height: 1.5; }
+.flame-confidence-scroll { max-height: 330px; overflow: auto; scrollbar-color: #59687d #172131; }
+.flame-confidence-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; font-variant-numeric: tabular-nums; }
+.flame-confidence-table th, .flame-confidence-table td { padding: 8px 10px; text-align: center; border: 0; white-space: nowrap; }
+.flame-confidence-table thead th { position: sticky; top: 0; background: #172131; z-index: 1; font-size: 14px; }
+.flame-confidence-table tbody tr:nth-child(odd) { background: #263244; }
+.flame-confidence-table tbody tr:target, .flame-confidence-table tbody tr:focus { background: #3b506b; outline: 2px solid #a0e4b3; outline-offset: -2px; }
+.flame-confidence-table tbody tr { scroll-margin-top: 40px; }
+.flame-confidence-table tbody th { border-radius: 7px 0 0 7px; }
+.flame-confidence-table tbody td:last-child { border-radius: 0 7px 7px 0; }
+.flame-confidence-note { text-align: center; margin-top: 12px; font-size: 12px; }
+.flame-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 480px) {
   .upgrade-plan { padding: 16px; }
   .upgrade-weights { grid-template-columns: 1fr; }
+  .flame-confidence-table th, .flame-confidence-table td { padding: 8px 6px; }
 }
+
+.upgrade-categories { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+.upgrade-categories label { display: flex; align-items: center; gap: 0.4rem; }
+.upgrade-categories input { width: auto; }
+
+.flame-comparison { display: grid; gap: 28px; }
+.flame-type-toggle { display: flex; justify-content: center; justify-self: center; flex-wrap: wrap; gap: 8px; }
+.flame-type-toggle button { justify-content: center; width: 52px; height: 52px; padding: 8px; }
+.flame-type-toggle button, .flame-type-badge { display: inline-flex; align-items: center; gap: 8px; }
+.flame-type-toggle img { object-fit: contain; image-rendering: pixelated; }
+.flame-confidence-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.flame-confidence-charts .flame-confidence { width: 100%; min-width: 0; max-width: none; }
+.flame-confidence h4 { text-align: center; font-size: 15px; font-weight: 500; margin: 0 0 8px; line-height: 1.5; }
+.flame-confidence-charts .flame-confidence-note { grid-column: 1 / -1; }
+.flame-confidence-charts.flame-count-only { grid-template-columns: minmax(0, 510px); justify-content: center; }
+@media (max-width: 800px) { .flame-confidence-charts { grid-template-columns: 1fr; } }

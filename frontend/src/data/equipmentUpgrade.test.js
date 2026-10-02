@@ -47,6 +47,20 @@ test('upgrade requests map overall and weapon types, retain clean offense and de
 test('saved upgrade settings accept zero weights and recover from invalid values', () => {
   assert.deepEqual(restoreUpgradeSettings({ cube_type: 'invalid', base_stat_pct_value: 0,
     attack_pct_value: -1, crit_damage_pct_value: 'Infinity' }), {
+    categories: ['starforce', 'flames', 'potential'],
     cube_type: 'black', base_stat_pct_value: '0', attack_pct_value: '10', crit_damage_pct_value: '8',
   })
+})
+
+test('upgrade selections survive restoration and reach the API', () => {
+  const settings = restoreUpgradeSettings({ flame_type: 'abyssal', flame_cost_mesos: 9000000,
+    categories: ['flames', 'invalid'] })
+  const request = buildUpgradeRequest({}, stats, weights, settings)
+  assert.equal('flame_type' in settings, false)
+  assert.equal('flame_cost_mesos' in settings, false)
+  assert.equal('flame_type' in request, false)
+  assert.equal('flame_cost_mesos' in request, false)
+  assert.deepEqual(request.categories, ['flames'])
+  assert.deepEqual(restoreUpgradeSettings({ categories: ['invalid'] }).categories,
+    ['starforce', 'flames', 'potential'])
 })

@@ -334,6 +334,17 @@ class ApiTests(unittest.TestCase):
         self.assertTrue(all(row['next_star'] == row['start_star'] + 1 for row in sf_rows))
         self.assertTrue(all(row['current_star_force'] == 15 for row in sf_rows))
 
+        response = self.client.post('/api/equipment-upgrade-plan', json={
+            **payload, 'categories': ['flames'],
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(set(response.json()['rankings']), {'flames'})
+        self.assertEqual(set(response.json()['flame_rankings']), {'black', 'abyssal'})
+        for overrides in ({'categories': []}, {'categories': ['invalid']},
+                          {'flame_type': 'abyssal'}, {'flame_cost_mesos': 9_000_000}):
+            response = self.client.post('/api/equipment-upgrade-plan', json={**payload, **overrides})
+            self.assertEqual(response.status_code, 422, response.text)
+
         for secondary in (['DEX', 'DEX'], ['STR']):
             response = self.client.post('/api/equipment-upgrade-plan',
                                         json={**payload, 'secondary_stats': secondary})

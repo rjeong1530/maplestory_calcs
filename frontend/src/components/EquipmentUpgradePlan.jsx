@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
-import { buildUpgradeRequest, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
+import { buildUpgradeRequest, UPGRADE_CATEGORIES, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
 import './EquipmentUpgradePlan.css'
+import FlameUpgradeOrder from './FlameUpgradeOrder'
 
-const CATEGORIES = { starforce: 'Star Force', flames: 'Flames', potential: 'Potential' }
+const CATEGORIES = UPGRADE_CATEGORIES
 const ORDERS = {
   weakest_first: 'Weakest current score',
   gain_per_meso_first: 'Best gain per meso',
@@ -21,7 +22,9 @@ const slotName = slot => {
 export default function EquipmentUpgradePlan({
   equipment, equipmentClass, classStats, flameWeights, settings, onSettingsChange, onFlameWeightChange,
 }) {
-  const [category, setCategory] = useState('starforce')
+  const [selectedCategory, setCategory] = useState('starforce')
+  const [flameType, setFlameType] = useState('black')
+  const category = settings.categories.includes(selectedCategory) ? selectedCategory : settings.categories[0]
   const [order, setOrder] = useState('gain_per_meso_first')
   const [request, setRequest] = useState(null)
   const controllerRef = useRef(null)
@@ -30,8 +33,11 @@ export default function EquipmentUpgradePlan({
   const current = request?.key === requestKey ? request : null
   const busy = current?.status === 'loading'
   const result = current?.result
+  const flameRankings = result?.flame_rankings[flameType]
   const rankings = result?.rankings[category]
-  const rankedRows = rankings?.[order] || []
+  const rankedRows = category === 'flames'
+    ? [...(rankings?.gain_per_meso_first || [])].sort((a, b) => b.improvement_probability - a.improvement_probability)
+    : rankings?.[order] || []
   const rows = category === 'starforce' ? rankedRows.slice(0, 20) : rankedRows
 
   useEffect(() => () => controllerRef.current?.abort(), [requestKey])
@@ -61,6 +67,15 @@ export default function EquipmentUpgradePlan({
         {' '}{classStats.main} main, {classStats.secondary.join(' / ')} secondary, {classStats.offense}.
         Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
       <form onSubmit={submit}>
+        <fieldset className="upgrade-categories">
+          <legend>Upgrade orders to calculate</legend>
+          {Object.entries(CATEGORIES).map(([key, label]) => <label key={key}>
+            <input type="checkbox" checked={settings.categories.includes(key)}
+              onChange={event => onSettingsChange({ ...settings, categories: event.target.checked
+                ? [...settings.categories, key] : settings.categories.filter(value => value !== key) })} />
+            {label}
+          </label>)}
+        </fieldset>
         <div className="upgrade-controls">
           <label>Potential cube
             <select value={settings.cube_type}
@@ -69,7 +84,7 @@ export default function EquipmentUpgradePlan({
               <option value="red">Red cube — 12M mesos</option>
             </select>
           </label>
-          <p className="hint">Black flames: 3M mesos per roll. Star Force uses each item's enhancement modes.</p>
+          <p className="hint">Flame results include Black and Abyssal Flames. Star Force uses each item's enhancement modes.</p>
         </div>
         <fieldset className="upgrade-weights">
           <legend>Potential score weights</legend>
@@ -90,10 +105,11 @@ export default function EquipmentUpgradePlan({
             </label>
           ))}
         </fieldset>
-        <button type="submit" className="primary" disabled={busy || !payload.equipment.length}>
+        <button type="submit" className="primary" disabled={busy || !payload.equipment.length || !settings.categories.length}>
           {busy ? 'Calculating upgrade order…' : 'Calculate upgrade order'}
         </button>
       </form>
+      {!settings.categories.length && <p className="hint">Select at least one upgrade order.</p>}
       {!payload.equipment.length && <p className="hint">Equip an item above to compare upgrades.</p>}
       <div aria-live="polite">
         {busy && <p role="status">Calculating expected gains for {payload.equipment.length} items…</p>}
@@ -103,26 +119,40 @@ export default function EquipmentUpgradePlan({
       {result && <>
         <div className="upgrade-results-controls">
           <div className="calculator-tabs" role="group" aria-label="Upgrade category">
-            {Object.entries(CATEGORIES).map(([key, label]) => (
+            {Object.entries(CATEGORIES).filter(([key]) => settings.categories.includes(key)).map(([key, label]) => (
               <button type="button" key={key} aria-pressed={category === key}
                 onClick={() => setCategory(key)}>{label}</button>
             ))}
           </div>
-          <label>Rank by
+          {category !== 'flames' && <label>Rank by
             <select value={order} onChange={event => setOrder(event.target.value)}>
               {Object.entries(ORDERS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
             </select>
-          </label>
+          </label>}
         </div>
-        <p className="hint">Scores are weighted stat points. Gain is measured for each star step or first better roll.
-          Efficiency is displayed as flame score gain per 100M mesos.</p>
+        {category !== 'flames' && <p className="hint">Scores are weighted stat points. Gain is measured for each star step or first better roll.
+          Efficiency is displayed as flame score gain per 100M mesos.</p>}
         {category === 'starforce' && <p className="hint">
           Showing the top {rows.length} of {rankedRows.length} upgrades in the selected order.{' '}
           Each row compares one additional star. Later steps require reaching their starting star first;
           costs and gains exclude those earlier steps. Rows are sorted by the selected metric, so
           prerequisites may appear lower in the table.
         </p>}
-        {rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
+        {category === 'flames' ? <div className="flame-comparison">
+          <div className="calculator-tabs flame-type-toggle" role="group" aria-label="Flame results to display">
+            {['black', 'abyssal'].map(type => <button type="button" key={type}
+              aria-label={type === 'black' ? 'Black Flames' : 'Abyssal Flames'}
+              title={type === 'black' ? 'Black Flames' : 'Abyssal Flames'}
+              aria-pressed={flameType === type} onClick={() => setFlameType(type)}>
+              <img src={`/images/flames/${type}.png`} alt="" width="32" height="34" />
+            </button>)}
+          </div>
+          <FlameUpgradeOrder
+            key={flameType} flameType={flameType} equipment={equipment}
+            rows={[...flameRankings.largest_gain_first].sort((a, b) => b.improvement_probability - a.improvement_probability)}
+            unavailable={flameRankings.unavailable}
+            costPerFlame={result.cost_assumptions_mesos[flameType + '_flame']} />
+        </div> : rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
           role="region" aria-label={`${CATEGORIES[category]} upgrade rankings`}>
           <table className="upgrade-table">
             <caption>{CATEGORIES[category]} — {ORDERS[order]}</caption>
@@ -145,7 +175,7 @@ export default function EquipmentUpgradePlan({
             </tr>)}</tbody>
           </table>
         </div> : <p role="status">No eligible items for this ranking. Check the unavailable estimates below.</p>}
-        {rankings.unavailable?.length > 0 && <details className="upgrade-notes">
+        {category !== 'flames' && rankings.unavailable?.length > 0 && <details className="upgrade-notes">
           <summary>Unavailable {CATEGORIES[category]} estimates ({rankings.unavailable.length})</summary>
           <ul>{rankings.unavailable.map(entry => <li key={entry.slot}>
             <strong>{entry.name}</strong> ({slotName(entry.slot)}

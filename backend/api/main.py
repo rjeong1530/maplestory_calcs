@@ -353,6 +353,8 @@ class UpgradeEquipmentRequest(RequestModel):
 
 
 class EquipmentUpgradePlanRequest(RequestModel):
+    categories: list[Literal['starforce', 'flames', 'potential']] = Field(
+        default_factory=lambda: ['starforce', 'flames', 'potential'], min_length=1, max_length=3)
     main_stat: Literal['STR', 'DEX', 'INT', 'LUK', 'HP']
     secondary_stats: tuple[Literal['STR', 'DEX', 'INT', 'LUK', 'HP'], ...] = Field(max_length=3)
     offense_stat: Literal['ATT', 'MATT']

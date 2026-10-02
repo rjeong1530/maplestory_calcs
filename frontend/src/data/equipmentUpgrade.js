@@ -11,12 +11,17 @@ export const POTENTIAL_WEIGHT_LABELS = {
   attack_pct_value: 'Points per 1% ATT / MATT',
   crit_damage_pct_value: 'Points per 1% critical damage',
 }
+export const UPGRADE_CATEGORIES = { starforce: 'Star Force', flames: 'Flames', potential: 'Potential' }
 export const DEFAULT_UPGRADE_SETTINGS = {
+  categories: Object.keys(UPGRADE_CATEGORIES),
   cube_type: 'black', base_stat_pct_value: '10', attack_pct_value: '10', crit_damage_pct_value: '8',
 }
 
 export function restoreUpgradeSettings(saved) {
   return {
+    categories: Array.isArray(saved?.categories) && saved.categories.some(key => Object.hasOwn(UPGRADE_CATEGORIES, key))
+      ? Object.keys(UPGRADE_CATEGORIES).filter(key => saved.categories.includes(key))
+      : [...DEFAULT_UPGRADE_SETTINGS.categories],
     cube_type: saved?.cube_type === 'red' ? 'red' : 'black',
     ...Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS).map(key => [key,
       saved?.[key] !== '' && saved?.[key] != null
@@ -32,6 +37,7 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
     secondary_stats: classStats.secondary,
     offense_stat: classStats.offense,
     cube_type: settings.cube_type,
+    categories: settings.categories,
     flame_weights: Object.fromEntries(Object.keys(FLAME_WEIGHT_LABELS)
       .map(key => [key, Number(flameWeights[key])])),
     potential_weights: Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS)

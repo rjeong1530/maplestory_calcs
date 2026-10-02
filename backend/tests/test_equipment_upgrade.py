@@ -6,6 +6,27 @@ from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
+    @patch('backend.calc.equipment_upgrade.starforce.estimate_starforce')
+    @patch('backend.calc.equipment_upgrade._potential_score_distribution')
+    def test_selected_flames_use_abyssal_rates_and_skip_other_calculations(self, potential, sf):
+        request = self.plan_request(categories=['flames'])
+        request['equipment'][0].update(name='Hat', slot='hat')
+        request['equipment'][0]['current_flames'] = [{'option': 'STR', 'stage': 5}]
+        black = equipment_upgrade_plan(request)
+        abyssal = black
+        self.assertEqual(set(abyssal['rankings']), {'flames'})
+        self.assertEqual(set(abyssal['flame_rankings']), {'black', 'abyssal'})
+        black_row = black['rankings']['flames']['gain_per_meso_first'][0]
+        row = abyssal['flame_rankings']['abyssal']['largest_gain_first'][0]
+        self.assertEqual(row['current_score'], black_row['current_score'])
+        self.assertGreater(row['improvement_probability'], black_row['improvement_probability'])
+        self.assertIsNone(row['action_cost_mesos'])
+        self.assertIsNone(row['gain_per_meso'])
+        self.assertAlmostEqual(black_row['action_cost_mesos'], 3_000_000 / black_row['improvement_probability'])
+        self.assertEqual(equipment_upgrade_plan(request)['rankings'], black['rankings'])
+        potential.assert_not_called()
+        sf.assert_not_called()
+
     def setUp(self):
         self.flame_weights = {
             'all_stat_pct_value': 10,
