@@ -4,6 +4,8 @@ import CalculatorForm from './components/CalculatorForm'
 import EquipmentPlanner from './components/EquipmentPlanner'
 import Results from './components/Results'
 import StarForceCalculator from './components/StarForceCalculator'
+import Navigation from './components/Navigation'
+import usePageRoute from './hooks/usePageRoute'
 import './App.css'
 
 export default function App() {
@@ -13,7 +15,7 @@ export default function App() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
-  const [calculator, setCalculator] = useState('potential')
+  const [calculator, navigate] = usePageRoute()
 
   useEffect(() => {
     const controller = new AbortController()
@@ -44,47 +46,21 @@ export default function App() {
 
   return (
     <main>
+      <Navigation activePage={calculator} onNavigate={navigate} />
       <header className="page-header">
         <span className="eyebrow">MAPLESTORY · POTENTIAL LAB</span>
         <h1>Plan your next roll.</h1>
-        <p>Choose a calculator to estimate your odds.</p>
-        <nav aria-label="Calculator" className="calculator-tabs">
-          <button
-            type="button"
-            aria-pressed={calculator === 'potential'}
-            onClick={() => setCalculator('potential')}
-          >
-            Potential
-          </button>
-          <button
-            type="button"
-            aria-pressed={calculator === 'flame'}
-            onClick={() => setCalculator('flame')}
-          >
-            Flames
-          </button>
-          <button
-            type="button"
-            aria-pressed={calculator === 'starforce'}
-            onClick={() => setCalculator('starforce')}
-          >
-            Star Force
-          </button>
-          <button
-            type="button"
-            aria-pressed={calculator === 'equipment'}
-            onClick={() => setCalculator('equipment')}
-          >
-            Equipment
-          </button>
-        </nav>
+        <p>Estimate your odds or plan your equipment upgrades.</p>
       </header>
 
-      {calculator === 'starforce' ? (
-        <StarForceCalculator />
-      ) : calculator !== 'potential' ? (
-        <EquipmentPlanner activeTab={calculator} onTabChange={setCalculator} />
-      ) : optionsError ? (
+      {!calculator && <section className="panel">
+        <h2>Page not found</h2>
+        <p>Choose a calculator or Equipment upgrade from the navigation.</p>
+      </section>}
+      <div hidden={calculator !== 'starforce'}><StarForceCalculator /></div>
+      <EquipmentPlanner activeTab={calculator} />
+      <div hidden={calculator !== 'potential'}>
+      {optionsError ? (
         <div className="panel" role="alert">
           <p className="error">{optionsError}</p>
           <button onClick={() => {
@@ -112,6 +88,7 @@ export default function App() {
           </footer>
         </>
       )}
+      </div>
     </main>
   )
 }

@@ -511,6 +511,20 @@ values default to false. Refresh bundled data with:
 Both refresh commands need internet access. Production hosting needs an
 equivalent `/api` reverse proxy to the FastAPI server.
 
+### Frontend routes
+
+- `/` and `/calculators/potential`: potential calculator
+- `/calculators/flames`: flame calculator
+- `/calculators/starforce`: Star Force calculator
+- `/equipment`: equipment and upgrade planning
+
+Navigation uses browser history without full page reloads and supports
+Back/Forward and opening links in new tabs. Shared equipment state remains
+mounted across routes. Unknown paths show a page-not-found message.
+Vite serves these routes during development. Production hosting must serve
+`frontend/dist/index.html` for frontend page paths (SPA fallback), while
+keeping `/api` requests routed to FastAPI and static assets served normally.
+
 ## 📋 Upcoming Features / To-Do List
 
 - [ ] List of expected cost of current equips

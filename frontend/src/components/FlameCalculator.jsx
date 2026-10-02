@@ -5,7 +5,7 @@ const count = value => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0
 const percentage = value => value > 0 && value < 0.000001
   ? value.toExponential(3) : new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 }).format(value)
 
-export default function FlameCalculator({ form, setForm, calculation, equipmentCount, onManageEquipment }) {
+export default function FlameCalculator({ form, setForm, calculation }) {
   const { busy, error, result, submit } = calculation
   const classStats = CLASS_STATS[form.maple_class]
   const isWeapon = form.equipment_type === 'weapon'
@@ -28,14 +28,6 @@ export default function FlameCalculator({ form, setForm, calculation, equipmentC
 
   return (
       <div className="calculator-grid">
-        <div className="equipment-tab-link">
-          <p className="hint">{equipmentCount
-            ? `${equipmentCount} item${equipmentCount === 1 ? '' : 's'} equipped`
-            : 'Track current potential and flames for your equipment.'}</p>
-          <button type="button" onClick={onManageEquipment}>
-            Manage equipment
-          </button>
-        </div>
       <form className="panel flame-form" onSubmit={submit}>
         <fieldset disabled={busy} className="flame-settings">
         <legend>Flame settings</legend>
