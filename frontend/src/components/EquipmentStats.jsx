@@ -2,7 +2,7 @@ import EquipmentAnalysis from './EquipmentAnalysis'
 import EquipmentGrid from './EquipmentGrid'
 import EquipmentUpgradePlan from './EquipmentUpgradePlan'
 import { CLASS_STATS } from '../data/classStats'
-import { EQUIPMENT_SLOTS, SLOT_LABELS } from '../data/flameEquipment'
+import { EQUIPMENT_SLOTS, SLOT_LABELS, FIXED_RING_SLOT } from '../data/flameEquipment'
 
 export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResultInvalidated }) {
   const { equipment, equipmentClass, activeSlot, setActiveSlot, updateEquipmentRoll,
@@ -24,8 +24,10 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResu
           {selected ? <>
             <h3>{selected.name}</h3>
             <p className="hint">{SLOT_LABELS[slot.split('-')[0]]} · Level {selected.config.equipment_level}</p>
-            <EquipmentAnalysis key={`${slot}-${selected.id}`} slot={slot} item={selected}
-              offenseStat={classStats.offense} onChange={updates => updateEquipmentRoll(slot, updates)} />
+            {slot === FIXED_RING_SLOT
+              ? <p className="hint">Ring 4 is fixed to Ring of Restraint. It has no editable enhancements and is excluded from upgrade rankings.</p>
+              : <EquipmentAnalysis key={`${slot}-${selected.id}`} slot={slot} item={selected}
+                offenseStat={classStats.offense} onChange={updates => updateEquipmentRoll(slot, updates)} />}
           </> : <>
             <h3>No equipment in this slot</h3>
             <p className="hint">Select an equipped item or add one in Equipment setup.</p>

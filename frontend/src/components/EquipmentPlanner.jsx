@@ -10,9 +10,12 @@ export default function EquipmentPlanner({ activeTab }) {
 
   if (activeTab !== 'equipment' && activeTab !== 'flame') return null
 
-  return activeTab === 'equipment'
+  return <>
+    {planner.saveError && <p className="error" role="alert">{planner.saveError}</p>}
+    {activeTab === 'equipment'
     ? <EquipmentPage planner={planner} busy={calculation.busy}
         onFlameResultInvalidated={calculation.clear} />
     : <FlameCalculator form={planner.form} setForm={planner.setForm}
-        calculation={calculation} />
+        calculation={calculation} />}
+  </>
 }

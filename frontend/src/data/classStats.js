@@ -35,7 +35,7 @@ export const CLASS_STATS = {
   Mechanic: { main: 'DEX', secondary: ['STR'], offense: 'ATT' },
   Xenon: { main: ['STR', 'DEX', 'LUK'], secondary: [], offense: 'ATT' },
   'Demon Slayer': { main: 'STR', secondary: ['DEX'], offense: 'ATT' },
-  'Demon Avenger': { main: 'HP', secondary: ['STR'], offense: 'ATT' },
+  'Demon Avenger': { main: 'HP', secondary: [], offense: 'ATT' },
 
   Kaiser: { main: 'STR', secondary: ['DEX'], offense: 'ATT' },
   'Angelic Buster': { main: 'DEX', secondary: ['STR'], offense: 'ATT' },

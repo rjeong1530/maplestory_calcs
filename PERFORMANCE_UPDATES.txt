@@ -73,3 +73,126 @@ Validation:
 - Flame confidence/formatting tests passed after formatter changes.
 - Server-render smoke checks passed for the landing page, potential
   calculator, Star Force calculator, and deferred mounting.
+
+-----------------------------------------------------------------------
+Cleanup and performance update - 2026-10-05
+Equipment selection, navigation, CSS organization, and regression tests
+
+Changes:
+1. Indexed the static equipment catalog by slot and class families by job.
+   Equipment lookups now filter the relevant slot instead of scanning the
+   whole catalog and rebuilding class-family mappings on every call.
+2. Memoized equipment picker choices by selected slot and class so unrelated
+   component renders do not repeat filtering, configuration, and sorting.
+3. Extracted navigation actions into navigateToPage(), used by usePageRoute.
+   Clicking the current page with a trailing slash no longer adds a duplicate
+   history entry. Unknown page keys are ignored before preventing the click.
+   Modified clicks, download links, and links targeting another browsing
+   context retain normal browser handling.
+4. Moved navigation styles from App.css to components/Navigation.css and
+   equipment-editor styles from EquipmentWindow.css to EquipmentAnalysis.css.
+   Each component imports its stylesheet. Moved rules were kept unchanged.
+5. Removed the unused .equipment-class-selector CSS rule.
+6. Added regression tests for navigation history and scrolling, duplicate
+   routes, invalid routes, new-tab/download behavior, sorted equipment
+   choices, repeated lookup isolation, and unknown slots/classes.
+   Existing tests continue to cover equipment eligibility, import/export,
+   upgrade ordering, probability helpers, and backend calculations/API behavior.
+7. Added npm test for the frontend and updated README verification instructions.
+8. Updated Demon Avenger's class configuration to have no secondary stat.
+   Existing UI conditions hide Secondary stat per main stat in Flames and
+   Equipment, and calculation requests no longer include STR as a secondary.
+
+Local equipment lookup benchmark:
+- Compared the previous committed implementation with the indexed lookup.
+- Verified identical results for all 1,175 supported job/slot combinations,
+  including repeated equipment slots.
+- Timed 15 passes over these combinations after warming both implementations.
+- Previous implementation: 103 ms; indexed implementation: 29 ms.
+- Approximately 3.55 times faster, or 72% less time in this measured run.
+- This measures equipmentChoices() calls, not browser rendering or API latency.
+  Timings vary by environment; the memoized-render benefit was not benchmarked.
+
+Validation:
+- All 54 frontend tests passed (51 existing tests plus 3 new tests).
+- All 89 backend tests passed; backend calculation code was unchanged.
+- Frontend lint, production build, and git diff --check passed.
+- Verified CSS extraction against the previous files: moved rules unchanged,
+  with only .equipment-class-selector removed.
+- No browser visual checks were performed for this update.
+
+Primary implementation files:
+- frontend/src/data/flameEquipment.js
+- frontend/src/components/EquipmentWindow.jsx
+- frontend/src/data/routes.js and frontend/src/hooks/usePageRoute.js
+- frontend/src/components/Navigation.css
+- frontend/src/components/EquipmentAnalysis.css
+- frontend/src/data/classStats.js
+
+Regression tests:
+- frontend/src/data/flameEquipment.test.js
+- frontend/src/data/routes.test.js
+
+-----------------------------------------------------------------------
+Star Force replacement costs - 2026-10-05
+
+- Added replacement cost per boom to the standalone calculator and equipment
+  details. Default is 0; Astra secondaries default to 1,000,000,000 mesos.
+  Explicit zero/custom values override the default and survive saves/exports.
+- Older equipment saves without the field receive the appropriate default.
+- Expected total cost now includes expected booms times replacement cost,
+  including booms incurred during recovery. Attempts and their percentiles
+  are unchanged. The API also returns expected replacement spending separately.
+- Equipment upgrade rows display expected booms; grouped ranges sum booms,
+  replacement spending, and total costs. Efficiency uses the full total cost.
+- Added the optional --replacement-cost-mesos command-line argument.
+- Added regression coverage for defaults, overrides, import validation,
+  boom-free upgrades, recovery costs, grouped rows, and ranking behavior.
+- Validation: 56 frontend tests and 92 backend tests passed; frontend lint
+  and production build passed. No new performance benchmark was performed.
+
+-----------------------------------------------------------------------
+Heart and emblem catalog update - 2026-10-05
+
+- Fetch hearts without level restrictions and retain only Fairy Heart,
+  Titanium Heart, Plasma Heart, Outlaw Heart, and Total Control.
+- Added --refresh-hearts for the existing catalog version. Incomplete heart
+  responses are rejected before writing; duplicate names retain the lowest ID.
+- Recognize Mitra's Rage emblem IDs 1190555-1190559 despite the source's
+  Unknown category, preserving the five class restrictions.
+- Refreshed the bundled GMS 270 catalog: five hearts and five Mitra emblems
+  are now present; total catalog size is 759 items. Previous CRA exclusions remain.
+- Added importer and picker regressions; updated README and test inventories.
+- Validation: 57 frontend tests, 95 backend tests, and production build passed.
+  No new performance benchmark was performed.
+
+Catalog filter update - 2026-10-05
+- Exclude Red Beryl, Frontier, and Commerci name prefixes on every fetch/filter.
+- Pocket allowlist: Pink Holy Cup and all four colored Cursed Spellbooks.
+- Applied locally: removed 13 records; 746 catalog entries remain.
+- All 10 importer tests and 16 frontend equipment tests passed.
+
+Fixed ring slot and eye filter - 2026-10-05
+- Removed Bounty Legend's Sunglasses from bundled data and future fetches,
+  preserving Bounty Legend's Earrings. Catalog now contains 745 entries.
+- Ring 4 defaults to Ring of Restraint (source ID 1113098, level 110), with
+  replacement/removal/editing blocked. Legacy saves and imports normalize it.
+- Excluded the fixed skill ring from enhancement requests and rankings.
+- Validation: all 60 frontend tests and 10 importer tests passed, along with
+  frontend lint and production build. No browser visual check was performed.
+
+Equipment persistence fix - 2026-10-05
+- A representative full equipment set encoded to 6,036 bytes before settings,
+  exceeding a typical single-cookie capacity. Cookie writes could silently fail.
+- Moved equipment, classes, weights, and upgrade settings to local storage.
+  Recover existing cookie data and remove the old cookie only after a successful
+  write. Display a save error when storage is unavailable or full.
+- Added large-save round-trip, cookie migration, malformed-data fallback,
+  blocked storage, and quota failure regression coverage.
+- All 63 frontend tests and the production build passed. No browser reload
+  test was performed; storage behavior was verified with test doubles.
+
+Earring catalog filter - 2026-10-05
+- Keep only Commanding Force Earring, Estella Earrings, and Superior Gollux
+  Earrings on fetches and local filtering. Removed 9 records; 736 remain.
+- All 10 importer tests and 16 frontend equipment tests passed.

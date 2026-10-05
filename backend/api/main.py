@@ -259,6 +259,7 @@ class FlameProbabilityResult(BaseModel):
 
 
 class StarForceEstimateRequest(RequestModel):
+    replacement_cost_mesos: float = Field(default=0, ge=0, allow_inf_nan=False, strict=True)
     percentiles: list[Annotated[float, Field(gt=0, lt=1, allow_inf_nan=False, strict=True)]] = Field(
         default_factory=list, max_length=20)
     item_level: int = Field(gt=0, strict=True)
@@ -278,6 +279,7 @@ class AttemptEstimate(BaseModel):
 
 
 class StarForceEstimateResult(BaseModel):
+    expected_replacement_cost: float
     expected_cost: float
     expected_attempts: float
     expected_booms: float
@@ -322,6 +324,7 @@ class CurrentFlameLine(RequestModel):
 
 
 class UpgradeEquipmentRequest(RequestModel):
+    replacement_cost_mesos: float | None = Field(default=None, ge=0, allow_inf_nan=False, strict=True)
     safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
 
     @field_validator('safeguard_by_star')
@@ -471,11 +474,13 @@ def starforce_estimate(request: StarForceEstimateRequest):
             safeguard_15_17=request.safeguard_15_17,
             safeguard_by_star=request.safeguard_by_star,
             percentiles=request.percentiles,
+            replacement_cost_mesos=request.replacement_cost_mesos,
         )
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
     return StarForceEstimateResult(
+        expected_replacement_cost=estimate.expected_replacement_cost,
         expected_cost=estimate.expected_cost,
         expected_attempts=estimate.expected_attempts,
         expected_booms=estimate.expected_booms,

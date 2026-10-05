@@ -3,11 +3,17 @@ import test from 'node:test'
 import { maxStarForceForEquipment, supportsStarForce } from './starforce.js'
 import { equipmentChoices } from './flameEquipment.js'
 
-test('medals, badges and unsupported secondaries or shields have no Star Force controls', () => {
+test('medals,emblems, badges and unsupported secondaries or shields have no Star Force controls', () => {
   for (const name of ['Crystal Ventus Badge', 'Ghost Ship Exorcist', 'Sengoku Hakase Badge']) {
     assert.equal(supportsStarForce({ slot: 'badge', name }), false)
   }
   assert.equal(supportsStarForce({ slot: 'medal', name: 'Astra Medal' }), false)
+  for (const pocket of equipmentChoices('pocket', 'Hero')) {
+    assert.equal(supportsStarForce(pocket), false, pocket.name)
+  }
+  for (const emblem of equipmentChoices('emblem', 'Hero')) {
+    assert.equal(supportsStarForce(emblem), false, emblem.name)
+  }
   for (const slot of ['secondary', 'shield']) {
     assert.equal(supportsStarForce({ slot, name: 'Maple Treasure Shield' }), false)
     assert.equal(supportsStarForce({ slot, name: 'Astra Arcane Shield' }), true)

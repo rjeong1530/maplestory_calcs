@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { PAGE_PATHS, pageForPath, isPlainNavigation } from '../data/routes'
+import { pageForPath, navigateToPage } from '../data/routes'
 
 export default function usePageRoute() {
   const [pathname, setPathname] = useState(() => window.location.pathname)
@@ -11,13 +11,8 @@ export default function usePageRoute() {
   }, [])
 
   function navigate(page, event) {
-    if (event && !isPlainNavigation(event)) return
-    event?.preventDefault()
-    const path = PAGE_PATHS[page]
-    if (!path || path === window.location.pathname) return
-    window.history.pushState(null, '', path)
-    setPathname(path)
-    window.scrollTo(0, 0)
+    const path = navigateToPage(page, event)
+    if (path) setPathname(path)
   }
 
   return [pageForPath(pathname), navigate]

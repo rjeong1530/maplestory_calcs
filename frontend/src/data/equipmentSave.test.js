@@ -1,14 +1,32 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { equipmentChoices } from './flameEquipment.js'
+import { equipmentChoices, fixedRing, equipInSlot, compatibleEquipment } from './flameEquipment.js'
 import { exportEquipment, importEquipment, serializeEquipment, restoreEquipment } from './equipmentSave.js'
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
 
+test('replacement costs persist and older Astra saves receive the default', () => {
+  const secondary = equipmentChoices('secondary', 'Hero').find(item => item.name.startsWith('Astra '))
+  for (const cost of [0, 750_000_000]) {
+    const imported = importEquipment(exportEquipment({ secondary: { ...secondary, replacementCostMesos: cost } }, 'Hero'))
+    assert.equal(imported.equipment.secondary.replacementCostMesos, cost)
+  }
+  const saved = JSON.parse(exportEquipment({ secondary, hat }, 'Hero'))
+  delete saved.equipment.secondary.replacement_cost_mesos
+  delete saved.equipment.hat.replacement_cost_mesos
+  const old = importEquipment(JSON.stringify(saved)).equipment
+  assert.equal(old.secondary.replacementCostMesos, 1_000_000_000)
+  assert.equal(old.hat.replacementCostMesos, 0)
+  for (const cost of [-1, 'Infinity', true, null]) {
+    saved.equipment.secondary.replacement_cost_mesos = cost
+    assert.throws(() => importEquipment(JSON.stringify(saved)))
+  }
+})
+
 test('wrong-job secondaries are rejected on import and removed from saved equipment', () => {
   const secondary = equipmentChoices('secondary', 'Xenon')[0]
   const saved = serializeEquipment({ secondary })
-  assert.deepEqual(restoreEquipment(saved, 'Phantom'), {})
+  assert.deepEqual(restoreEquipment(saved, 'Phantom'), { 'ring-4': fixedRing() })
   assert.throws(() => importEquipment(exportEquipment({ secondary }, 'Phantom')), /unavailable/)
   assert.equal(importEquipment(exportEquipment({ secondary }, 'Xenon')).equipment.secondary.id, secondary.id)
 })
@@ -32,7 +50,7 @@ test('equipment export/import preserves class, items and recorded rolls', () => 
 
 test('empty equipment exports and UTF-8 BOM imports are supported', () => {
   assert.deepEqual(importEquipment('\uFEFF' + exportEquipment({}, 'Bishop')),
-    { equipmentClass: 'Bishop', equipment: {} })
+    { equipmentClass: 'Bishop', equipment: { 'ring-4': fixedRing() } })
 })
 
 test('malformed imports and invalid rolls are rejected before returning equipment', () => {
@@ -83,5 +101,26 @@ test('imports reject class-incompatible weapons and conflicting overall/bottom s
   const bottom = equipmentChoices('bottom', 'Hero')[0]
   for (const equipment of [{ top, bottom }, { bottom, top }]) {
     assert.throws(() => importEquipment(exportEquipment(equipment, 'Hero')))
+  }
+})
+
+test('ring four is fixed across defaults, saved data, imports and class changes', () => {
+  const initial = restoreEquipment(undefined, 'Hero')
+  assert.deepEqual(initial, { 'ring-4': fixedRing() })
+  assert.deepEqual(serializeEquipment(initial), {})
+  assert.deepEqual(JSON.parse(exportEquipment(initial, 'Hero')).equipment, {})
+  const ring = equipmentChoices('ring-1', 'Hero')[0]
+  assert.deepEqual(equipInSlot(initial, 'ring-4', ring), initial)
+  assert.deepEqual(compatibleEquipment(initial, 'Bishop'), initial)
+  assert.deepEqual(equipmentChoices('ring-4', 'Hero'), [fixedRing()])
+  const exported = JSON.parse(exportEquipment({ 'ring-1': ring }, 'Hero'))
+  assert.equal(Object.hasOwn(exported.equipment, 'ring-4'), false)
+  for (const saved of [undefined, null, { id: ring.id, current_star_force: 22 },
+    { id: 1113098, current_star_force: 30, current_potential: [{ effect: 'STR_PCT', value: 99 }] }]) {
+    exported.equipment['ring-4'] = saved
+    const imported = importEquipment(JSON.stringify(exported)).equipment
+    assert.deepEqual(imported['ring-4'], fixedRing())
+    assert.equal(imported['ring-1'].id, ring.id)
+    assert.deepEqual(restoreEquipment(exported.equipment, 'Hero')['ring-4'], fixedRing())
   }
 })

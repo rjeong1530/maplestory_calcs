@@ -35,6 +35,13 @@ upgrade recommendations. It defaults to the equipment cap and is saved with
 your equipment, including JSON exports. A limit at or below the current stars
 stops further Star Force recommendations for that item.
 
+Set **Replacement cost per boom (mesos)** in the Star Force calculator or an
+item's Equipment details. It defaults to 0, except Astra secondaries default
+to 1,000,000,000 mesos. An explicit 0 overrides that default. Equipment values
+are saved and exported; older saves receive the default when the field is absent.
+Star Force upgrade rows show expected booms and total mesos, including expected
+booms multiplied by replacement cost. Best gain per meso uses that total cost.
+
 Use **Export JSON** in the Equipment tab to download your current equipment
 class, items, Star Force, potentials, and flames. **Import JSON** restores an
 exported file and replaces the current equipment set and equipment class.
@@ -42,8 +49,17 @@ Invalid files leave the current set unchanged. Per-item Star Force modes and
 safeguards are included; calculator score weights and upgrade-planner settings
 are not included in equipment exports.
 
+Ring slot 4 is always Ring of Restraint and cannot be replaced, removed, or
+edited. It is generated automatically for display and omitted from browser saves,
+JSON exports, and enhancement rankings. Existing saves and JSON
+imports replace any previous ring-4 item with this fixed ring; slots 1-3 remain
+editable. Bounty Legend's Sunglasses are excluded from the catalog and future
+fetches. Earrings are limited to Commanding Force Earring, Estella Earrings,
+and Superior Gollux Earrings.
+
 Equipment, recorded lines, class selections, and flame score weights are saved
-in a browser cookie for one year. The calculators are estimates based on the
+in browser local storage until site data is cleared. Existing cookie saves are
+migrated automatically. The calculators are estimates based on the
 bundled data and rules described below; they do not model every in-game reset
 mechanic or item restriction.
 
@@ -268,8 +284,9 @@ Expected values use a Markov-chain model: non-destructive failures maintain
 the current star at every level. On destruction, recovered stars are 12★ for
 15★–19★, 15★ for 20★, 17★ for 21★–22★, 19★ for 23★–25★, and 20★ for
 26★–30★. `--boom-reset-star` overrides this table with one recovery level for
-all booms. The reported expected mesos omit item replacement/recovery costs,
-event discounts, and other event modifiers. The calculator is for non-Superior
+all booms. Expected mesos include replacement spending when supplied through
+`--replacement-cost-mesos` (default 0), in addition to enhancement and recovery
+taps. Event discounts and other event modifiers are excluded. The calculator is for non-Superior
 equipment and does not infer item-level caps. The Equipment tracker records each
 item's Star Force and applies level-based maximums plus known equipment exceptions.
 
@@ -300,7 +317,9 @@ For runtime-only installs, use `backend/requirements.txt` instead.
 - `POST /api/starforce-estimate`: expected mesos, attempts, and booms to reach a
   target Star Force. The request accepts `item_level`, `start_star`,
   `target_star`, optional `mode_by_star` and `safeguard_by_star` mappings, and
-  an optional `boom_reset_star` override.
+  an optional `boom_reset_star` override and `replacement_cost_mesos` (default 0).
+  `expected_cost` includes replacement spending; `expected_replacement_cost`
+  reports that portion separately.
 - `POST /api/equipment-upgrade-plan`: weakest-first, largest expected-gain, and
   score-gain-per-meso rankings for Star Force, Flames, and Potential. Send the
   equipped items, current stars/potential/flames, class stats, existing flame
@@ -308,7 +327,8 @@ For runtime-only installs, use `backend/requirements.txt` instead.
   `crit_damage_pct_value`), and `cube_type`. Superior equipment is excluded.
   Black flames cost 3M mesos; red and black cubes cost 12M and 22M. Potential
   roll odds use the bundled KMS tables. Star Force estimates use each item's
-  `mode_by_star` settings (Mode 1 by default), including during recovery.
+  `mode_by_star` settings (Mode 1 by default), including during recovery, and
+  per-item `replacement_cost_mesos` (0 by default, 1B for Astra secondaries).
 
 The upgrade-plan endpoint is stateless; it takes the equipment saved in the browser.
 In the **Equipment** tab, open **Stats & upgrades** and use **Equipment upgrade order** to
@@ -370,7 +390,7 @@ can temporarily worsen the potential before reaching a better roll. Black cubes
 and black flames retain the higher score. Outcomes with no possible improvement
 are unavailable. Costs use the supplied planning assumptions, without discounts.
 Star Force includes retries and boom recovery regardless of spare availability,
-but excludes replacement costs and events.
+and includes expected boom replacement spending, but excludes events.
 Weapons need `base_weapon_offense`; level-250 weapons and weapon estimates
 above 25 stars are unavailable. HP-based Star Force scoring is also unavailable.
 Superior means the Elite Heliseum/Nova/Tyrant enhancement system; Superior
@@ -439,12 +459,13 @@ Default discovery (`python -m unittest -v`) also works from the repository root.
 Run the frontend data-helper tests, lint, and production build from `frontend/`:
 
 ```powershell
-node --test src/data/*.test.js
+npm test
 npm run lint
 npm run build
 ```
 
-The frontend uses Node's built-in test runner; there is no `npm test` script.
+The frontend uses Node's built-in test runner. Tests cover navigation behavior,
+equipment eligibility and import/export, upgrade ordering, and probability helpers.
 
 ## Frontend
 
@@ -535,7 +556,10 @@ contributes to each primary stat, while the flame All Stat conversion remains
 controlled by the configured All Stat score weight.
 
 Selections, current lines, both class choices, and flame score weights are
-stored in the `maplestory-flame-equipment` browser cookie. The equipment
+stored under `maplestory-flame-equipment` in browser local storage on the same
+site origin. If storage is blocked or full, the app displays a save error and
+you can export equipment JSON. Older cookie saves are migrated after a
+successful local-storage write. The equipment
 catalog is a GMS snapshot of level-140-to-250 equipment from MapleStory.io,
 with secondaries expanded to levels 100-250. The existing catalog filenames
 are retained. Secondary ID ranges include newer Astra records that the source
@@ -552,6 +576,22 @@ values default to false. Refresh bundled data with:
 
 Both refresh commands need internet access. Production hosting needs an
 equivalent `/api` reverse proxy to the FastAPI server.
+
+Hearts are fetched without a level filter, but the catalog retains only Fairy
+Heart, Titanium Heart, Plasma Heart, Outlaw Heart, and Total Control. To refresh
+only hearts using the existing catalog version:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.scripts.fetch_equipment_data --refresh-hearts
+```
+
+Full refreshes also recognize the five Mitra's Rage emblem IDs even when the
+source labels their category Unknown, preserving each variant's class restriction.
+
+Catalog filters exclude Red Beryl, Frontier (including FrontierB/FrontierC),
+and Commerci items. Pocket choices are limited to Pink Holy Cup and the Red,
+Blue, Green, and Yellow Cursed Spellbooks. These rules also apply when using
+`--filter-existing` to update the bundled catalog without downloading.
 
 To refresh only secondaries using the existing catalog's GMS version:
 

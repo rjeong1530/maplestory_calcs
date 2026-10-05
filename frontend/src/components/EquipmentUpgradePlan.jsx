@@ -166,7 +166,8 @@ export default function EquipmentUpgradePlan({
             <caption>{CATEGORIES[category]} — {ORDERS[order]}</caption>
             <thead><tr><th scope="col">#</th><th scope="col">Equipment</th>
               <th scope="col">{category === 'starforce' ? 'Score before step' : 'Current score'}</th><th scope="col">Expected gain</th>
-              <th scope="col">Expected mesos to improve</th><th scope="col">Flame score / 100M mesos</th></tr></thead>
+              {category === 'starforce' && <th scope="col">Expected booms</th>}
+              <th scope="col">{category === 'starforce' ? 'Expected total mesos' : 'Expected mesos to improve'}</th><th scope="col">Flame score / 100M mesos</th></tr></thead>
             <tbody>{rows.map((entry, index) => <tr key={`${entry.slot}-${entry.start_star ?? 'roll'}`}>
               <td>{index + 1}</td><th scope="row">{entry.name}
                 <small>{slotName(entry.slot)}{entry.next_star != null
@@ -178,6 +179,7 @@ export default function EquipmentUpgradePlan({
               </th>
               <td>{number(entry.current_score)}</td>
               <td className={entry.expected_score_gain < 0 ? 'upgrade-loss' : ''}>{signed(entry.expected_score_gain)}</td>
+              {category === 'starforce' && <td>{number(entry.expected_booms)}</td>}
               <td>{number(entry.action_cost_mesos)}</td>
               <td>{signed(entry.gain_per_meso == null ? null : entry.gain_per_meso * 100_000_000)}</td>
             </tr>)}</tbody>
@@ -200,7 +202,7 @@ export default function EquipmentUpgradePlan({
         <p>Potential assumes Legendary equipment and uses bundled KMS probabilities, without tier-ups.
           Black cubes and black flames keep the better score. Red cubes replace the current potential.
           Star Force uses each item's selected enhancement modes and safeguards, including during boom recovery,
-          but excludes replacement costs and events.
+          with replacement spending equal to expected booms times the item's replacement cost. Events are excluded.
           Star Force lists successive one-star upgrades up to the equipment cap or available stat tables.
           Each step's cost covers reaching its target star from its starting star regardless of spare availability.
           Potential and flame costs cover rolling until the score exceeds the recorded score:

@@ -12,6 +12,23 @@ from backend.calc.starforce_calculator import (
 
 
 class StarForceCalculatorTests(unittest.TestCase):
+    def test_replacement_cost_includes_all_booms_without_changing_attempts(self):
+        for start, target, settings in ((15, 22, {}), (0, 1, {}),
+                (15, 16, {'safeguard_15_17': True}), (18, 19, {'mode_18_21': 4})):
+            with self.subTest(start=start, target=target, settings=settings):
+                base = estimate_starforce(200, start, target, percentiles=[.5], **settings)
+                paid = estimate_starforce(200, start, target, percentiles=[.5],
+                                          replacement_cost_mesos=1_000_000_000, **settings)
+                self.assertAlmostEqual(paid.expected_cost,
+                                       base.expected_cost + base.expected_booms * 1_000_000_000)
+                self.assertEqual(paid.expected_replacement_cost, base.expected_booms * 1_000_000_000)
+                self.assertEqual(paid.expected_booms, base.expected_booms)
+                self.assertEqual(paid.expected_attempts, base.expected_attempts)
+                self.assertEqual(paid.attempt_estimates, base.attempt_estimates)
+        for value in (-1, float('inf'), float('nan'), True, '100'):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                estimate_starforce(200, 15, 22, replacement_cost_mesos=value)
+
     def test_success_chances_match_single_step_geometric_distribution(self):
         chances = [.5, .75, .9, .95, .99]
         result = estimate_starforce(200, 18, 19, mode_by_star={18: 4}, percentiles=chances)

@@ -79,6 +79,7 @@ class StarForceEstimate:
     expected_attempts: float
     expected_booms: float
     attempt_estimates: tuple[dict, ...] = ()
+    expected_replacement_cost: float = 0
 
 
 def _attempt_percentiles(transitions, start, percentiles):
@@ -253,17 +254,23 @@ def estimate_starforce(
     safeguard_15_17: bool = False,
     safeguard_by_star: Mapping[int, bool] | None = None,
     percentiles: Sequence[float] = (),
+    replacement_cost_mesos: float = 0,
 ) -> StarForceEstimate:
     """Estimate expected spend, attempts, and booms until reaching a target.
 
     A boom recovers the star level based on the star where it occurred. Set
     ``boom_reset_star`` to override that recovery level for every boom.
-    Item acquisition or recovery costs, discounts, and event modifiers are not
-    included. Individual mode choices override the corresponding band mode.
+    Expected cost includes replacement_cost_mesos for each expected boom.
+    Discounts and event modifiers are not included. Individual mode choices
+    override the corresponding band mode.
     Safeguarding 15★–17★ costs 3x the base cost, disables booms, and uses
     Mode 1 rates, as GMS resets Modes 2–3 when safeguarding is enabled.
     ``safeguard_by_star`` overrides the band-wide safeguard setting per star.
     """
+    if (isinstance(replacement_cost_mesos, bool)
+            or not isinstance(replacement_cost_mesos, (int, float))
+            or not isfinite(replacement_cost_mesos) or replacement_cost_mesos < 0):
+        raise ValueError('Replacement cost must be a finite nonnegative number.')
     if any(isinstance(p, bool) or not isfinite(p) or not 0 < p < 1 for p in percentiles):
         raise ValueError('Success chances must be between 0 and 1.')
     if type(item_level) is not int or item_level <= 0:
@@ -339,8 +346,10 @@ def estimate_starforce(
     expected_cost = _solve_linear_system(matrix, attempt_costs)[start_star]
     expected_attempts = _solve_linear_system(matrix, [1.0] * state_count)[start_star]
     expected_booms = _solve_linear_system(matrix, boom_probabilities)[start_star]
-    return StarForceEstimate(expected_cost, expected_attempts, expected_booms,
-                             _attempt_percentiles(transitions, start_star, percentiles))
+    replacement_cost = expected_booms * replacement_cost_mesos
+    return StarForceEstimate(expected_cost + replacement_cost, expected_attempts, expected_booms,
+                             _attempt_percentiles(transitions, start_star, percentiles),
+                             replacement_cost)
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -348,6 +357,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument('--level', type=int, required=True, help='Equipment required level')
     parser.add_argument('--start', type=int, default=0, help='Starting star (default: 0)')
     parser.add_argument('--target', type=int, required=True, help='Target star')
+    parser.add_argument('--replacement-cost-mesos', type=float, default=0,
+                        help='Replacement mesos per boom (default: 0)')
     parser.add_argument('--mode-15-17', type=int, choices=(1, 2, 3), default=1,
                         help='Mode used from 15 through 17 stars (default: 1)')
     parser.add_argument('--mode-18-21', type=int, choices=(1, 2, 3, 4), default=1,
@@ -380,6 +391,7 @@ def main(argv: Sequence[str] | None = None) -> None:
                 if (mode := getattr(args, f'mode_{star}')) is not None
             },
             safeguard_15_17=args.safeguard_15_17,
+            replacement_cost_mesos=args.replacement_cost_mesos,
         )
     except ValueError as error:
         parser.error(str(error))

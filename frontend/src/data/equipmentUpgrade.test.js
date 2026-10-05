@@ -120,6 +120,25 @@ const stats = { main: 'INT', secondary: ['LUK'], offense: 'MATT' }
 const weights = { all_stat_pct_value: '10', secondary_stat_per_main: '10',
   attack_value: '3', boss_damage_pct_value: '10' }
 
+test('replacement costs reach requests and grouped boom totals affect ordering', () => {
+  const item = { name: 'Astra Sacred Aegis', config: { equipment_level: 200, equipment_type: 'armor' } }
+  const request = buildUpgradeRequest({ secondary: item, hat: { ...item, name: 'Hat' } },
+    stats, weights, restoreUpgradeSettings())
+  assert.equal(request.equipment[0].replacement_cost_mesos, 1_000_000_000)
+  assert.equal(request.equipment[1].replacement_cost_mesos, 0)
+  const zero = buildUpgradeRequest({ secondary: { ...item, replacementCostMesos: 0 } }, stats, weights, restoreUpgradeSettings())
+  assert.equal(zero.equipment[0].replacement_cost_mesos, 0)
+  const steps = [0, 1].map(star => starStep(star, { expected_booms: 0.25,
+    expected_replacement_cost: 250_000_000, action_cost_mesos: 250_000_100 }))
+  const combined = combineStarforceSteps(steps)[0]
+  assert.equal(combined.expected_booms, 0.5)
+  assert.equal(combined.expected_replacement_cost, 500_000_000)
+  assert.equal(combined.action_cost_mesos, 500_000_200)
+  assert.equal(combined.gain_per_meso, 4 / 500_000_200)
+  const cheap = starStep(0, { slot: 'hat', action_cost_mesos: 100 })
+  assert.equal(orderStarforceSteps([...steps, cheap])[0], cheap)
+})
+
 test('upgrade requests preserve duplicate slots and convert recorded rolls to API fields', () => {
   const ring = { name: 'Ring', config: { equipment_level: 150, equipment_type: 'armor',
     boss_equipment: true }, currentStarForce: 17, maxStarForce: 22, currentBossEquipment: false,
@@ -178,4 +197,11 @@ test('upgrade selections survive restoration and reach the API', () => {
   assert.deepEqual(request.categories, ['flames'])
   assert.deepEqual(restoreUpgradeSettings({ categories: ['invalid'] }).categories,
     ['starforce', 'flames', 'potential'])
+})
+
+test('fixed ring four is excluded from all upgrade requests', () => {
+  const ring = { name: 'Ring of Restraint', config: { equipment_level: 110, equipment_type: 'armor' } }
+  const request = buildUpgradeRequest({ 'ring-4': ring, 'ring-1': { ...ring, name: 'Other ring' } },
+    stats, weights, restoreUpgradeSettings())
+  assert.deepEqual(request.equipment.map(item => item.slot), ['ring-1'])
 })

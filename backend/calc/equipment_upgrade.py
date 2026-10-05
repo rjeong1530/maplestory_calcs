@@ -361,6 +361,9 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
             continue
 
         if 'starforce' in categories:
+            replacement_cost = item.get('replacement_cost_mesos')
+            if replacement_cost is None:
+                replacement_cost = 1_000_000_000 if slot == 'secondary' and name.startswith('Astra ') else 0
             current_star = item['current_star_force']
             starforce_base_entry = {
                 'name': name, 'slot': item['slot'], 'current_star_force': current_star,
@@ -395,12 +398,16 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                             item_level=level, start_star=start_star, target_star=start_star + 1,
                             mode_by_star=item.get('mode_by_star', {}),
                             safeguard_by_star=item.get('safeguard_by_star', {}),
+                            replacement_cost_mesos=replacement_cost,
                         )
                         cost = estimate.expected_cost
                         starforce_entry.update({
                             'expected_score_gain': gain,
                             'action_cost_mesos': cost,
                             'expected_attempts': estimate.expected_attempts,
+                            'expected_booms': estimate.expected_booms,
+                            'expected_replacement_cost': estimate.expected_replacement_cost,
+                            'replacement_cost_mesos': replacement_cost,
                             'gain_per_meso': gain / cost if cost else None,
                             'enhancement_mode': 1 if item.get('safeguard_by_star', {}).get(start_star, False)
                             else item.get('mode_by_star', {}).get(start_star, 1),
@@ -419,11 +426,11 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
             )
             potential_entry = {
                 'name': name, 'slot': item['slot'],
-                'current_score': potential_current if item.get('potential_equipment_type') else None,
+                'current_score': potential_current if slot != 'pocket' and item.get('potential_equipment_type') else None,
                 'expected_score_gain': None, 'action_cost_mesos': None,
                 'gain_per_meso': None, 'note': None,
             }
-            potential_type = item.get('potential_equipment_type')
+            potential_type = None if slot == 'pocket' else item.get('potential_equipment_type')
             if potential_type:
                 try:
                     distribution = _potential_score_distribution(
@@ -472,7 +479,7 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
         'potential_tier': 'legendary',
         'potential_keeps_better_result': cube_type == 'black',
         'black_flame_keeps_better_result': True,
-        'starforce_replacement_cost_included': False,
+        'starforce_replacement_cost_included': True,
         'starforce_enhancement_mode': None if any(
             any(mode != 1 for mode in item.get('mode_by_star', {}).values())
             for item in request['equipment']

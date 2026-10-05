@@ -10,6 +10,21 @@ from backend.calc import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):
+    def test_starforce_replacement_cost_http_contract(self):
+        payload = {'item_level': 200, 'start_star': 15, 'target_star': 22}
+        base = self.client.post('/api/starforce-estimate', json=payload).json()
+        response = self.client.post('/api/starforce-estimate', json={
+            **payload, 'replacement_cost_mesos': 1_000_000_000})
+        self.assertEqual(response.status_code, 200, response.text)
+        paid = response.json()
+        self.assertAlmostEqual(paid['expected_cost'],
+                               base['expected_cost'] + base['expected_booms'] * 1_000_000_000)
+        self.assertEqual(paid['expected_replacement_cost'], base['expected_booms'] * 1_000_000_000)
+        self.assertEqual(base['expected_replacement_cost'], 0)
+        for value in (-1, 'Infinity', 'NaN', True, None):
+            self.assertEqual(self.client.post('/api/starforce-estimate', json={
+                **payload, 'replacement_cost_mesos': value}).status_code, 422)
+
     def test_starforce_success_chance_estimates(self):
         payload = {'item_level': 200, 'start_star': 18, 'target_star': 19,
                    'mode_by_star': {'18': 4}, 'percentiles': [.5, .99]}

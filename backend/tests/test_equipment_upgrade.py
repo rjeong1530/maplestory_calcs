@@ -6,6 +6,32 @@ from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
+    def test_replacement_cost_defaults_overrides_and_ranking(self):
+        from backend.api.main import EquipmentUpgradePlanRequest
+        item = {'name': 'Astra Sacred Aegis', 'slot': 'secondary', 'equipment_level': 200,
+                'equipment_type': 'armor', 'current_star_force': 15, 'max_star_force': 17}
+        request = self.plan_request(equipment=[item], categories=['starforce'])
+        result = equipment_upgrade_plan(EquipmentUpgradePlanRequest(**request).model_dump())
+        self.assertTrue(result['starforce_replacement_cost_included'])
+        for row in result['rankings']['starforce']['gain_per_meso_first']:
+            base = starforce.estimate_starforce(200, row['start_star'], row['next_star'])
+            self.assertEqual(row['expected_booms'], base.expected_booms)
+            self.assertEqual(row['replacement_cost_mesos'], 1_000_000_000)
+            self.assertAlmostEqual(row['action_cost_mesos'],
+                                   base.expected_cost + base.expected_booms * 1_000_000_000)
+            self.assertAlmostEqual(row['gain_per_meso'], row['expected_score_gain'] / row['action_cost_mesos'])
+        free = {**item, 'replacement_cost_mesos': 0}
+        costly = {**item, 'name': 'Hat', 'slot': 'hat', 'replacement_cost_mesos': 2_000_000_000}
+        rows = equipment_upgrade_plan(self.plan_request(equipment=[costly, free], categories=['starforce']))['rankings']['starforce']['gain_per_meso_first']
+        for start in (15, 16):
+            pair = [row for row in rows if row['start_star'] == start]
+            self.assertEqual(pair[0]['slot'], 'secondary')
+            self.assertEqual(pair[0]['expected_replacement_cost'], 0)
+            self.assertGreater(pair[1]['expected_replacement_cost'], 0)
+        for value in (-1, float('inf'), True):
+            with self.assertRaises(ValueError):
+                EquipmentUpgradePlanRequest(**self.plan_request(equipment=[{**item, 'replacement_cost_mesos': value}]))
+
     def test_level_110_secondary_potential_upgrade(self):
         request = self.plan_request(categories=['potential'])
         request['equipment'][0].update(name='Maple Treasure Controller', slot='secondary',

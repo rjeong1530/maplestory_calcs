@@ -1,4 +1,5 @@
-import { potentialEquipmentType } from './flameEquipment.js'
+import { potentialEquipmentType, FIXED_RING_SLOT } from './flameEquipment.js'
+import { replacementCostForEquipment } from './starforce.js'
 
 export const FLAME_WEIGHT_LABELS = {
   all_stat_pct_value: 'Points per 1% all stat',
@@ -88,6 +89,8 @@ export function combineStarforceSteps(entries) {
       previous.expected_score_gain += entry.expected_score_gain
       previous.action_cost_mesos += entry.action_cost_mesos
       previous.expected_attempts += entry.expected_attempts
+      previous.expected_booms = (previous.expected_booms ?? 0) + (entry.expected_booms ?? 0)
+      previous.expected_replacement_cost = (previous.expected_replacement_cost ?? 0) + (entry.expected_replacement_cost ?? 0)
       previous.gain_per_meso = previous.action_cost_mesos
         ? previous.expected_score_gain / previous.action_cost_mesos : null
     } else {
@@ -108,13 +111,14 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       .map(key => [key, Number(flameWeights[key])])),
     potential_weights: Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS)
       .map(key => [key, Number(settings[key])])),
-    equipment: Object.entries(equipment).filter(([, item]) => item).map(([slot, item]) => ({
+    equipment: Object.entries(equipment).filter(([slot, item]) => item && slot !== FIXED_RING_SLOT).map(([slot, item]) => ({
       name: item.name,
       slot,
       equipment_level: item.config.equipment_level,
       equipment_type: item.config.equipment_type,
       potential_equipment_type: potentialEquipmentType(slot, item),
       current_star_force: item.currentStarForce ?? 0,
+      replacement_cost_mesos: replacementCostForEquipment(item, slot),
       ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
       mode_by_star: item.starForceModes ?? {},
       safeguard_by_star: item.starForceSafeguards ?? {},

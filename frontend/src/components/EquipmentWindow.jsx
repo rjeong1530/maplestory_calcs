@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { CLASS_FAMILIES, EQUIPMENT_SLOTS, SLOT_LABELS, equipmentChoices } from '../data/flameEquipment'
+import { useMemo, useRef, useState } from 'react'
+import { CLASS_FAMILIES, EQUIPMENT_SLOTS, SLOT_LABELS, equipmentChoices, FIXED_RING_SLOT } from '../data/flameEquipment'
 import EquipmentGrid, { EquipmentIcon } from './EquipmentGrid'
 import './EquipmentWindow.css'
 
@@ -21,7 +21,8 @@ export default function EquipmentWindow({
   const jobClasses = mapleClasses.filter(name => CLASS_FAMILIES[family]?.includes(name))
   const busy = calculating || importing
   const type = pickerSlot?.split('-')[0]
-  const choices = pickerSlot ? equipmentChoices(pickerSlot, equipmentClass) : []
+  const choices = useMemo(() => pickerSlot ? equipmentChoices(pickerSlot, equipmentClass) : [],
+    [pickerSlot, equipmentClass])
   const selected = equipment[pickerSlot]
 
   function downloadEquipment() {
@@ -102,7 +103,7 @@ export default function EquipmentWindow({
               onClick={() => onActivate(slots[(slots.indexOf(pickerSlot) + 1) % slots.length])}>&rarr;</button>
           </div>
           <div className="equipment-catalog-items" key={pickerSlot}>
-            {choices.map(item => <button type="button" key={item.id} disabled={busy}
+            {choices.map(item => <button type="button" key={item.id} disabled={busy || pickerSlot === FIXED_RING_SLOT}
               className="equipment-catalog-item" aria-pressed={selected?.id === item.id}
               onClick={() => onSelect(pickerSlot, item)}>
               <EquipmentIcon item={item} />
@@ -111,7 +112,8 @@ export default function EquipmentWindow({
             </button>)}
             {!choices.length && <p className="hint">No matching equipment for this slot and class in the catalog.</p>}
           </div>
-          {selected && <button type="button" className="secondary" disabled={busy}
+          {pickerSlot === FIXED_RING_SLOT && <p className="hint">Ring 4 is fixed to Ring of Restraint and cannot be changed or removed.</p>}
+          {selected && pickerSlot !== FIXED_RING_SLOT && <button type="button" className="secondary" disabled={busy}
             onClick={() => { onRemove(pickerSlot); onActivate(pickerSlot) }}>Remove equipment</button>}
         </section>
         <div className="equipment-setup-preview">

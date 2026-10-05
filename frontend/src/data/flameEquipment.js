@@ -6,6 +6,16 @@ import catalogMetadata from './equipment_140_250.meta.json' with { type: 'json' 
 export const equipmentIconUrl = itemid =>
   `https://maplestory.io/api/${catalogMetadata.region}/${catalogMetadata.version}/item/${itemid}/icon`
 
+// Fixed skill ring; it does not participate in enhancement calculations.
+export const FIXED_RING_SLOT = 'ring-4'
+export function fixedRing() {
+  return { id: 1113098, name: 'Ring of Restraint', slot: 'ring',
+    icon: equipmentIconUrl(1113098), color: '#a0e4b3',
+    config: { equipment_type: 'armor', equipment_level: 110, boss_equipment: false },
+    currentStarForce: 0, currentPotential: [], currentFlames: [] }
+}
+export const withFixedRing = equipment => ({ ...equipment, [FIXED_RING_SLOT]: fixedRing() })
+
 export const EQUIPMENT_SLOTS = [
   'ring-1', null, 'hat', null, 'emblem',
   'ring-2', 'pendant-1', 'face', null, 'badge',
@@ -41,7 +51,6 @@ const POTENTIAL_EQUIPMENT_TYPES = {
   face: 'accessory',
   eye: 'accessory',
   earring: 'accessory',
-  pocket: 'accessory',
   heart: 'heart',
 }
 
@@ -79,13 +88,29 @@ function weaponSeries(name) {
   return null
 }
 
+// The bundled catalog is static. Index once instead of scanning unrelated slots
+// for every picker render, saved item, and class compatibility check.
+const catalogBySlot = new Map()
+for (const item of catalog) {
+  const slot = item.slot === 'overall' ? 'top' : item.slot
+  if (!catalogBySlot.has(slot)) catalogBySlot.set(slot, [])
+  catalogBySlot.get(slot).push(item)
+}
+const familiesByClass = new Map()
+for (const [family, classes] of Object.entries(CLASS_FAMILIES)) {
+  for (const mapleClass of classes) {
+    if (!familiesByClass.has(mapleClass)) familiesByClass.set(mapleClass, [])
+    familiesByClass.get(mapleClass).push(family)
+  }
+}
+
 export function equipmentChoices(slot, mapleClass) {
+  if (slot === FIXED_RING_SLOT) return [fixedRing()]
   const type = slot.split('-')[0]
-  const families = Object.entries(CLASS_FAMILIES)
-    .filter(([, classes]) => classes.includes(mapleClass)).map(([family]) => family)
+  const families = familiesByClass.get(mapleClass) ?? []
   if (!families.length) return []
-  return catalog.filter(item => (item.slot === type || (type === 'top' && item.slot === 'overall'))
-    && (type !== 'secondary' || secondarySupportsJob(item, mapleClass))
+  return (catalogBySlot.get(type) ?? []).filter(item =>
+    (type !== 'secondary' || secondarySupportsJob(item, mapleClass))
     && (item.class.includes('All') || item.class.some(family => families.includes(family))))
     .flatMap(item => {
       let config = {
@@ -120,6 +145,7 @@ export function compatibleEquipment(equipment, mapleClass) {
 }
 
 export function equipInSlot(equipment, slot, item) {
+  if (slot === FIXED_RING_SLOT) return withFixedRing(equipment)
   const next = { ...equipment, [slot]: item }
   if (slot === 'top' && item.overall) delete next.bottom
   if (slot === 'bottom' && next.top?.overall) delete next.top

@@ -6,6 +6,63 @@ from backend.scripts import fetch_equipment_data as importer
 
 
 class EquipmentDataTests(unittest.TestCase):
+    def test_excluded_series_and_pocket_allowlist(self):
+        self.assertFalse(importer.keep_equipment({'name': "Bounty Legend's Sunglasses", 'slot': 'eye'}))
+        for name in ('Commanding Force Earring', 'Estella Earrings', 'Superior Gollux Earrings',
+                     "Bounty Legend's Earrings", 'Reinforced Gollux Earrings', 'Sweetwater Earrings',
+                     'Commanding Force Earring Replica'):
+            self.assertEqual(importer.keep_equipment({'name': name, 'slot': 'earring'}),
+                             name in importer.EARRING_NAMES)
+        for slot in ('face', 'eye', 'earring', 'pendant', 'secondary'):
+            for prefix in ('Red Beryl', 'FrontierB', 'FrontierC', 'Commerci'):
+                self.assertFalse(importer.keep_equipment({
+                    'name': f'{prefix} Item', 'slot': slot}))
+        for name in ('Pink Holy Cup', 'Cursed Red Spellbook', 'Cursed Blue Spellbook',
+                     'Cursed Green Spellbook', 'Cursed Yellow Spellbook',
+                     'Inverse Codex', "Gold Richie's Handkerchief", 'Headmaster Oda Pin',
+                     'Sengoku Shodan Pin', 'Cursed Spellbook Replica'):
+            self.assertEqual(importer.keep_equipment({'name': name, 'slot': 'pocket'}),
+                             name in importer.POCKET_NAMES)
+        self.assertTrue(importer.keep_equipment({'name': 'Sweetwater Tattoo', 'slot': 'face'}))
+
+    def test_hearts_ignore_level_floor_but_keep_only_requested_names(self):
+        for name in (*importer.HEART_NAMES, 'Silver Heart', 'Damaged Fairy Heart'):
+            raw = {'id': 1672000, 'name': name, 'requiredLevel': 30,
+                   'requiredJobs': ['Beginner'], 'typeInfo': {
+                       'overallCategory': 'Equip', 'category': 'Other', 'subCategory': 'Mechanical Heart'}}
+            item = importer.normalize(raw)
+            self.assertEqual(item['slot'], 'heart')
+            self.assertEqual(importer.keep_equipment(item), name in importer.HEART_NAMES)
+        raw['typeInfo']['subCategory'] = 'Hat'
+        self.assertFalse(importer.in_catalog_scope(raw))
+
+    def test_heart_fetch_has_no_level_filter_and_rejects_incomplete_results(self):
+        rows = [{'id': 1672000 + index, 'name': name, 'requiredLevel': 100,
+                 'requiredJobs': ['Beginner'], 'typeInfo': {
+                     'overallCategory': 'Equip', 'category': 'Other', 'subCategory': 'Mechanical Heart'}}
+                for index, name in enumerate(sorted(importer.HEART_NAMES))]
+        with patch.object(importer, 'fetch_json', return_value=rows) as fetch:
+            self.assertEqual({item['name'] for item in importer.fetch_hearts('270')}, importer.HEART_NAMES)
+            url = fetch.call_args.args[0]
+            self.assertIn('subCategoryFilter=Mechanical+Heart', url)
+            self.assertNotIn('LevelFilter', url)
+        with patch.object(importer, 'fetch_json', return_value=rows[:-1]):
+            with self.assertRaisesRegex(ValueError, 'Missing requested hearts'):
+                importer.fetch_hearts('270')
+
+    def test_unknown_mitra_emblems_preserve_class_restrictions(self):
+        for item_id, job in zip(range(1190555, 1190560), ['Warrior', 'Bowman', 'Magician', 'Thief', 'Pirate']):
+            raw = {'id': item_id, 'name': f"Mitra's Rage: {job}", 'requiredLevel': 200,
+                   'requiredJobs': [job], 'typeInfo': {
+                       'overallCategory': 'Unknown', 'category': 'Unknown', 'subCategory': 'Unknown'}}
+            item = importer.normalize(raw)
+            self.assertEqual(item['slot'], 'emblem')
+            self.assertEqual(item['equipment_type'], 'Emblem')
+            self.assertEqual(item['class'], [job])
+            self.assertTrue(importer.keep_equipment(item))
+        raw['id'] = 2630000
+        self.assertFalse(importer.in_catalog_scope(raw))
+
     def test_ordinary_shield_filter_preserves_job_specific_shields(self):
         for item_id, name, expected in (
             (1092087, 'Deimos Warrior Shield', True),

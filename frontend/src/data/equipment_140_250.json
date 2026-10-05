@@ -1,38 +1,5 @@
 [
   {
-    "itemid": 1003719,
-    "name": "Chaos Pierre Hat",
-    "slot": "hat",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Hat",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1003720,
-    "name": "Chaos Von Bon Helmet",
-    "slot": "hat",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Hat",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1003721,
-    "name": "Chaos Queen's Tiara",
-    "slot": "hat",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Hat",
-    "boss_reward": false
-  },
-  {
     "itemid": 1003722,
     "name": "Chaos Vellum's Helm",
     "slot": "hat",
@@ -264,28 +231,6 @@
     "boss_reward": true
   },
   {
-    "itemid": 1012394,
-    "name": "FrontierB Black Chicle",
-    "slot": "face",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Face Accessory",
-    "boss_reward": true
-  },
-  {
-    "itemid": 1012395,
-    "name": "FrontierC White Chicle",
-    "slot": "face",
-    "class": [
-      "All"
-    ],
-    "level": 145,
-    "equipment_type": "Face Accessory",
-    "boss_reward": true
-  },
-  {
     "itemid": 1012438,
     "name": "Sweetwater Tattoo",
     "slot": "face",
@@ -293,17 +238,6 @@
       "All"
     ],
     "level": 160,
-    "equipment_type": "Face Accessory",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1012439,
-    "name": "Commerci Tattoo",
-    "slot": "face",
-    "class": [
-      "All"
-    ],
-    "level": 150,
     "equipment_type": "Face Accessory",
     "boss_reward": false
   },
@@ -330,17 +264,6 @@
     "boss_reward": true
   },
   {
-    "itemid": 1012902,
-    "name": "Red Beryl Face Accessory",
-    "slot": "face",
-    "class": [
-      "All"
-    ],
-    "level": 200,
-    "equipment_type": "Face Accessory",
-    "boss_reward": false
-  },
-  {
     "itemid": 1012911,
     "name": "Original Sin of Pride",
     "slot": "face",
@@ -359,28 +282,6 @@
       "All"
     ],
     "level": 160,
-    "equipment_type": "Eye Decoration",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1022212,
-    "name": "Commerci Glasses",
-    "slot": "eye",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Eye Decoration",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1022237,
-    "name": "Bounty Legend's Sunglasses",
-    "slot": "eye",
-    "class": [
-      "All"
-    ],
-    "level": 150,
     "equipment_type": "Eye Decoration",
     "boss_reward": false
   },
@@ -407,72 +308,6 @@
     "boss_reward": true
   },
   {
-    "itemid": 1022375,
-    "name": "Red Beryl Eye Accessory",
-    "slot": "eye",
-    "class": [
-      "All"
-    ],
-    "level": 200,
-    "equipment_type": "Eye Decoration",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032183,
-    "name": "Shaman Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032191,
-    "name": "Alien Fragment Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 180,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032200,
-    "name": "Meister Earring",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Earrings",
-    "boss_reward": true
-  },
-  {
-    "itemid": 1032217,
-    "name": "Inverse Jewel Earring",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Earrings",
-    "boss_reward": true
-  },
-  {
-    "itemid": 1032222,
-    "name": "Reinforced Gollux Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
     "itemid": 1032223,
     "name": "Superior Gollux Earrings",
     "slot": "earring",
@@ -480,61 +315,6 @@
       "All"
     ],
     "level": 150,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032224,
-    "name": "Sweetwater Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 160,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032225,
-    "name": "Commerci Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032232,
-    "name": "Ocean Glow Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Earrings",
-    "boss_reward": true
-  },
-  {
-    "itemid": 1032246,
-    "name": "Bounty Legend's Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Earrings",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1032314,
-    "name": "Numenal's Willpower",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 180,
     "equipment_type": "Earrings",
     "boss_reward": false
   },
@@ -559,17 +339,6 @@
     "level": 160,
     "equipment_type": "Earrings",
     "boss_reward": true
-  },
-  {
-    "itemid": 1032361,
-    "name": "Red Beryl Earrings",
-    "slot": "earring",
-    "class": [
-      "All"
-    ],
-    "level": 200,
-    "equipment_type": "Earrings",
-    "boss_reward": false
   },
   {
     "itemid": 1042254,
@@ -1859,17 +1628,6 @@
     "boss_reward": false
   },
   {
-    "itemid": 1122272,
-    "name": "Commerci Pendant",
-    "slot": "pendant",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Pendant",
-    "boss_reward": false
-  },
-  {
     "itemid": 1122296,
     "name": "Reaper's Pendant",
     "slot": "pendant",
@@ -2167,17 +1925,6 @@
     "boss_reward": true
   },
   {
-    "itemid": 1162018,
-    "name": "Inverse Codex",
-    "slot": "pocket",
-    "class": [
-      "All"
-    ],
-    "level": 150,
-    "equipment_type": "Pocket Item",
-    "boss_reward": false
-  },
-  {
     "itemid": 1162025,
     "name": "Pink Holy Cup",
     "slot": "pocket",
@@ -2187,39 +1934,6 @@
     "level": 140,
     "equipment_type": "Pocket Item",
     "boss_reward": true
-  },
-  {
-    "itemid": 1162032,
-    "name": "Gold Richie's Handkerchief",
-    "slot": "pocket",
-    "class": [
-      "All"
-    ],
-    "level": 140,
-    "equipment_type": "Pocket Item",
-    "boss_reward": true
-  },
-  {
-    "itemid": 1162035,
-    "name": "Headmaster Oda Pin",
-    "slot": "pocket",
-    "class": [
-      "All"
-    ],
-    "level": 200,
-    "equipment_type": "Pocket Item",
-    "boss_reward": false
-  },
-  {
-    "itemid": 1162070,
-    "name": "Sengoku Shodan Pin",
-    "slot": "pocket",
-    "class": [
-      "All"
-    ],
-    "level": 200,
-    "equipment_type": "Pocket Item",
-    "boss_reward": false
   },
   {
     "itemid": 1162080,
@@ -2319,6 +2033,61 @@
     "level": 140,
     "equipment_type": "Emblem",
     "boss_reward": false
+  },
+  {
+    "itemid": 1190555,
+    "name": "Mitra's Rage: Warrior",
+    "slot": "emblem",
+    "class": [
+      "Warrior"
+    ],
+    "level": 200,
+    "equipment_type": "Emblem",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1190556,
+    "name": "Mitra's Rage: Bowman",
+    "slot": "emblem",
+    "class": [
+      "Bowman"
+    ],
+    "level": 200,
+    "equipment_type": "Emblem",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1190557,
+    "name": "Mitra's Rage: Magician",
+    "slot": "emblem",
+    "class": [
+      "Magician"
+    ],
+    "level": 200,
+    "equipment_type": "Emblem",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1190558,
+    "name": "Mitra's Rage: Thief",
+    "slot": "emblem",
+    "class": [
+      "Thief"
+    ],
+    "level": 200,
+    "equipment_type": "Emblem",
+    "boss_reward": true
+  },
+  {
+    "itemid": 1190559,
+    "name": "Mitra's Rage: Pirate",
+    "slot": "emblem",
+    "class": [
+      "Pirate"
+    ],
+    "level": 200,
+    "equipment_type": "Emblem",
+    "boss_reward": true
   },
   {
     "itemid": 1212063,
@@ -7811,6 +7580,17 @@
     "boss_reward": true
   },
   {
+    "itemid": 1672040,
+    "name": "Titanium Heart",
+    "slot": "heart",
+    "class": [
+      "All"
+    ],
+    "level": 100,
+    "equipment_type": "Mechanical Heart",
+    "boss_reward": false
+  },
+  {
     "itemid": 1672069,
     "name": "Outlaw Heart",
     "slot": "heart",
@@ -7822,6 +7602,17 @@
     "boss_reward": false
   },
   {
+    "itemid": 1672073,
+    "name": "Fairy Heart",
+    "slot": "heart",
+    "class": [
+      "All"
+    ],
+    "level": 100,
+    "equipment_type": "Mechanical Heart",
+    "boss_reward": false
+  },
+  {
     "itemid": 1672095,
     "name": "Total Control",
     "slot": "heart",
@@ -7829,6 +7620,17 @@
       "All"
     ],
     "level": 200,
+    "equipment_type": "Mechanical Heart",
+    "boss_reward": false
+  },
+  {
+    "itemid": 1672099,
+    "name": "Plasma Heart",
+    "slot": "heart",
+    "class": [
+      "All"
+    ],
+    "level": 130,
     "equipment_type": "Mechanical Heart",
     "boss_reward": false
   },

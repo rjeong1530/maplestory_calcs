@@ -8,6 +8,47 @@ import { CLASS_WEAPONS } from './flameWeapons.js'
 import { SECONDARY_JOBS } from './secondaryEquipment.js'
 import catalog from './equipment_140_250.json' with { type: 'json' }
 
+test('catalog excludes unwanted series and limits pocket choices to cup and spellbooks', () => {
+  assert.ok(!catalog.some(item => /^(Red Beryl|Frontier|Commerci)/.test(item.name)))
+  assert.ok(!catalog.some(item => item.name === "Bounty Legend's Sunglasses"))
+  assert.deepEqual(equipmentChoices('earring', 'Hero').map(item => item.name).sort(),
+    ['Commanding Force Earring', 'Estella Earrings', 'Superior Gollux Earrings'].sort())
+  assert.deepEqual(equipmentChoices('pocket', 'Hero').map(item => item.name).sort(),
+    ['Pink Holy Cup', 'Cursed Red Spellbook', 'Cursed Blue Spellbook',
+      'Cursed Green Spellbook', 'Cursed Yellow Spellbook'].sort())
+  assert.ok(equipmentChoices('face', 'Hero').some(item => item.name === 'Sweetwater Tattoo'))
+})
+
+test('heart choices include only the five selected hearts and Mitra emblems follow class families', () => {
+  assert.deepEqual(equipmentChoices('heart', 'Hero').map(item => item.name).sort(),
+    ['Fairy Heart', 'Titanium Heart', 'Plasma Heart', 'Outlaw Heart', 'Total Control'].sort())
+  for (const [job, family] of [['Hero', 'Warrior'], ['Bishop', 'Magician'], ['Bowmaster', 'Bowman'],
+    ['NightLord', 'Thief'], ['Buccaneer', 'Pirate']]) {
+    assert.deepEqual(equipmentChoices('emblem', job).filter(item => item.name.startsWith("Mitra's Rage:"))
+      .map(item => item.name), [`Mitra's Rage: ${family}`])
+  }
+})
+
+test('picker results stay sorted and independent across repeated lookups', () => {
+  const original = equipmentChoices('top', 'Hero')
+  assert.ok(original.some(item => item.overall))
+  assert.ok(original.some(item => !item.overall))
+  for (let index = 1; index < original.length; index++) {
+    const previous = original[index - 1]
+    const current = original[index]
+    assert.ok(previous.config.equipment_level < current.config.equipment_level ||
+      (previous.config.equipment_level === current.config.equipment_level &&
+        previous.name.localeCompare(current.name) <= 0))
+  }
+  const changed = equipmentChoices('top', 'Hero')
+  changed[0].config.equipment_level = 999
+  changed.reverse()
+  assert.deepEqual(equipmentChoices('top', 'Hero'), original)
+  assert.deepEqual(equipmentChoices('unknown', 'Hero'), [])
+  assert.deepEqual(equipmentChoices('hat', 'unknown'), [])
+  assert.deepEqual(equipmentChoices('ring-1', 'Hero'), equipmentChoices('ring-3', 'Hero'))
+})
+
 test('every catalog secondary has explicit job restrictions', () => {
   for (const item of catalog.filter(item => item.slot === 'secondary')) {
     assert.ok(SECONDARY_JOBS[item.itemid]?.length, item.name)
@@ -102,7 +143,10 @@ test('real armor and accessories are filtered by slot and class', () => {
   assert.ok(hats.every(item => item.config.boss_equipment ===
     catalog.find(row => row.itemid === item.id).boss_reward))
   assert.equal(hats.find(item => item.name === 'AbsoLab Knight Helm').config.boss_equipment, true)
-  assert.equal(hats.find(item => item.name === 'Chaos Pierre Hat').config.boss_equipment, false)
+  assert.equal(hats.find(item => item.name === "Chaos Vellum's Helm").config.boss_equipment, false)
+  for (const name of ['Chaos Pierre Hat', 'Chaos Von Bon Helmet', "Chaos Queen's Tiara"]) {
+    assert.ok(!catalog.some(item => item.name === name))
+  }
 })
 
 test('all supported classes have families and matching catalog weapons', () => {
@@ -147,4 +191,5 @@ test('equipment slots map to their potential tables', () => {
   assert.equal(potentialEquipmentType('secondary', {}), 'secondary weapon')
   assert.equal(potentialEquipmentType('top', { overall: true }), 'outfit')
   assert.equal(potentialEquipmentType('medal', {}), null)
+  assert.equal(potentialEquipmentType('pocket', {}), null)
 })

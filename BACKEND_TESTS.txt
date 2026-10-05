@@ -1,0 +1,482 @@
+BACKEND TEST INVENTORY
+Reviewed: 2026-10-05
+Total: 96 tests in 6 files
+
+Run from the repository root (Windows PowerShell):
+  .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
+Single suite example:
+  .\.venv\Scripts\python.exe -m unittest backend.tests.test_api -v
+Single test example:
+  .\.venv\Scripts\python.exe -m unittest backend.tests.test_potential.PotentialTests.test_ied_stacking -v
+
+Scope: Python unittest suites covering calculator mathematics, bundled data,
+request validation, upgrade planning, and equipment-import rules. HTTP tests
+use FastAPI TestClient in process; no running API server is needed. Importer
+network calls are mocked. Stored reference values are not live verification
+of current game rules or third-party services. Controlled distributions and
+reduced option pools isolate specific mathematical behaviors where described.
+Counts refer to test methods; loops/subtests exercise additional scenarios.
+Descriptions summarize actual assertions, not exhaustive input coverage.
+This inventory does not cover production deployment, browser behavior, or
+load testing. Update it whenever test names or assertions change.
+
+FILE: backend/tests/test_api.py
+Test class: ApiTests
+Tests: 21
+
+1. test_starforce_replacement_cost_http_contract
+   Behavior and purpose: HTTP requests default to zero replacement spending, accept
+   custom costs, return total and replacement-only amounts, and reject negative,
+   nonfinite, boolean, or null standalone costs.
+
+2. test_starforce_success_chance_estimates
+   Behavior and purpose: POST /api/starforce-estimate returns 8 and 53 attempts for 50%
+   and 99% confidence on a level-200, 18-to-19 Mode 4 upgrade; percentiles 0, 1, and -1
+   return HTTP 422.
+
+3. test_intermediate_secondary_levels_support_options_and_calculation
+   Behavior and purpose: Item options and potential probability support intermediate
+   secondary levels 110, 130, 144, 145, and 180, with appropriate ATT line values and a
+   positive chance of 21% ATT.
+
+4. test_xenon_flame_primary_stats
+   Behavior and purpose: Flame requests accept Xenon STR/DEX/LUK primary stats with no
+   secondary and return a positive chance; overlapping secondary stats and duplicate
+   primary stats return 422.
+
+5. test_health_and_options
+   Behavior and purpose: Health returns status ok, options expose calculator effects,
+   and OpenAPI is available.
+
+6. test_item_options_are_filtered_by_level_and_equipment_type
+   Behavior and purpose: Item options filter effects and tiers by level/type,
+   distinguish All Stat from individual stat lines, return valid weapon MATT, DEF and
+   level-reduction values, and mark unavailable emblem tables explicitly.
+
+7. test_item_options_use_gms_potential_values
+   Behavior and purpose: Across both cubes and levels 150/160/200/250, options expose
+   expected GMS STR, All Stat, and HP values for prime and later lines.
+
+8. test_multiple_targets_and_estimates
+   Behavior and purpose: For hat, glove, and weapon target combinations, probability,
+   percentage, odds, and cube count match the potential engine. Protects
+   API-to-calculator wiring.
+
+9. test_impossible_and_certain
+   Behavior and purpose: Impossible targets return zero probability with null
+   odds/counts; certain targets return probability one and one cube.
+
+10. test_invalid_requests
+   Behavior and purpose: Rejects empty/malformed targets, unknown effects/types/cubes,
+   negative or nonfinite targets, booleans, invalid levels, unavailable tables, invalid
+   percentiles, and unexpected fields with 422.
+
+11. test_custom_percentiles
+   Behavior and purpose: A request for only 80% confidence returns exactly one estimate
+   labeled with that confidence.
+
+12. test_flame_weapon_parameters
+   Behavior and purpose: Accepts base weapon offense or explicit tier offense, honors
+   explicit tiers over base offense, and accepts armor without weapon offense. HTTP
+   probability matches the engine with omitted boss-damage weight defaulting to zero.
+
+13. test_boss_damage_flame_weight
+   Behavior and purpose: With only boss damage weighted, weapon flame success is 4/19;
+   setting its weight to zero makes that target impossible.
+
+14. test_invalid_boss_damage_weight
+   Behavior and purpose: Negative, infinite, and NaN boss-damage weights return 422.
+
+15. test_invalid_flame_weapon_parameters
+   Behavior and purpose: Missing/nonpositive/nonfinite weapon offense, invalid tier
+   keys/values, and incomplete tier maps return 422.
+
+16. test_starforce_costs_by_level_and_mode
+   Behavior and purpose: Star Force cost endpoint returns 30 taps with base/mode costs
+   and normalized rates, no Mode 4 at 15-17, zero safeguarded booms, expected Mode 4
+   pricing, and rejects level zero.
+
+17. test_starforce_estimate
+   Behavior and purpose: Single-step API estimate matches the engine for expected mesos,
+   attempts, and booms.
+
+18. test_starforce_estimate_accepts_per_star_modes_and_safeguards
+   Behavior and purpose: Per-star modes and safeguard maps sent as JSON produce the same
+   cost and boom estimates as direct engine calls.
+
+19. test_invalid_starforce_estimate
+   Behavior and purpose: Rejects invalid levels/targets, unsupported modes/stars, and
+   nonboolean or out-of-range safeguards with 422.
+
+20. test_equipment_upgrade_plan_endpoint
+   Behavior and purpose: Upgrade endpoint returns all ranking orders and marginal Star
+   Force steps, honors flames-only selection with Black/Abyssal results, rejects
+   invalid/obsolete fields and secondary stats, and reports missing weapon offense as
+   unavailable.
+
+21. test_equipment_upgrade_plan_rejects_bad_weights
+   Behavior and purpose: A negative potential score weight returns 422 rather than
+   producing an upgrade ranking.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_equipment_data.py
+Test class: EquipmentDataTests
+Tests: 10
+
+22. test_excluded_series_and_pocket_allowlist
+   Behavior and purpose: Rejects excluded prefixes across accessory and secondary slots, enforces exact pocket names, rejects replicas, and preserves Sweetwater Tattoo.
+   Also verifies the exact three-earring allowlist: Commanding Force Earring,
+   Estella Earrings, and Superior Gollux Earrings.
+
+23. test_hearts_ignore_level_floor_but_keep_only_requested_names
+   Behavior and purpose: Normalizes low-level hearts but retains only the five exact
+   requested names; the same low-level ordinary hat remains outside catalog scope.
+
+24. test_heart_fetch_has_no_level_filter_and_rejects_incomplete_results
+   Behavior and purpose: Checks the heart request has a Mechanical Heart filter and no
+   level bounds, includes all five names, and refuses incomplete results before catalog
+   writing.
+
+25. test_unknown_mitra_emblems_preserve_class_restrictions
+   Behavior and purpose: Recognizes all five Unknown-category Mitra IDs as emblems with
+   their source class restrictions; unrelated Unknown IDs remain excluded.
+
+26. test_ordinary_shield_filter_preserves_job_specific_shields
+   Behavior and purpose: Importer retains Astra, Deimos, and Terminus ordinary shields
+   plus job-specific Soul/Force Shields, while excluding representative unwanted
+   ordinary shields.
+
+27. test_only_requested_katara_series_are_retained
+   Behavior and purpose: Katara filtering retains only Fafnir, AbsoLab, Sweetwater,
+   Arcane Umbra, and Astra series.
+
+28. test_secondary_scope_includes_level_100_and_uncategorized_astra
+   Behavior and purpose: Recognizes level-100 secondaries and Astra records with
+   misleading categories; excludes a low-level ordinary hat and an Astra secondary
+   reward box.
+
+29. test_secondary_deduplication_preserves_existing_astra_id
+   Behavior and purpose: Deduplicates three same-name Astra secondary records to the
+   expected existing item ID 1723000.
+
+30. test_normalize_defaults_missing_boss_reward_to_false
+   Behavior and purpose: Normalizing a catalog item without boss-reward metadata
+   defaults boss_reward to false.
+
+31. test_fetch_boss_reward_reads_item_detail_and_defaults_missing_tag
+   Behavior and purpose: With HTTP fetching mocked, reads metaInfo.bossReward from the
+   correct GMS item-detail URL and returns false for missing metadata or a missing
+   response.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_equipment_upgrade.py
+Test class: EquipmentUpgradeTests
+Tests: 24
+
+32. test_replacement_cost_defaults_overrides_and_ranking
+   Behavior and purpose: Checks Astra secondary 1B defaults through the request model,
+   per-step booms and total costs, explicit zero/custom overrides, efficiency ordering,
+   and invalid equipment cost rejection.
+
+33. test_level_110_secondary_potential_upgrade
+   Behavior and purpose: A level-110 secondary receives available potential upgrade
+   rankings with positive improvement probability.
+
+34. test_xenon_upgrade_scores_use_three_primary_stats
+   Behavior and purpose: Xenon uses all three primary stats for Star Force and potential
+   scoring; All Stat contributes to all three and changing the secondary weight has no
+   effect on those checks. All three upgrade categories remain available.
+
+35. test_selected_maximum_limits_all_starforce_rankings
+   Behavior and purpose: A selected maximum of 17 limits steps from current star 10 to
+   targets 11-17; limits at/below current stars produce an unavailable note and no
+   efficiency recommendations.
+
+36. test_selected_flames_use_abyssal_rates_and_skip_other_calculations
+   Behavior and purpose: A flames-only plan computes both Black and Abyssal
+   distributions but does not call potential or Star Force calculations. Checks higher
+   Abyssal improvement chance in the fixture, no Abyssal meso estimate, and Black cost
+   of 3M divided by improvement probability.
+
+37. test_level_based_star_caps_and_superior_exclusion
+   Behavior and purpose: Checks level-based maximum stars and distinguishes Superior
+   Gollux eligibility/cap from Tyrant Superior equipment.
+
+38. test_item_modes_apply_to_upgrade_and_recovery_costs
+   Behavior and purpose: Per-item modes/safeguards affect marginal upgrade and recovery
+   costs; protected stars report safeguard enabled and Mode 1, while an 18-star Mode 4
+   row matches the configured estimator.
+
+39. test_starforce_weighted_score_uses_level_band_bonuses
+   Behavior and purpose: A level-200 armor piece at 16 stars scores 55 times 1.1 for
+   primary/secondary stats plus 12 times 3 for attack.
+
+40. test_deimos_shields_have_starforce_upgrade_recommendations
+   Behavior and purpose: All three level-130 Deimos shields, in secondary or shield
+   slots, get a valid positive-cost/gain 19-to-20 recommendation.
+
+41. test_kanna_talismans_have_starforce_upgrade_recommendations
+   Behavior and purpose: All eight Kanna talismans receive a positive final-step
+   recommendation at their level cap using INT/LUK/MATT scoring.
+
+42. test_unsupported_secondaries_do_not_support_starforce
+   Behavior and purpose: An unsupported Maple Treasure Shield raises an eligibility
+   error when scored for Star Force.
+
+43. test_badges_do_not_support_starforce
+   Behavior and purpose: Badge Star Force scoring raises an explicit
+   unsupported-equipment error.
+
+44. test_weapon_stat_table_gaps_are_not_extrapolated
+   Behavior and purpose: Weapon scoring rejects level-250 stat tables and values above
+   25 stars instead of extrapolating missing bonuses.
+
+45. test_plan_returns_weakest_gain_and_efficiency_orders
+   Behavior and purpose: A plan excludes Tyrant equipment, reports fixed Black Flame/red
+   cube cost assumptions, and returns weakest, gain, and efficiency orders for all three
+   categories with expected row counts.
+
+46. test_armor_attack_accumulates_through_22_stars
+   Behavior and purpose: At 22 stars, level-200 armor accumulates 145 stat and 106
+   attack before applying the score weights.
+
+47. test_cubes_cost_until_better_roll_and_gollux_eligibility
+   Behavior and purpose: With a controlled potential distribution, Superior Gollux
+   remains eligible and a better roll requires two expected cubes: 24M red or 44M black,
+   gain 80, with corresponding efficiency.
+
+48. test_starforce_cost_includes_retries_and_boom_recovery
+   Behavior and purpose: A 20-to-21 recommendation uses full expected
+   retry/boom-recovery cost rather than one tap and reports the expected weighted gain.
+
+49. test_starforce_ranks_multiple_marginal_steps_across_items
+   Behavior and purpose: Two items produce 28 distinct marginal Star Force steps sorted
+   by efficiency, with per-step scores/costs matching the engines and recorded starting
+   stars unchanged.
+
+50. test_starforce_steps_stop_at_caps_and_preserve_supported_weapon_steps
+   Behavior and purpose: Unsupported badges produce unavailable rows; a level-200 weapon
+   retains supported targets 24 and 25 and reports the later unsupported step.
+
+51. test_flames_exclude_equal_and_worse_rolls
+   Behavior and purpose: With controlled flame scores, excludes equal/worse rolls: a 25%
+   improvement chance yields four expected rolls, cost 12M, and conditional gain 40.
+
+52. test_missing_weapon_attack_and_invalid_stars_are_reported
+   Behavior and purpose: A weapon missing base offense has explanatory unavailable rows;
+   stars beyond its level cap also produce a cap note.
+
+53. test_hp_potential_scoring_and_unsupported_starforce
+   Behavior and purpose: HP-based Star Force scoring is explicitly unavailable while HP
+   potential upgrades still have positive gain.
+
+54. test_multiple_items_are_ordered_by_score_and_gain
+   Behavior and purpose: With a controlled distribution and two rings, the weaker ring
+   leads each nonempty potential ranking.
+
+55. test_no_better_potential_is_unavailable
+   Behavior and purpose: When potential rolls cannot exceed the current score,
+   gain/efficiency lists are empty and the unavailable row has no cost plus an
+   explanatory note.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_flames.py
+Test class: FlameScoreTests
+Tests: 6
+
+56. test_xenon_primary_stats_are_equal_and_ignore_secondary_weight
+   Behavior and purpose: Xenon weights STR, DEX, and LUK equally, ignores unrelated INT
+   and secondary conversion, sums paired primary stats, and keeps the configured All
+   Stat conversion.
+
+57. test_fast_threshold_probability_matches_enumeration
+   Behavior and purpose: Compares fast threshold probabilities against enumerated
+   outcomes for all three flame types, boss/non-boss gear, armor/weapons, and
+   exact/adjacent score boundaries using a reduced option pool. Patches enumeration to
+   fail during the optimized call, protecting both results and algorithm choice.
+
+58. test_threshold_probability_does_not_round_small_scores
+   Behavior and purpose: An extremely small ATT weight retains a threshold probability
+   of 0.71; premature score rounding must not erase the distinction.
+
+59. test_boss_damage_tiers_and_weight
+   Behavior and purpose: Weapon boss-damage tiers 1-7 produce twice the tier in percent
+   and the expected weighted score at weight 2.5.
+
+60. test_aggregated_score_distribution_matches_outcome_enumerator
+   Behavior and purpose: On a reduced option pool, aggregated score keys and
+   probabilities match explicitly enumerated two-option outcomes rounded to four
+   decimals.
+
+61. test_fractional_weights_are_rounded_after_combining_options
+   Behavior and purpose: With fractional ATT/All Stat weights, rounds only after
+   combining options; score keys and probabilities match enumeration and total
+   probability remains one.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_potential.py
+Test class: PotentialTests
+Tests: 16
+
+62. test_intermediate_levels_use_the_correct_potential_pool
+   Behavior and purpose: Maps intermediate levels to the correct representative pools
+   across cubes and equipment, supports level-110 secondaries, preserves cooldown
+   behavior, and rejects out-of-range/noninteger/boolean levels.
+
+63. test_gms_values_preserve_source_probabilities_and_tiers
+   Behavior and purpose: GMS-adjusted effect values and names match expected
+   prime/Unique bands while normalized source line probabilities and cube tier rates
+   remain unchanged.
+
+64. test_gms_exceptions_and_source_data_are_unchanged
+   Behavior and purpose: Checks HP/MP, boss damage, IED, and critical-damage exceptions;
+   raw bundled data and repeated reads remain unchanged. A 39% STR roll is impossible at
+   150 and possible at 160.
+
+65. test_multiple_targets_on_same_roll
+   Behavior and purpose: Using a controlled three-line table, requires all requested
+   effects on the same roll: crit alone has chance 0.5, crit plus a compatible stat
+   combination 0.25, and an incompatible target zero.
+
+66. test_multiple_target_validation
+   Behavior and purpose: Rejects unmatched effect/value pairs, unknown effects,
+   nonfinite values, and negative cooldown targets.
+
+67. test_weighted_score_distribution
+   Behavior and purpose: A controlled table and effect weights produce exactly two
+   weighted outcomes: scores 39 and 43, each with probability 0.5.
+
+68. test_weighted_score_distribution_rejects_invalid_weights
+   Behavior and purpose: Rejects unknown weighted effects, negative weights, and
+   infinite weights.
+
+69. test_cooldown_reduction_target
+   Behavior and purpose: Generic cooldown targets match the dedicated cooldown helper;
+   adding a STR requirement cannot increase the cooldown-only probability.
+
+70. test_shield_categories
+   Behavior and purpose: Verifies force shield, soul ring, and shield tables across
+   cubes/levels, shared force-shield/soul-ring data, positive ATT chances, and
+   underscore alias normalization.
+
+71. test_all_tables_and_complete_roll_mass
+   Behavior and purpose: Checks every bundled table: missing tables raise errors, raw
+   line probabilities approximately sum to one, and complete legal roll mass sums to
+   one.
+
+72. test_restrictions_and_conditional_probability
+   Behavior and purpose: A controlled decent-skill restriction removes the illegal
+   repeated-skill roll and renormalizes legal outcomes to probabilities 0.5, 0.25, and
+   0.25.
+
+73. test_cube_tiers
+   Behavior and purpose: Checks Legendary line rates of 1/0.1/0.01 for red cubes and
+   1/0.2/0.05 for black cubes within source rounding tolerance.
+
+74. test_equipment_and_level_effects
+   Behavior and purpose: Checks equipment-specific availability (weapon attack, glove
+   crit, hat cooldown, emblem IED) and representative level-dependent stat values.
+
+75. test_matching_and_exact
+   Behavior and purpose: Summed exact-match combination probabilities equal
+   probability_exact; at-least chance is no smaller and an impossible threshold has zero
+   chance.
+
+76. test_validation
+   Behavior and purpose: Rejects invalid level/equipment/cube/effect/matching mode and
+   checks two independent 50% rolls reach 75% confidence.
+
+77. test_ied_stacking
+   Behavior and purpose: Two 40% IED lines combine multiplicatively to 64%, not
+   additively to 80%.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_starforce.py
+Test class: StarForceCalculatorTests
+Tests: 19
+
+78. test_replacement_cost_includes_all_booms_without_changing_attempts
+   Behavior and purpose: Total cost adds expected booms times replacement cost,
+   including recovery booms. Attempts and percentiles remain unchanged; boom-free
+   upgrades incur no replacement spending. Invalid costs raise ValueError.
+
+79. test_success_chances_match_single_step_geometric_distribution
+   Behavior and purpose: For a no-boom Mode 4 transition, attempt percentiles match the
+   geometric formula. No requested percentiles yields no estimates; invalid confidence
+   values raise errors.
+
+80. test_success_chances_match_stepwise_probability_with_boom_recovery
+   Behavior and purpose: Independently propagates probability mass step by step through
+   success, failure, and boom recovery for 15-to-18, with and without safeguards. Each
+   reported attempt count is the first reaching its requested confidence.
+
+81. test_base_cost_rounds_to_nearest_hundred
+   Behavior and purpose: Checks a fixed level-150 zero-star cost of 136,000 and rounding
+   to a multiple of 100 at 15 stars.
+
+82. test_costs_by_star_returns_base_cost_for_each_tap
+   Behavior and purpose: Cost lookup includes every starting star 0-29 and agrees with
+   the per-tap base-cost function.
+
+83. test_mode_multipliers_change_by_star_band
+   Behavior and purpose: Checks mode cost multipliers across star bands and outside
+   them. This tests the multiplier helper; valid mode selection is tested separately.
+
+84. test_mode_probabilities_match_supplied_table
+   Behavior and purpose: Checks fixed success/boom/maintain probabilities for star-19
+   Mode 2 and star-21 Mode 4, including zero downgrade/boom where expected.
+
+85. test_all_available_probability_rows_sum_to_one
+   Behavior and purpose: For all tested star/mode combinations, success, maintain,
+   downgrade, and boom probabilities sum to one.
+
+86. test_mode_four_is_not_available_from_15_through_17
+   Behavior and purpose: Mode 4 attempt rates are rejected at stars 15, 16, and 17.
+
+87. test_non_destructive_failures_always_maintain_stars
+   Behavior and purpose: All standard non-destructive failures maintain stars: downgrade
+   probability is zero and maintain is the remaining probability.
+
+88. test_standard_estimates_match_lostara_reference
+   Behavior and purpose: Compares expected mesos and booms against stored Lostara
+   fixtures for 0-to-15, 15-to-22, and 22-to-23. Fixtures were recorded 2026-10-01 for
+   level 200, Mode 1, Star Catch on, no events/MVP; this test does not contact Lostara.
+
+89. test_expected_cost_for_one_transition_includes_retries
+   Behavior and purpose: A 0-to-1 transition includes retries: cost equals base cost /
+   0.9975, attempts equal 1 / 0.9975, and booms are zero.
+
+90. test_mode_four_can_be_selected_for_18_to_21_band
+   Behavior and purpose: Band-level Mode 4 selection for 18-to-19 costs base cost times
+   6.5 / 0.084 and produces zero booms.
+
+91. test_boom_recovery_star_matches_supplied_ranges
+   Behavior and purpose: Checks boom-recovery destinations at representative range
+   boundaries, from a 15-star destruction resetting to 12 through high-star resets to
+   20.
+
+92. test_boom_reset_star_can_override_recovery_table
+   Behavior and purpose: An explicit boom reset of 12 changes the 21-to-22 estimate
+   relative to the default recovery table.
+
+93. test_individual_star_mode_overrides_band_mode
+   Behavior and purpose: A per-star Mode 4 override takes precedence over band Mode 1
+   and equals the corresponding band Mode 4 estimate.
+
+94. test_safeguard_disables_boom_and_costs_three_times_at_15_to_17
+   Behavior and purpose: Safeguard at 15 uses 31.5% success, 68.5% maintain, zero booms,
+   and triple cost even if Mode 3 is selected; expected cost follows the resulting
+   geometric retry model.
+
+95. test_safeguard_can_be_selected_per_star
+   Behavior and purpose: Per-star safeguard true produces the protected expected cost
+   and zero booms; false allows positive expected booms.
+
+96. test_invalid_requests_are_rejected
+   Behavior and purpose: Rejects level zero, target 31, unsupported band/per-star modes,
+   safeguard outside 15-17, and nonboolean safeguard values.

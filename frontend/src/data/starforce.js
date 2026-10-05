@@ -3,10 +3,15 @@ const LIMITED_SWEETWATER_ITEMS = new Set([
 ])
 const LIMITED_BADGES = new Set(['Ghost Ship Exorcist', 'Sengoku Hakase Badge'])
 
+export function replacementCostForEquipment(item, slot = item?.slot ?? '') {
+  return item.replacementCostMesos ??
+    (slot.split('-')[0] === 'secondary' && item.name?.startsWith('Astra ') ? 1_000_000_000 : 0)
+}
+
 export function supportsStarForce(item, slot = item?.slot ?? '') {
   const type = slot.split('-')[0]
   const name = item?.name ?? ''
-  return !['medal', 'badge'].includes(type)
+  return !['medal', 'badge', 'pocket','emblem'].includes(type)
     && (!['secondary', 'shield'].includes(type) || /^(Astra|Deimos)\b/i.test(name)
       || (type === 'secondary' && / Talisman$/i.test(name)))
 }

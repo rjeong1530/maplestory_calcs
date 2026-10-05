@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { PAGE_PATHS, isPlainNavigation } from '../data/routes'
+import './Navigation.css'
 
 const calculators = [
   ['potential', 'Potential'],

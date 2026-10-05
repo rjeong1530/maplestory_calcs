@@ -6,27 +6,27 @@
   "retrieved_at": "2026-09-30T18:00:47.271658+00:00",
   "min_level": 140,
   "max_level": 250,
-  "item_count": 754,
+  "item_count": 736,
   "class_semantics": "Broad reqJob class families, not exact playable jobs. All means no family restriction. Weapon type and special job restrictions may further limit eligibility.",
-  "coverage": "Level 140-250 equipment plus level 100-250 secondaries, including secondary item-ID ranges mislabeled Unknown by the source. Armor and main weapons retain their set/series filters. Includes legacy/event items; presence does not imply current obtainability.",
+  "coverage": "Level 140-250 equipment plus level 100-250 secondaries and selected hearts at all levels. Includes secondary IDs and Mitra emblem IDs mislabeled Unknown by the source. Armor and main weapons retain their set/series filters. Presence does not imply current obtainability.",
   "slot_semantics": "Overall has its own slot value; shields and kataras use secondary. Repeated ring/pendant positions share one slot type.",
   "counts_by_slot": {
     "badge": 4,
     "belt": 7,
     "bottom": 10,
     "cape": 15,
-    "earring": 14,
-    "emblem": 1,
-    "eye": 6,
-    "face": 8,
+    "earring": 3,
+    "emblem": 6,
+    "eye": 3,
+    "face": 4,
     "gloves": 15,
-    "hat": 24,
-    "heart": 2,
+    "hat": 21,
+    "heart": 5,
     "medal": 1,
     "mount": 3,
     "overall": 10,
-    "pendant": 9,
-    "pocket": 9,
+    "pendant": 8,
+    "pocket": 5,
     "ring": 11,
     "secondary": 334,
     "shoes": 15,
@@ -51,7 +51,7 @@
       "shoulder",
       "top"
     ],
-    "includes": "CRA Royal hats, Eagle Eye tops, Trixter bottoms, and Chaos Root Abyss boss hats."
+    "includes": "CRA Royal hats, Eagle Eye tops, Trixter bottoms, and Chaos Vellum's Helm."
   },
   "weapon_filter": {
     "series": [
@@ -66,7 +66,7 @@
   },
   "deduplication": "Exact item name; retain the entry with the lowest item ID.",
   "boss_reward_semantics": "MapleStory.io item-detail metaInfo.bossReward; missing or non-boolean values default to false.",
-  "filtered_at": "2026-10-02T20:32:10.084248+00:00",
+  "filtered_at": "2026-10-05T21:23:40.666991+00:00",
   "secondary_source_url": "https://maplestory.io/api/GMS/270/item?minLevelFilter=100&maxLevelFilter=250",
   "secondaries_retrieved_at": "2026-10-02T20:27:26.841236+00:00",
   "secondary_min_level": 100,
@@ -84,5 +84,36 @@
       "Terminus"
     ],
     "scope": "Ordinary shields (1092xxx); Soul Shields and Force Shields are unchanged."
-  }
+  },
+  "heart_source_url": "https://maplestory.io/api/GMS/270/item?subCategoryFilter=Mechanical+Heart",
+  "hearts_retrieved_at": "2026-10-05T21:10:11.428052+00:00",
+  "mitra_source_url": "https://maplestory.io/api/GMS/270/item?searchFor=Mitra",
+  "mitra_retrieved_at": "2026-10-05T21:10:11.428052+00:00",
+  "heart_filter": [
+    "Fairy Heart",
+    "Outlaw Heart",
+    "Plasma Heart",
+    "Titanium Heart",
+    "Total Control"
+  ],
+  "excluded_name_prefixes": [
+    "Red Beryl",
+    "Frontier",
+    "Commerci"
+  ],
+  "pocket_filter": [
+    "Cursed Blue Spellbook",
+    "Cursed Green Spellbook",
+    "Cursed Red Spellbook",
+    "Cursed Yellow Spellbook",
+    "Pink Holy Cup"
+  ],
+  "excluded_eye_items": [
+    "Bounty Legend's Sunglasses"
+  ],
+  "earring_filter": [
+    "Commanding Force Earring",
+    "Estella Earrings",
+    "Superior Gollux Earrings"
+  ]
 }

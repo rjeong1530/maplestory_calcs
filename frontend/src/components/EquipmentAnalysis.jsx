@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { FLAME_SLOTS, potentialEquipmentType } from '../data/flameEquipment'
-import { maxStarForceForEquipment, supportsStarForce } from '../data/starforce'
+import { maxStarForceForEquipment, supportsStarForce, replacementCostForEquipment } from '../data/starforce'
+import './EquipmentAnalysis.css'
 
 const POTENTIAL_LABELS = {
   STR_PCT: 'STR %', DEX_PCT: 'DEX %', INT_PCT: 'INT %', LUK_PCT: 'LUK %',
@@ -17,10 +18,11 @@ const FLAME_LABELS = {
   STR: 'STR', DEX: 'DEX', INT: 'INT', LUK: 'LUK',
   'STR+DEX': 'STR + DEX', 'STR+INT': 'STR + INT', 'STR+LUK': 'STR + LUK',
   'DEX+INT': 'DEX + INT', 'DEX+LUK': 'DEX + LUK', 'INT+LUK': 'INT + LUK',
+  ALL_STAT_PCT: 'All stats %',
   MAX_HP: 'Max HP', MAX_MP: 'Max MP', LEVEL_REDUCTION: 'Level reduction',
   DEF: 'Defense', ATT: 'Attack', MATT: 'Magic attack',
   BOSS_DAMAGE_PCT: 'Boss damage %', DAMAGE_PCT: 'Damage %',
-  ALL_STAT_PCT: 'All stats %', MOVE_SPEED: 'Movement speed', JUMP: 'Jump',
+  MOVE_SPEED: 'Movement speed', JUMP: 'Jump',
 }
 
 const emptyPotentialLine = () => ({ effect: '', value: '' })
@@ -53,28 +55,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
       flameTotals[stat] = (flameTotals[stat] || 0) + Number(value)
     }
   }
-  const combinedFlameOptions = [
-    'STR+DEX', 'STR+INT', 'STR+LUK', 'DEX+INT', 'DEX+LUK', 'INT+LUK',
-  ]
-  const flameGroups = [
-    {
-      label: 'Common flame stats',
-      rows: flameValues.filter(row => [
-        'STR', 'DEX', 'INT', 'LUK', 'MAX_HP', 'MAX_MP',
-        'LEVEL_REDUCTION', 'DEF', 'ALL_STAT_PCT',
-      ].includes(row.option)),
-    },
-    {
-      label: item.config.equipment_type === 'weapon' ? 'Weapon-only flame stats' : 'Armor-only flame stats',
-      rows: flameValues.filter(row => item.config.equipment_type === 'weapon'
-        ? ['ATT', 'MATT', 'BOSS_DAMAGE_PCT', 'DAMAGE_PCT'].includes(row.option)
-        : ['ATT', 'MATT', 'MOVE_SPEED', 'JUMP'].includes(row.option)),
-    },
-    {
-      label: 'Combined flame stats',
-      rows: flameValues.filter(row => combinedFlameOptions.includes(row.option)),
-    },
-  ].filter(group => group.rows.length)
+  const orderedFlameValues = Object.keys(FLAME_LABELS)
+    .flatMap(option => flameValues.filter(row => row.option === option))
 
   useEffect(() => {
     const controller = new AbortController()
@@ -258,14 +240,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
                             ))}
                           </tr>
                         </thead>
-                        {flameGroups.map(group => (
-                          <tbody key={group.label}>
-                            <tr className="flame-values-group">
-                              <th scope="colgroup" colSpan={availableOptions.flame_stages.length + 1}>
-                                {group.label}
-                              </th>
-                            </tr>
-                            {group.rows.map(row => (
+                        <tbody>
+                          {orderedFlameValues.map(row => (
                               <tr key={row.option}>
                                 <th scope="row">{FLAME_LABELS[row.option] || row.option}</th>
                                 {availableOptions.flame_stages.map(stage => {
@@ -287,13 +263,12 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
                                   )
                                 })}
                               </tr>
-                            ))}
-                          </tbody>
-                        ))}
+                          ))}
+                        </tbody>
                       </table>
                     </div>
                     <div className="current-flame-totals" aria-live="polite">
-                      <h5>Combined selected flame stats</h5>
+                      <h5>Selected flame totals</h5>
                       {Object.keys(flameTotals).length
                         ? <ul>
                             {Object.entries(flameTotals).map(([stat, value]) => (
@@ -334,6 +309,15 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
               }
             }} />
           <small>Upgrade recommendations stop here.</small>
+        </label>
+        <label className="current-starforce-control">Replacement cost per boom (mesos)
+          <input type="number" min="0" step="any"
+            value={replacementCostForEquipment(item, slot)}
+            onChange={event => {
+              const value = Number(event.target.value)
+              if (Number.isFinite(value) && value >= 0) onChange({ replacementCostMesos: value })
+            }} />
+          <small>Astra secondaries default to 1 billion mesos. You can override this.</small>
         </label>
       </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
     </div>

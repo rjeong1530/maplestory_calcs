@@ -1,10 +1,11 @@
-import { equipInSlot, equipmentChoices, EQUIPMENT_SLOTS, CLASS_FAMILIES } from './flameEquipment.js'
-import { maxStarForceForEquipment } from './starforce.js'
+import { equipInSlot, equipmentChoices, EQUIPMENT_SLOTS, CLASS_FAMILIES, FIXED_RING_SLOT, withFixedRing } from './flameEquipment.js'
+import { maxStarForceForEquipment, replacementCostForEquipment } from './starforce.js'
 
 export function serializeEquipment(equipment) {
-  return Object.fromEntries(Object.entries(equipment).map(([slot, item]) => [slot, {
+  return Object.fromEntries(Object.entries(equipment).filter(([slot]) => slot !== FIXED_RING_SLOT).map(([slot, item]) => [slot, {
     id: item.id,
     current_star_force: item.currentStarForce ?? 0,
+    replacement_cost_mesos: replacementCostForEquipment(item, slot),
     ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
     ...(item.starForceModes ? { mode_by_star: item.starForceModes } : {}),
     ...(item.starForceSafeguards ? { safeguard_by_star: item.starForceSafeguards } : {}),
@@ -43,10 +44,15 @@ export function importEquipment(text) {
     throw new Error('The file must contain a valid equipment class and equipment set.')
   }
   for (const [slot, item] of Object.entries(saved.equipment)) {
+    // Replace legacy or edited ring-4 data with the fixed skill ring.
+    if (slot === FIXED_RING_SLOT) continue
     const invalid = () => { throw new Error(`Invalid equipment data for ${slot}.`) }
     if (!EQUIPMENT_SLOTS.includes(slot) || slot === 'android' || !isObject(item)) invalid()
     const choice = equipmentChoices(slot, saved.equipment_class).find(choice => choice.id === item.id)
     if (!choice) throw new Error(`Equipment in ${slot} is unavailable for ${saved.equipment_class}.`)
+    if (item.replacement_cost_mesos !== undefined &&
+      (typeof item.replacement_cost_mesos !== 'number' || !Number.isFinite(item.replacement_cost_mesos)
+        || item.replacement_cost_mesos < 0)) invalid()
     if (!Number.isInteger(item.current_star_force) || item.current_star_force < 0
       || item.current_star_force > maxStarForceForEquipment(choice)) invalid()
     if (item.max_star_force !== undefined && (!Number.isInteger(item.max_star_force)
@@ -81,14 +87,16 @@ export function importEquipment(text) {
   if (equipment.top?.overall && saved.equipment.bottom) {
     throw new Error('An overall and bottom cannot be equipped together.')
   }
-  if (Object.keys(equipment).length !== Object.keys(saved.equipment).length) {
+  if (Object.keys(equipment).filter(slot => slot !== FIXED_RING_SLOT).length !==
+      Object.keys(saved.equipment).filter(slot => slot !== FIXED_RING_SLOT).length) {
     throw new Error('The equipment set contains conflicting slots.')
   }
   return { equipment, equipmentClass: saved.equipment_class }
 }
 
 export function restoreEquipment(savedEquipment, mapleClass) {
-  return Object.entries(savedEquipment || {}).reduce((equipment, [slot, savedItem]) => {
+  return withFixedRing(Object.entries(savedEquipment || {}).reduce((equipment, [slot, savedItem]) => {
+    if (slot === FIXED_RING_SLOT) return equipment
     if (!savedItem || typeof savedItem.id !== 'number') return equipment
     const item = equipmentChoices(slot, mapleClass).find(choice => choice.id === savedItem.id)
     if (!item) return equipment
@@ -101,6 +109,9 @@ export function restoreEquipment(savedEquipment, mapleClass) {
     return equipInSlot(equipment, slot, {
       ...restoredItem,
       currentStarForce,
+      replacementCostMesos: typeof savedItem.replacement_cost_mesos === 'number'
+        && Number.isFinite(savedItem.replacement_cost_mesos) && savedItem.replacement_cost_mesos >= 0
+        ? savedItem.replacement_cost_mesos : replacementCostForEquipment(item, slot),
       ...(Number.isInteger(savedItem.max_star_force) ? {
         maxStarForce: Math.min(maxStarForce, Math.max(0, savedItem.max_star_force)),
       } : {}),
@@ -123,6 +134,6 @@ export function restoreEquipment(savedEquipment, mapleClass) {
       ...(typeof savedItem.current_boss_equipment === 'boolean'
         ? { currentBossEquipment: savedItem.current_boss_equipment } : {}),
     })
-  }, {})
+  }, {}))
 }
 

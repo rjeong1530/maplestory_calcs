@@ -13,6 +13,7 @@ const initialForm = {
   item_level: '200',
   start_star: '15',
   target_star: '22',
+  replacement_cost_mesos: '0',
   mode_by_star: Object.fromEntries(Array.from({ length: 7 }, (_, index) => [index + 15, '1'])),
   safeguard_by_star: { 15: false, 16: false, 17: false },
 }
@@ -86,6 +87,7 @@ export default function StarForceCalculator() {
       item_level: Number(form.item_level),
       start_star: Number(form.start_star),
       target_star: Number(form.target_star),
+      replacement_cost_mesos: Number(form.replacement_cost_mesos),
       mode_by_star: Object.fromEntries(
         Object.entries(form.mode_by_star).map(([star, mode]) => [star, Number(mode)]),
       ),
@@ -112,6 +114,10 @@ export default function StarForceCalculator() {
           <fieldset disabled={busy}>
             <legend>Star Force settings</legend>
             <div className="starforce-fields">
+              <label>Replacement cost per boom (mesos)
+                <input name="replacement_cost_mesos" type="number" min="0" step="any"
+                  value={form.replacement_cost_mesos} onChange={update} required />
+              </label>
               <label>Equipment level
                 <input name="item_level" type="number" min="1" step="1"
                   value={form.item_level} onChange={update} required />
@@ -193,8 +199,12 @@ export default function StarForceCalculator() {
                 <>
                   <dl className="starforce-metrics">
                     <div>
-                      <dt>Expected mesos</dt>
+                      <dt>Expected total mesos</dt>
                       <dd>{formatMesos(result.expected_cost)}</dd>
+                    </div>
+                    <div>
+                      <dt>Expected replacement mesos</dt>
+                      <dd>{formatMesos(result.expected_replacement_cost)}</dd>
                     </div>
                     <div>
                       <dt>Expected attempts</dt>
@@ -219,7 +229,8 @@ export default function StarForceCalculator() {
                     <p className="hint result-note">Chance of reaching the target within this many attempts, including failed attempts and boom recovery. These are attempt counts, not meso budgets or guarantees.</p>
                   </>}
                   <p className="hint result-note">
-                    Expected mesos exclude item replacement costs, discounts, and event modifiers.
+                    Total mesos include enhancement costs and expected booms multiplied by your replacement cost.
+                    Discounts and event modifiers are excluded.
                   </p>
                 </>
               )}
