@@ -8,6 +8,18 @@ test('Xenon requests carry three primary stats and no secondary stats', () => {
   assert.deepEqual(request.main_stat, ['STR', 'DEX', 'LUK'])
   assert.deepEqual(request.secondary_stats, [])
   assert.equal(request.offense_stat, 'ATT')
+  assert.equal(request.shining_starforce_sunday, true)
+  assert.equal(request.mvp_rank, 'none')
+})
+
+test('MVP rank is validated in restored settings and serialized in requests', () => {
+  const settings = restoreUpgradeSettings({ mvp_rank: 'diamond_plus' })
+  assert.equal(settings.mvp_rank, 'diamond_plus')
+  assert.equal(restoreUpgradeSettings({ mvp_rank: 'invalid' }).mvp_rank, 'none')
+  assert.equal(
+    buildUpgradeRequest({}, CLASS_STATS.Hero, {}, settings).mvp_rank,
+    'diamond_plus',
+  )
 })
 
 const starStep = (start, overrides = {}) => ({
@@ -182,7 +194,8 @@ test('saved upgrade settings accept zero weights and recover from invalid values
   assert.deepEqual(restoreUpgradeSettings({ cube_type: 'invalid', base_stat_pct_value: 0,
     attack_pct_value: -1, crit_damage_pct_value: 'Infinity' }), {
     categories: ['starforce', 'flames', 'potential'],
-    cube_type: 'black', base_stat_pct_value: '0', attack_pct_value: '10', crit_damage_pct_value: '8',
+    cube_type: 'black', shining_starforce_sunday: true, mvp_rank: 'none',
+    base_stat_pct_value: '0', attack_pct_value: '10', crit_damage_pct_value: '8',
   })
 })
 

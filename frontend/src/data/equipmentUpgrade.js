@@ -13,9 +13,18 @@ export const POTENTIAL_WEIGHT_LABELS = {
   crit_damage_pct_value: 'Points per 1% critical damage',
 }
 export const UPGRADE_CATEGORIES = { starforce: 'Star Force', flames: 'Flames', potential: 'Potential' }
+export const MVP_RANKS = {
+  none: 'None',
+  silver: 'Silver — 3%',
+  gold: 'Gold — 5%',
+  diamond_plus: 'Diamond+ — 10%',
+}
 export const DEFAULT_UPGRADE_SETTINGS = {
   categories: Object.keys(UPGRADE_CATEGORIES),
-  cube_type: 'black', base_stat_pct_value: '10', attack_pct_value: '10', crit_damage_pct_value: '8',
+  cube_type: 'black',
+  shining_starforce_sunday: true,
+  mvp_rank: 'none',
+  base_stat_pct_value: '10', attack_pct_value: '10', crit_damage_pct_value: '8',
 }
 
 export function restoreUpgradeSettings(saved) {
@@ -24,6 +33,12 @@ export function restoreUpgradeSettings(saved) {
       ? Object.keys(UPGRADE_CATEGORIES).filter(key => saved.categories.includes(key))
       : [...DEFAULT_UPGRADE_SETTINGS.categories],
     cube_type: saved?.cube_type === 'red' ? 'red' : 'black',
+    shining_starforce_sunday: saved?.shining_starforce_sunday !== undefined
+      ? Boolean(saved.shining_starforce_sunday)
+      : DEFAULT_UPGRADE_SETTINGS.shining_starforce_sunday,
+    mvp_rank: Object.hasOwn(MVP_RANKS, saved?.mvp_rank)
+      ? saved.mvp_rank
+      : DEFAULT_UPGRADE_SETTINGS.mvp_rank,
     ...Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS).map(key => [key,
       saved?.[key] !== '' && saved?.[key] != null
         && Number.isFinite(Number(saved[key])) && Number(saved[key]) >= 0
@@ -107,6 +122,8 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
     offense_stat: classStats.offense,
     cube_type: settings.cube_type,
     categories: settings.categories,
+    shining_starforce_sunday: Boolean(settings.shining_starforce_sunday),
+    mvp_rank: settings.mvp_rank,
     flame_weights: Object.fromEntries(Object.keys(FLAME_WEIGHT_LABELS)
       .map(key => [key, Number(flameWeights[key])])),
     potential_weights: Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS)

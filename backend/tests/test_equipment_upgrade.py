@@ -140,6 +140,30 @@ class EquipmentUpgradeTests(unittest.TestCase):
         self.assertNotEqual(row['action_cost_mesos'], starforce.estimate_starforce(
             item_level=200, start_star=18, target_star=19).expected_cost)
 
+    def test_mvp_rank_discount_is_applied_to_planned_non_superior_starforce(self):
+        result = equipment_upgrade_plan({
+            'main_stat': 'STR', 'secondary_stats': (), 'offense_stat': 'ATT',
+            'cube_type': 'black', 'flame_weights': self.flame_weights,
+            'potential_weights': {'base_stat_pct_value': 10, 'attack_pct_value': 10,
+                                  'crit_damage_pct_value': 8},
+            'mvp_rank': 'gold',
+            'equipment': [{'name': 'Arcane Hat', 'slot': 'hat', 'equipment_level': 200,
+                           'equipment_type': 'armor', 'current_star_force': 16}],
+        })
+        rows = result['rankings']['starforce']['gain_per_meso_first']
+        cost_16 = next(row['action_cost_mesos'] for row in rows if row['start_star'] == 16)
+        cost_17 = next(row['action_cost_mesos'] for row in rows if row['start_star'] == 17)
+        self.assertAlmostEqual(
+            cost_16,
+            starforce.estimate_starforce(
+                200, 16, 17, mvp_rank='gold',
+            ).expected_cost,
+        )
+        self.assertAlmostEqual(
+            cost_17,
+            starforce.estimate_starforce(200, 17, 18, mvp_rank='gold').expected_cost,
+        )
+
     def test_starforce_weighted_score_uses_level_band_bonuses(self):
         item = {
             'slot': 'hat', 'equipment_level': 200,

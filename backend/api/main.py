@@ -271,6 +271,9 @@ class StarForceEstimateRequest(RequestModel):
     mode_by_star: dict[int, Annotated[int, Field(strict=True)]] = Field(default_factory=dict)
     safeguard_15_17: bool = Field(default=False, strict=True)
     safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
+    shining_starforce_sunday: bool = Field(default=False, strict=True)
+    mvp_rank: Literal['none', 'silver', 'gold', 'diamond_plus'] = 'none'
+    superior_item: bool = Field(default=False, strict=True)
 
 
 class AttemptEstimate(BaseModel):
@@ -374,6 +377,8 @@ class EquipmentUpgradePlanRequest(RequestModel):
     cube_type: Literal['red', 'black'] = 'black'
     flame_weights: UpgradeFlameWeightsRequest
     potential_weights: UpgradePotentialWeightsRequest
+    shining_starforce_sunday: bool = Field(default=False, strict=True)
+    mvp_rank: Literal['none', 'silver', 'gold', 'diamond_plus'] = 'none'
     equipment: list[UpgradeEquipmentRequest] = Field(min_length=1, max_length=40)
 
     @model_validator(mode='after')
@@ -421,7 +426,12 @@ def flame_probability(request: FlameProbabilityRequest):
 
 
 @app.get('/api/starforce-costs')
-def starforce_costs(level: Annotated[int, Field(gt=0)]):
+def starforce_costs(
+    level: Annotated[int, Field(gt=0)],
+    shining_starforce_sunday: bool = False,
+    mvp_rank: Literal['none', 'silver', 'gold', 'diamond_plus'] = 'none',
+    superior_item: bool = False,
+):
     """Return per-tap costs and outcome rates by star and Enhancement Mode."""
     try:
         base_costs = starforce.starforce_costs_by_star(level)
@@ -430,6 +440,9 @@ def starforce_costs(level: Annotated[int, Field(gt=0)]):
 
     return {
         'item_level': level,
+        'shining_starforce_sunday': shining_starforce_sunday,
+        'mvp_rank': mvp_rank,
+        'superior_item': superior_item,
         'costs_by_star': [
             {
                 'star': current_star,
@@ -437,19 +450,32 @@ def starforce_costs(level: Annotated[int, Field(gt=0)]):
                 'mode_rates': {
                     str(mode): (
                         None if current_star in (15, 16, 17) and mode == 4
-                        else asdict(starforce.attempt_rates(current_star, mode))
+                        else asdict(starforce.attempt_rates(
+                            current_star,
+                            mode,
+                            shining_starforce_sunday=shining_starforce_sunday,
+                        ))
                     )
                     for mode in range(1, 5)
                 },
                 'safeguard_rates': (
-                    asdict(starforce.attempt_rates(current_star, safeguard=True))
+                    asdict(starforce.attempt_rates(
+                        current_star,
+                        safeguard=True,
+                        shining_starforce_sunday=shining_starforce_sunday,
+                    ))
                     if current_star in (15, 16, 17) else None
                 ),
                 'mode_costs': {
                     str(mode): (
-                        None
-                        if current_star in (15, 16, 17) and mode == 4
-                        else int(base_cost * starforce.enhancement_mode_multiplier(current_star, mode))
+                        int(base_cost * starforce.enhancement_mode_multiplier(
+                            current_star,
+                            1 if current_star in (15, 16, 17) and mode == 4 else mode,
+                            safeguard=current_star in (15, 16, 17) and mode == 4,
+                            shining_starforce_sunday=shining_starforce_sunday,
+                            mvp_rank=mvp_rank,
+                            superior_item=superior_item,
+                        ))
                     )
                     for mode in range(1, 5)
                 },
@@ -475,6 +501,9 @@ def starforce_estimate(request: StarForceEstimateRequest):
             safeguard_by_star=request.safeguard_by_star,
             percentiles=request.percentiles,
             replacement_cost_mesos=request.replacement_cost_mesos,
+            shining_starforce_sunday=request.shining_starforce_sunday,
+            mvp_rank=request.mvp_rank,
+            superior_item=request.superior_item,
         )
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error

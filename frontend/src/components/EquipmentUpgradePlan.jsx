@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
-import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, UPGRADE_CATEGORIES, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
+import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, UPGRADE_CATEGORIES, MVP_RANKS, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
 import './EquipmentUpgradePlan.css'
 import FlameUpgradeOrder from './FlameUpgradeOrder'
 
@@ -78,6 +78,19 @@ export default function EquipmentUpgradePlan({
             {label}
           </label>)}
         </fieldset>
+        <label className="starforce-safeguard-control">
+          <input type="checkbox" checked={settings.shining_starforce_sunday}
+            onChange={event => onSettingsChange({ ...settings, shining_starforce_sunday: event.target.checked })} />
+          <span>Shining Star Force Sunday</span>
+        </label>
+        <label>MVP rank
+          <select value={settings.mvp_rank}
+            onChange={event => onSettingsChange({ ...settings, mvp_rank: event.target.value })}>
+            {Object.entries(MVP_RANKS).map(([rank, label]) => (
+              <option value={rank} key={rank}>{label}</option>
+            ))}
+          </select>
+        </label>
         <div className="upgrade-controls">
           <label>Potential cube
             <select value={settings.cube_type}
@@ -202,7 +215,10 @@ export default function EquipmentUpgradePlan({
         <p>Potential assumes Legendary equipment and uses bundled KMS probabilities, without tier-ups.
           Black cubes and black flames keep the better score. Red cubes replace the current potential.
           Star Force uses each item's selected enhancement modes and safeguards, including during boom recovery,
-          with replacement spending equal to expected booms times the item's replacement cost. Events are excluded.
+          with replacement spending equal to expected booms times the item's replacement cost. Shining Star Force Sunday
+          is included when enabled, discounts Star Force costs at every star by 30%, and reduces 15★–21★ boom rates by 30%.
+          The selected MVP rank discount also applies through 17★. Cost discounts combine multiplicatively; for safeguarded
+          attempts, they apply to the base-cost portion while the safeguard surcharge remains unchanged.
           Star Force lists successive one-star upgrades up to the equipment cap or available stat tables.
           Each step's cost covers reaching its target star from its starting star regardless of spare availability.
           Potential and flame costs cover rolling until the score exceeds the recorded score:

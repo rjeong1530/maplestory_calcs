@@ -399,6 +399,8 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                             mode_by_star=item.get('mode_by_star', {}),
                             safeguard_by_star=item.get('safeguard_by_star', {}),
                             replacement_cost_mesos=replacement_cost,
+                            shining_starforce_sunday=request.get('shining_starforce_sunday', False),
+                            mvp_rank=request.get('mvp_rank', 'none'),
                         )
                         cost = estimate.expected_cost
                         starforce_entry.update({

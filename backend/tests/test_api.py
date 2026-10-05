@@ -291,7 +291,10 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(row['base_cost'], base_cost)
             self.assertEqual(row['mode_costs']['1'], base_cost)
         for star in (15, 16, 17):
-            self.assertIsNone(rows[star]['mode_costs']['4'])
+            self.assertEqual(
+                rows[star]['mode_costs']['4'],
+                int(starforce.starforce_base_cost(200, star) * 3),
+            )
             self.assertIsNone(rows[star]['mode_rates']['4'])
             self.assertEqual(rows[star]['safeguard_rates']['boom'], 0)
         for row in rows:
@@ -307,6 +310,42 @@ class ApiTests(unittest.TestCase):
             int(starforce.starforce_base_cost(200, 18) * 6.5),
         )
         self.assertEqual(self.client.get('/api/starforce-costs', params={'level': 0}).status_code, 422)
+
+    def test_starforce_costs_apply_mvp_discount_by_star_and_superior_status(self):
+        params = {'level': 200, 'mvp_rank': 'diamond_plus'}
+        response = self.client.get('/api/starforce-costs', params=params)
+        self.assertEqual(response.status_code, 200, response.text)
+        costs = response.json()['costs_by_star']
+        self.assertEqual(costs[0]['mode_costs']['1'],
+                         int(starforce.starforce_base_cost(200, 0) * .9))
+        self.assertEqual(costs[16]['mode_costs']['1'],
+                         int(starforce.starforce_base_cost(200, 16) * .9))
+        self.assertEqual(costs[17]['mode_costs']['1'],
+                         starforce.starforce_base_cost(200, 17))
+
+        shining_costs = self.client.get(
+            '/api/starforce-costs',
+            params={**params, 'shining_starforce_sunday': 'true'},
+        )
+        self.assertEqual(shining_costs.status_code, 200, shining_costs.text)
+        self.assertEqual(
+            shining_costs.json()['costs_by_star'][0]['mode_costs']['1'],
+            int(starforce.starforce_base_cost(200, 0) * .63),
+        )
+        self.assertEqual(
+            shining_costs.json()['costs_by_star'][16]['mode_costs']['4'],
+            int(starforce.starforce_base_cost(200, 16) * 2.63),
+        )
+
+        superior_response = self.client.get(
+            '/api/starforce-costs',
+            params={**params, 'superior_item': 'true'},
+        )
+        self.assertEqual(superior_response.status_code, 200, superior_response.text)
+        self.assertEqual(
+            superior_response.json()['costs_by_star'][0]['mode_costs']['1'],
+            starforce.starforce_base_cost(200, 0),
+        )
 
     def test_starforce_estimate(self):
         payload = {'item_level': 100, 'start_star': 0, 'target_star': 1}
@@ -335,6 +374,26 @@ class ApiTests(unittest.TestCase):
         )
         self.assertAlmostEqual(response.json()['expected_cost'], expected.expected_cost)
         self.assertAlmostEqual(response.json()['expected_booms'], expected.expected_booms)
+
+    def test_starforce_estimate_applies_mvp_discount_and_superior_exclusion(self):
+        payload = {
+            'item_level': 200, 'start_star': 0, 'target_star': 1,
+            'mvp_rank': 'gold',
+        }
+        discounted = self.client.post('/api/starforce-estimate', json=payload)
+        self.assertEqual(discounted.status_code, 200, discounted.text)
+        expected = starforce.estimate_starforce(200, 0, 1, mvp_rank='gold')
+        self.assertAlmostEqual(discounted.json()['expected_cost'], expected.expected_cost)
+
+        superior = self.client.post(
+            '/api/starforce-estimate',
+            json={**payload, 'superior_item': True},
+        )
+        self.assertEqual(superior.status_code, 200, superior.text)
+        expected_superior = starforce.estimate_starforce(
+            200, 0, 1, mvp_rank='gold', superior_item=True,
+        )
+        self.assertAlmostEqual(superior.json()['expected_cost'], expected_superior.expected_cost)
 
     def test_invalid_starforce_estimate(self):
         valid_request = {'item_level': 200, 'start_star': 15, 'target_star': 22}

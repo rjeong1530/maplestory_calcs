@@ -4,6 +4,7 @@ import SuccessChances from './SuccessChances'
 import { SUCCESS_CHANCES } from '../data/successChances'
 
 import { count as formatMesos } from '../data/numberFormat'
+import { MVP_RANKS } from '../data/equipmentUpgrade.js'
 const rateFormat = new Intl.NumberFormat('en-US', {
   style: 'percent', maximumFractionDigits: 4,
 })
@@ -14,6 +15,9 @@ const initialForm = {
   start_star: '15',
   target_star: '22',
   replacement_cost_mesos: '0',
+  shining_starforce_sunday: true,
+  mvp_rank: 'none',
+  superior_item: false,
   mode_by_star: Object.fromEntries(Array.from({ length: 7 }, (_, index) => [index + 15, '1'])),
   safeguard_by_star: { 15: false, 16: false, 17: false },
 }
@@ -35,7 +39,13 @@ export default function StarForceCalculator() {
     }
 
     const controller = new AbortController()
-    apiRequest(`/api/starforce-costs?level=${level}`, { signal: controller.signal })
+    const query = new URLSearchParams({
+      level: String(level),
+      shining_starforce_sunday: String(form.shining_starforce_sunday),
+      mvp_rank: form.mvp_rank,
+      superior_item: String(form.superior_item),
+    })
+    apiRequest(`/api/starforce-costs?${query}`, { signal: controller.signal })
       .then(data => setCostRows(data.costs_by_star))
       .catch(requestError => {
         if (!controller.signal.aborted) {
@@ -47,7 +57,7 @@ export default function StarForceCalculator() {
         if (!controller.signal.aborted) setCostsBusy(false)
       })
     return () => controller.abort()
-  }, [form.item_level])
+  }, [form.item_level, form.shining_starforce_sunday, form.mvp_rank, form.superior_item])
 
   function update(event) {
     const { name, value, type, checked } = event.target
@@ -62,6 +72,9 @@ export default function StarForceCalculator() {
         setCostsBusy(false)
         setCostsError('Enter a positive equipment level to view tap costs.')
       }
+    } else if (['shining_starforce_sunday', 'mvp_rank', 'superior_item'].includes(name)) {
+      setCostsBusy(true)
+      setCostsError('')
     }
     setResult(null)
     setError('')
@@ -88,6 +101,9 @@ export default function StarForceCalculator() {
       start_star: Number(form.start_star),
       target_star: Number(form.target_star),
       replacement_cost_mesos: Number(form.replacement_cost_mesos),
+      shining_starforce_sunday: Boolean(form.shining_starforce_sunday),
+      mvp_rank: form.mvp_rank,
+      superior_item: form.superior_item,
       mode_by_star: Object.fromEntries(
         Object.entries(form.mode_by_star).map(([star, mode]) => [star, Number(mode)]),
       ),
@@ -129,6 +145,24 @@ export default function StarForceCalculator() {
               <label>Target stars
                 <input name="target_star" type="number" min="1" max="30" step="1"
                   value={form.target_star} onChange={update} required />
+              </label>
+              <label className="starforce-safeguard-control">
+                <input name="shining_starforce_sunday" type="checkbox"
+                  checked={form.shining_starforce_sunday}
+                  onChange={update} />
+                <span>Shining Star Force Sunday</span>
+              </label>
+              <label>MVP rank
+                <select name="mvp_rank" value={form.mvp_rank} onChange={update}>
+                  {Object.entries(MVP_RANKS).map(([rank, label]) => (
+                    <option value={rank} key={rank}>{label}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="starforce-safeguard-control">
+                <input name="superior_item" type="checkbox" checked={form.superior_item}
+                  onChange={update} />
+                <span>Superior item (MVP discount excluded)</span>
               </label>
             </div>
             <div className="section-heading starforce-settings-heading">
@@ -230,7 +264,7 @@ export default function StarForceCalculator() {
                   </>}
                   <p className="hint result-note">
                     Total mesos include enhancement costs and expected booms multiplied by your replacement cost.
-                    Discounts and event modifiers are excluded.
+                    The selected Shining Star Force Sunday and MVP discounts are applied to eligible enhancement costs.
                   </p>
                 </>
               )}
@@ -240,20 +274,28 @@ export default function StarForceCalculator() {
       <section className="panel starforce-cost-panel">
         <div className="section-heading starforce-cost-heading">
           <h2>Cost per tap</h2>
-          <span>{form.item_level ? `LEVEL ${form.item_level}` : 'SET A LEVEL'}</span>
+          <span>{form.shining_starforce_sunday ? 'SHINING ON' : 'SHINING OFF'} · {form.item_level ? `LEVEL ${form.item_level}` : 'SET A LEVEL'}</span>
         </div>
-        <p className="hint">Mode costs outside 15★–21★ match the base cost. Mode 4 is unavailable from 15★ to 17★.</p>
+        <p className="hint">Shining Star Force Sunday discounts costs at every star. The selected MVP rank discounts non-Superior
+          equipment on attempts up to 17★. Discounts combine multiplicatively; on safeguarded attempts, they apply to the base-cost
+          portion while the safeguard surcharge remains unchanged. MVP: {MVP_RANKS[form.mvp_rank]}
+          {form.superior_item ? ' (excluded for this Superior item)' : ''}. The Mode 4 cost column shows safeguard costs from 15★ to 17★;
+          Mode 4 rates are unavailable there.</p>
         {costsBusy ? <p role="status">Loading tap costs…</p>
           : costsError ? <p className="error" role="alert">{costsError}</p>
             : costRows && (
               <div className="starforce-table-wrap">
                 <table className="starforce-table">
-                  <caption>Mesos for each transition, based on level {form.item_level} equipment</caption>
+                  <caption>Mesos per tap for level {form.item_level}; mode costs include the selected event and eligible MVP discount</caption>
                   <thead>
                     <tr>
                       <th scope="col">Transition</th>
-                      <th scope="col">Base</th>
-                      {[1, 2, 3, 4].map(mode => <th scope="col" key={mode}>Mode {mode}</th>)}
+                      <th scope="col">Base (no discounts)</th>
+                      {[1, 2, 3, 4].map(mode => (
+                        <th scope="col" key={mode}>
+                          {mode === 4 ? 'Mode 4 / Safeguard 15★–17★' : `Mode ${mode}`}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
@@ -277,9 +319,11 @@ export default function StarForceCalculator() {
       <section className="panel starforce-cost-panel">
         <div className="section-heading starforce-cost-heading">
           <h2>Success, fail and boom chances</h2>
-          <span>ALL FOUR MODES</span>
+          <span>{form.shining_starforce_sunday ? 'SHINING ON' : 'SHINING OFF'} · ALL FOUR MODES</span>
         </div>
-        <p className="hint">Compare modes without safeguard. Mode 4 is unavailable from 15★ to 17★.
+        <p className="hint">Rates below reflect the selected Shining Star Force Sunday setting
+          ({form.shining_starforce_sunday ? '30% lower boom chance at 15★–21★' : 'no event boom reduction'}).
+          MVP rank changes costs, not success or boom chances. Compare modes without safeguard. Mode 4 is unavailable from 15★ to 17★.
           Rates outside 15★–21★ are identical across modes. Fail excludes booms;
           failures lose one star from 10★–14★ and 22★ onward, and otherwise keep the current star.</p>
         {costsBusy ? <p role="status">Loading rates…</p>
@@ -287,7 +331,7 @@ export default function StarForceCalculator() {
             : costRows && <>
               <div className="starforce-table-wrap" tabIndex="0" role="region" aria-label="Star Force rates by mode">
                 <table className="starforce-table">
-                  <caption>Chance per attempt for every star transition and enhancement mode</caption>
+                  <caption>Per-attempt chances with Shining Star Force Sunday {form.shining_starforce_sunday ? 'enabled' : 'disabled'}</caption>
                   <thead>
                     <tr>
                       <th scope="col" rowSpan="2">Transition</th>

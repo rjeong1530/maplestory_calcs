@@ -100,6 +100,80 @@ class StarForceCalculatorTests(unittest.TestCase):
         self.assertEqual(rates.boom, 0.0)
         self.assertAlmostEqual(rates.maintain, 0.916)
 
+    def test_shining_starforce_sunday_reduces_booms_and_discount_costs(self):
+        rates = attempt_rates(18, 1, shining_starforce_sunday=True)
+        self.assertAlmostEqual(rates.boom, 0.0674 * 0.7)
+        self.assertAlmostEqual(rates.maintain, 1.0 - rates.success - rates.boom)
+        self.assertAlmostEqual(enhancement_mode_multiplier(18, 1, shining_starforce_sunday=True), 0.7)
+        self.assertAlmostEqual(enhancement_mode_multiplier(15, 2, shining_starforce_sunday=True), 1.05)
+        self.assertAlmostEqual(enhancement_mode_multiplier(15, 1, safeguard=True, shining_starforce_sunday=True), 2.7)
+        self.assertAlmostEqual(enhancement_mode_multiplier(0, 1, shining_starforce_sunday=True), 0.7)
+        self.assertAlmostEqual(enhancement_mode_multiplier(22, 4, shining_starforce_sunday=True), 0.7)
+        self.assertEqual(
+            attempt_rates(22, 1, shining_starforce_sunday=True).boom,
+            attempt_rates(22, 1).boom,
+        )
+
+    def test_mvp_rank_discounts_apply_through_17_stars_except_superior(self):
+        discounts = {
+            'none': 0.0, 'silver': 0.03, 'gold': 0.05, 'diamond_plus': 0.10,
+        }
+        for rank, discount in discounts.items():
+            with self.subTest(rank=rank):
+                self.assertAlmostEqual(
+                    enhancement_mode_multiplier(16, 1, mvp_rank=rank),
+                    1 - discount,
+                )
+                self.assertEqual(enhancement_mode_multiplier(17, 1, mvp_rank=rank), 1)
+                self.assertEqual(
+                    enhancement_mode_multiplier(16, 1, mvp_rank=rank, superior_item=True),
+                    1,
+                )
+        self.assertAlmostEqual(
+            enhancement_mode_multiplier(
+                0, 1, shining_starforce_sunday=True, mvp_rank='diamond_plus',
+            ),
+            0.63,
+        )
+        self.assertAlmostEqual(
+            enhancement_mode_multiplier(
+                0, 1, shining_starforce_sunday=True, mvp_rank='gold',
+            ),
+            0.665,
+        )
+        self.assertAlmostEqual(
+            enhancement_mode_multiplier(
+                15, 1, safeguard=True, shining_starforce_sunday=True, mvp_rank='diamond_plus',
+            ),
+            2.63,
+        )
+        self.assertEqual(
+            int(
+                starforce_base_cost(250, 16)
+                * enhancement_mode_multiplier(
+                    16, 1, safeguard=True, shining_starforce_sunday=True,
+                    mvp_rank='diamond_plus',
+                )
+            ),
+            431_479_904,
+        )
+        self.assertAlmostEqual(
+            enhancement_mode_multiplier(
+                15, 1, safeguard=True, mvp_rank='diamond_plus',
+            ),
+            2.9,
+        )
+        self.assertAlmostEqual(
+            enhancement_mode_multiplier(
+                17, 1, safeguard=True, shining_starforce_sunday=True, mvp_rank='diamond_plus',
+            ),
+            2.7,
+        )
+        with self.assertRaises(ValueError):
+            enhancement_mode_multiplier(0, 1, mvp_rank='platinum')
+        with self.assertRaises(ValueError):
+            enhancement_mode_multiplier(0, 1, superior_item=1)
+
     def test_all_available_probability_rows_sum_to_one(self):
         for star in range(30):
             modes = (1, 2, 3) if 15 <= star <= 17 else (1, 2, 3, 4)

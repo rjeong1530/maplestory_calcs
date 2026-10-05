@@ -64,6 +64,13 @@ MODE_COST_MULTIPLIERS: dict[int, dict[int, float]] = {
     21: {1: 1.0, 2: 2.0, 3: 3.5, 4: 6.5},
 }
 
+MVP_COST_DISCOUNTS: dict[str, float] = {
+    'none': 0.0,
+    'silver': 0.03,
+    'gold': 0.05,
+    'diamond_plus': 0.10,
+}
+
 
 @dataclass(frozen=True)
 class AttemptRates:
@@ -174,20 +181,56 @@ def boom_recovery_star(destroyed_star: int) -> int:
     return 20
 
 
-def enhancement_mode_multiplier(star: int, mode: int, safeguard: bool = False) -> float:
+def enhancement_mode_multiplier(
+    star: int,
+    mode: int,
+    safeguard: bool = False,
+    shining_starforce_sunday: bool = False,
+    mvp_rank: str = 'none',
+    superior_item: bool = False,
+) -> float:
     """Return the mode cost multiplier for an attempt from ``star``."""
     if type(mode) is not int or mode not in (1, 2, 3, 4):
         raise ValueError('Enhancement mode must be 1, 2, 3, or 4.')
     if type(star) is not int or star < 0:
         raise ValueError('Star Force must be a nonnegative integer.')
+    if type(shining_starforce_sunday) is not bool:
+        raise ValueError('shining_starforce_sunday must be a boolean.')
+    if not isinstance(mvp_rank, str) or mvp_rank not in MVP_COST_DISCOUNTS:
+        raise ValueError('MVP rank must be none, silver, gold, or diamond_plus.')
+    if type(superior_item) is not bool:
+        raise ValueError('superior_item must be a boolean.')
+
     if safeguard and 15 <= star <= 17:
-        return 3.0
-    if star in MODE_COST_MULTIPLIERS:
-        return MODE_COST_MULTIPLIERS[star][mode]
-    return 1.0
+        multiplier = 3.0
+    elif star in MODE_COST_MULTIPLIERS:
+        multiplier = MODE_COST_MULTIPLIERS[star][mode]
+    else:
+        multiplier = 1.0
+
+    safeguarded = safeguard and 15 <= star <= 17
+    mvp_discount = (
+        MVP_COST_DISCOUNTS[mvp_rank]
+        if star <= 16 and not superior_item else 0.0
+    )
+    if safeguarded:
+        base_discount_multiplier = (
+            (0.7 if shining_starforce_sunday else 1.0) * (1 - mvp_discount)
+        )
+        multiplier = (multiplier - 1) + base_discount_multiplier
+    else:
+        if shining_starforce_sunday:
+            multiplier *= 0.7
+        multiplier *= 1 - mvp_discount
+    return multiplier
 
 
-def attempt_rates(star: int, mode: int = 1, safeguard: bool = False) -> AttemptRates:
+def attempt_rates(
+    star: int,
+    mode: int = 1,
+    safeguard: bool = False,
+    shining_starforce_sunday: bool = False,
+) -> AttemptRates:
     """Return success, maintain, downgrade, and boom probabilities."""
     if type(star) is not int or star not in BASE_SUCCESS_AND_BOOM:
         raise ValueError('Current Star Force must be between 0 and 29.')
@@ -195,6 +238,8 @@ def attempt_rates(star: int, mode: int = 1, safeguard: bool = False) -> AttemptR
         raise ValueError('Enhancement mode must be 1, 2, 3, or 4.')
     if type(safeguard) is not bool:
         raise ValueError('Safeguard must be a boolean.')
+    if type(shining_starforce_sunday) is not bool:
+        raise ValueError('shining_starforce_sunday must be a boolean.')
 
     if star in ENHANCEMENT_MODE_RATES:
         if safeguard and 15 <= star <= 17:
@@ -211,6 +256,8 @@ def attempt_rates(star: int, mode: int = 1, safeguard: bool = False) -> AttemptR
     boom = boom_pct / 100.0
     if safeguard and 15 <= star <= 17:
         boom = 0.0
+    elif shining_starforce_sunday and 15 <= star <= 21:
+        boom *= 0.7
     failure = 1.0 - success - boom
     if failure < -1e-12:
         raise ValueError(f'Invalid probability table at {star} stars in mode {mode}.')
@@ -255,14 +302,23 @@ def estimate_starforce(
     safeguard_by_star: Mapping[int, bool] | None = None,
     percentiles: Sequence[float] = (),
     replacement_cost_mesos: float = 0,
+    shining_starforce_sunday: bool = False,
+    mvp_rank: str = 'none',
+    superior_item: bool = False,
 ) -> StarForceEstimate:
     """Estimate expected spend, attempts, and booms until reaching a target.
 
     A boom recovers the star level based on the star where it occurred. Set
     ``boom_reset_star`` to override that recovery level for every boom.
     Expected cost includes replacement_cost_mesos for each expected boom.
-    Discounts and event modifiers are not included. Individual mode choices
-    override the corresponding band mode.
+    When ``shining_starforce_sunday`` is enabled, the starforce cost is
+    discounted by 30% at every star, excluding the added safeguard surcharge
+    for 15★–17★ attempts, and the 15★–21★ boom rate is cut by 30%.
+    ``mvp_rank`` provides an additional cost discount through 16★, unless
+    ``superior_item`` is true. For safeguarded attempts, event and MVP
+    discounts combine multiplicatively on the base-cost portion, not the
+    safeguard surcharge. Elsewhere, eligible discounts apply to the full cost.
+    Individual mode choices override the corresponding band mode.
     Safeguarding 15★–17★ costs 3x the base cost, disables booms, and uses
     Mode 1 rates, as GMS resets Modes 2–3 when safeguarding is enabled.
     ``safeguard_by_star`` overrides the band-wide safeguard setting per star.
@@ -290,6 +346,8 @@ def estimate_starforce(
         raise ValueError('Mode for 18–21 star attempts must be 1, 2, 3, or 4.')
     if type(safeguard_15_17) is not bool:
         raise ValueError('safeguard_15_17 must be a boolean.')
+    if type(shining_starforce_sunday) is not bool:
+        raise ValueError('shining_starforce_sunday must be a boolean.')
     if safeguard_by_star is None:
         safeguard_by_star = {}
     if not isinstance(safeguard_by_star, Mapping):
@@ -327,8 +385,20 @@ def estimate_starforce(
 
     for star, mode in enumerate(modes):
         safeguard = safeguard_by_star.get(star, safeguard_15_17 and 15 <= star <= 17)
-        rates = attempt_rates(star, mode, safeguard=safeguard)
-        multiplier = enhancement_mode_multiplier(star, mode, safeguard=safeguard)
+        rates = attempt_rates(
+            star,
+            mode,
+            safeguard=safeguard,
+            shining_starforce_sunday=shining_starforce_sunday,
+        )
+        multiplier = enhancement_mode_multiplier(
+            star,
+            mode,
+            safeguard=safeguard,
+            shining_starforce_sunday=shining_starforce_sunday,
+            mvp_rank=mvp_rank,
+            superior_item=superior_item,
+        )
         attempt_costs.append(starforce_base_cost(item_level, star) * multiplier)
         boom_probabilities.append(rates.boom)
         destinations = (
