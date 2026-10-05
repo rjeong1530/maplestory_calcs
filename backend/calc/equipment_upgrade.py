@@ -159,8 +159,11 @@ def starforce_weighted_score(
     item_level = item['equipment_level']
     if slot in NON_STARFORCE_SLOTS:
         raise ValueError(f'{slot} equipment cannot be Star Forced.')
-    if slot in ('secondary', 'shield') and not item.get('name', '').lower().startswith('astra '):
-        raise ValueError('Only Astra secondaries and shields are eligible for Star Force upgrades.')
+    name = item.get('name', '').lower()
+    if (slot in ('secondary', 'shield')
+            and not name.startswith(('astra ', 'deimos '))
+            and not (slot == 'secondary' and name.endswith(' talisman'))):
+        raise ValueError('Only Astra secondaries, Deimos shields, and Kanna talismans are eligible for Star Force upgrades.')
     main_stats = flames.primary_stats(main_stat)
     if 'HP' in main_stats or 'HP' in secondary_stats:
         raise ValueError('HP-based Star Force scores are not yet supported.')

@@ -124,6 +124,49 @@ class EquipmentUpgradeTests(unittest.TestCase):
             55 * 1.1 + 12 * 3,
         )
 
+    def test_deimos_shields_have_starforce_upgrade_recommendations(self):
+        for name in ('Deimos Warrior Shield', 'Deimos Shadow Shield', 'Deimos Sage Shield'):
+            for slot in ('secondary', 'shield'):
+                with self.subTest(name=name, slot=slot):
+                    item = {'name': name, 'slot': slot, 'equipment_level': 130,
+                            'equipment_type': 'armor', 'current_star_force': 19}
+                    result = equipment_upgrade_plan(self.plan_request(
+                        equipment=[item], categories=['starforce']))['rankings']['starforce']
+                    self.assertFalse(result['unavailable'])
+                    rows = result['gain_per_meso_first']
+                    self.assertEqual([row['next_star'] for row in rows], [20])
+                    self.assertGreater(rows[0]['expected_score_gain'], 0)
+                    self.assertGreater(rows[0]['action_cost_mesos'], 0)
+
+    def test_kanna_talismans_have_starforce_upgrade_recommendations(self):
+        for name, level, cap in (
+            ('Shikigami Talisman', 100, 8),
+            ('Evolving Shikigami Talisman', 100, 8),
+            ('Frozen Talisman', 100, 8),
+            ('Onyx Talisman', 100, 8),
+            ("Princess No's Talisman", 140, 30),
+            ('Pandemonium Talisman', 160, 30),
+            ('Thousand Soul Talisman', 200, 30),
+            ('Astra Talisman', 200, 30),
+        ):
+            with self.subTest(name=name):
+                item = {'name': name, 'slot': 'secondary', 'equipment_level': level,
+                        'equipment_type': 'armor', 'current_star_force': cap - 1}
+                result = equipment_upgrade_plan(self.plan_request(
+                    equipment=[item], categories=['starforce'], main_stat='INT',
+                    secondary_stats=('LUK',), offense_stat='MATT'))['rankings']['starforce']
+                self.assertFalse(result['unavailable'])
+                rows = result['gain_per_meso_first']
+                self.assertEqual([row['next_star'] for row in rows], [cap])
+                self.assertGreater(rows[0]['expected_score_gain'], 0)
+                self.assertGreater(rows[0]['action_cost_mesos'], 0)
+
+    def test_unsupported_secondaries_do_not_support_starforce(self):
+        item = {'name': 'Maple Treasure Shield', 'slot': 'secondary',
+                'equipment_level': 130, 'equipment_type': 'armor'}
+        with self.assertRaisesRegex(ValueError, 'eligible for Star Force'):
+            starforce_weighted_score(item, 16, 'STR', (), 'ATT', self.flame_weights)
+
     def test_badges_do_not_support_starforce(self):
         badge = {'slot': 'badge', 'equipment_level': 160, 'equipment_type': 'armor'}
         with self.assertRaisesRegex(ValueError, 'badge equipment cannot be Star Forced'):

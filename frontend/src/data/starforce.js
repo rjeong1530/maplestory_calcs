@@ -5,8 +5,10 @@ const LIMITED_BADGES = new Set(['Ghost Ship Exorcist', 'Sengoku Hakase Badge'])
 
 export function supportsStarForce(item, slot = item?.slot ?? '') {
   const type = slot.split('-')[0]
+  const name = item?.name ?? ''
   return !['medal', 'badge'].includes(type)
-    && (!['secondary', 'shield'].includes(type) || /^Astra\b/i.test(item?.name ?? ''))
+    && (!['secondary', 'shield'].includes(type) || /^(Astra|Deimos)\b/i.test(name)
+      || (type === 'secondary' && / Talisman$/i.test(name)))
 }
 
 export function maxStarForceForEquipment(item) {

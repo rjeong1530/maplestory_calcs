@@ -311,7 +311,7 @@ For runtime-only installs, use `backend/requirements.txt` instead.
   `mode_by_star` settings (Mode 1 by default), including during recovery.
 
 The upgrade-plan endpoint is stateless; it takes the equipment saved in the browser.
-In the **Equipment** tab, use **Equipment upgrade order** below the tracker to
+In the **Equipment** tab, open **Stats & upgrades** and use **Equipment upgrade order** to
 adjust score weights, choose a cube, and calculate rankings. Switch between
 Star Force, Flames, and Potential and select a ranking order. The panel uses the
 equipment class and recorded rolls, saves planning settings with the equipment,
@@ -497,6 +497,15 @@ target stars, including failures, safeguards, and boom recovery. These are
 attempt-count percentiles, not guaranteed counts or meso-budget percentiles.
 
 ### Equipment
+
+Use **Equipment setup** to choose your class and current gear. Select a slot in
+the equipment grid or use the previous/next arrows, then choose an item from
+the list beside it. Changes save automatically; JSON import/export remains
+available in this view.
+
+Open **Stats & upgrades** to record each equipped item's stats and configure
+and calculate upgrade rankings. Both views share the same equipment state,
+and switching between them preserves calculation results until inputs change.
 
 Select gear in the equipment window. Below the potential inputs, choose enhancement
 modes for each star transition. Modes 1–3 are available from 15–17 stars and

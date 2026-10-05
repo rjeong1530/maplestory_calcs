@@ -1,13 +1,12 @@
+import { useState } from 'react'
 import EquipmentWindow from './EquipmentWindow'
-import EquipmentUpgradePlan from './EquipmentUpgradePlan'
+import EquipmentStats from './EquipmentStats'
 import { CLASS_STATS } from '../data/classStats'
 
 export default function EquipmentPage({ planner, busy, onFlameResultInvalidated }) {
-  const {
-    form, setForm, equipment, equipmentClass, activeSlot, setActiveSlot,
-    upgradeSettings, setUpgradeSettings, selectEquipment, removeEquipment,
-    updateEquipmentRoll, updateEquipmentClass, importEquipmentJson, exportEquipmentJson,
-  } = planner
+  const [view, setView] = useState('setup')
+  const { equipment, equipmentClass, activeSlot, setActiveSlot, selectEquipment,
+    removeEquipment, updateEquipmentClass, importEquipmentJson, exportEquipmentJson } = planner
 
   function changeEquipment(action, ...args) {
     action(...args)
@@ -15,24 +14,30 @@ export default function EquipmentPage({ planner, busy, onFlameResultInvalidated 
   }
 
   return (
-    <>
-      <EquipmentWindow equipmentClass={equipmentClass}
-        mapleClasses={Object.keys(CLASS_STATS).sort()}
-        onMapleClassChange={updateEquipmentClass} equipment={equipment}
-        activeSlot={activeSlot} onActivate={setActiveSlot}
-        onSelect={(...args) => changeEquipment(selectEquipment, ...args)}
-        onRemove={slot => changeEquipment(removeEquipment, slot)}
-        busy={busy} classStats={CLASS_STATS[equipmentClass]}
-        onUpdateEquipmentRoll={updateEquipmentRoll}
-        onExport={exportEquipmentJson}
-        onImport={text => changeEquipment(importEquipmentJson, text)} />
-      <EquipmentUpgradePlan equipment={equipment} equipmentClass={equipmentClass}
-        classStats={CLASS_STATS[equipmentClass]} flameWeights={form}
-        settings={upgradeSettings} onSettingsChange={setUpgradeSettings}
-        onFlameWeightChange={(key, value) => {
-          setForm(current => ({ ...current, [key]: value }))
-          onFlameResultInvalidated()
-        }} />
-    </>
+    <div className="equipment-page-layout">
+      <nav className="equipment-section-navigation" aria-label="Equipment sections">
+        <button type="button" aria-pressed={view === 'setup'} aria-controls="equipment-setup-view"
+          onClick={() => setView('setup')}>Equipment setup</button>
+        <button type="button" aria-pressed={view === 'stats'} aria-controls="equipment-stats-view"
+          onClick={() => setView('stats')}>Stats & upgrades</button>
+      </nav>
+      <div className="equipment-page-content">
+        <div id="equipment-setup-view" hidden={view !== 'setup'}>
+          <EquipmentWindow equipmentClass={equipmentClass}
+            mapleClasses={Object.keys(CLASS_STATS).sort()}
+            onMapleClassChange={value => changeEquipment(updateEquipmentClass, value)} equipment={equipment}
+            activeSlot={activeSlot} onActivate={setActiveSlot}
+            onSelect={(...args) => changeEquipment(selectEquipment, ...args)}
+            onRemove={slot => changeEquipment(removeEquipment, slot)}
+            busy={busy} onExport={exportEquipmentJson}
+            onImport={text => changeEquipment(importEquipmentJson, text)}
+            onOpenStats={() => setView('stats')} />
+        </div>
+        <div id="equipment-stats-view" hidden={view !== 'stats'}>
+          <EquipmentStats planner={planner} busy={busy}
+            onOpenSetup={() => setView('setup')} onFlameResultInvalidated={onFlameResultInvalidated} />
+        </div>
+      </div>
+    </div>
   )
 }
