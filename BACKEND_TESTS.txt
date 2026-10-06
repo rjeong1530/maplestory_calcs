@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-06
-Total: 110 tests in 8 files
+Total: 112 tests in 9 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -554,3 +554,18 @@ Tests: 5
 
 110. test_cli_exports_machine_readable_reports
    Behavior and purpose: Runs the CLI with zero spare value into temporary JSON and CSV files. Checks row counts across presets, recommendations and frontier, JSON assumptions, and printed SSF/no-MVP settings.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_strategy_api.py
+Test class: StrategyApiTests
+Tests: 2
+
+111. test_strategy_report_and_cache
+   Behavior and purpose: Checks seven scenarios, three recommendations, fixed SSF/no-MVP
+   assumptions and 64 policies for a target of 18. Repeated requests reuse the cache;
+   changing spare cost produces replacement-free results without altering prior reports.
+
+112. test_invalid_strategy_requests
+   Behavior and purpose: Rejects invalid levels and star ranges, boolean inputs, invalid
+   replacement costs, and unsupported event, MVP, or Superior overrides with HTTP 422.

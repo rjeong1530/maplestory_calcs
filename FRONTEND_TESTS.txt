@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
 Reviewed: 2026-10-06
-Total: 70 tests in 10 files
+Total: 72 tests in 11 files
 
 Run from frontend/:
   npm test
@@ -300,3 +300,18 @@ Tests: 5
 
 70. known item exceptions override the general level cap
    Behavior and purpose: Checks item-specific caps: Tyrant and Sweetwater Cape 15, selected badges 22, and Superior Gollux/Sweetwater Earring 30. Cap lookup is separate from slot eligibility.
+
+-----------------------------------------------------------------------
+
+FILE: frontend/src/data/starforceStrategies.test.js
+Tests: 2
+
+71. strategy steps include recovery, group adjacent modes and stop at the target
+   Behavior and purpose: Groups standard, safeguarded and Mode 4 transitions, includes
+   recovery stars, truncates below mode ranges, and uses standard rates above 22.
+
+72. tradeoff chart handles zero spares and uses enhancement costs instead of total costs
+   Behavior and purpose: Checks zero-spare coordinates remain finite, chart scale ignores
+   replacement spending, and empty datasets produce no points.
+   Custom strategies expand both axes when outside the frontier, share its scale,
+   and remain separate from the line connecting efficient strategies.

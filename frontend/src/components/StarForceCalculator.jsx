@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import SuccessChances from './SuccessChances'
+import StarForceStrategies from './StarForceStrategies'
 import { SUCCESS_CHANCES } from '../data/successChances'
 
 import { count as formatMesos } from '../data/numberFormat'
@@ -23,6 +24,7 @@ const initialForm = {
 }
 
 export default function StarForceCalculator() {
+  const [view, setView] = useState('estimate')
   const [form, setForm] = useState(initialForm)
   const [selectedChances, setSelectedChances] = useState(SUCCESS_CHANCES)
   const [busy, setBusy] = useState(false)
@@ -125,6 +127,12 @@ export default function StarForceCalculator() {
 
   return (
     <>
+      <div className="calculator-tabs" role="group" aria-label="Star Force view">
+        <button type="button" aria-pressed={view === 'estimate'} onClick={() => setView('estimate')}>Custom estimate</button>
+        <button type="button" aria-pressed={view === 'strategies'} onClick={() => setView('strategies')}>Compare strategies</button>
+      </div>
+      <div hidden={view !== 'strategies'}><StarForceStrategies form={form} onChange={update} /></div>
+      <div hidden={view !== 'estimate'}>
       <div className="calculator-grid">
         <form className="panel starforce-form" onSubmit={submit}>
           <fieldset disabled={busy}>
@@ -364,6 +372,7 @@ export default function StarForceCalculator() {
               ))}</ul>
             </>}
       </section>
+      </div>
     </>
   )
 }

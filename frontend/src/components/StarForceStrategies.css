@@ -1,0 +1,16 @@
+.strategy-view { margin-top: 20px; }
+.strategy-detail { border: 1px solid #35465e; border-radius: 12px; padding: 18px; background: #121e30; }
+.strategy-metrics { display: grid; gap: 10px; }
+.strategy-metrics div { display: flex; justify-content: space-between; gap: 12px; }
+.strategy-metrics dt { color: #aab9cc; }
+.strategy-metrics dd { margin: 0; font-variant-numeric: tabular-nums; }
+.strategy-chart { width: 100%; max-height: 430px; color: #c7d3e4; overflow: visible; margin: 16px 0; }
+.strategy-chart text { fill: currentColor; font-size: 12px; }
+.strategy-chart circle { cursor: pointer; }
+.strategy-chart circle:hover { stroke: white; stroke-width: 3px; }
+.strategy-detail { margin: 20px 0; }
+.strategy-detail li { margin: 8px 0; }
+.strategy-view summary { cursor: pointer; padding: 16px 0; }
+.strategy-view button[aria-pressed="true"] { outline: 2px solid #67d8c4; }
+.custom-strategy-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+.custom-strategy-editor { margin-top: 20px; }

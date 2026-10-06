@@ -4,6 +4,7 @@ Run from the repository root: python -m uvicorn backend.api.main:app --reload
 """
 from typing import Annotated, Literal
 from dataclasses import asdict
+from functools import lru_cache
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -12,12 +13,37 @@ from backend.calc import maplestory_potential as calculator
 from backend.calc import maplestory_flames as flames
 from backend.calc import starforce_calculator as starforce
 from backend.calc import equipment_upgrade
+from backend.examples.starforce_strategies import analyze_strategies
 
 app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
 
 
 class RequestModel(BaseModel):
     model_config = ConfigDict(extra='forbid')
+
+
+class StrategyRequest(RequestModel):
+    item_level: int = Field(ge=1, le=300, strict=True)
+    start_star: int = Field(ge=0, le=29, strict=True)
+    target_star: int = Field(ge=1, le=30, strict=True)
+    replacement_cost_mesos: float = Field(default=0, ge=0, le=1e15, strict=True, allow_inf_nan=False)
+
+    @model_validator(mode='after')
+    def increasing_stars(self):
+        if self.target_star <= self.start_star:
+            raise ValueError('Target stars must exceed starting stars.')
+        return self
+
+
+@lru_cache(maxsize=32)
+def cached_strategies(level, start, target, spare_value):
+    return analyze_strategies(level, start, target, spare_value)
+
+
+@app.post('/api/starforce-strategies')
+def starforce_strategies(request: StrategyRequest):
+    return cached_strategies(request.item_level, request.start_star,
+                             request.target_star, request.replacement_cost_mesos)
 
 
 class PotentialTarget(RequestModel):

@@ -132,6 +132,7 @@ maplestory_app/
     tests/                            Python unittest suites
       test_equipment_samples.py       Frontend-to-API samples and table equivalence
       test_starforce_strategies.py     Policy search, recovery, and report exports
+      test_strategy_api.py            Strategy endpoint validation and caching
     requirements.txt                  FastAPI, Pydantic, and Uvicorn
     requirements-dev.txt              Runtime dependencies plus HTTP test client
   frontend/
@@ -149,6 +150,8 @@ maplestory_app/
       App.css                         Application styles
       index.css                       Shared styles
       components/                     Calculator, equipment, and upgrade views
+        StarForceStrategies.jsx       Recommendations, tradeoff chart, and steps
+        StarForceStrategies.css       Responsive strategy comparison styles
       hooks/                          Shared planner, flame, and route state
       data/
         equipment_140_250.json        Bundled GMS equipment catalog
@@ -156,6 +159,7 @@ maplestory_app/
         flameEquipment.js            Equipment slots and class mappings
         flameWeapons.js              Weapon flame configurations
         starforce.js                 Equipment star caps and mode helpers
+        starforceStrategies.js       Policy instructions and tradeoff coordinates
         equipmentSave.js             Equipment import/export and restoration
         equipmentStorage.js          Browser storage and legacy-cookie migration
         equipmentLines.js            Shared roll labels and saved-line validation
@@ -180,6 +184,26 @@ checking the API; it is skipped when Node is unavailable. See
 [`FRONTEND_TESTS.txt`](FRONTEND_TESTS.txt) for the complete test inventories.
 
 ## Star Force strategy analysis
+
+In the **Star Force** calculator, open **Compare strategies**. Enter the item
+level, starting and target stars, and replacement cost per spare, then click
+**Compare strategies**. Select a chart point or the tradeoff dropdown to see
+per-star instructions. Under **Add your own strategy**, choose Modes 1–3 or
+safeguard at 15–17 and Modes 1–4 at 18–21, then click **Plot my strategy**.
+Your strategy appears as a pink point, and the chart rescales to include it.
+Click it or **View my steps** to inspect costs, expected spares, and instructions.
+Editing the strategy hides its old point until you plot it again. These choices
+also apply during recovery below the starting star. An expandable table includes
+all seven presets. The chart plots enhancement spending, excluding replacements.
+This view always uses Shining Star Force, no MVP discount, and standard equipment;
+the custom estimate's event, MVP, and mode settings do not change these assumptions.
+
+`POST /api/starforce-strategies` accepts `item_level` (1–300), `start_star`
+(0–29), `target_star` (1–30, above the start), and `replacement_cost_mesos`
+(0–1e15, default 0). The API caches up to 32 reports by these four inputs.
+The response uses the same report structure as the Python analysis below.
+Input changes invalidate displayed comparisons; a new comparison is requested
+only when the user submits the form.
 
 Run the standalone analysis with the existing calculator's bundled rules:
 
