@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
-import { frontierPoints, strategySteps } from '../data/starforceStrategies'
+import { frontierPoints, nameCustomStrategies, strategySteps } from '../data/starforceStrategies'
 import './StarForceStrategies.css'
 
 const number = value => value.toLocaleString('en-US', { maximumFractionDigits: 3 })
@@ -23,6 +23,7 @@ export default function StarForceStrategies({ form, onChange }) {
   const [actions, setActions] = useState(defaultActions)
   const [customRequest, setCustomRequest] = useState(null)
   const [customStrategies, setCustomStrategies] = useState([])
+  const [comparisonSort, setComparisonSort] = useState(null)
   const nextCustomId = useRef(1)
   const customControllerRef = useRef(null)
   const controllerRef = useRef(null)
@@ -33,7 +34,12 @@ export default function StarForceStrategies({ form, onChange }) {
   const busy = current?.loading
   const customKey = JSON.stringify([key, actions])
   const customCurrent = customRequest?.key === customKey ? customRequest : null
-  const customs = customStrategies.filter(strategy => strategy.key === key)
+  const customs = nameCustomStrategies(customStrategies.filter(strategy => strategy.key === key))
+  const comparisonRows = [...(report?.scenarios || []), ...customs]
+  if (comparisonSort) {
+    const direction = comparisonSort.direction === 'descending' ? -1 : 1
+    comparisonRows.sort((a, b) => direction * (a[comparisonSort.field] - b[comparisonSort.field]))
+  }
   const row = selection.section === 'custom' ? customs.find(strategy => strategy.id === selection.id)
     : report?.[selection.section]?.[selection.index]
   const chart = report ? frontierPoints(report.efficient_frontier, customs) : null
@@ -57,7 +63,7 @@ export default function StarForceStrategies({ form, onChange }) {
       })
       if (!controller.signal.aborted) {
         const id = nextCustomId.current++
-        const strategy = { id, key, name: `Your strategy ${id}`, color: `hsl(${(330 + (id - 1) * 137.5) % 360} 85% 72%)`, mode_by_star: modes,
+        const strategy = { id, key, color: `hsl(${(330 + (id - 1) * 137.5) % 360} 85% 72%)`, mode_by_star: modes,
           safeguard_by_star: safeguards, enhancement_cost_mesos: estimate.expected_cost - estimate.expected_replacement_cost,
           expected_replacement_cost_mesos: estimate.expected_replacement_cost, total_cost_mesos: estimate.expected_cost,
           expected_spares: estimate.expected_booms, expected_attempts: estimate.expected_attempts }
@@ -136,7 +142,7 @@ export default function StarForceStrategies({ form, onChange }) {
           </div>
           <p className="hint">These choices also apply during boom recovery below your starting stars. Outside 15&ndash;21, standard rates apply.</p>
           <p className="hint">Add multiple strategies to compare them together. Changing these choices keeps your plotted strategies.</p>
-          <button className="primary" disabled={customCurrent?.loading}>{customCurrent?.loading ? 'Calculating...' : 'Add strategy to chart'}</button>
+          <button className="primary" disabled={customCurrent?.loading}>{customCurrent?.loading ? 'Calculating...' : 'Add strategy to comparison'}</button>
           <div aria-live="polite">
             {customCurrent?.loading && <p role="status">Calculating your strategy&hellip;</p>}
             {customCurrent?.error && <p className="error" role="alert">{customCurrent.error}</p>}
@@ -199,18 +205,44 @@ export default function StarForceStrategies({ form, onChange }) {
         </li>)}</ul>
         {row.on_efficient_frontier === false && <p className="hint">Another policy improves cost or spare usage without worsening the other.</p>}
       </section>}
-      <details>
-        <summary>Compare the seven preset approaches</summary>
-        <div className="starforce-table-wrap"><table>
-          <thead><tr><th>Strategy</th><th>Enhancement mesos</th><th>Expected spares</th><th>Total mesos</th><th>Steps</th></tr></thead>
-          <tbody>{report.scenarios.map((scenario, index) => <tr key={scenario.name}>
-            <th scope="row">{scenario.name}</th><td>{mesos(scenario.enhancement_cost_mesos)}</td>
-            <td>{number(scenario.expected_spares)}</td><td>{mesos(scenario.total_cost_mesos)}</td>
-            <td><button type="button" onClick={() => setSelection({ section: 'scenarios', index })}
-              aria-label={`View steps for ${scenario.name}`}>View steps</button></td>
-          </tr>)}</tbody>
-        </table></div>
+      <details className="strategy-comparison" open>
+        <summary>Compare optimized approaches and your strategies</summary>
+        <p className="hint" id="strategy-comparison-help">Steps include boom recovery below your starting stars. Scroll within longer step lists to see every transition.</p>
+        {!customs.length && <p className="hint">Add your own strategy above to compare it alongside these optimized approaches.</p>}
+        <div className="starforce-table-wrap strategy-comparison-scroll" tabIndex="0"
+          role="region" aria-label="Optimized and custom strategy comparison" aria-describedby="strategy-comparison-help">
+          <table className="strategy-comparison-table">
+            <colgroup><col className="strategy-name-column" /><col /><col /><col /><col className="strategy-steps-column" /></colgroup>
+            <thead><tr><th scope="col">Strategy</th><th scope="col">Enhancement mesos</th>
+              {[['expected_spares', 'Expected spares'], ['total_cost_mesos', 'Total mesos']].map(([field, label]) => {
+                const direction = comparisonSort?.field === field ? comparisonSort.direction : null
+                const nextDirection = direction === 'descending' ? 'ascending' : 'descending'
+                return <th key={field} scope="col" aria-sort={direction || undefined}>
+                  <button type="button" className="strategy-sort-button"
+                    aria-label={`Sort ${label.toLowerCase()}, ${nextDirection === 'descending' ? 'highest' : 'lowest'} first`}
+                    onClick={() => setComparisonSort({ field, direction: nextDirection })}>
+                    {label}<span aria-hidden="true">{direction === 'descending' ? '↓' : direction === 'ascending' ? '↑' : '↕'}</span>
+                  </button>
+                </th>
+              })}<th scope="col">Steps</th></tr></thead>
+            <tbody>{comparisonRows.map(scenario => <tr key={scenario.id != null ? `custom-${scenario.id}` : scenario.name}
+              className={scenario.id != null ? 'strategy-comparison-custom' : undefined}>
+              <th scope="row">
+                {scenario.color && <span className="strategy-comparison-marker" style={{ color: scenario.color }} aria-hidden="true">&#9679; </span>}
+                {scenario.name}
+              </th>
+              <td>{mesos(scenario.enhancement_cost_mesos)}</td>
+              <td>{number(scenario.expected_spares)}</td><td>{mesos(scenario.total_cost_mesos)}</td>
+              <td><div className="strategy-comparison-steps" tabIndex="0" role="region" aria-label={`Steps for ${scenario.name}`}>
+                <ul>{strategySteps(scenario, report.assumptions.target_star).map(step => <li key={step.from}>
+                  <span>{step.from} &rarr; {step.to} stars</span><strong>{step.action}</strong>
+                </li>)}</ul>
+              </div></td>
+            </tr>)}</tbody>
+          </table>
+        </div>
       </details>
+      <p className="hint">The balanced tradeoff gives equal weight to enhancement mesos and expected spares after normalizing each between the efficient frontier's extremes.</p>
       <p className="hint">Expected spares count booms and exclude the original item. Averages assume replacement availability; they are not guarantees or success chances for a fixed spare budget. Above 22 stars, no strategy here removes all boom risk.</p>
     </>}
   </section>

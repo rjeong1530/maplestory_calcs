@@ -215,7 +215,7 @@ export default function StarForceCalculator() {
             <p className="hint starforce-rules-note">
               Safeguarding applies only to selected 15★–17★ attempts. Boom recovery follows the star-specific rules.
             </p>
-            <SuccessChances selected={selectedChances} onChange={chances => {
+            <SuccessChances estimateLabel="total meso budgets" selected={selectedChances} onChange={chances => {
               setSelectedChances(chances)
               setResult(null)
               setError('')
@@ -235,7 +235,7 @@ export default function StarForceCalculator() {
                 <div className="empty">
                   <span className="empty-icon" aria-hidden="true">☆</span>
                   <h3>Set your target</h3>
-                  <p>Choose an item level and star range to estimate the cost, attempts, and booms.</p>
+                  <p>Choose an item level and star range to estimate the cost and booms.</p>
                 </div>
               ) : (
                 <>
@@ -249,26 +249,22 @@ export default function StarForceCalculator() {
                       <dd>{formatMesos(result.expected_replacement_cost)}</dd>
                     </div>
                     <div>
-                      <dt>Expected attempts</dt>
-                      <dd>{result.expected_attempts.toLocaleString('en-US', { maximumFractionDigits: 2 })}</dd>
-                    </div>
-                    <div>
                       <dt>Expected booms</dt>
                       <dd>{result.expected_booms.toLocaleString('en-US', { maximumFractionDigits: 3 })}</dd>
                     </div>
                   </dl>
-                  {result.attempt_estimates?.length > 0 && <>
+                  {result.meso_estimates?.length > 0 && <>
                     <table>
-                      <caption>Attempts to reach your target stars</caption>
-                      <thead><tr><th scope="col">Success chance</th><th scope="col">Attempts</th></tr></thead>
-                      <tbody>{result.attempt_estimates.map(estimate => (
+                      <caption>Total meso budget to reach your target stars</caption>
+                      <thead><tr><th scope="col">Success chance</th><th scope="col">Estimated total mesos</th></tr></thead>
+                      <tbody>{result.meso_estimates.map(estimate => (
                         <tr key={estimate.target_probability}>
                           <td>{formatRate(estimate.target_probability)}</td>
-                          <td>{estimate.attempts == null ? 'Beyond calculation limit' : formatMesos(estimate.attempts)}</td>
+                          <td>{estimate.mesos == null ? 'Beyond calculation limit' : formatMesos(estimate.mesos)}</td>
                         </tr>
                       ))}</tbody>
                     </table>
-                    <p className="hint result-note">Chance of reaching the target within this many attempts, including failed attempts and boom recovery. These are attempt counts, not meso budgets or guarantees.</p>
+                    <p className="hint result-note">Approximate budgets for reaching the target at each success chance, including enhancement, boom recovery, and replacement costs with your selected discounts. Costs are rounded up during calculation for conservative estimates. These are budget percentiles, not averages or guarantees.</p>
                   </>}
                   <p className="hint result-note">
                     Total mesos include enhancement costs and expected booms multiplied by your replacement cost.

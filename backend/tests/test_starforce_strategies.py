@@ -43,14 +43,49 @@ class StarforceStrategyTests(unittest.TestCase):
             row.expected_cost - row.expected_replacement_cost for row in expected), 1)
         self.assertEqual(winners[1]['expected_spares'], min(row.expected_booms for row in expected))
         self.assertAlmostEqual(winners[2]['total_cost_mesos'] / min(row.expected_cost for row in expected), 1)
+        self.assertEqual(winners[3]['name'], 'Best balanced tradeoff')
 
     def test_presets_frontier_and_spare_valuation(self):
         report = analyze_strategies()
         self.assertTrue(report['assumptions']['shining_starforce_sunday'])
         self.assertEqual(report['assumptions']['mvp_rank'], 'none')
         self.assertEqual(report['assumptions']['policies_evaluated'], 16384)
-        self.assertEqual(len(report['scenarios']), 7)
-        self.assertEqual(report['scenarios'][5]['expected_spares'], 0)
+        self.assertEqual(
+            [row['name'] for row in report['recommendations']],
+            ['Lowest enhancement spending', 'Fewest expected spares',
+             'Lowest total cost at your spare value', 'Best balanced tradeoff'],
+        )
+        policies = [
+            (tuple(sorted(row['mode_by_star'].items())),
+             tuple(sorted(row['safeguard_by_star'].items())))
+            for row in report['scenarios']
+        ]
+        self.assertEqual(len(policies), len(set(policies)))
+        self.assertEqual(len(report['scenarios']), 3)
+        self.assertIn(
+            'Lowest enhancement spending + Lowest total cost at your spare value',
+            report['scenarios'][0]['name'],
+        )
+        self.assertTrue(all(row['on_efficient_frontier'] for row in report['scenarios']))
+        balanced = report['recommendations'][3]
+        cost_range = (report['efficient_frontier'][-1]['enhancement_cost_mesos']
+                      - report['efficient_frontier'][0]['enhancement_cost_mesos'])
+        spare_range = (report['efficient_frontier'][0]['expected_spares']
+                       - report['efficient_frontier'][-1]['expected_spares'])
+        balanced_score = (
+            (balanced['enhancement_cost_mesos'] - report['efficient_frontier'][0]['enhancement_cost_mesos'])
+            / cost_range
+            + (balanced['expected_spares'] - report['efficient_frontier'][-1]['expected_spares'])
+            / spare_range
+        )
+        for row in report['efficient_frontier']:
+            score = (
+                (row['enhancement_cost_mesos'] - report['efficient_frontier'][0]['enhancement_cost_mesos'])
+                / cost_range
+                + (row['expected_spares'] - report['efficient_frontier'][-1]['expected_spares'])
+                / spare_range
+            )
+            self.assertLessEqual(balanced_score, score + 1e-12)
         self.assertGreater(report['scenarios'][0]['expected_spares'], 0)
         frontier = report['efficient_frontier']
         self.assertTrue(all(row['on_efficient_frontier'] for row in frontier))

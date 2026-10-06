@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { frontierPoints, strategySteps } from './starforceStrategies.js'
+import { frontierPoints, nameCustomStrategies, strategySteps } from './starforceStrategies.js'
+
+test('custom strategy names follow the current list order after removals', () => {
+  const remaining = nameCustomStrategies([{ id: 1 }, { id: 3 }])
+  assert.deepEqual(remaining.map(({ id, name }) => ({ id, name })), [
+    { id: 1, name: 'Your strategy 1' }, { id: 3, name: 'Your strategy 2' },
+  ])
+})
 
 test('strategy steps include recovery, group adjacent modes and stop at the target', () => {
   const row = { mode_by_star: { 18: 4, 19: 4, 20: 4, 21: 4 }, safeguard_by_star: { 15: true, 16: true, 17: true } }

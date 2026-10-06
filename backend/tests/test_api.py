@@ -33,6 +33,10 @@ class ApiTests(unittest.TestCase):
         rows = response.json()['attempt_estimates']
         self.assertEqual([row['target_probability'] for row in rows], [.5, .99])
         self.assertEqual([row['attempts'] for row in rows], [8, 53])
+        budgets = response.json()['meso_estimates']
+        self.assertEqual([row['target_probability'] for row in budgets], [.5, .99])
+        self.assertTrue(all(isinstance(row['mesos'], int) and row['mesos'] > 0 for row in budgets))
+        self.assertLess(budgets[0]['mesos'], budgets[1]['mesos'])
         for value in (0, 1, -1):
             payload['percentiles'] = [value]
             self.assertEqual(self.client.post('/api/starforce-estimate', json=payload).status_code, 422)

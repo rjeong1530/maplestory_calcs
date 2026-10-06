@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+from array import array
+from bisect import bisect_left
 from dataclasses import dataclass
-from math import fsum, isfinite
+from math import ceil, fsum, isfinite
 from typing import Mapping, Sequence
 
 
@@ -87,6 +89,37 @@ class StarForceEstimate:
     expected_booms: float
     attempt_estimates: tuple[dict, ...] = ()
     expected_replacement_cost: float = 0
+    meso_estimates: tuple[dict, ...] = ()
+
+
+def _meso_percentiles(edges, start, percentiles, expected_cost):
+    """Conservative budget quantiles of a cost-weighted absorbing chain.
+
+    Round each transition's full cost UP to a budget bin, so rounding cannot
+    understate the budget. Include replacement spending only on boom edges.
+    Bound time/memory; return None when the rounded model exceeds the horizon.
+    """
+    if not percentiles:
+        return ()
+    bins = 65536
+    size = len(edges)
+    for scale in (2, 4, 8, 16):
+        unit = max(1, ceil(expected_cost * scale / bins))
+        rounded = [[(dest, probability, max(1, ceil(cost / unit)))
+                    for dest, probability, cost in row if probability] for row in edges]
+        cdf = [array('d', [0.0]) * (bins + 1) for _ in edges]
+        for budget in range(1, bins + 1):
+            for state, row in enumerate(rounded):
+                total = 0.0
+                for dest, probability, cost in row:
+                    if cost <= budget:
+                        total += probability * (1.0 if dest >= size else cdf[dest][budget - cost])
+                cdf[state][budget] = min(1.0, total)
+        if cdf[start][-1] >= max(percentiles):
+            break
+    return tuple({'target_probability': p,
+                  'mesos': bisect_left(cdf[start], p) * unit if cdf[start][-1] >= p else None}
+                 for p in percentiles)
 
 
 def _attempt_percentiles(transitions, start, percentiles):
@@ -382,6 +415,7 @@ def estimate_starforce(
     attempt_costs = []
     transitions = [[0.0] * state_count for _ in range(state_count)]
     boom_probabilities = []
+    cost_edges = []
 
     for star, mode in enumerate(modes):
         safeguard = safeguard_by_star.get(star, safeguard_15_17 and 15 <= star <= 17)
@@ -408,6 +442,10 @@ def estimate_starforce(
             (boom_reset_star if boom_reset_star is not None else
              boom_recovery_star(star), rates.boom),
         )
+        cost_edges.append([
+            (destination, probability, attempt_costs[-1] + (replacement_cost_mesos if index == 3 else 0))
+            for index, (destination, probability) in enumerate(destinations) if probability
+        ])
         for destination, probability in destinations:
             if probability and destination < target_star:
                 matrix[star][destination] -= probability
@@ -419,7 +457,8 @@ def estimate_starforce(
     replacement_cost = expected_booms * replacement_cost_mesos
     return StarForceEstimate(expected_cost + replacement_cost, expected_attempts, expected_booms,
                              _attempt_percentiles(transitions, start_star, percentiles),
-                             replacement_cost)
+                             replacement_cost,
+                             _meso_percentiles(cost_edges, start_star, percentiles, expected_cost + replacement_cost))
 
 
 def main(argv: Sequence[str] | None = None) -> None:

@@ -1,10 +1,10 @@
 import { SUCCESS_CHANCES } from '../data/successChances'
 
-export default function SuccessChances({ selected, onChange }) {
+export default function SuccessChances({ selected, onChange, estimateLabel = 'attempts' }) {
   return (
     <fieldset>
       <legend className="success-chances-heading">Success chance estimates</legend>
-      <p className="hint">Choose the chances of reaching your target to estimate attempts.</p>
+      <p className="hint">Choose the chances of reaching your target to estimate {estimateLabel}.</p>
       <div className="percentiles">
         {SUCCESS_CHANCES.map(chance => (
           <label key={chance}>

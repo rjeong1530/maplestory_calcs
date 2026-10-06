@@ -93,27 +93,41 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
     for actions in product(range(1, 5), repeat=len(active)):
         choices = actions + (1,) * (7 - len(actions))
         candidates.append(_evaluate(choices, start, target, terms))
-    presets = [
-        ('Mode 1 throughout', (1, 1, 1, 1, 1, 1, 1)),
-        ('Mode 2 throughout', (2, 2, 2, 2, 2, 2, 2)),
-        ('Mode 3 throughout', (3, 3, 3, 3, 3, 3, 3)),
-        ('Safeguard early, Mode 1 late', (4, 4, 4, 1, 1, 1, 1)),
-        ('Safeguard early, Mode 3 late', (4, 4, 4, 3, 3, 3, 3)),
-        ('Safeguard early, Mode 4 late', (4, 4, 4, 4, 4, 4, 4)),
-        ('Mode 1 at 15-16, safeguard at 17, Mode 2 late', (1, 1, 4, 2, 2, 2, 2)),
-    ]
     frontier = []
     best_spares = float('inf')
     for row in sorted(candidates, key=lambda r: (r['enhancement_cost_mesos'], r['expected_spares'])):
         if row['expected_spares'] < best_spares:
             frontier.append(row)
             best_spares = row['expected_spares']
-    objectives = {
-        'Lowest enhancement mesos': lambda r: (r['enhancement_cost_mesos'], r['expected_spares']),
-        'Fewest expected spares': lambda r: (r['expected_spares'], r['enhancement_cost_mesos']),
-        'Lowest mesos plus spare value': lambda r: (
-            r['enhancement_cost_mesos'] + spare_value * r['expected_spares'], r['expected_spares']),
-    }
+    min_cost = frontier[0]['enhancement_cost_mesos']
+    max_cost = frontier[-1]['enhancement_cost_mesos']
+    min_spares = frontier[-1]['expected_spares']
+    max_spares = frontier[0]['expected_spares']
+
+    def balanced_key(row):
+        cost_range = max_cost - min_cost
+        spare_range = max_spares - min_spares
+        normalized_cost = ((row['enhancement_cost_mesos'] - min_cost) / cost_range
+                           if cost_range else 0)
+        normalized_spares = ((row['expected_spares'] - min_spares) / spare_range
+                             if spare_range else 0)
+        return (
+            normalized_cost + normalized_spares,
+            row['enhancement_cost_mesos'] + spare_value * row['expected_spares'],
+            row['enhancement_cost_mesos'],
+        )
+
+    objectives = [
+        ('Lowest enhancement spending',
+         lambda r: (r['enhancement_cost_mesos'], r['expected_spares'])),
+        ('Fewest expected spares',
+         lambda r: (r['expected_spares'], r['enhancement_cost_mesos'])),
+        ('Lowest total cost at your spare value',
+         lambda r: (r['enhancement_cost_mesos'] + spare_value * r['expected_spares'],
+                    r['expected_spares'])),
+        ('Best balanced tradeoff',
+         balanced_key),
+    ]
     def publish(row, name):
         efficient = not any(
             other['enhancement_cost_mesos'] <= row['enhancement_cost_mesos']
@@ -122,6 +136,20 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
                  or other['expected_spares'] < row['expected_spares']) for other in frontier)
         return _verified({**row, 'name': name, 'on_efficient_frontier': efficient},
                          level, start, target, spare_value)
+    published_winners = [
+        publish(min(candidates, key=key), name) for name, key in objectives
+    ]
+    scenarios_by_policy = {}
+    for row in published_winners:
+        policy = (
+            tuple(sorted(row['mode_by_star'].items())),
+            tuple(sorted(row['safeguard_by_star'].items())),
+        )
+        if policy in scenarios_by_policy:
+            scenarios_by_policy[policy]['name'] += f' + {row["name"]}'
+        else:
+            scenarios_by_policy[policy] = dict(row)
+    scenarios = list(scenarios_by_policy.values())
     return {
         'assumptions': {
             'item_level': level, 'start_star': start, 'target_star': target,
@@ -135,11 +163,14 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
                 'Outside 15-21 all presets use standard rates. Above target 22, no preset guarantees zero booms.',
                 'Policies may tie or become identical for shorter ranges. Item-specific star caps are not inferred from level.',
                 'Total cost adds the assigned spare value per expected boom; it is not a budget percentile.',
-                'Presets are comparison benchmarks; on_efficient_frontier marks policies not beaten on both cost and spare usage.',
+                'Presets optimize enhancement spending, total cost at the assigned spare value, expected spares, or a balanced tradeoff.',
+                'The balanced preset minimizes the equal-weight sum of normalized enhancement spending and expected spares, scaled between the frontier extremes.',
+                'Presets with the same policy are combined in scenarios; recommendations retains one row per priority.',
+                'Every preset is on the cost/spare frontier.',
             ],
         },
-        'scenarios': [publish(_evaluate(choices, start, target, terms), name) for name, choices in presets],
-        'recommendations': [publish(min(candidates, key=key), name) for name, key in objectives.items()],
+        'scenarios': scenarios,
+        'recommendations': published_winners,
         'efficient_frontier': [publish(row, f'Tradeoff {index}') for index, row in enumerate(frontier, 1)],
     }
 
@@ -166,12 +197,11 @@ def main(argv: Sequence[str] | None = None):
     print(f'Level {args.level}, {args.start} -> {args.target} stars | Shining Star Force | MVP: none')
     print(f'Spare value: {args.spare_value:,.0f} mesos | Policies searched: {report["assumptions"]["policies_evaluated"]:,}')
     print(f'{"Strategy":53} {"Tap mesos (B)":>13} {"Spares":>9} {"Total (B)":>11} {"Attempts":>11}')
-    for section in ('scenarios', 'recommendations'):
-        for row in report[section]:
-            print(f'{row["name"]:53} {row["enhancement_cost_mesos"] / 1e9:13.3f} '
-                  f'{row["expected_spares"]:9.3f} {row["total_cost_mesos"] / 1e9:11.3f} '
-                  f'{row["expected_attempts"]:11.1f}')
-            print('  ' + _policy_text(row))
+    for row in report['scenarios']:
+        print(f'{row["name"]:53} {row["enhancement_cost_mesos"] / 1e9:13.3f} '
+              f'{row["expected_spares"]:9.3f} {row["total_cost_mesos"] / 1e9:11.3f} '
+              f'{row["expected_attempts"]:11.1f}')
+        print('  ' + _policy_text(row))
     print(f'Cost/spare frontier: {len(report["efficient_frontier"])} strategies (included in JSON/CSV).')
     for note in report['assumptions']['notes']:
         print(note)

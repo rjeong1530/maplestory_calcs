@@ -5,7 +5,7 @@
     "target_star": 22,
     "shining_starforce_sunday": true,
     "mvp_rank": "none",
-    "spare_value_mesos": 1000000000,
+    "spare_value_mesos": 1000000000.0,
     "policies_evaluated": 16384,
     "scope": "Standard equipment; stationary per-star policies; unlimited retries and replacement availability.",
     "notes": [
@@ -15,7 +15,10 @@
       "Outside 15-21 all presets use standard rates. Above target 22, no preset guarantees zero booms.",
       "Policies may tie or become identical for shorter ranges. Item-specific star caps are not inferred from level.",
       "Total cost adds the assigned spare value per expected boom; it is not a budget percentile.",
-      "Presets are comparison benchmarks; on_efficient_frontier marks policies not beaten on both cost and spare usage."
+      "Presets optimize enhancement spending, total cost at the assigned spare value, expected spares, or a balanced tradeoff.",
+      "The balanced preset minimizes the equal-weight sum of normalized enhancement spending and expected spares, scaled between the frontier extremes.",
+      "Presets with the same policy are combined in scenarios; recommendations retains one row per priority.",
+      "Every preset is on the cost/spare frontier."
     ]
   },
   "scenarios": [
@@ -37,96 +40,10 @@
       "enhancement_cost_mesos": 15598735023.138174,
       "expected_attempts": 111.23445340980234,
       "expected_spares": 3.816173526441977,
-      "name": "Mode 1 throughout",
+      "name": "Lowest enhancement spending + Lowest total cost at your spare value",
       "on_efficient_frontier": true,
       "expected_replacement_cost_mesos": 3816173526.441977,
       "total_cost_mesos": 19414908549.58015
-    },
-    {
-      "mode_by_star": {
-        "15": 2,
-        "16": 2,
-        "17": 2,
-        "18": 2,
-        "19": 2,
-        "20": 2,
-        "21": 2
-      },
-      "safeguard_by_star": {
-        "15": false,
-        "16": false,
-        "17": false
-      },
-      "enhancement_cost_mesos": 29543396212.13639,
-      "expected_attempts": 100.85166256368254,
-      "expected_spares": 2.701674836857693,
-      "name": "Mode 2 throughout",
-      "on_efficient_frontier": false,
-      "expected_replacement_cost_mesos": 2701674836.857693,
-      "total_cost_mesos": 32245071048.994083
-    },
-    {
-      "mode_by_star": {
-        "15": 3,
-        "16": 3,
-        "17": 3,
-        "18": 3,
-        "19": 3,
-        "20": 3,
-        "21": 3
-      },
-      "safeguard_by_star": {
-        "15": false,
-        "16": false,
-        "17": false
-      },
-      "enhancement_cost_mesos": 47234663662.81363,
-      "expected_attempts": 78.50925760576314,
-      "expected_spares": 1.247707260996151,
-      "name": "Mode 3 throughout",
-      "on_efficient_frontier": false,
-      "expected_replacement_cost_mesos": 1247707260.996151,
-      "total_cost_mesos": 48482370923.809784
-    },
-    {
-      "mode_by_star": {
-        "18": 1,
-        "19": 1,
-        "20": 1,
-        "21": 1
-      },
-      "safeguard_by_star": {
-        "15": true,
-        "16": true,
-        "17": true
-      },
-      "enhancement_cost_mesos": 22868789436.79409,
-      "expected_attempts": 92.65031588869638,
-      "expected_spares": 2.426309720400558,
-      "name": "Safeguard early, Mode 1 late",
-      "on_efficient_frontier": false,
-      "expected_replacement_cost_mesos": 2426309720.400558,
-      "total_cost_mesos": 25295099157.19465
-    },
-    {
-      "mode_by_star": {
-        "18": 3,
-        "19": 3,
-        "20": 3,
-        "21": 3
-      },
-      "safeguard_by_star": {
-        "15": true,
-        "16": true,
-        "17": true
-      },
-      "enhancement_cost_mesos": 49381845709.44678,
-      "expected_attempts": 75.70635642485807,
-      "expected_spares": 1.0371294106938291,
-      "name": "Safeguard early, Mode 3 late",
-      "on_efficient_frontier": false,
-      "expected_replacement_cost_mesos": 1037129410.6938292,
-      "total_cost_mesos": 50418975120.14061
     },
     {
       "mode_by_star": {
@@ -143,32 +60,31 @@
       "enhancement_cost_mesos": 71382790218.25409,
       "expected_attempts": 54.761904761904844,
       "expected_spares": 0.0,
-      "name": "Safeguard early, Mode 4 late",
+      "name": "Fewest expected spares",
       "on_efficient_frontier": true,
       "expected_replacement_cost_mesos": 0.0,
       "total_cost_mesos": 71382790218.25409
     },
     {
       "mode_by_star": {
-        "15": 1,
-        "16": 1,
-        "18": 2,
-        "19": 2,
-        "20": 2,
-        "21": 2
+        "16": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
       },
       "safeguard_by_star": {
-        "15": false,
+        "15": true,
         "16": false,
         "17": true
       },
-      "enhancement_cost_mesos": 32563082549.448727,
-      "expected_attempts": 93.17549189927372,
-      "expected_spares": 2.1914028696787065,
-      "name": "Mode 1 at 15-16, safeguard at 17, Mode 2 late",
-      "on_efficient_frontier": false,
-      "expected_replacement_cost_mesos": 2191402869.6787066,
-      "total_cost_mesos": 34754485419.12743
+      "enhancement_cost_mesos": 29895604852.35711,
+      "expected_attempts": 62.82946715412361,
+      "expected_spares": 0.813356343264748,
+      "name": "Best balanced tradeoff",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 813356343.2647481,
+      "total_cost_mesos": 30708961195.621857
     }
   ],
   "recommendations": [
@@ -190,7 +106,7 @@
       "enhancement_cost_mesos": 15598735023.138174,
       "expected_attempts": 111.23445340980234,
       "expected_spares": 3.816173526441977,
-      "name": "Lowest enhancement mesos",
+      "name": "Lowest enhancement spending",
       "on_efficient_frontier": true,
       "expected_replacement_cost_mesos": 3816173526.441977,
       "total_cost_mesos": 19414908549.58015
@@ -233,10 +149,31 @@
       "enhancement_cost_mesos": 15598735023.138174,
       "expected_attempts": 111.23445340980234,
       "expected_spares": 3.816173526441977,
-      "name": "Lowest mesos plus spare value",
+      "name": "Lowest total cost at your spare value",
       "on_efficient_frontier": true,
       "expected_replacement_cost_mesos": 3816173526.441977,
       "total_cost_mesos": 19414908549.58015
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29895604852.35711,
+      "expected_attempts": 62.82946715412361,
+      "expected_spares": 0.813356343264748,
+      "name": "Best balanced tradeoff",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 813356343.2647481,
+      "total_cost_mesos": 30708961195.621857
     }
   ],
   "efficient_frontier": [

@@ -307,12 +307,18 @@ class AttemptEstimate(BaseModel):
     attempts: int | None
 
 
+class MesoEstimate(BaseModel):
+    target_probability: float
+    mesos: int | None
+
+
 class StarForceEstimateResult(BaseModel):
     expected_replacement_cost: float
     expected_cost: float
     expected_attempts: float
     expected_booms: float
     attempt_estimates: list[AttemptEstimate] = Field(default_factory=list)
+    meso_estimates: list[MesoEstimate] = Field(default_factory=list)
 
 
 class UpgradeFlameWeightsRequest(RequestModel):
@@ -540,6 +546,7 @@ def starforce_estimate(request: StarForceEstimateRequest):
         expected_attempts=estimate.expected_attempts,
         expected_booms=estimate.expected_booms,
         attempt_estimates=estimate.attempt_estimates,
+        meso_estimates=estimate.meso_estimates,
     )
 
 

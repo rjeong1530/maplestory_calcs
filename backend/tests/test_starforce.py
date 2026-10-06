@@ -2,6 +2,7 @@ import unittest
 from math import ceil, log1p
 
 from backend.calc.starforce_calculator import (
+    _meso_percentiles,
     attempt_rates,
     boom_recovery_star,
     enhancement_mode_multiplier,
@@ -12,6 +13,27 @@ from backend.calc.starforce_calculator import (
 
 
 class StarForceCalculatorTests(unittest.TestCase):
+    def test_meso_percentiles_charge_replacements_only_on_booms(self):
+        # Half succeed for 10; half boom, pay 100 extra, then retry.
+        rows = _meso_percentiles([[(1, .5, 10), (0, .5, 110)]], 0, [.5, .75, .875], 120)
+        self.assertEqual([row['mesos'] for row in rows], [10, 120, 230])
+
+    def test_meso_percentiles_accumulate_different_costs_and_recovery(self):
+        # First tap costs 10; at state 1, success costs 20, recovery costs 120.
+        edges = [[(1, 1, 10)], [(2, .5, 20), (0, .5, 120)]]
+        rows = _meso_percentiles(edges, 0, [.5, .75, .875], 160)
+        self.assertEqual([row['mesos'] for row in rows], [30, 160, 290])
+        self.assertEqual(_meso_percentiles(edges, 0, [], 160), ())
+
+    def test_meso_percentiles_match_constant_cost_geometric_quantiles(self):
+        for settings in ({}, {'shining_starforce_sunday': True, 'mvp_rank': 'gold'}):
+            result = estimate_starforce(200, 18, 19, mode_18_21=4, percentiles=[.5, .99], **settings)
+            tap = starforce_base_cost(200, 18) * enhancement_mode_multiplier(18, 4, **settings)
+            for attempts, budget in zip(result.attempt_estimates, result.meso_estimates):
+                exact = attempts['attempts'] * tap
+                self.assertGreaterEqual(budget['mesos'], exact)
+                self.assertLess(budget['mesos'], exact * 1.002)
+
     def test_replacement_cost_includes_all_booms_without_changing_attempts(self):
         for start, target, settings in ((15, 22, {}), (0, 1, {}),
                 (15, 16, {'safeguard_15_17': True}), (18, 19, {'mode_18_21': 4})):

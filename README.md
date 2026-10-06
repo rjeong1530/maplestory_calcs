@@ -194,7 +194,8 @@ Your strategy appears as a pink point, and the chart rescales to include it.
 Click it or **View my steps** to inspect costs, expected spares, and instructions.
 Editing the strategy hides its old point until you plot it again. These choices
 also apply during recovery below the starting star. An expandable table includes
-all seven presets. The chart plots enhancement spending, excluding replacements.
+the best approaches for three priorities. The chart plots enhancement spending,
+excluding replacements.
 This view always uses Shining Star Force, no MVP discount, and standard equipment;
 the custom estimate's event, MVP, and mode settings do not change these assumptions.
 
@@ -212,17 +213,19 @@ Run the standalone analysis with the existing calculator's bundled rules:
 ```
 
 Shining Star Force is always enabled and MVP is always `none`. The report compares
-seven presets: Modes 1, 2, and 3 throughout; safeguard at 15–17 paired with Mode 1,
-3, or 4 at 18–21; and a hybrid using Mode 1 at 15–16, safeguard at 17, and Mode 2
-at 18–21. Star numbers refer to the starting star of an attempt.
-
-It also searches all 16,384 per-star policies for a target of 22 or higher,
-including choices used during boom recovery below the initial star. It reports
-the lowest enhancement cost, fewest expected spares, and lowest combined cost
-using the supplied spare value. `--spare-value` can represent either replacement
-price or the meso value you assign to a scarce spare. Zero compares tap costs only.
-The cost/spare frontier contains policies where reducing spare usage requires
-more enhancement spending; presets outside that frontier are marked in exports.
+all 16,384 per-star policies for a target of 22 or higher, including choices used
+during boom recovery below the initial star. Star numbers refer to the starting
+star of an attempt. Four recommendations optimize enhancement spending, total
+cost at the supplied spare value, expected spares, or a balanced tradeoff. The
+balanced choice minimizes
+the equal-weight sum of normalized enhancement spending and expected spares,
+scaled between the efficient frontier's extremes. Recommendations are calculated
+for the current inputs and are always on the cost/spare frontier, unlike fixed-mode
+baselines. Identical policies are combined in the preset table; separate
+recommendation rows remain available for each priority. `--spare-value` can
+represent either replacement price or the meso value you assign to a scarce
+spare. Zero compares tap costs only. The cost/spare frontier contains policies
+where reducing spare usage requires more enhancement spending.
 
 Export data for an app or spreadsheet with:
 
@@ -233,9 +236,12 @@ Export data for an app or spreadsheet with:
 The sample files contain those default results. From Python, import
 `analyze_strategies` from `backend.examples.starforce_strategies`; it returns a
 dictionary with `assumptions`, `scenarios`, `recommendations`, and
-`efficient_frontier`. Every row includes its per-star policy, expected enhancement
-mesos, attempts, spares, replacement spending, and combined cost. Selected results
-are calculated again by `estimate_starforce` before publication.
+`efficient_frontier`. `recommendations` contains one row per priority, including
+the balanced tradeoff;
+`scenarios` combines rows that use the same policy. Every row includes its
+per-star policy, expected enhancement mesos, attempts, spares, replacement
+spending, and combined cost. Selected results are calculated again by
+`estimate_starforce` before publication.
 
 Expected spares equal booms and exclude the original item. These are averages with
 unlimited retries and replacement availability, not success probabilities for a
@@ -602,9 +608,15 @@ ranges from equipment type, item level, and boss-equipment status.
 
 The flame and Star Force calculators offer 50%, 75%, 90%, 95%, and 99%
 success-chance estimates. Flames show the rolls needed for at least one roll
-to meet the target score. Star Force shows the attempts needed to reach the
-target stars, including failures, safeguards, and boom recovery. These are
-attempt-count percentiles, not guaranteed counts or meso-budget percentiles.
+to meet the target score. Star Force shows approximate total meso budgets to
+reach the target stars, including failures, safeguards, boom recovery, and
+replacement costs, with the selected event and MVP discounts. These are budget
+percentiles, separate from the average expected total cost, and not guarantees.
+The cost-distribution calculation rounds each transition cost up to one of
+65,536 budget bins for conservative estimates. It expands the budget horizon
+from twice to sixteen times the mean; unresolved percentiles show as beyond
+the calculation limit. The API returns these as `meso_estimates` and retains
+`attempt_estimates` for compatibility.
 
 ### Equipment
 

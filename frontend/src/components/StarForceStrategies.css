@@ -14,3 +14,76 @@
 .strategy-view button[aria-pressed="true"] { outline: 2px solid #67d8c4; }
 .custom-strategy-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
 .custom-strategy-editor { margin-top: 20px; }
+.strategy-comparison { margin: 24px 0 16px; }
+.strategy-sort-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+.strategy-sort-button span { flex-shrink: 0; font-size: 16px; }
+.strategy-sort-button:hover,
+th[aria-sort] .strategy-sort-button { color: #67d8c4; }
+.strategy-comparison-scroll { padding: 8px; }
+.strategy-comparison-table {
+  min-width: 920px;
+  table-layout: fixed;
+  margin: 0;
+}
+.strategy-name-column { width: 24%; }
+.strategy-steps-column { width: 34%; }
+.strategy-comparison-table th,
+.strategy-comparison-table td {
+  padding: 16px 14px;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.strategy-comparison-table thead th {
+  position: sticky;
+  top: -8px;
+  z-index: 1;
+  background: #171f2e;
+  font-size: 11px;
+  white-space: normal;
+}
+.strategy-comparison-table th[scope="row"] {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.strategy-comparison-table td:not(:last-child) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.strategy-comparison-custom { background: #203345; }
+.strategy-comparison-marker { font-size: 16px; }
+.strategy-comparison-steps {
+  height: 144px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding-right: 8px;
+  font-size: 12px;
+}
+.strategy-comparison-steps ul { list-style: none; padding: 0; margin: 0; }
+.strategy-comparison-steps li {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 8px;
+  padding: 5px 0;
+}
+.strategy-comparison-steps li + li { border-top: 1px solid #35465e; }
+.strategy-comparison-steps strong { font-weight: 500; color: #c7e9df; }
+.strategy-comparison-scroll:focus-visible,
+.strategy-comparison-steps:focus-visible { outline: 2px solid #67d8c4; outline-offset: -2px; }

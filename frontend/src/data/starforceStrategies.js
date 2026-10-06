@@ -1,3 +1,7 @@
+export function nameCustomStrategies(strategies) {
+  return strategies.map((strategy, index) => ({ ...strategy, name: `Your strategy ${index + 1}` }))
+}
+
 export function strategySteps(row, target) {
   // Include lower stars because a boom can send the item below its starting star.
   return Array.from({ length: target }, (_, star) => ({
