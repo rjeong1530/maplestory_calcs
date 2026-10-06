@@ -1,11 +1,31 @@
 import { potentialEquipmentType, FIXED_RING_SLOT } from './flameEquipment.js'
 import { replacementCostForEquipment } from './starforce.js'
+import { isFiniteNumeric } from './equipmentLines.js'
 
 export const FLAME_WEIGHT_LABELS = {
   all_stat_pct_value: 'Points per 1% all stat',
-  secondary_stat_per_main: 'Secondary stat per main stat',
+  secondary_stat_value: 'Points per secondary stat',
   attack_value: 'Points per ATT / MATT',
   boss_damage_pct_value: 'Points per 1% boss damage',
+}
+
+export function restoreSecondaryStatWeight(saved) {
+  const value = saved?.secondary_stat_value
+  if (isFiniteNumeric(value) && Number(value) >= 0) {
+    return String(value)
+  }
+  const legacy = saved?.secondary_stat_per_main
+  return isFiniteNumeric(legacy) && Number(legacy) > 0 ? String(1 / Number(legacy)) : '0.1'
+}
+export const DEFAULT_FLAME_WEIGHTS = {
+  all_stat_pct_value: '10', secondary_stat_value: '0.1', attack_value: '3', boss_damage_pct_value: '10',
+}
+
+export function restoreFlameWeights(saved) {
+  return Object.fromEntries(Object.entries(DEFAULT_FLAME_WEIGHTS).map(([key, fallback]) => [key,
+    key === 'secondary_stat_value' ? restoreSecondaryStatWeight(saved)
+      : isFiniteNumeric(saved?.[key]) && Number(saved[key]) >= 0 ? String(saved[key]) : fallback,
+  ]))
 }
 export const POTENTIAL_WEIGHT_LABELS = {
   base_stat_pct_value: 'Points per 1% main stat',
@@ -33,15 +53,14 @@ export function restoreUpgradeSettings(saved) {
       ? Object.keys(UPGRADE_CATEGORIES).filter(key => saved.categories.includes(key))
       : [...DEFAULT_UPGRADE_SETTINGS.categories],
     cube_type: saved?.cube_type === 'red' ? 'red' : 'black',
-    shining_starforce_sunday: saved?.shining_starforce_sunday !== undefined
-      ? Boolean(saved.shining_starforce_sunday)
+    shining_starforce_sunday: typeof saved?.shining_starforce_sunday === 'boolean'
+      ? saved.shining_starforce_sunday
       : DEFAULT_UPGRADE_SETTINGS.shining_starforce_sunday,
     mvp_rank: Object.hasOwn(MVP_RANKS, saved?.mvp_rank)
       ? saved.mvp_rank
       : DEFAULT_UPGRADE_SETTINGS.mvp_rank,
     ...Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS).map(key => [key,
-      saved?.[key] !== '' && saved?.[key] != null
-        && Number.isFinite(Number(saved[key])) && Number(saved[key]) >= 0
+      isFiniteNumeric(saved?.[key]) && Number(saved[key]) >= 0
         ? String(saved[key]) : DEFAULT_UPGRADE_SETTINGS[key],
     ])),
   }
@@ -139,7 +158,9 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
       mode_by_star: item.starForceModes ?? {},
       safeguard_by_star: item.starForceSafeguards ?? {},
-      boss_equipment: item.currentBossEquipment ?? item.config.boss_equipment ?? false,
+      boss_equipment: (item.needsFlameType
+        ? item.currentBossEquipment ?? item.config.boss_equipment
+        : item.config.boss_equipment ?? item.currentBossEquipment) ?? false,
       base_weapon_offense: item.config.base_weapon_offense ?? null,
       current_potential: (item.currentPotential || [])
         .filter(line => line.effect && line.value !== '' && line.value != null)

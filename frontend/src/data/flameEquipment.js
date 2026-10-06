@@ -96,6 +96,11 @@ for (const item of catalog) {
   if (!catalogBySlot.has(slot)) catalogBySlot.set(slot, [])
   catalogBySlot.get(slot).push(item)
 }
+// Sort the static source once; filtering preserves the picker order and each
+// lookup still creates fresh objects so editing a selection cannot mutate it.
+for (const items of catalogBySlot.values()) {
+  items.sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
+}
 const familiesByClass = new Map()
 for (const [family, classes] of Object.entries(CLASS_FAMILIES)) {
   for (const mapleClass of classes) {
@@ -130,7 +135,7 @@ export function equipmentChoices(slot, mapleClass) {
         icon: equipmentIconUrl(item.itemid),
         color: item.name.startsWith('Eternal') ? '#f1cd78' : '#a0e4b3', config,
         needsFlameType: false }]
-    }).sort((a, b) => a.config.equipment_level - b.config.equipment_level || a.name.localeCompare(b.name))
+    })
 }
 
 export function potentialEquipmentType(slot, item) {

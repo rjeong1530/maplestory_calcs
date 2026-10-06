@@ -228,7 +228,7 @@ def probability(request: CalculationRequest):
 
 class FlameWeightsRequest(RequestModel):
     all_stat_pct_value: float
-    secondary_stat_per_main: float
+    secondary_stat_value: float = Field(ge=0, allow_inf_nan=False)
     attack_value: float
     boss_damage_pct_value: float = Field(default=0, ge=0, allow_inf_nan=False)
 
@@ -291,7 +291,7 @@ class StarForceEstimateResult(BaseModel):
 
 class UpgradeFlameWeightsRequest(RequestModel):
     all_stat_pct_value: float = Field(ge=0, allow_inf_nan=False)
-    secondary_stat_per_main: float = Field(gt=0, allow_inf_nan=False)
+    secondary_stat_value: float = Field(ge=0, allow_inf_nan=False)
     attack_value: float = Field(ge=0, allow_inf_nan=False)
     boss_damage_pct_value: float = Field(ge=0, allow_inf_nan=False)
 

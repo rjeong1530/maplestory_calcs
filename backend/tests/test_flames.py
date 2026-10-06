@@ -6,13 +6,21 @@ from backend.calc.maplestory_flames import FlameConfig, FlameProbabilityEngine, 
 
 
 class FlameScoreTests(unittest.TestCase):
+    def test_secondary_stat_weight_is_points_per_stat(self):
+        from backend.calc.maplestory_flames import score_values
+        for weight, expected in ((0.1, 12), (0.25, 15), (0, 10)):
+            config = FlameConfig(equipment_level=200, equipment_type='armor',
+                                 boss_equipment=True, flame_type='black', main_stat='STR',
+                                 weights=ScoreWeights(secondary_stat_value=weight))
+            self.assertEqual(score_values({'STR': 10, 'DEX': 20}, config), expected)
+
     def test_xenon_primary_stats_are_equal_and_ignore_secondary_weight(self):
         from backend.calc.maplestory_flames import score_values
         for secondary_weight in (1, 10, 100):
             config = FlameConfig(
                 equipment_level=200, equipment_type='armor', boss_equipment=True,
                 flame_type='black', main_stat=('STR', 'DEX', 'LUK'), secondary_stats=(),
-                weights=ScoreWeights(secondary_stat_per_main=secondary_weight),
+                weights=ScoreWeights(secondary_stat_value=secondary_weight),
             )
             for stat in ('STR', 'DEX', 'LUK'):
                 self.assertEqual(score_values({stat: 30}, config), 30)
@@ -31,7 +39,7 @@ class FlameScoreTests(unittest.TestCase):
                             equipment_level=200, equipment_type=equipment_type,
                             boss_equipment=boss_equipment, flame_type=flame_type,
                             main_stat='STR', base_weapon_offense=295,
-                            weights=ScoreWeights(secondary_stat_per_main=3,
+                            weights=ScoreWeights(secondary_stat_value=1 / 3,
                                                  attack_value=0.00006),
                         ))
                         engine.option_pool = ('STR', 'DEX', 'ATT', 'ALL_STAT_PCT')

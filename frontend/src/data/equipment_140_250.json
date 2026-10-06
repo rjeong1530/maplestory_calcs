@@ -954,7 +954,7 @@
     ],
     "level": 250,
     "equipment_type": "Glove",
-    "boss_reward": false
+    "boss_reward": true
   },
   {
     "itemid": 1082761,

@@ -51,20 +51,20 @@ class ScoreWeights:
 
     Defaults:
       1 main stat        = 1 point
-      10 secondary stat = 1 point
+      1 secondary stat  = 0.1 points
       1% all stat       = 10 points
       1 ATT/MATT        = 3 points
       1% boss damage    = 10 points
     '''
     all_stat_pct_value: float = 10.0
-    secondary_stat_per_main: float = 10.0
+    secondary_stat_value: float = 0.1
     attack_value: float = 3.0
     boss_damage_pct_value: float = 10.0
 
     def secondary_value(self, amount: float) -> float:
-        if self.secondary_stat_per_main <= 0:
-            raise ValueError('secondary_stat_per_main must be > 0')
-        return amount / self.secondary_stat_per_main
+        if self.secondary_stat_value < 0:
+            raise ValueError('secondary_stat_value must be >= 0')
+        return amount * self.secondary_stat_value
 
 
 @dataclass(frozen=True)
@@ -501,7 +501,7 @@ if __name__ == '__main__':
         offense_stat='ATT',
         weights=ScoreWeights(
             all_stat_pct_value=10,
-            secondary_stat_per_main=10,
+            secondary_stat_value=0.1,
             attack_value=3,
         ),
     )
@@ -539,7 +539,7 @@ if __name__ == '__main__':
     #     base_weapon_offense=295,
     #     weights=ScoreWeights(
     #         all_stat_pct_value=10,
-    #         secondary_stat_per_main=10,
+    #         secondary_stat_value=0.1,
     #         attack_value=3,
     #     ),
     # )

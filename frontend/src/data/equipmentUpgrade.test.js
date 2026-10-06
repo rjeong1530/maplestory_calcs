@@ -1,7 +1,37 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { CLASS_STATS } from './classStats.js'
-import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, restoreUpgradeSettings } from './equipmentUpgrade.js'
+import { equipmentChoices } from './flameEquipment.js'
+import { restoreEquipment } from './equipmentSave.js'
+import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, restoreUpgradeSettings, restoreSecondaryStatWeight } from './equipmentUpgrade.js'
+
+test('Eternal Knight Gloves use catalog boss flames despite an older saved non-boss flag', () => {
+  const gloves = equipmentChoices('gloves', 'Hero').find(item => item.id === 1082760)
+  assert.equal(gloves.config.boss_equipment, true)
+  const stale = { ...gloves, currentBossEquipment: false }
+  const request = buildUpgradeRequest({ gloves: stale }, CLASS_STATS.Hero, {}, restoreUpgradeSettings())
+  assert.equal(request.equipment[0].boss_equipment, true)
+  const restored = restoreEquipment({ gloves: { id: gloves.id, current_boss_equipment: false,
+    current_flames: [{ option: 'STR', stage: 7 }] } }, 'Hero')
+  assert.equal(restored.gloves.currentBossEquipment, true)
+  assert.deepEqual(restored.gloves.currentFlames, [{ option: 'STR', stage: 7 }])
+  const manual = buildUpgradeRequest({ gloves: { ...stale, needsFlameType: true } },
+    CLASS_STATS.Hero, {}, restoreUpgradeSettings())
+  assert.equal(manual.equipment[0].boss_equipment, false)
+})
+
+test('secondary stat weights migrate saved divisors and send points per stat', () => {
+  assert.equal(restoreSecondaryStatWeight({ secondary_stat_per_main: '10' }), '0.1')
+  assert.equal(restoreSecondaryStatWeight({ secondary_stat_per_main: '4' }), '0.25')
+  assert.equal(restoreSecondaryStatWeight({ secondary_stat_value: '0', secondary_stat_per_main: '10' }), '0')
+  for (const value of [undefined, '', 0, -1, 'invalid']) {
+    assert.equal(restoreSecondaryStatWeight({ secondary_stat_per_main: value }), '0.1')
+  }
+  const request = buildUpgradeRequest({}, CLASS_STATS.Hero,
+    { secondary_stat_value: '0.25' }, restoreUpgradeSettings())
+  assert.equal(request.flame_weights.secondary_stat_value, 0.25)
+  assert.ok(!Object.hasOwn(request.flame_weights, 'secondary_stat_per_main'))
+})
 
 test('Xenon requests carry three primary stats and no secondary stats', () => {
   const request = buildUpgradeRequest({}, CLASS_STATS.Xenon, {}, restoreUpgradeSettings())
@@ -129,7 +159,7 @@ test('lookahead can choose fewer than six stars and reassesses after the chosen 
 })
 
 const stats = { main: 'INT', secondary: ['LUK'], offense: 'MATT' }
-const weights = { all_stat_pct_value: '10', secondary_stat_per_main: '10',
+const weights = { all_stat_pct_value: '10', secondary_stat_value: '0.1',
   attack_value: '3', boss_damage_pct_value: '10' }
 
 test('replacement costs reach requests and grouped boom totals affect ordering', () => {
@@ -169,7 +199,7 @@ test('upgrade requests preserve duplicate slots and convert recorded rolls to AP
   assert.deepEqual(request.equipment.map(item => item.slot), ['ring-1', 'ring-2'])
   assert.deepEqual(request.equipment.map(item => item.current_star_force), [17, 15])
   assert.deepEqual(request.equipment.map(item => item.max_star_force), [22, 22])
-  assert.equal(request.equipment[0].boss_equipment, false)
+  assert.equal(request.equipment[0].boss_equipment, true)
   assert.deepEqual(request.equipment[0].mode_by_star, { 15: 2, 18: 4 })
   assert.deepEqual(request.equipment[0].safeguard_by_star, { 15: true, 17: false })
   assert.equal(request.equipment[0].potential_equipment_type, 'accessory')

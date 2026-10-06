@@ -6,6 +6,19 @@ from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
+    def test_secondary_stat_multiplier_applies_to_upgrade_scores(self):
+        from backend.calc.equipment_upgrade import _potential_current_score
+        item = {'name': 'Hat', 'slot': 'hat', 'equipment_level': 200, 'equipment_type': 'armor'}
+        for weight in (0, 0.1, 0.25):
+            weights = {**self.flame_weights, 'secondary_stat_value': weight, 'attack_value': 0}
+            main_only = starforce_weighted_score(item, 10, 'STR', (), 'ATT', weights)
+            with_secondary = starforce_weighted_score(item, 10, 'STR', ('DEX',), 'ATT', weights)
+            self.assertAlmostEqual(with_secondary, main_only * (1 + weight))
+            score = _potential_current_score([{'effect': 'DEX_PCT', 'value': 12}],
+                'STR', ('DEX',), 'ATT', weights, {'base_stat_pct_value': 10,
+                'attack_pct_value': 10, 'crit_damage_pct_value': 8})
+            self.assertAlmostEqual(score, 120 * weight)
+
     def test_replacement_cost_defaults_overrides_and_ranking(self):
         from backend.api.main import EquipmentUpgradePlanRequest
         item = {'name': 'Astra Sacred Aegis', 'slot': 'secondary', 'equipment_level': 200,
@@ -50,7 +63,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
         item['current_flames'] = [{'option': stat, 'stage': 5} for stat in ('STR', 'DEX', 'LUK')]
         settings = request['potential_weights']
         for secondary_weight in (1, 100):
-            weights = {**self.flame_weights, 'secondary_stat_per_main': secondary_weight}
+            weights = {**self.flame_weights, 'secondary_stat_value': secondary_weight}
             single = starforce_weighted_score(item, 10, 'STR', (), 'ATT', weights)
             triple = starforce_weighted_score(item, 10, ('STR', 'DEX', 'LUK'), (), 'ATT', weights)
             self.assertEqual(triple, 3 * single)
@@ -101,7 +114,7 @@ class EquipmentUpgradeTests(unittest.TestCase):
     def setUp(self):
         self.flame_weights = {
             'all_stat_pct_value': 10,
-            'secondary_stat_per_main': 10,
+            'secondary_stat_value': 0.1,
             'attack_value': 3,
             'boss_damage_pct_value': 10,
         }

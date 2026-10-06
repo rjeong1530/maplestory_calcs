@@ -1,0 +1,149 @@
+{
+  "format": "maplestory-equipment",
+  "version": 1,
+  "equipment_class": "Hoyoung",
+  "equipment": {
+    "hat": {
+      "id": 1004811,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "LUK_PCT",
+          "value": 13
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "LUK",
+          "stage": 4
+        }
+      ],
+      "current_flame_type": "black"
+    },
+    "weapon": {
+      "id": 1292018,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "ATT_PCT",
+          "value": 13
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "LUK",
+          "stage": 4
+        }
+      ],
+      "current_flame_type": "black"
+    },
+    "secondary": {
+      "id": 1724500,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 1000000000,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "ATT_PCT",
+          "value": 13
+        }
+      ],
+      "current_flames": [],
+      "current_flame_type": "black"
+    },
+    "top": {
+      "id": 1042257,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "LUK_PCT",
+          "value": 12
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "LUK",
+          "stage": 4
+        }
+      ],
+      "current_flame_type": "black"
+    },
+    "bottom": {
+      "id": 1062168,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "LUK_PCT",
+          "value": 12
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "LUK",
+          "stage": 4
+        }
+      ],
+      "current_flame_type": "black"
+    },
+    "gloves": {
+      "id": 1082698,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "LUK_PCT",
+          "value": 13
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "LUK",
+          "stage": 4
+        }
+      ],
+      "current_flame_type": "black"
+    },
+    "ring-1": {
+      "id": 1113306,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "LUK_PCT",
+          "value": 13
+        }
+      ],
+      "current_flames": [],
+      "current_flame_type": "black"
+    },
+    "pendant-1": {
+      "id": 1122443,
+      "current_star_force": 17,
+      "replacement_cost_mesos": 0,
+      "max_star_force": 18,
+      "current_potential": [
+        {
+          "effect": "LUK_PCT",
+          "value": 12
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "LUK",
+          "stage": 4
+        }
+      ],
+      "current_flame_type": "black"
+    }
+  }
+}

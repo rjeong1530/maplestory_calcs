@@ -31,7 +31,7 @@ export default function useFlameCalculation(form) {
         ...(isWeapon ? weaponConfig : {}),
         weights: {
           all_stat_pct_value: Number(form.all_stat_pct_value),
-          secondary_stat_per_main: Number(form.secondary_stat_per_main),
+          secondary_stat_value: Number(form.secondary_stat_value),
           attack_value: Number(form.attack_value),
           boss_damage_pct_value: Number(form.boss_damage_pct_value),
         },

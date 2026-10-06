@@ -1,29 +1,9 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
+import { POTENTIAL_LABELS, FLAME_LABELS } from '../data/equipmentLines'
 import { FLAME_SLOTS, potentialEquipmentType } from '../data/flameEquipment'
 import { maxStarForceForEquipment, supportsStarForce, replacementCostForEquipment } from '../data/starforce'
 import './EquipmentAnalysis.css'
-
-const POTENTIAL_LABELS = {
-  STR_PCT: 'STR %', DEX_PCT: 'DEX %', INT_PCT: 'INT %', LUK_PCT: 'LUK %',
-  ALL_STAT_PCT: 'All stats %', MAX_HP_PCT: 'Max HP %', MAX_MP_PCT: 'Max MP %',
-  ATT_PCT: 'Attack %', MAGIC_ATT_PCT: 'Magic attack %', BOSS_DAMAGE_PCT: 'Boss damage %',
-  DAMAGE_PCT: 'Damage %', IED_PCT: 'Ignore enemy defense %',
-  CRIT_RATE_PCT: 'Critical rate %', CRIT_DAMAGE_PCT: 'Critical damage %',
-  MESO_PCT: 'Meso obtained %', DROP_PCT: 'Item drop rate %',
-  COOLDOWN_SEC: 'Cooldown reduction',
-}
-
-const FLAME_LABELS = {
-  STR: 'STR', DEX: 'DEX', INT: 'INT', LUK: 'LUK',
-  'STR+DEX': 'STR + DEX', 'STR+INT': 'STR + INT', 'STR+LUK': 'STR + LUK',
-  'DEX+INT': 'DEX + INT', 'DEX+LUK': 'DEX + LUK', 'INT+LUK': 'INT + LUK',
-  ALL_STAT_PCT: 'All stats %',
-  MAX_HP: 'Max HP', MAX_MP: 'Max MP', LEVEL_REDUCTION: 'Level reduction',
-  DEF: 'Defense', ATT: 'Attack', MATT: 'Magic attack',
-  BOSS_DAMAGE_PCT: 'Boss damage %', DAMAGE_PCT: 'Damage %',
-  MOVE_SPEED: 'Movement speed', JUMP: 'Jump',
-}
 
 const emptyPotentialLine = () => ({ effect: '', value: '' })
 

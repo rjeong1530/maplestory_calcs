@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CLASS_STATS } from '../data/classStats'
 import { restoreEquipment, serializeEquipment, exportEquipment, importEquipment } from '../data/equipmentSave'
-import { restoreUpgradeSettings } from '../data/equipmentUpgrade'
+import { restoreUpgradeSettings, restoreFlameWeights, DEFAULT_FLAME_WEIGHTS } from '../data/equipmentUpgrade'
 import { equipInSlot, compatibleEquipment, FIXED_RING_SLOT } from '../data/flameEquipment'
 import { readEquipmentSelection, saveEquipmentSelection } from '../data/equipmentStorage'
 
@@ -13,38 +13,22 @@ const initialForm = {
   maple_class: 'Hero',
   weapon_series: 'fafnir',
   weapon_kind: 'two_handed_sword',
-  all_stat_pct_value: '10',
-  secondary_stat_per_main: '10',
-  attack_value: '3',
-  boss_damage_pct_value: '10',
+  ...DEFAULT_FLAME_WEIGHTS,
   target_score: '120',
 }
 
-const SCORE_WEIGHT_FIELDS = [
-  'all_stat_pct_value',
-  'secondary_stat_per_main',
-  'attack_value',
-  'boss_damage_pct_value',
-]
-
-function restoreScoreWeights(savedWeights) {
-  return Object.fromEntries(SCORE_WEIGHT_FIELDS.map(field => {
-    const value = savedWeights?.[field]
-    return [field, value !== undefined && value !== null && value !== '' && Number.isFinite(Number(value))
-      ? String(value) : initialForm[field]]
-  }))
-}
+const SCORE_WEIGHT_FIELDS = Object.keys(DEFAULT_FLAME_WEIGHTS)
 
 export default function useEquipmentPlanner() {
   const [savedSelection] = useState(readEquipmentSelection)
   const [saveError, setSaveError] = useState('')
-  const savedClass = CLASS_STATS[savedSelection.maple_class] ? savedSelection.maple_class : initialForm.maple_class
-  const savedEquipmentClass = CLASS_STATS[savedSelection.equipment_class]
+  const savedClass = Object.hasOwn(CLASS_STATS, savedSelection.maple_class) ? savedSelection.maple_class : initialForm.maple_class
+  const savedEquipmentClass = Object.hasOwn(CLASS_STATS, savedSelection.equipment_class)
     ? savedSelection.equipment_class : savedClass
   const [form, setForm] = useState(() => ({
     ...initialForm,
     maple_class: savedClass,
-    ...restoreScoreWeights(savedSelection.score_weights),
+    ...restoreFlameWeights(savedSelection.score_weights),
   }))
   const [equipmentClass, setEquipmentClass] = useState(savedEquipmentClass)
   const [equipment, setEquipment] = useState(() =>

@@ -132,12 +132,13 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           />
         </label>
         {classStats.secondary.length > 0 && <label>
-          Secondary stat per main stat
+          Points per secondary stat
           <input
-            name="secondary_stat_per_main"
+            name="secondary_stat_value"
             type="number"
+            min="0"
             step="any"
-            value={form.secondary_stat_per_main}
+            value={form.secondary_stat_value}
             onChange={update}
             required
           />

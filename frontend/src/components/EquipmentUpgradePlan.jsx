@@ -113,10 +113,10 @@ export default function EquipmentUpgradePlan({
         <fieldset className="upgrade-weights">
           <legend>Shared flame and Star Force weights</legend>
           {Object.entries(FLAME_WEIGHT_LABELS)
-            .filter(([key]) => key !== 'secondary_stat_per_main' || classStats.secondary.length > 0)
+            .filter(([key]) => key !== 'secondary_stat_value' || classStats.secondary.length > 0)
             .map(([key, label]) => (
             <label key={key}>{label}
-              <input type="number" min={key === 'secondary_stat_per_main' ? '0.000001' : '0'}
+              <input type="number" min="0"
                 step="any" required value={flameWeights[key]}
                 onChange={event => onFlameWeightChange(key, event.target.value)} />
             </label>

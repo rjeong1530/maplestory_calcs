@@ -220,7 +220,7 @@ class ApiTests(unittest.TestCase):
             'equipment_level': 200, 'equipment_type': 'weapon',
             'boss_equipment': True, 'flame_type': 'black',
             'main_stat': 'STR', 'secondary_stats': ['DEX'], 'offense_stat': 'ATT',
-            'weights': {'all_stat_pct_value': 10, 'secondary_stat_per_main': 10, 'attack_value': 3},
+            'weights': {'all_stat_pct_value': 10, 'secondary_stat_value': 0.1, 'attack_value': 3},
         }
         config.update(overrides)
         return {'config': config, 'target_score': 500}
@@ -245,7 +245,7 @@ class ApiTests(unittest.TestCase):
 
     def test_boss_damage_flame_weight(self):
         payload = self.flame_payload(base_weapon_offense=295, weights={
-            'all_stat_pct_value': 0, 'secondary_stat_per_main': 10,
+            'all_stat_pct_value': 0, 'secondary_stat_value': 0.1,
             'attack_value': 0, 'boss_damage_pct_value': 100,
         })
         # Only boss damage can reach 500; all its black-flame tiers do so.
@@ -419,7 +419,7 @@ class ApiTests(unittest.TestCase):
             'offense_stat': 'ATT',
             'cube_type': 'red',
             'flame_weights': {
-                'all_stat_pct_value': 10, 'secondary_stat_per_main': 10,
+                'all_stat_pct_value': 10, 'secondary_stat_value': 0.1,
                 'attack_value': 3, 'boss_damage_pct_value': 10,
             },
             'potential_weights': {
@@ -477,7 +477,7 @@ class ApiTests(unittest.TestCase):
         payload = {
             'main_stat': 'STR', 'secondary_stats': ['DEX'], 'offense_stat': 'ATT',
             'flame_weights': {
-                'all_stat_pct_value': 10, 'secondary_stat_per_main': 10,
+                'all_stat_pct_value': 10, 'secondary_stat_value': 0.1,
                 'attack_value': 3, 'boss_damage_pct_value': 10,
             },
             'potential_weights': {

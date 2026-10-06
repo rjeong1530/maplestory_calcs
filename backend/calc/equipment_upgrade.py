@@ -172,7 +172,7 @@ def starforce_weighted_score(
     class_stat = _class_stat_bonus(item_level, star)
     stat_score = class_stat * (
         len(main_stats) + len([stat for stat in secondary_stats if stat not in main_stats])
-        / flame_weights['secondary_stat_per_main']
+        * flame_weights['secondary_stat_value']
     )
 
     if item['equipment_type'] == 'weapon':
@@ -204,7 +204,7 @@ def _potential_effect_weights(
         if stat not in main_stats:
             weights[effect(stat)] = (
                 potential_weights['base_stat_pct_value']
-                / flame_weights['secondary_stat_per_main']
+                * flame_weights['secondary_stat_value']
             )
     weights['ATT_PCT' if offense_stat == 'ATT' else 'MAGIC_ATT_PCT'] = (
         potential_weights['attack_pct_value']

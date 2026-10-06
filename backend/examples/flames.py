@@ -20,7 +20,7 @@ config = FlameConfig(
 
     weights=ScoreWeights(
         all_stat_pct_value=10,
-        secondary_stat_per_main=10,
+        secondary_stat_value=0.1,
         attack_value=3,
     ),
 )

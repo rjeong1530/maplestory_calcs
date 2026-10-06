@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
-Reviewed: 2026-10-05
-Total: 63 tests in 9 files
+Reviewed: 2026-10-06
+Total: 70 tests in 10 files
 
 Run from frontend/:
   npm test
@@ -17,87 +17,149 @@ Counts refer to named tests; loops exercise additional cases within each test.
 Descriptions summarize actual assertions, not a guarantee of all possible cases.
 Update this inventory when tests are added, removed, renamed, or changed.
 
+FILE: frontend/src/data/equipmentSamples.test.js
+Tests: 4
+
+1. JSON samples cover every class and survive import, browser restoration and API serialization
+   Behavior and purpose: Checks the 47 committed samples cover exactly the supported
+   class list and match the generator. Verifies JSON export/import and browser
+   restoration round trips, eight-item request serialization without lost values, and
+   successful reimport after all 2,209 class-to-class compatibility transitions.
+   Samples include negative cooldown, Xenon multi-stat, and Demon Avenger HP rolls.
+
+2. shields, force shields, soul rings and ordinary secondaries share the secondary potential table
+   Behavior and purpose: Checks seven real catalog secondaries across Bishop, Demon
+   Slayer, Demon Avenger, Angelic Buster, Mihile, and Dual Blade retain the generic
+   secondary potential mapping.
+
+3. invalid imported rolls are rejected and malformed browser rolls are discarded without crashing
+   Behavior and purpose: Rejects null, array, unknown-effect, negative non-cooldown,
+   boolean, and infinite potential lines on import; browser restoration discards them
+   and still builds a request. Rejects duplicate flame options on import, keeps the
+   first during restoration, and ignores invalid saved slot names.
+
+4. restored score settings reject negative, boolean, whitespace and structured values
+   Behavior and purpose: Checks malformed flame and potential weights fall back to
+   defaults, zero attack weight survives, a real false event flag is retained, and a
+   string false event flag uses the default.
+
+-----------------------------------------------------------------------
+
 FILE: frontend/src/data/equipmentSave.test.js
 Tests: 8
 
-1. replacement costs persist and older Astra saves receive the default
+5. replacement costs persist and older Astra saves receive the default
    Behavior and purpose: Round-trips zero and custom costs. Older Astra saves default to 1B and ordinary gear to zero; invalid imported costs are rejected.
 
-2. wrong-job secondaries are rejected on import and removed from saved equipment
+6. wrong-job secondaries are rejected on import and removed from saved equipment
    Behavior and purpose: Rejects a Xenon secondary imported for Phantom, drops it during saved-state restoration, and accepts it for Xenon. Protects job eligibility when loading equipment.
 
-3. equipment export/import preserves class, items and recorded rolls
+7. equipment export/import preserves class, items and recorded rolls
    Behavior and purpose: Round-trips class, two separately equipped rings, stars and limits, modes, safeguards, potentials, flames, flame type, and boss status. Restores the catalog item level.
 
-4. empty equipment exports and UTF-8 BOM imports are supported
+8. empty equipment exports and UTF-8 BOM imports are supported
    Behavior and purpose: Accepts an export without editable gear and a UTF-8 BOM, restoring the class plus the mandatory fixed Ring of Restraint.
 
-5. malformed imports and invalid rolls are rejected before returning equipment
+9. malformed imports and invalid rolls are rejected before returning equipment
    Behavior and purpose: Rejects malformed JSON, wrong schema/version/class/slot/item, invalid stars and limits, unsupported modes/safeguards, malformed potential values, invalid flame tiers/types, and nonboolean boss status before returning equipment.
 
-6. imports rebuild catalog fields instead of trusting file metadata
+10. imports rebuild catalog fields instead of trusting file metadata
    Behavior and purpose: Replaces imported names, configuration, and icon URLs with trusted bundled catalog values. Imported metadata cannot redefine an item.
 
-7. imports reject class-incompatible weapons and conflicting overall/bottom slots
+11. imports reject class-incompatible weapons and conflicting overall/bottom slots
    Behavior and purpose: Rejects a Hero weapon for Bishop and rejects simultaneous overall/bottom equipment regardless of property order.
 
-8. ring four is fixed across defaults, saved data, imports and class changes
+12. ring four is fixed across defaults, saved data, imports and class changes
    Behavior and purpose: Checks the fixed default and sole ring-4 choice, blocks replacement, preserves it across class changes, and normalizes missing, old, or edited ring-4 saves/imports without changing ring-1.
 
 -----------------------------------------------------------------------
 
-FILE: frontend/src/data/equipmentUpgrade.test.js
-Tests: 17
+FILE: frontend/src/data/equipmentStorage.test.js
+Tests: 3
 
-9. Xenon requests carry three primary stats and no secondary stats
+13. full equipment sets larger than a cookie survive storage and restoration
+   Behavior and purpose: Saves a real catalog equipment set exceeding 4 KB,
+   reloads all classes/settings and equipment, and verifies restored equipment
+   matches the serialized save using a local-storage test double.
+
+14. legacy cookies migrate after successful writes and local storage takes precedence
+   Behavior and purpose: Recovers an old cookie, writes it to local storage,
+   retires the cookie only after success, and prefers local storage over stale
+   cookie data on subsequent reads.
+
+15. malformed or blocked storage recovers cookies and failed writes preserve them
+   Behavior and purpose: Falls back from malformed local data or blocked storage
+   to the cookie. Failed writes preserve the cookie and report failure; malformed
+   cookies restore an empty selection. Quota failures are also reported.
+
+-----------------------------------------------------------------------
+
+FILE: frontend/src/data/equipmentUpgrade.test.js
+Tests: 20
+
+16. Eternal Knight Gloves use catalog boss flames despite an older saved non-boss flag
+   Behavior and purpose: Checks requests and restored equipment use the catalog boss
+   flag, preserve recorded flame lines, and continue honoring overrides for items with
+   a manual flame type.
+
+17. secondary stat weights migrate saved divisors and send points per stat
+   Behavior and purpose: Checks legacy divisors 10 and 4 become multipliers 0.1 and
+   0.25, preserves explicit zero, falls back for invalid legacy values, and sends
+   secondary_stat_value rather than the obsolete divisor field.
+
+18. Xenon requests carry three primary stats and no secondary stats
    Behavior and purpose: Builds a Xenon request with STR, DEX, and LUK as primary stats, no secondary stats, and ATT offense.
 
-10. consecutive Astra steps combine into 0–10 with total costs, gains and efficiency
+19. MVP rank is validated in restored settings and serialized in requests
+   Behavior and purpose: Preserves Diamond+ MVP, falls back to none for an invalid
+   rank, and includes the restored rank in upgrade requests.
+
+20. consecutive Astra steps combine into 0–10 with total costs, gains and efficiency
    Behavior and purpose: Merges ten consecutive steps into a 0-to-10 range, totaling gain 20, cost 5,500, and attempts 55; recalculates gain/cost without mutating the input.
 
-11. grouping preserves interruptions, separate slots, gaps and reversed star order
+21. grouping preserves interruptions, separate slots, gaps and reversed star order
    Behavior and purpose: Keeps rows separate across intervening items, different ring slots, missing stars, reversed steps, and unavailable values; accepts empty input.
 
-12. Astra 10–15 prerequisites precede higher-efficiency 15–17 upgrades
+22. Astra 10–15 prerequisites precede higher-efficiency 15–17 upgrades
    Behavior and purpose: Reorders shuffled Astra steps so 10-to-15 prerequisites precede later stars, then groups the continuous 10-to-17 range without changing the input.
 
-13. equal-efficiency choices preserve ranking priority and separate equipped slots
+23. equal-efficiency choices preserve ranking priority and separate equipped slots
    Behavior and purpose: Breaks efficiency ties using original ranking priority while treating ring-1 and ring-2 independently; accepts an empty queue.
 
-14. six-star lookahead chooses a later payoff over another item and commits its prerequisites
+24. six-star lookahead chooses a later payoff over another item and commits its prerequisites
    Behavior and purpose: Chooses a six-step range whose final gain beats another item, includes every prerequisite, and leaves the seventh step until after that competitor; preserves input.
 
-15. lookahead stops at six stars and does not use a seventh-star payoff
+25. lookahead stops at six stars and does not use a seventh-star payoff
    Behavior and purpose: Does not choose a low-star range solely for a payoff seven steps away. The better immediate competitor stays first.
 
-16. range efficiency includes expensive prerequisites instead of averaging per-star ratios
+26. range efficiency includes expensive prerequisites instead of averaging per-star ratios
    Behavior and purpose: Ranks total gain divided by total cost; a cheap final upgrade cannot hide an expensive prerequisite.
 
-17. Astra below 15 can win on post-15 gains beyond the normal six-star horizon
+27. Astra below 15 can win on post-15 gains beyond the normal six-star horizon
    Behavior and purpose: Allows a below-15 item to win through post-15 gains outside the usual six-step horizon, including all 17 steps and their combined cost/gain.
 
-18. post-15 gains do not win when the full prerequisite cost is too high
+28. post-15 gains do not win when the full prerequisite cost is too high
    Behavior and purpose: Keeps another item first when reaching the post-15 payoff is too expensive after counting prerequisites.
 
-19. lookahead can choose fewer than six stars and reassesses after the chosen range
+29. lookahead can choose fewer than six stars and reassesses after the chosen range
    Behavior and purpose: Can commit a two-star range, then reconsider other items instead of forcing a six-star block.
 
-20. replacement costs reach requests and grouped boom totals affect ordering
+30. replacement costs reach requests and grouped boom totals affect ordering
    Behavior and purpose: Requests carry Astra defaults and zero overrides. Grouped ranges sum fractional booms and replacement spending; efficiency and ordering use total cost.
 
-21. upgrade requests preserve duplicate slots and convert recorded rolls to API fields
+31. upgrade requests preserve duplicate slots and convert recorded rolls to API fields
    Behavior and purpose: Builds separate ring entries with their stars and limits, preserves modes/safeguards and explicit false boss status, converts numeric strings, and omits empty potential rows.
 
-22. upgrade requests map overall and weapon types, retain clean offense and default empty rolls
+32. upgrade requests map overall and weapon types, retain clean offense and default empty rolls
    Behavior and purpose: Maps overall potential to outfit and weapon potential to weapon, preserves base weapon offense, and defaults missing stars/rolls to zero/empty arrays.
 
-23. saved upgrade settings accept zero weights and recover from invalid values
+33. saved upgrade settings accept zero weights and recover from invalid values
    Behavior and purpose: Preserves zero as a valid weight while replacing invalid cube type, negative weight, and infinite weight with defaults.
 
-24. upgrade selections survive restoration and reach the API
+34. upgrade selections survive restoration and reach the API
    Behavior and purpose: Restores valid upgrade categories and passes them to the API, removes obsolete flame type/cost settings, and defaults when every saved category is invalid.
 
-25. fixed ring four is excluded from all upgrade requests
+35. fixed ring four is excluded from all upgrade requests
    Behavior and purpose: Ensures requests omit ring-4 while retaining another ring slot, so the fixed skill ring cannot receive enhancement recommendations.
 
 -----------------------------------------------------------------------
@@ -105,54 +167,54 @@ Tests: 17
 FILE: frontend/src/data/flameEquipment.test.js
 Tests: 16
 
-26. catalog excludes unwanted series and limits pocket choices to cup and spellbooks
+36. catalog excludes unwanted series and limits pocket choices to cup and spellbooks
    Behavior and purpose: Verifies excluded series are absent, the pocket picker has exactly the cup and four colored spellbooks, and Sweetwater Tattoo remains available.
    Also verifies the exact three-earring allowlist: Commanding Force Earring,
    Estella Earrings, and Superior Gollux Earrings.
 
-27. heart choices include only the five selected hearts and Mitra emblems follow class families
+37. heart choices include only the five selected hearts and Mitra emblems follow class families
    Behavior and purpose: Checks the exact five-heart picker allowlist and the appropriate Mitra emblem for each of five class families.
 
-28. picker results stay sorted and independent across repeated lookups
+38. picker results stay sorted and independent across repeated lookups
    Behavior and purpose: Checks tops and overalls are sorted by level/name, independent lookups cannot mutate each other, unknown jobs/slots are empty, and editable ring-1/ring-3 choices match.
 
-29. every catalog secondary has explicit job restrictions
+39. every catalog secondary has explicit job restrictions
    Behavior and purpose: Requires an explicit nonempty job mapping for every secondary in the bundled catalog, preventing unclassified secondaries from silently appearing.
 
-30. all supported jobs retain Astra and eligible level-100 secondaries
+40. all supported jobs retain Astra and eligible level-100 secondaries
    Behavior and purpose: Checks every supported job has Astra secondary choices and all except Dual Blade have level-100 options. Every returned secondary matches the job; verifies Xenon controllers and Astra Katara.
 
-31. catalog retains only requested katara and ordinary shield series
+41. catalog retains only requested katara and ordinary shield series
    Behavior and purpose: Limits kataras to Fafnir, AbsoLab, Sweetwater, Arcane Umbra, and Astra. Ordinary shield records are limited to Astra, Deimos, and Terminus.
 
-32. secondaries distinguish jobs within the same family
+42. secondaries distinguish jobs within the same family
    Behavior and purpose: Checks specific secondary IDs for jobs sharing a broad class family, including shared Demon Slayer/Demon Avenger shields. Broad family compatibility cannot substitute for job eligibility.
 
-33. Cygnus jewel is limited to the five Cygnus jobs despite its All family
+43. Cygnus jewel is limited to the five Cygnus jobs despite its All family
    Behavior and purpose: Allows the Cygnus jewel only for the five Cygnus jobs even though its catalog family is All.
 
-34. class changes remove another jobs secondary but preserve shared secondaries
+44. class changes remove another jobs secondary but preserve shared secondaries
    Behavior and purpose: Removes a Xenon secondary after changing to Phantom while preserving a shield shared by Bishop and Fire/Poison.
 
-35. weapon picker filters by class and supplies calculator settings
+45. weapon picker filters by class and supplies calculator settings
    Behavior and purpose: Filters Bishop weapons to staves/wands and verifies Arcane Umbra Staff supplies weapon type, level 200, and base offense 353.
 
-36. real armor and accessories are filtered by slot and class
+46. real armor and accessories are filtered by slot and class
    Behavior and purpose: Filters armor and accessories by slot/job, verifies representative slot availability, pendant equivalence, catalog names and boss flags, and medal flame configuration.
 
-37. all supported classes have families and matching catalog weapons
+47. all supported classes have families and matching catalog weapons
    Behavior and purpose: Requires every supported weapon job to have a class family and at least one eligible catalog weapon.
 
-38. weapon IDs disambiguate inaccurate source categories
+48. weapon IDs disambiguate inaccurate source categories
    Behavior and purpose: Uses weapon ID families to recognize Khali chakrams and exclude miscategorized weapons from Hero and Dark Knight choices.
 
-39. class changes clear incompatible armor and preserve shared equipment
+49. class changes clear incompatible armor and preserve shared equipment
    Behavior and purpose: On a Hero-to-Bishop change, removes Warrior armor and preserves a shared pendant; Xenon can choose both Thief and Pirate hats.
 
-40. equipping an overall and bottom are mutually exclusive without changing other slots
+50. equipping an overall and bottom are mutually exclusive without changing other slots
    Behavior and purpose: Equipping an overall removes the bottom; equipping a bottom removes the overall. Other slots and the original equipment object remain intact.
 
-41. equipment slots map to their potential tables
+51. equipment slots map to their potential tables
    Behavior and purpose: Checks slot-to-potential mapping for weapons, rings, overalls, secondaries, and the unsupported medal slot.
 
 -----------------------------------------------------------------------
@@ -160,16 +222,16 @@ Tests: 16
 FILE: frontend/src/data/flameUpgrade.test.js
 Tests: 4
 
-42. flame counts reach each confidence with the minimum number of independent rolls
+52. flame counts reach each confidence with the minimum number of independent rolls
    Behavior and purpose: For normal and tiny success probabilities, verifies the returned roll count reaches each confidence and one fewer roll does not. A 50% roll chance needs two rolls for 75% confidence.
 
-43. guaranteed and unavailable improvements are handled explicitly
+53. guaranteed and unavailable improvements are handled explicitly
    Behavior and purpose: Guaranteed improvement requires one roll. Zero, negative, missing, NaN, and above-one probabilities return no estimate.
 
-44. small nonzero probabilities stay visible
+54. small nonzero probabilities stay visible
    Behavior and purpose: Formats representative chances correctly and prevents a tiny nonzero chance from displaying as 0%.
 
-45. confidence costs use the rounded whole-flame count
+55. confidence costs use the rounded whole-flame count
    Behavior and purpose: Calculates mesos from the rounded whole-flame count: 10% chance at 50% confidence costs seven times 3M. Impossible chances and unknown costs return null.
 
 -----------------------------------------------------------------------
@@ -177,13 +239,13 @@ Tests: 4
 FILE: frontend/src/data/flameWeapons.test.js
 Tests: 3
 
-46. every class offered by the form has weapon data for all five series
+56. every class offered by the form has weapon data for all five series
    Behavior and purpose: Checks class-stat and weapon job lists match, all five supported series exist, and every supported job/weapon/series has positive integer base offense and boss status.
 
-47. weapon series supply the correct clean offense and item level
+57. weapon series supply the correct clean offense and item level
    Behavior and purpose: Checks fixed level and base-offense fixtures across Fafnir, AbsoLab, Arcane, Genesis, and Destiny, including Hero, NightLord, Bishop, Cannoneer, Aran, and Kanna.
 
-48. alternative weapons use their own base offense
+58. alternative weapons use their own base offense
    Behavior and purpose: Distinguishes alternative weapons (Arcane Hero sword 283, Bishop wand 347 versus staff 353) and rejects incompatible weapon kinds or unknown series.
 
 -----------------------------------------------------------------------
@@ -191,13 +253,13 @@ Tests: 3
 FILE: frontend/src/data/potentialTargets.test.js
 Tests: 3
 
-49. All Stat expands into four stat totals supported by the API
+59. All Stat expands into four stat totals supported by the API
    Behavior and purpose: Expands an All Stat 7% input to four API targets: STR, DEX, INT, and LUK at 7.
 
-50. All Stat adds to main and secondary stat targets without affecting other effects
+60. All Stat adds to main and secondary stat targets without affecting other effects
    Behavior and purpose: Adds All Stat to existing primary/secondary stat targets, leaves cooldown and HP unchanged, and produces equivalent totals regardless of row order.
 
-51. ordinary targets retain their values without All Stat
+61. ordinary targets retain their values without All Stat
    Behavior and purpose: Converts an ordinary ATT target string to a number without changing its fractional value.
 
 -----------------------------------------------------------------------
@@ -205,16 +267,16 @@ Tests: 3
 FILE: frontend/src/data/routes.test.js
 Tests: 4
 
-52. root and calculator/equipment URLs resolve to their pages
+62. root and calculator/equipment URLs resolve to their pages
    Behavior and purpose: Resolves every defined URL and trailing-slash variant to its page; unknown paths and unknown nested calculator paths return null.
 
-53. only ordinary left clicks are handled by client navigation
+63. only ordinary left clicks are handled by client navigation
    Behavior and purpose: Only unmodified, unhandled left clicks qualify for client navigation. Modifier keys, middle/right clicks, and already-prevented events do not.
 
-54. navigation preserves browser handling for new tabs and downloads
+64. navigation preserves browser handling for new tabs and downloads
    Behavior and purpose: Leaves downloads, _blank links, and named-window targets to the browser; _self remains eligible for client navigation.
 
-55. navigation changes the URL and scrolls once, without duplicate history entries
+65. navigation changes the URL and scrolls once, without duplicate history entries
    Behavior and purpose: Using a browser stub, verifies one history push and scroll for a new route, no duplicate entry for the same trailing-slash route, no interception of invalid keys or Ctrl-clicks, and support for navigation without a click event.
 
 -----------------------------------------------------------------------
@@ -222,37 +284,19 @@ Tests: 4
 FILE: frontend/src/data/starforce.test.js
 Tests: 5
 
-56. medals, badges and unsupported secondaries or shields have no Star Force controls
-   Behavior and purpose: Disables Star Force for medals, badges, and unsupported secondaries/shields while enabling representative Astra shields and hats.
+66. medals,emblems, badges and unsupported secondaries or shields have no Star Force controls
+   Behavior and purpose: Disables Star Force for medals, emblems, badges, and
+   unsupported secondaries/shields while enabling representative Astra shields and
+   hats.
 
-57. all Deimos shields support Star Force up to their level-130 cap
+67. all Deimos shields support Star Force up to their level-130 cap
    Behavior and purpose: Allows all three Deimos shields in secondary/shield slots with their level-130 maximum of 20 stars.
 
-58. all Kanna secondary talismans support Star Force with their level caps
+68. all Kanna secondary talismans support Star Force with their level caps
    Behavior and purpose: Checks all eight bundled Kanna talismans support Star Force, capped at 8 for level 100 and 30 for the higher-level items.
 
-59. maximum Star Force follows equipment-level thresholds
+69. maximum Star Force follows equipment-level thresholds
    Behavior and purpose: Checks both sides of level boundaries producing caps of 5, 8, 10, 15, 20, and 30 stars.
 
-60. known item exceptions override the general level cap
+70. known item exceptions override the general level cap
    Behavior and purpose: Checks item-specific caps: Tyrant and Sweetwater Cape 15, selected badges 22, and Superior Gollux/Sweetwater Earring 30. Cap lookup is separate from slot eligibility.
-
------------------------------------------------------------------------
-
-FILE: frontend/src/data/equipmentStorage.test.js
-Tests: 3
-
-61. full equipment sets larger than a cookie survive storage and restoration
-   Behavior and purpose: Saves a real catalog equipment set exceeding 4 KB,
-   reloads all classes/settings and equipment, and verifies restored equipment
-   matches the serialized save using a local-storage test double.
-
-62. legacy cookies migrate after successful writes and local storage takes precedence
-   Behavior and purpose: Recovers an old cookie, writes it to local storage,
-   retires the cookie only after success, and prefers local storage over stale
-   cookie data on subsequent reads.
-
-63. malformed or blocked storage recovers cookies and failed writes preserve them
-   Behavior and purpose: Falls back from malformed local data or blocked storage
-   to the cookie. Failed writes preserve the cookie and report failure; malformed
-   cookies restore an empty selection. Quota failures are also reported.

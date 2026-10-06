@@ -105,6 +105,11 @@ Run Python commands from the repository root using module paths (`python -m ...`
 ```text
 maplestory_app/
   README.md
+  BACKEND_TESTS.txt                    Backend test cases and run commands
+  FRONTEND_TESTS.txt                   Frontend test cases and run commands
+  examples/equipment/
+    README.md                         Sample import instructions and test coverage
+    *.json                            47 importable class equipment test builds
   backend/
     api/main.py                       FastAPI endpoints and request models
     calc/
@@ -121,6 +126,7 @@ maplestory_app/
       fetch_equipment_data.py         Refresh the frontend GMS equipment catalog
       verify_accessories.py           Compare Nexon accessory probability tables
     tests/                            Python unittest suites
+      test_equipment_samples.py       Frontend-to-API samples and table equivalence
     requirements.txt                  FastAPI, Pydantic, and Uvicorn
     requirements-dev.txt              Runtime dependencies plus HTTP test client
   frontend/
@@ -129,6 +135,8 @@ maplestory_app/
     package-lock.json                 Locked dependency versions
     vite.config.js                    React plugin and development API proxy
     README.md                         Frontend-specific instructions
+    scripts/
+      equipment-samples.mjs            Generate sample saves and API test requests
     src/
       main.jsx                        React entry point
       App.jsx                         Calculator tabs and potential state
@@ -136,6 +144,7 @@ maplestory_app/
       App.css                         Application styles
       index.css                       Shared styles
       components/                     Calculator, equipment, and upgrade views
+      hooks/                          Shared planner, flame, and route state
       data/
         equipment_140_250.json        Bundled GMS equipment catalog
         equipment_140_250.meta.json   Catalog source and filtering metadata
@@ -143,7 +152,10 @@ maplestory_app/
         flameWeapons.js              Weapon flame configurations
         starforce.js                 Equipment star caps and mode helpers
         equipmentSave.js             Equipment import/export and restoration
+        equipmentStorage.js          Browser storage and legacy-cookie migration
+        equipmentLines.js            Shared roll labels and saved-line validation
         equipmentUpgrade.js          Upgrade-planner request construction
+        equipmentSamples.test.js     Class samples, transitions, and invalid saves
         *.test.js                    Node data-helper tests
 ```
 
@@ -153,6 +165,14 @@ Python package directories also contain `__init__.py`. The local `.venv/`,
 Run the examples with `python -m backend.examples.potential` or
 `python -m backend.examples.flames`. The accessory verification tool runs with
 `python -m backend.scripts.verify_accessories` and requires internet access.
+
+Importable test builds for all 47 supported classes are in
+[`examples/equipment/`](examples/equipment/README.md). Regenerate them with
+`node frontend/scripts/equipment-samples.mjs`. The backend sample integration
+test uses Node to import these files and build real frontend requests before
+checking the API; it is skipped when Node is unavailable. See
+[`BACKEND_TESTS.txt`](BACKEND_TESTS.txt) and
+[`FRONTEND_TESTS.txt`](FRONTEND_TESTS.txt) for the complete test inventories.
 
 ## Potential calculator
 

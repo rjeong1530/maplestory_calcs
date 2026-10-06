@@ -1,5 +1,6 @@
 import { equipInSlot, equipmentChoices, EQUIPMENT_SLOTS, CLASS_FAMILIES, FIXED_RING_SLOT, withFixedRing } from './flameEquipment.js'
 import { maxStarForceForEquipment, replacementCostForEquipment } from './starforce.js'
+import { isObject, LINE_FIELDS, restoreEquipmentLines } from './equipmentLines.js'
 
 export function serializeEquipment(equipment) {
   return Object.fromEntries(Object.entries(equipment).filter(([slot]) => slot !== FIXED_RING_SLOT).map(([slot, item]) => [slot, {
@@ -24,10 +25,6 @@ export function exportEquipment(equipment, equipmentClass) {
     equipment_class: equipmentClass, equipment: serializeEquipment(equipment),
   }, null, 2)
 }
-
-const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value)
-const isNumeric = value => (typeof value === 'number' || typeof value === 'string')
-  && String(value).trim() !== '' && Number.isFinite(Number(value)) && Number(value) >= 0
 
 export function importEquipment(text) {
   let saved
@@ -69,18 +66,10 @@ export function importEquipment(text) {
     }
     if (item.current_flame_type !== undefined
       && !['powerful', 'black', 'abyssal'].includes(item.current_flame_type)) invalid()
-    for (const [key, label, value, limit] of [
-      ['current_potential', 'effect', 'value', 3], ['current_flames', 'option', 'stage', 4],
-    ]) {
+    for (const [key, { limit }] of Object.entries(LINE_FIELDS)) {
       if (item[key] === undefined) continue
       if (!Array.isArray(item[key]) || item[key].length > limit) invalid()
-      for (const line of item[key]) {
-        if (!isObject(line) || typeof line[label] !== 'string'
-          || !(line[value] === '' || isNumeric(line[value]))) invalid()
-        if (key === 'current_flames' && line[value] !== ''
-          && (!Number.isInteger(Number(line[value])) || Number(line[value]) < 1
-            || Number(line[value]) > 7)) invalid()
-      }
+      if (restoreEquipmentLines(item[key], key).length !== item[key].length) invalid()
     }
   }
   const equipment = restoreEquipment(saved.equipment, saved.equipment_class)
@@ -95,8 +84,9 @@ export function importEquipment(text) {
 }
 
 export function restoreEquipment(savedEquipment, mapleClass) {
-  return withFixedRing(Object.entries(savedEquipment || {}).reduce((equipment, [slot, savedItem]) => {
+  return withFixedRing(Object.entries(isObject(savedEquipment) ? savedEquipment : {}).reduce((equipment, [slot, savedItem]) => {
     if (slot === FIXED_RING_SLOT) return equipment
+    if (!EQUIPMENT_SLOTS.includes(slot) || slot === 'android') return equipment
     if (!savedItem || typeof savedItem.id !== 'number') return equipment
     const item = equipmentChoices(slot, mapleClass).find(choice => choice.id === savedItem.id)
     if (!item) return equipment
@@ -125,14 +115,15 @@ export function restoreEquipment(savedEquipment, mapleClass) {
           && Number.isInteger(mode) && mode >= 1 && mode <= (Number(star) <= 17 ? 3 : 4)),
       ) } : {}),
       ...(Array.isArray(savedItem.current_potential)
-        ? { currentPotential: savedItem.current_potential.slice(0, 3) } : {}),
+        ? { currentPotential: restoreEquipmentLines(savedItem.current_potential, 'current_potential') } : {}),
       ...(Array.isArray(savedItem.current_flames)
-        ? { currentFlames: savedItem.current_flames.slice(0, 4) } : {}),
+        ? { currentFlames: restoreEquipmentLines(savedItem.current_flames, 'current_flames') } : {}),
       ...(typeof savedItem.current_flame_type === 'string'
         && ['powerful', 'black', 'abyssal'].includes(savedItem.current_flame_type)
         ? { currentFlameType: savedItem.current_flame_type } : {}),
       ...(typeof savedItem.current_boss_equipment === 'boolean'
-        ? { currentBossEquipment: savedItem.current_boss_equipment } : {}),
+        ? { currentBossEquipment: item.needsFlameType
+          ? savedItem.current_boss_equipment : item.config.boss_equipment } : {}),
     })
   }, {}))
 }
