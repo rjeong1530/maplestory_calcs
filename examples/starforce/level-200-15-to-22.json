@@ -1,0 +1,3773 @@
+{
+  "assumptions": {
+    "item_level": 200,
+    "start_star": 15,
+    "target_star": 22,
+    "shining_starforce_sunday": true,
+    "mvp_rank": "none",
+    "spare_value_mesos": 1000000000,
+    "policies_evaluated": 16384,
+    "scope": "Standard equipment; stationary per-star policies; unlimited retries and replacement availability.",
+    "notes": [
+      "Expected spares equal expected booms and exclude the original item; fractional averages are not guarantees.",
+      "Policy keys are starting stars: 17 means the attempt from 17 to 18, including recovery attempts.",
+      "Safeguard uses Mode 1 at 15-17; Mode 4 is available only at 18-21.",
+      "Outside 15-21 all presets use standard rates. Above target 22, no preset guarantees zero booms.",
+      "Policies may tie or become identical for shorter ranges. Item-specific star caps are not inferred from level.",
+      "Total cost adds the assigned spare value per expected boom; it is not a budget percentile.",
+      "Presets are comparison benchmarks; on_efficient_frontier marks policies not beaten on both cost and spare usage."
+    ]
+  },
+  "scenarios": [
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 15598735023.138174,
+      "expected_attempts": 111.23445340980234,
+      "expected_spares": 3.816173526441977,
+      "name": "Mode 1 throughout",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3816173526.441977,
+      "total_cost_mesos": 19414908549.58015
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 2,
+        "19": 2,
+        "20": 2,
+        "21": 2
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 29543396212.13639,
+      "expected_attempts": 100.85166256368254,
+      "expected_spares": 2.701674836857693,
+      "name": "Mode 2 throughout",
+      "on_efficient_frontier": false,
+      "expected_replacement_cost_mesos": 2701674836.857693,
+      "total_cost_mesos": 32245071048.994083
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 3,
+        "19": 3,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 47234663662.81363,
+      "expected_attempts": 78.50925760576314,
+      "expected_spares": 1.247707260996151,
+      "name": "Mode 3 throughout",
+      "on_efficient_frontier": false,
+      "expected_replacement_cost_mesos": 1247707260.996151,
+      "total_cost_mesos": 48482370923.809784
+    },
+    {
+      "mode_by_star": {
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 22868789436.79409,
+      "expected_attempts": 92.65031588869638,
+      "expected_spares": 2.426309720400558,
+      "name": "Safeguard early, Mode 1 late",
+      "on_efficient_frontier": false,
+      "expected_replacement_cost_mesos": 2426309720.400558,
+      "total_cost_mesos": 25295099157.19465
+    },
+    {
+      "mode_by_star": {
+        "18": 3,
+        "19": 3,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 49381845709.44678,
+      "expected_attempts": 75.70635642485807,
+      "expected_spares": 1.0371294106938291,
+      "name": "Safeguard early, Mode 3 late",
+      "on_efficient_frontier": false,
+      "expected_replacement_cost_mesos": 1037129410.6938292,
+      "total_cost_mesos": 50418975120.14061
+    },
+    {
+      "mode_by_star": {
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 71382790218.25409,
+      "expected_attempts": 54.761904761904844,
+      "expected_spares": 0.0,
+      "name": "Safeguard early, Mode 4 late",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 0.0,
+      "total_cost_mesos": 71382790218.25409
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 2,
+        "19": 2,
+        "20": 2,
+        "21": 2
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 32563082549.448727,
+      "expected_attempts": 93.17549189927372,
+      "expected_spares": 2.1914028696787065,
+      "name": "Mode 1 at 15-16, safeguard at 17, Mode 2 late",
+      "on_efficient_frontier": false,
+      "expected_replacement_cost_mesos": 2191402869.6787066,
+      "total_cost_mesos": 34754485419.12743
+    }
+  ],
+  "recommendations": [
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 15598735023.138174,
+      "expected_attempts": 111.23445340980234,
+      "expected_spares": 3.816173526441977,
+      "name": "Lowest enhancement mesos",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3816173526.441977,
+      "total_cost_mesos": 19414908549.58015
+    },
+    {
+      "mode_by_star": {
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 71382790218.25409,
+      "expected_attempts": 54.761904761904844,
+      "expected_spares": 0.0,
+      "name": "Fewest expected spares",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 0.0,
+      "total_cost_mesos": 71382790218.25409
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 15598735023.138174,
+      "expected_attempts": 111.23445340980234,
+      "expected_spares": 3.816173526441977,
+      "name": "Lowest mesos plus spare value",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3816173526.441977,
+      "total_cost_mesos": 19414908549.58015
+    }
+  ],
+  "efficient_frontier": [
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 15598735023.138174,
+      "expected_attempts": 111.23445340980234,
+      "expected_spares": 3.816173526441977,
+      "name": "Tradeoff 1",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3816173526.441977,
+      "total_cost_mesos": 19414908549.58015
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 15882882888.554064,
+      "expected_attempts": 110.721841966487,
+      "expected_spares": 3.7542388287701858,
+      "name": "Tradeoff 2",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3754238828.770186,
+      "total_cost_mesos": 19637121717.32425
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 15956881182.671305,
+      "expected_attempts": 109.54460527985692,
+      "expected_spares": 3.690658965981665,
+      "name": "Tradeoff 3",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3690658965.9816647,
+      "total_cost_mesos": 19647540148.65297
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 16198207289.142582,
+      "expected_attempts": 105.2517351575303,
+      "expected_spares": 3.395328893994979,
+      "name": "Tradeoff 4",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3395328893.994979,
+      "total_cost_mesos": 19593536183.13756
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 16454247994.804626,
+      "expected_attempts": 104.78982989040897,
+      "expected_spares": 3.3395206137756626,
+      "name": "Tradeoff 5",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3339520613.7756624,
+      "total_cost_mesos": 19793768608.580288
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 16540898939.782791,
+      "expected_attempts": 103.71612264060141,
+      "expected_spares": 3.2806637881025003,
+      "name": "Tradeoff 6",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3280663788.1025004,
+      "total_cost_mesos": 19821562727.885292
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 16789281449.994473,
+      "expected_attempts": 103.26803299239118,
+      "expected_spares": 3.2265247374557333,
+      "name": "Tradeoff 7",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3226524737.4557333,
+      "total_cost_mesos": 20015806187.450207
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 17061466511.469517,
+      "expected_attempts": 102.66210233507726,
+      "expected_spares": 3.1731738124001456,
+      "name": "Tradeoff 8",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3173173812.4001455,
+      "total_cost_mesos": 20234640323.869663
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 17232103747.342514,
+      "expected_attempts": 100.01612267895204,
+      "expected_spares": 3.045298570744255,
+      "name": "Tradeoff 9",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 3045298570.7442546,
+      "total_cost_mesos": 20277402318.08677
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 17464766803.73505,
+      "expected_attempts": 99.59639140640152,
+      "expected_spares": 2.9945858334306177,
+      "name": "Tradeoff 10",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2994585833.430618,
+      "total_cost_mesos": 20459352637.16567
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 17719726012.631046,
+      "expected_attempts": 99.02880845310722,
+      "expected_spares": 2.94461134338209,
+      "name": "Tradeoff 11",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2944611343.38209,
+      "total_cost_mesos": 20664337356.013138
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 17961419271.122334,
+      "expected_attempts": 99.17666013385102,
+      "expected_spares": 2.943873096116982,
+      "name": "Tradeoff 12",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2943873096.116982,
+      "total_cost_mesos": 20905292367.239315
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18020678924.445282,
+      "expected_attempts": 98.85781781433093,
+      "expected_spares": 2.924802398781141,
+      "name": "Tradeoff 13",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2924802398.7811413,
+      "total_cost_mesos": 20945481323.226425
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18094329534.33538,
+      "expected_attempts": 97.88764000134596,
+      "expected_spares": 2.870668610223337,
+      "name": "Tradeoff 14",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2870668610.223337,
+      "total_cost_mesos": 20964998144.558716
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 2
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18267991162.85736,
+      "expected_attempts": 97.39256075918607,
+      "expected_spares": 2.8526953933567025,
+      "name": "Tradeoff 15",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2852695393.3567023,
+      "total_cost_mesos": 21120686556.21406
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18315329492.710884,
+      "expected_attempts": 97.48894931447528,
+      "expected_spares": 2.82249803682335,
+      "name": "Tradeoff 16",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2822498036.82335,
+      "total_cost_mesos": 21137827529.534233
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 2
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18492874005.687828,
+      "expected_attempts": 96.9868652299536,
+      "expected_spares": 2.8036784814686175,
+      "name": "Tradeoff 17",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2803678481.4686174,
+      "total_cost_mesos": 21296552487.156445
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18557507926.309746,
+      "expected_attempts": 96.94981856033849,
+      "expected_spares": 2.7750287033081564,
+      "name": "Tradeoff 18",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2775028703.3081565,
+      "total_cost_mesos": 21332536629.6179
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18701155799.85116,
+      "expected_attempts": 94.50422892957259,
+      "expected_spares": 2.6575733259253806,
+      "name": "Tradeoff 19",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2657573325.9253807,
+      "total_cost_mesos": 21358729125.77654
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 18907923657.501686,
+      "expected_attempts": 94.13121338787101,
+      "expected_spares": 2.6125048728047293,
+      "name": "Tradeoff 20",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2612504872.8047295,
+      "total_cost_mesos": 21520428530.306416
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19115397362.262188,
+      "expected_attempts": 91.69784672857277,
+      "expected_spares": 2.5745968600007823,
+      "name": "Tradeoff 21",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2574596860.000782,
+      "total_cost_mesos": 21689994222.26297
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19134506124.99388,
+      "expected_attempts": 93.62680193075676,
+      "expected_spares": 2.5680925006613924,
+      "name": "Tradeoff 22",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2568092500.661392,
+      "total_cost_mesos": 21702598625.655273
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19334210803.708054,
+      "expected_attempts": 91.30310058514429,
+      "expected_spares": 2.5269028739043584,
+      "name": "Tradeoff 23",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2526902873.9043584,
+      "total_cost_mesos": 21861113677.61241
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19569456304.691196,
+      "expected_attempts": 93.25921653773369,
+      "expected_spares": 2.523680128518059,
+      "name": "Tradeoff 24",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2523680128.518059,
+      "total_cost_mesos": 22093136433.209255
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19573993185.973015,
+      "expected_attempts": 90.7693038524701,
+      "expected_spares": 2.4799031898050856,
+      "name": "Tradeoff 25",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2479903189.8050857,
+      "total_cost_mesos": 22053896375.7781
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19690048957.87481,
+      "expected_attempts": 88.62175284370099,
+      "expected_spares": 2.3789196942354964,
+      "name": "Tradeoff 26",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2378919694.2354965,
+      "total_cost_mesos": 22068968652.110306
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 19895793611.140186,
+      "expected_attempts": 88.25058319401735,
+      "expected_spares": 2.334074265328515,
+      "name": "Tradeoff 27",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2334074265.328515,
+      "total_cost_mesos": 22229867876.4687
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20121254820.343166,
+      "expected_attempts": 87.74866785027729,
+      "expected_spares": 2.289881670738847,
+      "name": "Tradeoff 28",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2289881670.738847,
+      "total_cost_mesos": 22411136491.082012
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20334984908.97818,
+      "expected_attempts": 87.87941354433372,
+      "expected_spares": 2.289228836421534,
+      "name": "Tradeoff 29",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2289228836.421534,
+      "total_cost_mesos": 22624213745.399715
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20357966014.59085,
+      "expected_attempts": 87.6365502930323,
+      "expected_spares": 2.2760579413243076,
+      "name": "Tradeoff 30",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2276057941.3243074,
+      "total_cost_mesos": 22634023955.915157
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20406883416.8582,
+      "expected_attempts": 86.85218186626754,
+      "expected_spares": 2.233736407953965,
+      "name": "Tradeoff 31",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2233736407.953965,
+      "total_cost_mesos": 22640619824.812164
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20579118413.899796,
+      "expected_attempts": 87.14422709956379,
+      "expected_spares": 2.232709915472136,
+      "name": "Tradeoff 32",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2232709915.472136,
+      "total_cost_mesos": 22811828329.371933
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20602931641.782845,
+      "expected_attempts": 86.4985048699933,
+      "expected_spares": 2.1910044749794637,
+      "name": "Tradeoff 33",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2191004474.9794636,
+      "total_cost_mesos": 22793936116.762306
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 2,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20817767211.758007,
+      "expected_attempts": 86.02024402267128,
+      "expected_spares": 2.1488946092472845,
+      "name": "Tradeoff 34",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2148894609.2472844,
+      "total_cost_mesos": 22966661821.00529
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 20911384655.744854,
+      "expected_attempts": 84.03929261876334,
+      "expected_spares": 2.0565739464084922,
+      "name": "Tradeoff 35",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2056573946.4084923,
+      "total_cost_mesos": 22967958602.153347
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 21095600643.24713,
+      "expected_attempts": 83.70696134083137,
+      "expected_spares": 2.016421044061101,
+      "name": "Tradeoff 36",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 2016421044.0611007,
+      "total_cost_mesos": 23112021687.30823
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 21297470089.85293,
+      "expected_attempts": 83.25756530928369,
+      "expected_spares": 1.9768526648910103,
+      "name": "Tradeoff 37",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1976852664.8910103,
+      "total_cost_mesos": 23274322754.74394
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 21488835934.417854,
+      "expected_attempts": 83.37463006289946,
+      "expected_spares": 1.9762681417137096,
+      "name": "Tradeoff 38",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1976268141.7137096,
+      "total_cost_mesos": 23465104076.131565
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 21684980884.701225,
+      "expected_attempts": 82.93007192159475,
+      "expected_spares": 1.937284285720922,
+      "name": "Tradeoff 39",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1937284285.720922,
+      "total_cost_mesos": 23622265170.422146
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22031370728.2089,
+      "expected_attempts": 83.04229878496753,
+      "expected_spares": 1.9361152393663188,
+      "name": "Tradeoff 40",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1936115239.3663187,
+      "total_cost_mesos": 23967485967.57522
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22077464236.893524,
+      "expected_attempts": 81.18606899683259,
+      "expected_spares": 1.904966285963646,
+      "name": "Tradeoff 41",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1904966285.963646,
+      "total_cost_mesos": 23982430522.85717
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22116565878.54428,
+      "expected_attempts": 82.4855137802901,
+      "expected_spares": 1.8983004297281356,
+      "name": "Tradeoff 42",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1898300429.7281356,
+      "total_cost_mesos": 24014866308.272415
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22219617764.694656,
+      "expected_attempts": 82.60257853390581,
+      "expected_spares": 1.8977159065508333,
+      "name": "Tradeoff 43",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1897715906.5508332,
+      "total_cost_mesos": 24117333671.24549
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22454574976.939636,
+      "expected_attempts": 80.86736491056337,
+      "expected_spares": 1.8664598470472828,
+      "name": "Tradeoff 44",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1866459847.047283,
+      "total_cost_mesos": 24321034823.98692
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22643304844.740097,
+      "expected_attempts": 82.16285828284414,
+      "expected_spares": 1.8593165737353494,
+      "name": "Tradeoff 45",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1859316573.7353494,
+      "total_cost_mesos": 24502621418.475445
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 22778129204.398098,
+      "expected_attempts": 80.98431913547154,
+      "expected_spares": 1.8416767811904893,
+      "name": "Tradeoff 46",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1841676781.1904893,
+      "total_cost_mesos": 24619805985.58859
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22780976860.9312,
+      "expected_attempts": 77.89751411455958,
+      "expected_spares": 1.6977063960984313,
+      "name": "Tradeoff 47",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1697706396.0984313,
+      "total_cost_mesos": 24478683257.02963
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 22941224982.885597,
+      "expected_attempts": 77.60842159942355,
+      "expected_spares": 1.6627776839956983,
+      "name": "Tradeoff 48",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1662777683.9956982,
+      "total_cost_mesos": 24604002666.881294
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 23116829718.050896,
+      "expected_attempts": 77.21749532290599,
+      "expected_spares": 1.6283574442718902,
+      "name": "Tradeoff 49",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1628357444.2718902,
+      "total_cost_mesos": 24745187162.322784
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 23283297447.662952,
+      "expected_attempts": 77.31932908428756,
+      "expected_spares": 1.6278489718929652,
+      "name": "Tradeoff 50",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1627848971.892965,
+      "total_cost_mesos": 24911146419.555916
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 23453922485.912468,
+      "expected_attempts": 76.93261125262958,
+      "expected_spares": 1.593937204548084,
+      "name": "Tradeoff 51",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1593937204.548084,
+      "total_cost_mesos": 25047859690.460552
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 23755244443.028137,
+      "expected_attempts": 77.03023656915155,
+      "expected_spares": 1.5929202597902326,
+      "name": "Tradeoff 52",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1592920259.7902327,
+      "total_cost_mesos": 25348164702.81837
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 23829355072.762154,
+      "expected_attempts": 76.54589342097165,
+      "expected_spares": 1.5600254372032032,
+      "name": "Tradeoff 53",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1560025437.2032032,
+      "total_cost_mesos": 25389380509.965355
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 23918999144.611515,
+      "expected_attempts": 76.64772718235318,
+      "expected_spares": 1.5595169648242773,
+      "name": "Tradeoff 54",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1559516964.8242772,
+      "total_cost_mesos": 25478516109.43579
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 24287561394.795063,
+      "expected_attempts": 76.26521779555485,
+      "expected_spares": 1.5261136698583229,
+      "name": "Tradeoff 55",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1526113669.8583229,
+      "total_cost_mesos": 25813675064.653385
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 24430530217.62037,
+      "expected_attempts": 75.19797937232825,
+      "expected_spares": 1.5078119938439372,
+      "name": "Tradeoff 56",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1507811993.8439372,
+      "total_cost_mesos": 25938342211.464306
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 24578095767.696632,
+      "expected_attempts": 74.93176660491044,
+      "expected_spares": 1.4756476567394887,
+      "name": "Tradeoff 57",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1475647656.7394888,
+      "total_cost_mesos": 26053743424.436123
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 24739802557.296593,
+      "expected_attempts": 74.57177954028822,
+      "expected_spares": 1.4439515498107192,
+      "name": "Tradeoff 58",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1443951549.8107193,
+      "total_cost_mesos": 26183754107.10731
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 24893095474.496223,
+      "expected_attempts": 74.66555383749268,
+      "expected_spares": 1.4434833196350416,
+      "name": "Tradeoff 59",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1443483319.6350417,
+      "total_cost_mesos": 26336578794.131264
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 25050216677.035133,
+      "expected_attempts": 74.30944214734036,
+      "expected_spares": 1.4122554428819505,
+      "name": "Tradeoff 60",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1412255442.8819504,
+      "total_cost_mesos": 26462472119.917084
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 25327691007.52675,
+      "expected_attempts": 74.39934107007491,
+      "expected_spares": 1.4113189825305943,
+      "name": "Tradeoff 61",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1411318982.5305943,
+      "total_cost_mesos": 26739009990.057343
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 25395936274.36558,
+      "expected_attempts": 73.95333045718809,
+      "expected_spares": 1.3810275661288598,
+      "name": "Tradeoff 62",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1381027566.1288598,
+      "total_cost_mesos": 26776963840.494442
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 25478485614.80211,
+      "expected_attempts": 74.04710475439249,
+      "expected_spares": 1.3805593359531816,
+      "name": "Tradeoff 63",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1380559335.9531815,
+      "total_cost_mesos": 26859044950.75529
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 3
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 25817878616.869022,
+      "expected_attempts": 73.69486843871012,
+      "expected_spares": 1.3497996893757696,
+      "name": "Tradeoff 64",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1349799689.3757696,
+      "total_cost_mesos": 27167678306.244793
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 26117440144.67888,
+      "expected_attempts": 70.68161571751756,
+      "expected_spares": 1.3411108836490175,
+      "name": "Tradeoff 65",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1341110883.6490176,
+      "total_cost_mesos": 27458551028.327896
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 26291311928.381725,
+      "expected_attempts": 70.29454728835226,
+      "expected_spares": 1.3070303193030472,
+      "name": "Tradeoff 66",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1307030319.3030472,
+      "total_cost_mesos": 27598342247.684772
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 26456136874.869453,
+      "expected_attempts": 70.39537610550184,
+      "expected_spares": 1.3065268647725976,
+      "name": "Tradeoff 67",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1306526864.7725976,
+      "total_cost_mesos": 27762663739.64205
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 26625078103.68588,
+      "expected_attempts": 70.0124745902507,
+      "expected_spares": 1.2729497549570785,
+      "name": "Tradeoff 68",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1272949754.9570785,
+      "total_cost_mesos": 27898027858.642956
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 26892077638.5542,
+      "expected_attempts": 68.69904306823588,
+      "expected_spares": 1.2516621198724718,
+      "name": "Tradeoff 69",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1251662119.8724718,
+      "total_cost_mesos": 28143739758.42667
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 26996805742.318645,
+      "expected_attempts": 69.6295730749996,
+      "expected_spares": 1.2393726451415596,
+      "name": "Tradeoff 70",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1239372645.1415596,
+      "total_cost_mesos": 28236178387.460205
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27085565163.618782,
+      "expected_attempts": 69.73040189214915,
+      "expected_spares": 1.2388691906111093,
+      "name": "Tradeoff 71",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1238869190.6111093,
+      "total_cost_mesos": 28324434354.229893
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27217833502.07233,
+      "expected_attempts": 68.42374005030356,
+      "expected_spares": 1.2183994812674979,
+      "name": "Tradeoff 72",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1218399481.2674978,
+      "total_cost_mesos": 28436232983.33983
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 3,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 27396574107.109726,
+      "expected_attempts": 68.61485906512371,
+      "expected_spares": 1.2101771886219694,
+      "name": "Tradeoff 73",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1210177188.6219695,
+      "total_cost_mesos": 28606751295.731697
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27398767424.080025,
+      "expected_attempts": 66.23734557019796,
+      "expected_spares": 1.0992885736601792,
+      "name": "Tradeoff 74",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1099288573.6601791,
+      "total_cost_mesos": 28498055997.740204
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27538973654.028137,
+      "expected_attempts": 65.98440924146534,
+      "expected_spares": 1.068728321339337,
+      "name": "Tradeoff 75",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1068728321.339337,
+      "total_cost_mesos": 28607701975.367474
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27692615878.213276,
+      "expected_attempts": 65.64237528344005,
+      "expected_spares": 1.0386129478377435,
+      "name": "Tradeoff 76",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1038612947.8377435,
+      "total_cost_mesos": 28731228826.051018
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27838263842.70906,
+      "expected_attempts": 65.73147291273276,
+      "expected_spares": 1.0381680690184947,
+      "name": "Tradeoff 77",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1038168069.0184947,
+      "total_cost_mesos": 28876431911.727554
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 27987549170.087345,
+      "expected_attempts": 65.39312105831348,
+      "expected_spares": 1.008497574336151,
+      "name": "Tradeoff 78",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1008497574.336151,
+      "total_cost_mesos": 28996046744.423496
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 28251185430.484833,
+      "expected_attempts": 65.47853658400015,
+      "expected_spares": 1.0076078166976528,
+      "name": "Tradeoff 79",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 1007607816.6976528,
+      "total_cost_mesos": 29258793247.182487
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 28316027201.279774,
+      "expected_attempts": 65.05476920389424,
+      "expected_spares": 0.9788270796538073,
+      "name": "Tradeoff 80",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 978827079.6538073,
+      "total_cost_mesos": 29294854280.933582
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 28394459679.600952,
+      "expected_attempts": 65.14386683318692,
+      "expected_spares": 0.9783822008345582,
+      "name": "Tradeoff 81",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 978382200.8345581,
+      "total_cost_mesos": 29372841880.43551
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 28669283488.282204,
+      "expected_attempts": 64.15811470326754,
+      "expected_spares": 0.9530284435540222,
+      "name": "Tradeoff 82",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 953028443.5540222,
+      "total_cost_mesos": 29622311931.836227
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "17": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 28716926632.53121,
+      "expected_attempts": 64.80919708237371,
+      "expected_spares": 0.9491565849714639,
+      "name": "Tradeoff 83",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 949156584.9714639,
+      "total_cost_mesos": 29666083217.502674
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 28799721370.185547,
+      "expected_attempts": 63.92280077329093,
+      "expected_spares": 0.9245973632472634,
+      "name": "Tradeoff 84",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 924597363.2472634,
+      "total_cost_mesos": 29724318733.43281
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 28942659143.357582,
+      "expected_attempts": 63.60459676024279,
+      "expected_spares": 0.8965801664812577,
+      "name": "Tradeoff 85",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 896580166.4812577,
+      "total_cost_mesos": 29839239309.83884
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29078159627.176273,
+      "expected_attempts": 63.68748684331436,
+      "expected_spares": 0.8961662829405053,
+      "name": "Tradeoff 86",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 896166282.9405053,
+      "total_cost_mesos": 29974325910.11678
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29217044054.135612,
+      "expected_attempts": 63.372708396986745,
+      "expected_spares": 0.8685629697152526,
+      "name": "Tradeoff 87",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 868562969.7152526,
+      "total_cost_mesos": 30085607023.850864
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29462312437.80083,
+      "expected_attempts": 63.45217291333779,
+      "expected_spares": 0.867735202633747,
+      "name": "Tradeoff 88",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 867735202.633747,
+      "total_cost_mesos": 30330047640.434578
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29522636599.177155,
+      "expected_attempts": 63.05792995065915,
+      "expected_spares": 0.8409596564900003,
+      "name": "Tradeoff 89",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 840959656.4900002,
+      "total_cost_mesos": 30363596255.667156
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29595604586.037865,
+      "expected_attempts": 63.140820033730684,
+      "expected_spares": 0.8405457729492474,
+      "name": "Tradeoff 90",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 840545772.9492474,
+      "total_cost_mesos": 30436150358.987114
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 29895604852.35711,
+      "expected_attempts": 62.82946715412361,
+      "expected_spares": 0.813356343264748,
+      "name": "Tradeoff 91",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 813356343.2647481,
+      "total_cost_mesos": 30708961195.621857
+    },
+    {
+      "mode_by_star": {
+        "18": 1,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 30314682345.877922,
+      "expected_attempts": 62.51811427451653,
+      "expected_spares": 0.7861669135802487,
+      "name": "Tradeoff 92",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 786166913.5802487,
+      "total_cost_mesos": 31100849259.45817
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 2,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 32141989490.37719,
+      "expected_attempts": 63.9561721968638,
+      "expected_spares": 0.7861335705761334,
+      "name": "Tradeoff 93",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 786133570.5761334,
+      "total_cost_mesos": 32928123060.953323
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 2,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 32199678080.065468,
+      "expected_attempts": 63.57915376854979,
+      "expected_spares": 0.7605278520725588,
+      "name": "Tradeoff 94",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 760527852.0725588,
+      "total_cost_mesos": 32960205932.138027
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 2,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 32269458084.600105,
+      "expected_attempts": 63.65842237141874,
+      "expected_spares": 0.7601320511659819,
+      "name": "Tradeoff 95",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 760132051.1659819,
+      "total_cost_mesos": 33029590135.766087
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 2,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 32556351294.140182,
+      "expected_attempts": 63.36067254597369,
+      "expected_spares": 0.7341305317558311,
+      "name": "Tradeoff 96",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 734130531.7558311,
+      "total_cost_mesos": 33290481825.896015
+    },
+    {
+      "mode_by_star": {
+        "18": 2,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 32957119228.90679,
+      "expected_attempts": 63.06292272052865,
+      "expected_spares": 0.7081290123456802,
+      "name": "Tradeoff 97",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 708129012.3456801,
+      "total_cost_mesos": 33665248241.252472
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 35968675701.35327,
+      "expected_attempts": 63.87066639201676,
+      "expected_spares": 0.7044035568085196,
+      "name": "Tradeoff 98",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 704403556.8085196,
+      "total_cost_mesos": 36673079258.16179
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "17": 3,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 36036231172.16445,
+      "expected_attempts": 63.94740797182989,
+      "expected_spares": 0.7040203737352366,
+      "name": "Tradeoff 99",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 704020373.7352366,
+      "total_cost_mesos": 36740251545.89969
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 2,
+        "19": 2,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36121919081.333855,
+      "expected_attempts": 63.76546660365604,
+      "expected_spares": 0.6905319387585742,
+      "name": "Tradeoff 100",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 690531938.7585742,
+      "total_cost_mesos": 36812451020.09243
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36272942445.13426,
+      "expected_attempts": 63.09835983940786,
+      "expected_spares": 0.682182672739672,
+      "name": "Tradeoff 101",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 682182672.7396721,
+      "total_cost_mesos": 36955125117.87393
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "17": 3,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 36313978443.352844,
+      "expected_attempts": 63.65915018543349,
+      "expected_spares": 0.6788477630816107,
+      "name": "Tradeoff 102",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 678847763.0816107,
+      "total_cost_mesos": 36992826206.434456
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36385291215.85026,
+      "expected_attempts": 62.89567921948789,
+      "expected_spares": 0.6576944115383823,
+      "name": "Tradeoff 103",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 657694411.5383823,
+      "total_cost_mesos": 37042985627.38864
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36508406394.28177,
+      "expected_attempts": 62.62160370414527,
+      "expected_spares": 0.6335626365537089,
+      "name": "Tradeoff 104",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 633562636.5537089,
+      "total_cost_mesos": 37141969030.83548
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36625115685.83355,
+      "expected_attempts": 62.692998599567915,
+      "expected_spares": 0.6332061503370929,
+      "name": "Tradeoff 105",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 633206150.3370929,
+      "total_cost_mesos": 37258321836.17064
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36744739635.661545,
+      "expected_attempts": 62.421873593727916,
+      "expected_spares": 0.6094308615690359,
+      "name": "Tradeoff 106",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 609430861.5690359,
+      "total_cost_mesos": 37354170497.23058
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 36955994226.72204,
+      "expected_attempts": 62.49031797964795,
+      "expected_spares": 0.6087178891358035,
+      "name": "Tradeoff 107",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 608717889.1358035,
+      "total_cost_mesos": 37564712115.85784
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 37007952640.0005,
+      "expected_attempts": 62.15074858788795,
+      "expected_spares": 0.5856555728009791,
+      "name": "Tradeoff 108",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 585655572.8009791,
+      "total_cost_mesos": 37593608212.80148
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 37070801434.42893,
+      "expected_attempts": 62.222143483310546,
+      "expected_spares": 0.5852990865843628,
+      "name": "Tradeoff 109",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 585299086.5843627,
+      "total_cost_mesos": 37656100521.0133
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 37329197696.64679,
+      "expected_attempts": 61.953968986973194,
+      "expected_spares": 0.5618802840329225,
+      "name": "Tradeoff 110",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 561880284.0329225,
+      "total_cost_mesos": 37891077980.67971
+    },
+    {
+      "mode_by_star": {
+        "18": 3,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 37690157569.22961,
+      "expected_attempts": 61.68579449063584,
+      "expected_spares": 0.5384614814814821,
+      "name": "Tradeoff 111",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 538461481.4814821,
+      "total_cost_mesos": 38228619050.71109
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 3,
+        "19": 2,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 40774769102.9852,
+      "expected_attempts": 62.394129641813926,
+      "expected_spares": 0.5226123156954736,
+      "name": "Tradeoff 112",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 522612315.6954736,
+      "total_cost_mesos": 41297381418.68067
+    },
+    {
+      "mode_by_star": {
+        "18": 3,
+        "19": 2,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 41126653913.290474,
+      "expected_attempts": 62.13269744688005,
+      "expected_spares": 0.49978229629629656,
+      "name": "Tradeoff 113",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 499782296.29629654,
+      "total_cost_mesos": 41626436209.58677
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 45786994556.04167,
+      "expected_attempts": 61.46983780249438,
+      "expected_spares": 0.4939351091212517,
+      "name": "Tradeoff 114",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 493935109.1212517,
+      "total_cost_mesos": 46280929665.162926
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 45897947507.46887,
+      "expected_attempts": 61.222837491658545,
+      "expected_spares": 0.4721872491754847,
+      "name": "Tradeoff 115",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 472187249.1754847,
+      "total_cost_mesos": 46370134756.644356
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46003127392.85442,
+      "expected_attempts": 61.287179471785585,
+      "expected_spares": 0.4718659793013669,
+      "name": "Tradeoff 116",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 471865979.3013669,
+      "total_cost_mesos": 46474993372.15579
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46110934005.035706,
+      "expected_attempts": 61.042838197322844,
+      "expected_spares": 0.4504393892297179,
+      "name": "Tradeoff 117",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 450439389.22971785,
+      "total_cost_mesos": 46561373394.26543
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46301319306.66403,
+      "expected_attempts": 61.10452114107679,
+      "expected_spares": 0.4497968494814821,
+      "name": "Tradeoff 118",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 449796849.4814821,
+      "total_cost_mesos": 46751116156.145515
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46348144883.96624,
+      "expected_attempts": 60.79849692286011,
+      "expected_spares": 0.4290127991580691,
+      "name": "Tradeoff 119",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 429012799.15806913,
+      "total_cost_mesos": 46777157683.124306
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46404785010.10109,
+      "expected_attempts": 60.86283890298712,
+      "expected_spares": 0.42869152928395104,
+      "name": "Tradeoff 120",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 428691529.28395104,
+      "total_cost_mesos": 46833476539.38504
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46637654980.2874,
+      "expected_attempts": 60.621156664897484,
+      "expected_spares": 0.4075862090864202,
+      "name": "Tradeoff 121",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 407586209.0864202,
+      "total_cost_mesos": 47045241189.37382
+    },
+    {
+      "mode_by_star": {
+        "18": 3,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 46962956569.58031,
+      "expected_attempts": 60.37947442680785,
+      "expected_spares": 0.3864808888888893,
+      "name": "Tradeoff 122",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 386480888.8888893,
+      "total_cost_mesos": 47349437458.46919
+    },
+    {
+      "mode_by_star": {
+        "18": 4,
+        "19": 1,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 50736351364.9957,
+      "expected_attempts": 61.51801461325282,
+      "expected_spares": 0.37444444444444513,
+      "name": "Tradeoff 123",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 374444444.44444513,
+      "total_cost_mesos": 51110795809.44014
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 4,
+        "19": 2,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 53530477210.80719,
+      "expected_attempts": 62.20269642927139,
+      "expected_spares": 0.36028497530864245,
+      "name": "Tradeoff 124",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 360284975.30864245,
+      "total_cost_mesos": 53890762186.11583
+    },
+    {
+      "mode_by_star": {
+        "18": 4,
+        "19": 2,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 53844847202.14603,
+      "expected_attempts": 61.96913580246923,
+      "expected_spares": 0.33988888888888935,
+      "name": "Tradeoff 125",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 339888888.8888894,
+      "total_cost_mesos": 54184736091.03492
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 1,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 55948397906.8259,
+      "expected_attempts": 55.88229587238639,
+      "expected_spares": 0.3394209303484229,
+      "name": "Tradeoff 126",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 339420930.3484229,
+      "total_cost_mesos": 56287818837.17432
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 1,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 56001486983.765785,
+      "expected_attempts": 55.94260393606012,
+      "expected_spares": 0.33911980246913626,
+      "name": "Tradeoff 127",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 339119802.46913624,
+      "total_cost_mesos": 56340606786.234924
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 1,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 56219757185.61487,
+      "expected_attempts": 55.716073950897325,
+      "expected_spares": 0.3193376790123461,
+      "name": "Tradeoff 128",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 319337679.0123461,
+      "total_cost_mesos": 56539094864.62721
+    },
+    {
+      "mode_by_star": {
+        "18": 1,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 56524664011.94367,
+      "expected_attempts": 55.48954396573454,
+      "expected_spares": 0.29955555555555596,
+      "name": "Tradeoff 129",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 299555555.55555594,
+      "total_cost_mesos": 56824219567.49923
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 2,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 57854151829.28348,
+      "expected_attempts": 56.535827013521555,
+      "expected_spares": 0.29953129629629666,
+      "name": "Tradeoff 130",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 299531296.29629666,
+      "total_cost_mesos": 58153683125.57977
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 2,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 57896124125.74219,
+      "expected_attempts": 56.261520962201736,
+      "expected_spares": 0.28090142834705095,
+      "name": "Tradeoff 131",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 280901428.34705096,
+      "total_cost_mesos": 58177025554.08924
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 2,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 57946893732.9218,
+      "expected_attempts": 56.319194157498465,
+      "expected_spares": 0.28061345679012367,
+      "name": "Tradeoff 132",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 280613456.7901237,
+      "total_cost_mesos": 58227507189.71192
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 2,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 58155627676.80705,
+      "expected_attempts": 56.1025613014754,
+      "expected_spares": 0.26169561728395085,
+      "name": "Tradeoff 133",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 261695617.28395087,
+      "total_cost_mesos": 58417323294.091
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 4,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 58429730109.73426,
+      "expected_attempts": 60.444185319560034,
+      "expected_spares": 0.25752192592592643,
+      "name": "Tradeoff 134",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 257521925.92592642,
+      "total_cost_mesos": 58687252035.66019
+    },
+    {
+      "mode_by_star": {
+        "18": 2,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 58447213078.01155,
+      "expected_attempts": 55.88592844545233,
+      "expected_spares": 0.24277777777777798,
+      "name": "Tradeoff 135",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 242777777.77777797,
+      "total_cost_mesos": 58689990855.78933
+    },
+    {
+      "mode_by_star": {
+        "18": 4,
+        "19": 3,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 58720350945.91018,
+      "expected_attempts": 60.22826908541205,
+      "expected_spares": 0.23866666666666717,
+      "name": "Tradeoff 136",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 238666666.66666716,
+      "total_cost_mesos": 58959017612.57684
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 60859695612.049324,
+      "expected_attempts": 55.91171131286647,
+      "expected_spares": 0.22390008525925947,
+      "name": "Tradeoff 137",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 223900085.25925946,
+      "total_cost_mesos": 61083595697.308586
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "17": 3,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 60889552037.59235,
+      "expected_attempts": 56.31972369073475,
+      "expected_spares": 0.2214737160658438,
+      "name": "Tradeoff 138",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 221473716.0658438,
+      "total_cost_mesos": 61111025753.65819
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 60941436835.690704,
+      "expected_attempts": 55.764247644371736,
+      "expected_spares": 0.2060832420246915,
+      "name": "Tradeoff 139",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 206083242.0246915,
+      "total_cost_mesos": 61147520077.71539
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61031011338.99576,
+      "expected_attempts": 55.56483942787348,
+      "expected_spares": 0.18852576628806592,
+      "name": "Tradeoff 140",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 188525766.2880659,
+      "total_cost_mesos": 61219537105.28382
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61115925132.364075,
+      "expected_attempts": 55.61678397587701,
+      "expected_spares": 0.18826639879012358,
+      "name": "Tradeoff 141",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 188266398.79012358,
+      "total_cost_mesos": 61304191531.1542
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61202959534.017426,
+      "expected_attempts": 55.41952245182205,
+      "expected_spares": 0.17096829055144042,
+      "name": "Tradeoff 142",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 170968290.55144042,
+      "total_cost_mesos": 61373927824.56886
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61356661338.34599,
+      "expected_attempts": 55.46932030738229,
+      "expected_spares": 0.1704495555555557,
+      "name": "Tradeoff 143",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 170449555.5555557,
+      "total_cost_mesos": 61527110893.90155
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61394464549.300415,
+      "expected_attempts": 55.222260927767095,
+      "expected_spares": 0.15367018231275728,
+      "name": "Tradeoff 144",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 153670182.31275728,
+      "total_cost_mesos": 61548134731.613174
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61440191238.860306,
+      "expected_attempts": 55.274205475770614,
+      "expected_spares": 0.1534108148148149,
+      "name": "Tradeoff 145",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 153410814.8148149,
+      "total_cost_mesos": 61593602053.67512
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61628191753.00426,
+      "expected_attempts": 55.07909064415895,
+      "expected_spares": 0.13637207407407415,
+      "name": "Tradeoff 146",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 136372074.07407415,
+      "total_cost_mesos": 61764563827.07833
+    },
+    {
+      "mode_by_star": {
+        "18": 3,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 61890814134.02652,
+      "expected_attempts": 54.883975812547305,
+      "expected_spares": 0.1193333333333334,
+      "name": "Tradeoff 147",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 119333333.3333334,
+      "total_cost_mesos": 62010147467.359856
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "17": 3,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 70263826962.69139,
+      "expected_attempts": 56.18207155040119,
+      "expected_spares": 0.10786235295747605,
+      "name": "Tradeoff 148",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 107862352.95747605,
+      "total_cost_mesos": 70371689315.64886
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "17": 3,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 70307738020.34499,
+      "expected_attempts": 56.231953579127214,
+      "expected_spares": 0.10761328395061735,
+      "name": "Tradeoff 149",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 107613283.95061736,
+      "total_cost_mesos": 70415351304.29561
+    },
+    {
+      "mode_by_star": {
+        "15": 1,
+        "16": 1,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70461600353.47397,
+      "expected_attempts": 55.68007227261285,
+      "expected_spares": 0.09341877777777784,
+      "name": "Tradeoff 150",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 93418777.77777784,
+      "total_cost_mesos": 70555019131.25174
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "17": 3,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": false
+      },
+      "enhancement_cost_mesos": 70488273753.30396,
+      "expected_attempts": 56.04458601103001,
+      "expected_spares": 0.09125108641975313,
+      "name": "Tradeoff 151",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 91251086.41975313,
+      "total_cost_mesos": 70579524839.72371
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 1,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70534627057.14406,
+      "expected_attempts": 55.54832986478551,
+      "expected_spares": 0.07750140740740744,
+      "name": "Tradeoff 152",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 77501407.40740743,
+      "total_cost_mesos": 70612128464.55147
+    },
+    {
+      "mode_by_star": {
+        "15": 2,
+        "16": 2,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70614651926.08841,
+      "expected_attempts": 55.37018077321471,
+      "expected_spares": 0.06181575308641977,
+      "name": "Tradeoff 153",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 61815753.08641977,
+      "total_cost_mesos": 70676467679.17484
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 1,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70690512968.40675,
+      "expected_attempts": 55.41658745695818,
+      "expected_spares": 0.06158403703703706,
+      "name": "Tradeoff 154",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 61584037.03703706,
+      "total_cost_mesos": 70752097005.44379
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 2,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70768268538.67477,
+      "expected_attempts": 55.24035619663511,
+      "expected_spares": 0.046130098765432115,
+      "name": "Tradeoff 155",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 46130098.76543211,
+      "total_cost_mesos": 70814398637.4402
+    },
+    {
+      "mode_by_star": {
+        "16": 1,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70905584027.94986,
+      "expected_attempts": 55.28484504913085,
+      "expected_spares": 0.04566666666666669,
+      "name": "Tradeoff 156",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 45666666.66666669,
+      "total_cost_mesos": 70951250694.61653
+    },
+    {
+      "mode_by_star": {
+        "15": 3,
+        "16": 3,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70939356997.83173,
+      "expected_attempts": 55.064124936312055,
+      "expected_spares": 0.030676160493827168,
+      "name": "Tradeoff 157",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 30676160.493827168,
+      "total_cost_mesos": 70970033158.32555
+    },
+    {
+      "mode_by_star": {
+        "16": 2,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 70980208715.7232,
+      "expected_attempts": 55.11053162005551,
+      "expected_spares": 0.030444444444444455,
+      "name": "Tradeoff 158",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 30444444.444444455,
+      "total_cost_mesos": 71010653160.16765
+    },
+    {
+      "mode_by_star": {
+        "16": 3,
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": false,
+        "17": true
+      },
+      "enhancement_cost_mesos": 71148166292.38547,
+      "expected_attempts": 54.93621819098017,
+      "expected_spares": 0.015222222222222227,
+      "name": "Tradeoff 159",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 15222222.222222228,
+      "total_cost_mesos": 71163388514.6077
+    },
+    {
+      "mode_by_star": {
+        "18": 4,
+        "19": 4,
+        "20": 4,
+        "21": 4
+      },
+      "safeguard_by_star": {
+        "15": true,
+        "16": true,
+        "17": true
+      },
+      "enhancement_cost_mesos": 71382790218.25409,
+      "expected_attempts": 54.761904761904844,
+      "expected_spares": 0.0,
+      "name": "Tradeoff 160",
+      "on_efficient_frontier": true,
+      "expected_replacement_cost_mesos": 0.0,
+      "total_cost_mesos": 71382790218.25409
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-06
-Total: 105 tests in 7 files
+Total: 110 tests in 8 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -533,3 +533,24 @@ Tests: 21
 105. test_invalid_requests_are_rejected
    Behavior and purpose: Rejects level zero, target 31, unsupported band/per-star modes,
    safeguard outside 15-17, and nonboolean safeguard values.
+
+-----------------------------------------------------------------------
+
+FILE: backend/tests/test_starforce_strategies.py
+Test class: StarforceStrategyTests
+Tests: 5
+
+106. test_fast_search_matches_calculator_including_recovery_below_start
+   Behavior and purpose: Compares the fast policy recurrence with the existing linear solver for standard, protected, and seeded random policies across levels 150/200/250 and ranges through 30 stars. Checks enhancement costs, booms, and attempts, including recovery below the initial star.
+
+107. test_optimal_policies_match_exhaustive_calculator_search
+   Behavior and purpose: Checks all 64 policies affecting a 17-to-18 upgrade with a 5B spare value against direct calculator calls. Confirms the minimum enhancement cost, minimum spare usage, and minimum combined-cost recommendations.
+
+108. test_presets_frontier_and_spare_valuation
+   Behavior and purpose: Checks seven presets and all 16,384 policies, fixed Shining Star Force/no-MVP assumptions, zero-boom protection through 22, increasing cost/decreasing spares along the efficient frontier, frontier flags, and combined spending at a 1B spare value. The mixed winner must be no more costly than any preset.
+
+109. test_short_ranges_and_invalid_inputs
+   Behavior and purpose: Checks a 0-to-10 range has one unique policy and no booms. Rejects invalid levels, equal start/target, targets above 30, and negative, infinite, or boolean spare values.
+
+110. test_cli_exports_machine_readable_reports
+   Behavior and purpose: Runs the CLI with zero spare value into temporary JSON and CSV files. Checks row counts across presets, recommendations and frontier, JSON assumptions, and printed SSF/no-MVP settings.

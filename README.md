@@ -110,6 +110,9 @@ maplestory_app/
   examples/equipment/
     README.md                         Sample import instructions and test coverage
     *.json                            47 importable class equipment test builds
+  examples/starforce/
+    *.json                            Sample strategy comparison and tradeoff data
+    *.csv                             Matching spreadsheet report
   backend/
     api/main.py                       FastAPI endpoints and request models
     calc/
@@ -121,12 +124,14 @@ maplestory_app/
     examples/
       potential.py                    Potential calculation examples
       flames.py                       Flame calculation examples
+      starforce_strategies.py          Seven presets and exhaustive policy search
     scripts/
       fetch_potential_data.py         Refresh the KMS probability snapshot
       fetch_equipment_data.py         Refresh the frontend GMS equipment catalog
       verify_accessories.py           Compare Nexon accessory probability tables
     tests/                            Python unittest suites
       test_equipment_samples.py       Frontend-to-API samples and table equivalence
+      test_starforce_strategies.py     Policy search, recovery, and report exports
     requirements.txt                  FastAPI, Pydantic, and Uvicorn
     requirements-dev.txt              Runtime dependencies plus HTTP test client
   frontend/
@@ -173,6 +178,46 @@ test uses Node to import these files and build real frontend requests before
 checking the API; it is skipped when Node is unavailable. See
 [`BACKEND_TESTS.txt`](BACKEND_TESTS.txt) and
 [`FRONTEND_TESTS.txt`](FRONTEND_TESTS.txt) for the complete test inventories.
+
+## Star Force strategy analysis
+
+Run the standalone analysis with the existing calculator's bundled rules:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.examples.starforce_strategies --level 200 --start 15 --target 22 --spare-value 1000000000
+```
+
+Shining Star Force is always enabled and MVP is always `none`. The report compares
+seven presets: Modes 1, 2, and 3 throughout; safeguard at 15–17 paired with Mode 1,
+3, or 4 at 18–21; and a hybrid using Mode 1 at 15–16, safeguard at 17, and Mode 2
+at 18–21. Star numbers refer to the starting star of an attempt.
+
+It also searches all 16,384 per-star policies for a target of 22 or higher,
+including choices used during boom recovery below the initial star. It reports
+the lowest enhancement cost, fewest expected spares, and lowest combined cost
+using the supplied spare value. `--spare-value` can represent either replacement
+price or the meso value you assign to a scarce spare. Zero compares tap costs only.
+The cost/spare frontier contains policies where reducing spare usage requires
+more enhancement spending; presets outside that frontier are marked in exports.
+
+Export data for an app or spreadsheet with:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.examples.starforce_strategies --level 200 --start 15 --target 22 --spare-value 1000000000 --json examples/starforce/level-200-15-to-22.json --csv examples/starforce/level-200-15-to-22.csv
+```
+
+The sample files contain those default results. From Python, import
+`analyze_strategies` from `backend.examples.starforce_strategies`; it returns a
+dictionary with `assumptions`, `scenarios`, `recommendations`, and
+`efficient_frontier`. Every row includes its per-star policy, expected enhancement
+mesos, attempts, spares, replacement spending, and combined cost. Selected results
+are calculated again by `estimate_starforce` before publication.
+
+Expected spares equal booms and exclude the original item. These are averages with
+unlimited retries and replacement availability, not success probabilities for a
+fixed meso or spare budget. The search covers fixed per-star policies for standard
+equipment; choose a target supported by the actual item. Outside 15–21, all policies
+use standard rates, so targets above 22 cannot be made boom-free with these options.
 
 ## Potential calculator
 
