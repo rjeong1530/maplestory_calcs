@@ -620,6 +620,26 @@ the calculation limit. The API returns these as `meso_estimates` and retains
 
 ### Equipment
 
+Hats have a **Minimum cooldown reduction for upgrades** setting (0–6 seconds).
+Potential rankings only accept improved stat rolls that also meet this minimum;
+3–4 seconds requires at least two cooldown lines, and 5–6 requires three.
+The eligible probability is not renormalized, so cube costs include rejected rolls.
+Use Black cubes for constrained hats to retain the existing potential while rolling.
+This reserves cooldown capacity in upgrade estimates, not physical line locking.
+The minimum is saved locally and in equipment JSON exports.
+
+Equipment selectors group **Pitched**, **Kalos Eternals** (hat, top, bottom,
+shoulder), **Limbo Eternals** (cape, gloves, shoes), and other equipment.
+Pitched membership follows the [Pitched Boss Set](https://maplestorywiki.net/w/Pitched_Boss_Set).
+In **Compare Star Force strategies**, choose an optimized, custom, or efficient
+approach under **Inspect or apply an approach**, then apply its modes and
+safeguards to all eligible equipment, a group, or selected items. The
+**Compare Star Force approaches** button in the equipment stat editor opens
+this calculator directly. Current stars,
+stats, costs per spare, and upgrade limits are preserved. Costs are recalculated
+using each item's level and the Equipment event/MVP settings. Items without
+enhancement modes and the fixed skill ring are excluded.
+
 Use **Equipment setup** to choose your class and current gear. Select a slot in
 the equipment grid or use the previous/next arrows, then choose an item from
 the list beside it. Changes save automatically; JSON import/export remains

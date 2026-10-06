@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { CLASS_FAMILIES, EQUIPMENT_SLOTS, SLOT_LABELS, equipmentChoices, FIXED_RING_SLOT } from '../data/flameEquipment'
 import EquipmentGrid, { EquipmentIcon } from './EquipmentGrid'
+import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import './EquipmentWindow.css'
 
 export default function EquipmentWindow({
@@ -103,13 +104,19 @@ export default function EquipmentWindow({
               onClick={() => onActivate(slots[(slots.indexOf(pickerSlot) + 1) % slots.length])}>&rarr;</button>
           </div>
           <div className="equipment-catalog-items" key={pickerSlot}>
-            {choices.map(item => <button type="button" key={item.id} disabled={busy || pickerSlot === FIXED_RING_SLOT}
+            {Object.entries(EQUIPMENT_GROUPS).map(([group, label]) => {
+              const items = choices.filter(item => equipmentGroup(item, pickerSlot) === group)
+              return items.length > 0 && <div className="equipment-catalog-group" key={group}>
+                <h4>{label}</h4>
+                {items.map(item => <button type="button" key={item.id} disabled={busy || pickerSlot === FIXED_RING_SLOT}
               className="equipment-catalog-item" aria-pressed={selected?.id === item.id}
               onClick={() => onSelect(pickerSlot, item)}>
               <EquipmentIcon item={item} />
               <span><small>Lv. {item.config.equipment_level}</small>{item.name}</span>
               {selected?.id === item.id && <span className="equipment-equipped-label">Equipped</span>}
-            </button>)}
+                </button>)}
+              </div>
+            })}
             {!choices.length && <p className="hint">No matching equipment for this slot and class in the catalog.</p>}
           </div>
           {pickerSlot === FIXED_RING_SLOT && <p className="hint">Ring 4 is fixed to Ring of Restraint and cannot be changed or removed.</p>}

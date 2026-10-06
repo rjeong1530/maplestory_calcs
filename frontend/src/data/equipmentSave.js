@@ -6,6 +6,7 @@ export function serializeEquipment(equipment) {
   return Object.fromEntries(Object.entries(equipment).filter(([slot]) => slot !== FIXED_RING_SLOT).map(([slot, item]) => [slot, {
     id: item.id,
     current_star_force: item.currentStarForce ?? 0,
+    ...(slot === 'hat' && item.minimumCooldownSeconds > 0 ? { minimum_cooldown_seconds: item.minimumCooldownSeconds } : {}),
     replacement_cost_mesos: replacementCostForEquipment(item, slot),
     ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
     ...(item.starForceModes ? { mode_by_star: item.starForceModes } : {}),
@@ -47,6 +48,9 @@ export function importEquipment(text) {
     if (!EQUIPMENT_SLOTS.includes(slot) || slot === 'android' || !isObject(item)) invalid()
     const choice = equipmentChoices(slot, saved.equipment_class).find(choice => choice.id === item.id)
     if (!choice) throw new Error(`Equipment in ${slot} is unavailable for ${saved.equipment_class}.`)
+    if (item.minimum_cooldown_seconds !== undefined && (slot !== 'hat'
+      || !Number.isInteger(item.minimum_cooldown_seconds) || item.minimum_cooldown_seconds < 0
+      || item.minimum_cooldown_seconds > 6)) invalid()
     if (item.replacement_cost_mesos !== undefined &&
       (typeof item.replacement_cost_mesos !== 'number' || !Number.isFinite(item.replacement_cost_mesos)
         || item.replacement_cost_mesos < 0)) invalid()
@@ -99,6 +103,8 @@ export function restoreEquipment(savedEquipment, mapleClass) {
     return equipInSlot(equipment, slot, {
       ...restoredItem,
       currentStarForce,
+      ...(slot === 'hat' ? { minimumCooldownSeconds: Number.isInteger(savedItem.minimum_cooldown_seconds)
+        ? Math.max(0, Math.min(6, savedItem.minimum_cooldown_seconds)) : 0 } : {}),
       replacementCostMesos: typeof savedItem.replacement_cost_mesos === 'number'
         && Number.isFinite(savedItem.replacement_cost_mesos) && savedItem.replacement_cost_mesos >= 0
         ? savedItem.replacement_cost_mesos : replacementCostForEquipment(item, slot),

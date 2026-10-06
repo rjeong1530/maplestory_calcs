@@ -4,6 +4,7 @@ import { restoreEquipment, serializeEquipment, exportEquipment, importEquipment 
 import { restoreUpgradeSettings, restoreFlameWeights, DEFAULT_FLAME_WEIGHTS } from '../data/equipmentUpgrade'
 import { equipInSlot, compatibleEquipment, FIXED_RING_SLOT } from '../data/flameEquipment'
 import { readEquipmentSelection, saveEquipmentSelection } from '../data/equipmentStorage'
+import { applyStrategyToEquipment } from '../data/equipmentGroups'
 
 const initialForm = {
   equipment_level: '150',
@@ -61,6 +62,7 @@ export default function useEquipmentPlanner() {
           currentStarForce: previous.currentStarForce ?? 0, starForceModes: previous.starForceModes,
           maxStarForce: previous.maxStarForce,
           replacementCostMesos: previous.replacementCostMesos,
+          minimumCooldownSeconds: previous.minimumCooldownSeconds,
           starForceSafeguards: previous.starForceSafeguards }
         : { ...item, currentStarForce: 0, currentPotential: [], currentFlames: [], currentFlameType: form.flame_type,
           currentBossEquipment: item.config.boss_equipment ?? form.boss_equipment }
@@ -102,6 +104,7 @@ export default function useEquipmentPlanner() {
   }
 
   return {
+    applyEquipmentStrategy: (slots, strategy) => setEquipment(current => applyStrategyToEquipment(current, slots, strategy)),
     saveError,
     form, setForm, equipment, equipmentClass, activeSlot, setActiveSlot,
     upgradeSettings, setUpgradeSettings, selectEquipment, removeEquipment,

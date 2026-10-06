@@ -5,6 +5,11 @@ import { equipmentChoices } from './flameEquipment.js'
 import { restoreEquipment } from './equipmentSave.js'
 import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, restoreUpgradeSettings, restoreSecondaryStatWeight } from './equipmentUpgrade.js'
 
+test('upgrade requests carry the hat cooldown minimum', () => {
+  const hat = { ...equipmentChoices('hat', 'Hero')[0], minimumCooldownSeconds: 4 }
+  assert.equal(buildUpgradeRequest({ hat }, CLASS_STATS.Hero, {}, restoreUpgradeSettings()).equipment[0].minimum_cooldown_seconds, 4)
+})
+
 test('Eternal Knight Gloves use catalog boss flames despite an older saved non-boss flag', () => {
   const gloves = equipmentChoices('gloves', 'Hero').find(item => item.id === 1082760)
   assert.equal(gloves.config.boss_equipment, true)

@@ -359,6 +359,13 @@ class CurrentFlameLine(RequestModel):
 
 
 class UpgradeEquipmentRequest(RequestModel):
+    minimum_cooldown_seconds: int = Field(default=0, ge=0, le=6, strict=True)
+
+    @model_validator(mode='after')
+    def cooldown_hat_only(self):
+        if self.minimum_cooldown_seconds and (self.slot != 'hat' or self.potential_equipment_type != 'hat'):
+            raise ValueError('A cooldown minimum is only supported for hats.')
+        return self
     replacement_cost_mesos: float | None = Field(default=None, ge=0, allow_inf_nan=False, strict=True)
     safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
 

@@ -16,6 +16,16 @@ from backend.examples.starforce_strategies import (
 
 
 class StarforceStrategyTests(unittest.TestCase):
+    def test_report_baseline_is_full_mode_one_without_safeguards(self):
+        report = analyze_strategies(200, 15, 22, 1_000_000_000)
+        row = report['baseline']
+        self.assertTrue(all(mode == 1 for mode in row['mode_by_star'].values()))
+        self.assertFalse(any(row['safeguard_by_star'].values()))
+        expected = estimate_starforce(200, 15, 22, shining_starforce_sunday=True,
+                                      replacement_cost_mesos=1_000_000_000)
+        self.assertAlmostEqual(row['total_cost_mesos'], expected.expected_cost)
+        self.assertAlmostEqual(row['expected_spares'], expected.expected_booms)
+
     def test_fast_search_matches_calculator_including_recovery_below_start(self):
         rng = random.Random(123)
         for level, start, target in ((150, 0, 17), (200, 17, 22), (250, 22, 25), (200, 29, 30)):

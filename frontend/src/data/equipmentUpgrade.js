@@ -154,6 +154,7 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       equipment_type: item.config.equipment_type,
       potential_equipment_type: potentialEquipmentType(slot, item),
       current_star_force: item.currentStarForce ?? 0,
+      minimum_cooldown_seconds: slot === 'hat' ? item.minimumCooldownSeconds ?? 0 : 0,
       replacement_cost_mesos: replacementCostForEquipment(item, slot),
       ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
       mode_by_star: item.starForceModes ?? {},

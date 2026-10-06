@@ -3,7 +3,7 @@ import EquipmentWindow from './EquipmentWindow'
 import EquipmentStats from './EquipmentStats'
 import { CLASS_STATS } from '../data/classStats'
 
-export default function EquipmentPage({ planner, busy, onFlameResultInvalidated }) {
+export default function EquipmentPage({ planner, busy, onFlameResultInvalidated, onOpenApproaches }) {
   const [view, setView] = useState('setup')
   const { equipment, equipmentClass, activeSlot, setActiveSlot, selectEquipment,
     removeEquipment, updateEquipmentClass, importEquipmentJson, exportEquipmentJson } = planner
@@ -35,6 +35,7 @@ export default function EquipmentPage({ planner, busy, onFlameResultInvalidated 
         </div>
         <div id="equipment-stats-view" hidden={view !== 'stats'}>
           <EquipmentStats planner={planner} busy={busy}
+            onOpenApproaches={onOpenApproaches}
             onOpenSetup={() => setView('setup')} onFlameResultInvalidated={onFlameResultInvalidated} />
         </div>
       </div>

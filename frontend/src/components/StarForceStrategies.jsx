@@ -1,23 +1,35 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
-import { frontierPoints, nameCustomStrategies, strategySteps } from '../data/starforceStrategies'
+import { frontierPoints, nameCustomStrategies, strategySteps, percentDifference } from '../data/starforceStrategies'
 import './StarForceStrategies.css'
+import EquipmentStrategyApply from './EquipmentStrategyApply'
 
 const number = value => value.toLocaleString('en-US', { maximumFractionDigits: 3 })
 const mesos = value => `${number(value / 1e9)}B`
 const defaultActions = Object.fromEntries(Array.from({ length: 7 }, (_, i) => [i + 15, '1']))
 
-function Metrics({ row }) {
+function Difference({ value, baseline }) {
+  const difference = percentDifference(value, baseline)
+  return <small className="strategy-difference">
+    {difference == null ? 'N/A vs baseline' : `${difference > 0 ? '+' : ''}${difference.toFixed(1)}% vs baseline`}
+  </small>
+}
+
+function Metrics({ row, baseline }) {
   return <dl className="strategy-metrics">
-    <div><dt>Enhancement mesos</dt><dd>{mesos(row.enhancement_cost_mesos)}</dd></div>
-    <div><dt>Replacement mesos</dt><dd>{mesos(row.expected_replacement_cost_mesos)}</dd></div>
-    <div><dt>Total mesos</dt><dd>{mesos(row.total_cost_mesos)}</dd></div>
-    <div><dt>Expected spares</dt><dd>{number(row.expected_spares)}</dd></div>
-    <div><dt>Expected attempts</dt><dd>{number(row.expected_attempts)}</dd></div>
+    {[
+      ['enhancement_cost_mesos', 'Enhancement mesos', mesos],
+      ['expected_replacement_cost_mesos', 'Replacement mesos', mesos],
+      ['total_cost_mesos', 'Total mesos', mesos],
+      ['expected_spares', 'Expected spares', number],
+      ['expected_attempts', 'Expected attempts', number],
+    ].map(([field, label, format]) => <div key={field}><dt>{label}</dt><dd>{format(row[field])}
+      <Difference value={row[field]} baseline={baseline?.[field]} />
+    </dd></div>)}
   </dl>
 }
 
-export default function StarForceStrategies({ form, onChange }) {
+export default function StarForceStrategies({ form, onChange, planner }) {
   const [request, setRequest] = useState(null)
   const [selection, setSelection] = useState({ section: 'efficient_frontier', index: 0 })
   const [actions, setActions] = useState(defaultActions)
@@ -187,18 +199,30 @@ export default function StarForceStrategies({ form, onChange }) {
           <button type="button" aria-label={`Remove ${custom.name}`} onClick={() => removeCustom(custom.id)}>Remove</button>
         </div>)}
       </div>
-      <label>Explore an efficient strategy
-        <select value={selection.section === 'efficient_frontier' ? selection.index : ''}
-          onChange={event => setSelection({ section: 'efficient_frontier', index: Number(event.target.value) })}>
-          <option value="" disabled>Select a tradeoff</option>
-          {report.efficient_frontier.map((point, index) => <option value={index} key={index}>
+      <label>Inspect or apply an approach
+        <select value={`${selection.section}:${selection.id ?? selection.index}`}
+          onChange={event => {
+            const [section, value] = event.target.value.split(':')
+            setSelection(section === 'custom' ? { section, id: Number(value) } : { section, index: Number(value) })
+          }}>
+          <optgroup label="Optimized approaches">
+            {report.scenarios.map((scenario, index) => <option key={index} value={`scenarios:${index}`}>{scenario.name}</option>)}
+          </optgroup>
+          {customs.length > 0 && <optgroup label="Your approaches">
+            {customs.map(custom => <option key={custom.id} value={`custom:${custom.id}`}>{custom.name}</option>)}
+          </optgroup>}
+          <optgroup label="Efficient tradeoffs">
+          {report.efficient_frontier.map((point, index) => <option value={`efficient_frontier:${index}`} key={index}>
             {mesos(point.enhancement_cost_mesos)} enhancement mesos · {number(point.expected_spares)} expected spares
           </option>)}
+          </optgroup>
         </select>
       </label>
       {row && <section className="strategy-detail" aria-live="polite" aria-label="Selected strategy">
         <h3>{row.name}</h3>
-        <Metrics row={row} />
+        <Metrics row={row} baseline={report.baseline} />
+        {planner && <EquipmentStrategyApply key={`${selection.section}-${selection.index ?? selection.id}`}
+          equipment={planner.equipment} strategy={row} onApply={planner.applyEquipmentStrategy} />}
         <p>Follow these steps, including when recovering after a boom:</p>
         <ul>{strategySteps(row, report.assumptions.target_star).map(step => <li key={step.from}>
           {step.from} → {step.to} stars: <strong>{step.action}</strong>
@@ -207,9 +231,14 @@ export default function StarForceStrategies({ form, onChange }) {
       </section>}
       <details className="strategy-comparison" open>
         <summary>Compare optimized approaches and your strategies</summary>
-        <p className="hint" id="strategy-comparison-help">Steps include boom recovery below your starting stars. Scroll within longer step lists to see every transition.</p>
+        <p className="hint">Percentage differences compare against full Mode 1 with no safeguards, using the same level,
+          star range, spare cost, Shining event, and MVP settings. Negative means less spending or fewer spares.
+          N/A means the baseline is zero and a percentage cannot be calculated.</p>
+        {report.baseline && <p className="hint">Baseline: {mesos(report.baseline.enhancement_cost_mesos)} enhancement mesos,
+          {' '}{number(report.baseline.expected_spares)} expected spares, {mesos(report.baseline.total_cost_mesos)} total mesos.</p>}
+        <p className="hint" id="strategy-comparison-help">Steps include boom recovery below your starting stars.</p>
         {!customs.length && <p className="hint">Add your own strategy above to compare it alongside these optimized approaches.</p>}
-        <div className="starforce-table-wrap strategy-comparison-scroll" tabIndex="0"
+        <div className="strategy-comparison-container"
           role="region" aria-label="Optimized and custom strategy comparison" aria-describedby="strategy-comparison-help">
           <table className="strategy-comparison-table">
             <colgroup><col className="strategy-name-column" /><col /><col /><col /><col className="strategy-steps-column" /></colgroup>
@@ -225,20 +254,28 @@ export default function StarForceStrategies({ form, onChange }) {
                   </button>
                 </th>
               })}<th scope="col">Steps</th></tr></thead>
-            <tbody>{comparisonRows.map(scenario => <tr key={scenario.id != null ? `custom-${scenario.id}` : scenario.name}
+            <tbody>{comparisonRows.map(scenario => <Fragment key={scenario.id != null ? `custom-${scenario.id}` : scenario.name}>
+              <tr
               className={scenario.id != null ? 'strategy-comparison-custom' : undefined}>
               <th scope="row">
                 {scenario.color && <span className="strategy-comparison-marker" style={{ color: scenario.color }} aria-hidden="true">&#9679; </span>}
                 {scenario.name}
               </th>
-              <td>{mesos(scenario.enhancement_cost_mesos)}</td>
-              <td>{number(scenario.expected_spares)}</td><td>{mesos(scenario.total_cost_mesos)}</td>
-              <td><div className="strategy-comparison-steps" tabIndex="0" role="region" aria-label={`Steps for ${scenario.name}`}>
+              <td data-label="Enhancement mesos">{mesos(scenario.enhancement_cost_mesos)}<Difference value={scenario.enhancement_cost_mesos} baseline={report.baseline?.enhancement_cost_mesos} /></td>
+              <td data-label="Expected spares">{number(scenario.expected_spares)}<Difference value={scenario.expected_spares} baseline={report.baseline?.expected_spares} /></td>
+              <td data-label="Total mesos">{mesos(scenario.total_cost_mesos)}<Difference value={scenario.total_cost_mesos} baseline={report.baseline?.total_cost_mesos} /></td>
+              <td className="strategy-steps-cell" data-label="Steps"><div className="strategy-comparison-steps" role="region" aria-label={`Steps for ${scenario.name}`}>
                 <ul>{strategySteps(scenario, report.assumptions.target_star).map(step => <li key={step.from}>
                   <span>{step.from} &rarr; {step.to} stars</span><strong>{step.action}</strong>
                 </li>)}</ul>
               </div></td>
-            </tr>)}</tbody>
+              </tr>
+              {planner && <tr className={scenario.id != null ? 'strategy-comparison-custom' : undefined}>
+                <td colSpan={5}><div className="strategy-row-apply">
+                <EquipmentStrategyApply equipment={planner.equipment} strategy={scenario} onApply={planner.applyEquipmentStrategy} />
+                </div></td>
+              </tr>}
+            </Fragment>)}</tbody>
           </table>
         </div>
       </details>

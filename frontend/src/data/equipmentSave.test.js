@@ -5,6 +5,17 @@ import { exportEquipment, importEquipment, serializeEquipment, restoreEquipment 
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
 
+test('hat cooldown minimum survives exports and rejects invalid imported values', () => {
+  const saved = JSON.parse(exportEquipment({ hat: { ...hat, minimumCooldownSeconds: 4 } }, 'Hero'))
+  assert.equal(importEquipment(JSON.stringify(saved)).equipment.hat.minimumCooldownSeconds, 4)
+  delete saved.equipment.hat.minimum_cooldown_seconds
+  assert.equal(importEquipment(JSON.stringify(saved)).equipment.hat.minimumCooldownSeconds, 0)
+  for (const value of [-1, 7, 2.5, '4', true]) {
+    saved.equipment.hat.minimum_cooldown_seconds = value
+    assert.throws(() => importEquipment(JSON.stringify(saved)))
+  }
+})
+
 test('replacement costs persist and older Astra saves receive the default', () => {
   const secondary = equipmentChoices('secondary', 'Hero').find(item => item.name.startsWith('Astra '))
   for (const cost of [0, 750_000_000]) {

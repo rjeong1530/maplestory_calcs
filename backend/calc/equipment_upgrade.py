@@ -294,10 +294,11 @@ def _potential_score_distribution(
     level: int,
     cube_type: str,
     effect_weights: tuple[tuple[str, float], ...],
+    minimum_cooldown_seconds: int = 0,
 ) -> dict[float, float]:
     return potential.weighted_score_distribution(
         dict(effect_weights), equipment_type=equipment_type,
-        level=level, cube_type=cube_type,
+        level=level, cube_type=cube_type, minimum_cooldown_seconds=minimum_cooldown_seconds,
     )
 
 
@@ -435,9 +436,13 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
             potential_type = None if slot == 'pocket' else item.get('potential_equipment_type')
             if potential_type:
                 try:
+                    minimum_cooldown = item.get('minimum_cooldown_seconds', 0) if potential_type == 'hat' else 0
+                    if minimum_cooldown and cube_type != 'black':
+                        raise ValueError('Use Black cubes to keep the existing cooldown hat while seeking an upgrade that meets its minimum.')
                     distribution = _potential_score_distribution(
                         potential_type, level, cube_type,
                         tuple(sorted(potential_effect_weights.items())),
+                        minimum_cooldown,
                     )
                     potential_entry.update(_next_improvement(distribution, potential_current, cube_cost))
                 except ValueError as error:

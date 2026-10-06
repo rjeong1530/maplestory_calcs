@@ -7,7 +7,7 @@ import './EquipmentAnalysis.css'
 
 const emptyPotentialLine = () => ({ effect: '', value: '' })
 
-export default function EquipmentAnalysis({ slot, item, offenseStat, onChange }) {
+export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, onOpenApproaches }) {
   const [itemOptions, setItemOptions] = useState(null)
   const [optionsError, setOptionsError] = useState('')
   const [bossEquipment, setBossEquipment] = useState(
@@ -114,6 +114,22 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
       <div className="equipment-analysis-sections">
         <section className="current-potential-section">
           <h4>Current potential</h4>
+          {slot === 'hat' && <>
+            <label>Minimum cooldown reduction for upgrades
+              <select value={item.minimumCooldownSeconds ?? 0}
+                onChange={event => onChange({ minimumCooldownSeconds: Number(event.target.value) })}>
+                {[0, 1, 2, 3, 4, 5, 6].map(seconds => <option key={seconds} value={seconds}>
+                  {seconds ? `${seconds} seconds` : 'No minimum'}
+                </option>)}
+              </select>
+            </label>
+            {item.minimumCooldownSeconds > 0 && <p className="hint">
+              Upgrade rankings require at least {item.minimumCooldownSeconds}s cooldown reduction,
+              reserving at least {Math.ceil(item.minimumCooldownSeconds / 2)} potential line(s) for cooldown.
+              Rolls below this minimum never count as upgrades. This does not change your recorded current lines.
+              Use Black cubes to keep your existing hat potential while searching; individual lines are not physically locked during cubing.
+            </p>}
+          </>}
           {optionsError ? <p className="error" role="alert">{optionsError}</p>
             : !availableOptions ? <p className="hint" role="status">Loading potential options…</p>
               : !availableOptions.potential.available ? (
@@ -157,6 +173,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange })
               )}
           {canStarForce && <>
           <h4>Star Force enhancement modes</h4>
+          <button type="button" onClick={onOpenApproaches}>Compare Star Force approaches</button>
           <p className="hint">Choose the mode for each star upgrade. These choices apply to upgrade order costs,
             including recovery. Safeguard at 15–17 stars uses Mode 1 and prevents booms.</p>
           <div className="starforce-mode-wrap">

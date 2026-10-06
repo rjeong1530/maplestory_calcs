@@ -291,6 +291,26 @@ class EquipmentUpgradeTests(unittest.TestCase):
             145 * 1.1 + 106 * 3,
         )
 
+    def test_cooldown_hat_rankings_require_minimum_and_keep_cube(self):
+        request = self.plan_request(categories=['potential'])
+        item = request['equipment'][0]
+        item.update(name='Cooldown hat', slot='hat', potential_equipment_type='hat',
+                    minimum_cooldown_seconds=4, current_potential=[])
+        ranked = equipment_upgrade_plan(request)['rankings']['potential']['gain_per_meso_first']
+        self.assertEqual(len(ranked), 1)
+        from backend.calc import maplestory_potential as potential
+        # Check rarity independently against the complete unconstrained CD probability.
+        maximum_chance = potential.probability_cooldown_at_least(4, level=150)
+        self.assertGreater(ranked[0]['improvement_probability'], 0)
+        self.assertLessEqual(ranked[0]['improvement_probability'], maximum_chance)
+        item['current_potential'] = [{'effect': 'STR_PCT', 'value': 12},
+                                     {'effect': 'COOLDOWN_SEC', 'value': -2},
+                                     {'effect': 'COOLDOWN_SEC', 'value': -2}]
+        self.assertFalse(equipment_upgrade_plan(request)['rankings']['potential']['gain_per_meso_first'])
+        request['cube_type'] = 'red'
+        unavailable = equipment_upgrade_plan(request)['rankings']['potential']['unavailable']
+        self.assertIn('Black cubes', unavailable[0]['note'])
+
     def plan_request(self, **overrides):
         return {
             'main_stat': 'STR', 'secondary_stats': (), 'offense_stat': 'ATT',

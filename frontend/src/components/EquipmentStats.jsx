@@ -1,10 +1,11 @@
 import EquipmentAnalysis from './EquipmentAnalysis'
 import EquipmentGrid from './EquipmentGrid'
 import EquipmentUpgradePlan from './EquipmentUpgradePlan'
+import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import { CLASS_STATS } from '../data/classStats'
 import { EQUIPMENT_SLOTS, SLOT_LABELS, FIXED_RING_SLOT } from '../data/flameEquipment'
 
-export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResultInvalidated }) {
+export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResultInvalidated, onOpenApproaches }) {
   const { equipment, equipmentClass, activeSlot, setActiveSlot, updateEquipmentRoll,
     form, setForm, upgradeSettings, setUpgradeSettings } = planner
   const slot = activeSlot || EQUIPMENT_SLOTS.find(key => key && equipment[key])
@@ -18,6 +19,16 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResu
         <button type="button" onClick={onOpenSetup}>Change equipment setup</button>
       </div>
       <p className="hint">{equipmentClass} · Select an equipped item to record its current stats.</p>
+      <label className="equipment-class-selector">Equipment by set
+        <select value={slot || ''} onChange={event => setActiveSlot(event.target.value)}>
+          <option value="" disabled>Select equipment</option>
+          {Object.entries(EQUIPMENT_GROUPS).map(([group, label]) => <optgroup key={group} label={label}>
+            {Object.entries(equipment).filter(([key, item]) => equipmentGroup(item, key) === group)
+              .map(([key, item]) => <option key={key} value={key}>{item.name} ({key})</option>)}
+          </optgroup>)}
+          {slot && !selected && <option value={slot}>Empty {slot}</option>}
+        </select>
+      </label>
       <div className="equipment-stats-layout">
         <EquipmentGrid equipment={equipment} activeSlot={slot} onActivate={setActiveSlot} busy={busy} />
         <div className="equipment-editor-panel">
@@ -27,6 +38,7 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResu
             {slot === FIXED_RING_SLOT
               ? <p className="hint">Ring 4 is fixed to Ring of Restraint. It has no editable enhancements and is excluded from upgrade rankings.</p>
               : <EquipmentAnalysis key={`${slot}-${selected.id}`} slot={slot} item={selected}
+                onOpenApproaches={onOpenApproaches}
                 offenseStat={classStats.offense} onChange={updates => updateEquipmentRoll(slot, updates)} />}
           </> : <>
             <h3>No equipment in this slot</h3>

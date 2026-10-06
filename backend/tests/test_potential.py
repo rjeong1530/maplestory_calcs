@@ -6,6 +6,17 @@ from backend.calc import maplestory_potential as m
 
 
 class PotentialTests(unittest.TestCase):
+    def test_cooldown_constrained_distribution_preserves_probability_mass(self):
+        for seconds in (0, 2, 3, 4):
+            distribution = m.weighted_score_distribution({'STR_PCT': 1}, level=200,
+                                                        minimum_cooldown_seconds=seconds)
+            expected = m.probability_cooldown_at_least(seconds, level=200)
+            self.assertAlmostEqual(sum(distribution.values()), expected, places=10)
+            if seconds > 2:
+                # At least two cooldown lines leave at most one 13% stat line.
+                self.assertLessEqual(max(distribution), 13)
+        self.assertAlmostEqual(sum(m.weighted_score_distribution({'STR_PCT': 1}, level=200).values()), 1)
+
     def test_intermediate_levels_use_the_correct_potential_pool(self):
         for cube in m.CUBE_TYPES:
             for level, representative in ((110, 100), (119, 100), (120, 140),

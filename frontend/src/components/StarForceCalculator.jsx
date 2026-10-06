@@ -23,8 +23,7 @@ const initialForm = {
   safeguard_by_star: { 15: false, 16: false, 17: false },
 }
 
-export default function StarForceCalculator() {
-  const [view, setView] = useState('estimate')
+export default function StarForceCalculator({ planner, view, setView }) {
   const [form, setForm] = useState(initialForm)
   const [selectedChances, setSelectedChances] = useState(SUCCESS_CHANCES)
   const [busy, setBusy] = useState(false)
@@ -131,7 +130,7 @@ export default function StarForceCalculator() {
         <button type="button" aria-pressed={view === 'estimate'} onClick={() => setView('estimate')}>Custom estimate</button>
         <button type="button" aria-pressed={view === 'strategies'} onClick={() => setView('strategies')}>Compare strategies</button>
       </div>
-      <div hidden={view !== 'strategies'}><StarForceStrategies form={form} onChange={update} /></div>
+      <div hidden={view !== 'strategies'}><StarForceStrategies form={form} onChange={update} planner={planner} /></div>
       <div hidden={view !== 'estimate'}>
       <div className="calculator-grid">
         <form className="panel starforce-form" onSubmit={submit}>

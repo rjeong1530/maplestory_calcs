@@ -6,7 +6,6 @@ import DeferredPage from './components/DeferredPage'
 import './App.css'
 
 const PotentialCalculator = lazy(() => import('./components/PotentialCalculator'))
-const StarForceCalculator = lazy(() => import('./components/StarForceCalculator'))
 const EquipmentPlanner = lazy(() => import('./components/EquipmentPlanner'))
 
 export default function App() {
@@ -29,11 +28,8 @@ export default function App() {
         <h2>Page not found</h2>
         <p>Choose a calculator or Equipment upgrade from the navigation.</p>
       </section>}
-      <DeferredPage active={calculator === 'starforce'}>
-        <StarForceCalculator />
-      </DeferredPage>
-      <DeferredPage active={calculator === 'equipment' || calculator === 'flame'}>
-        <EquipmentPlanner activeTab={calculator} />
+      <DeferredPage active={['equipment', 'flame', 'starforce'].includes(calculator)}>
+        <EquipmentPlanner activeTab={calculator} onNavigate={navigate} />
       </DeferredPage>
       <DeferredPage active={calculator === 'potential'}>
         <PotentialCalculator />

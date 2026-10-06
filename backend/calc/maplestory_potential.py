@@ -154,8 +154,14 @@ def weighted_score_distribution(
     equipment_type='hat',
     level=150,
     cube_type='black',
+    minimum_cooldown_seconds=0,
 ) -> dict[float, float]:
-    """Return the exact score distribution for one three-line potential roll."""
+    """Score probabilities; rolls below the cooldown minimum retain no mass.
+
+    Do not renormalize eligible rolls: their rarity affects upgrade costs.
+    """
+    if type(minimum_cooldown_seconds) is not int or not 0 <= minimum_cooldown_seconds <= 6:
+        raise ValueError('Minimum cooldown must be between 0 and 6 seconds.')
     for effect, weight in effect_weights.items():
         if effect not in EFFECTS:
             raise ValueError(f'effect must be one of {EFFECTS}')
@@ -171,32 +177,34 @@ def weighted_score_distribution(
                 option.effects.get(effect, 0.0) * weight
                 for effect, weight in effect_weights.items()
             )
-            key = (round(score, 8), option.restriction)
+            cooldown = min(minimum_cooldown_seconds, -option.effects.get('COOLDOWN_SEC', 0))
+            key = (round(score, 8), option.restriction, cooldown)
             grouped[key] = grouped.get(key, 0.0) + option.probability
         line_options[line] = [
-            (score, restriction, probability)
-            for (score, restriction), probability in grouped.items()
+            (score, restriction, cooldown, probability)
+            for (score, restriction, cooldown), probability in grouped.items()
         ]
 
     restriction_names = tuple(LIMITS)
 
     @lru_cache(maxsize=None)
-    def rolls_from(line, counts):
+    def rolls_from(line, counts, needed_cooldown):
         if line == 4:
-            return ((0.0, 1.0),)
+            return ((0.0, 1.0),) if needed_cooldown <= 0 else ()
         counts_by_restriction = dict(zip(restriction_names, counts))
         available = [
             option for option in line_options[line]
             if not option[1] or counts_by_restriction[option[1]] < LIMITS[option[1]]
         ]
-        mass = math.fsum(probability for _, _, probability in available)
+        mass = math.fsum(probability for _, _, _, probability in available)
         result = {}
-        for score, restriction, probability in available:
+        for score, restriction, cooldown, probability in available:
             next_counts = list(counts)
             if restriction:
                 index = restriction_names.index(restriction)
                 next_counts[index] += 1
-            for remaining_score, remaining_probability in rolls_from(line + 1, tuple(next_counts)):
+            for remaining_score, remaining_probability in rolls_from(
+                    line + 1, tuple(next_counts), max(0, needed_cooldown - cooldown)):
                 total_score = round(score + remaining_score, 8)
                 result[total_score] = result.get(total_score, 0.0) + (
                     probability / mass * remaining_probability
@@ -204,7 +212,7 @@ def weighted_score_distribution(
         return tuple(result.items())
 
     initial_counts = (0,) * len(restriction_names)
-    return dict(sorted(rolls_from(1, initial_counts)))
+    return dict(sorted(rolls_from(1, initial_counts, minimum_cooldown_seconds)))
 
 
 def _total(combo, effect):

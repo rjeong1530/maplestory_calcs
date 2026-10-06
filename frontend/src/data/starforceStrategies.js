@@ -2,6 +2,12 @@ export function nameCustomStrategies(strategies) {
   return strategies.map((strategy, index) => ({ ...strategy, name: `Your strategy ${index + 1}` }))
 }
 
+export function percentDifference(value, baseline) {
+  if (!Number.isFinite(value) || !Number.isFinite(baseline)) return null
+  if (baseline === 0) return value === 0 ? 0 : null
+  return (value - baseline) / baseline * 100
+}
+
 export function strategySteps(row, target) {
   // Include lower stars because a boom can send the item below its starting star.
   return Array.from({ length: target }, (_, star) => ({

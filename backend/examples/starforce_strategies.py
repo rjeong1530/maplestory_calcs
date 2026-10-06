@@ -170,6 +170,7 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
             ],
         },
         'scenarios': scenarios,
+        'baseline': publish(_evaluate((1,) * 7, start, target, terms), 'Full Mode 1 (baseline)'),
         'recommendations': published_winners,
         'efficient_frontier': [publish(row, f'Tradeoff {index}') for index, row in enumerate(frontier, 1)],
     }
