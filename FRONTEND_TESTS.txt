@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
 Reviewed: 2026-10-06
-Total: 72 tests in 11 files
+Total: 84 helper tests in 14 files, plus 1 browser test in 1 file
 
 Run from frontend/:
   npm test
@@ -9,9 +9,9 @@ Single file example (from frontend/):
 
 Scope: Node built-in test runner with strict assertions against frontend data
 helpers, bundled catalog rules, request construction, and navigation actions.
-These are not browser end-to-end or rendered React component tests. Navigation
-side effects use a browser stub; actual Back/Forward events, component state
-retention, CSS appearance, and user clicks in a browser are not covered here.
+Helper tests use browser stubs where needed. The separately run Firefox test
+listed below covers rendered interactions and state retention with mocked APIs.
+Actual Back/Forward events and visual/CSS correctness are not covered.
 Lint and production build are separate checks, not entries in this inventory.
 Counts refer to named tests; loops exercise additional cases within each test.
 Descriptions summarize actual assertions, not a guarantee of all possible cases.
@@ -314,4 +314,124 @@ Tests: 2
    Behavior and purpose: Checks zero-spare coordinates remain finite, chart scale ignores
    replacement spending, and empty datasets produce no points.
    Custom strategies expand both axes when outside the frontier, share its scale,
-   and remain separate from the line connecting efficient strategies.
+  and remain separate from the line connecting efficient strategies.
+
+-----------------------------------------------------------------------
+Additional coverage recorded 2026-10-06
+Counts below supplement the per-file entries above.
+
+FILE: frontend/src/data/equipmentSave.test.js
+Additional tests: 1 (9 total in file)
+
+73. hat cooldown minimum survives exports and rejects invalid imported values
+   Behavior and purpose: Round-trips a four-second minimum, defaults older saves
+   to zero, and rejects negative, out-of-range, fractional, string, and boolean values.
+
+FILE: frontend/src/data/equipmentUpgrade.test.js
+Additional tests: 1 (21 total in file)
+
+74. upgrade requests carry the hat cooldown minimum
+   Behavior and purpose: Verifies the four-second hat minimum reaches the API payload.
+
+FILE: frontend/src/data/starforceStrategies.test.js
+Additional tests: 2 (4 total in file)
+
+75. baseline differences use signed percentages and handle zero baselines
+   Behavior and purpose: Checks increases, savings, zero cost, and zero/missing
+   baselines without division-by-zero results.
+
+76. custom strategy names follow the current list order after removals
+   Behavior and purpose: Renumbers display names while preserving strategy IDs.
+
+FILE: frontend/src/data/equipmentGroups.test.js
+Tests: 3
+
+77. Brilliant catalog items are grouped separately from Pitched
+   Behavior and purpose: Checks the four requested Brilliant items using actual
+   catalog entries in their ring, pendant, and face slots.
+
+78. Eternal groups use the requested slots, not names of unrelated secondaries
+   Behavior and purpose: Kalos includes hat/top/bottom/shoulder; Limbo includes
+   cape/gloves/shoes. Eternal Magnum remains other; representative Pitched items
+   retain their group.
+
+79. bulk copying preserves stats, resets missing modes, and excludes ineligible equipment
+   Behavior and purpose: Copies modes/safeguards to selected eligible items while
+   preserving stars, cooldown, potential, replacement cost, and untouched items.
+   Missing settings reset to defaults; the original input remains unchanged.
+
+-----------------------------------------------------------------------
+FILE: frontend/scripts/browser-regressions.test.mjs
+Browser tests: 1 (run separately from the 79 helper tests)
+
+1. navigation, stale responses, persistence, sorting, and selected equipment application
+   Behavior and purpose: Uses a fresh headless Firefox profile, temporary Vite
+   server, geckodriver, and mocked calculator APIs. Verifies the equipment shortcut,
+   ignores a delayed response after inputs change, displays the current response,
+   and retains inputs/results after navigating Home and back. Checks strategy
+   sorting and applying to one selected hat, preserving its stars/cooldown and
+   leaving gloves unchanged. Retains the equipment stats subview and verifies
+   changing a transient flame target does not write equipment to local storage.
+   Does not access the user's browser profile or test a live backend.
+
+Run from frontend/ with Firefox and geckodriver installed:
+  npm run test:browser
+Set GECKODRIVER_PATH if geckodriver is not on PATH. Set FIREFOX_BINARY if Firefox
+cannot be discovered automatically. No additional npm dependency is required.
+
+Latest implementation validation: all 79 helper tests and the one browser test
+passed; lint and production build also passed. This documentation update adds
+inventory entries, not new executable tests.
+
+Rendering regression coverage - 2026-10-07
+- The existing browser test additionally checks setup does not mount stats until
+  requested, a saved full set opens directly in stats without mounting setup,
+  and setup remains accessible on demand. Its existing navigation/state checks
+  continue to cover lazy route transitions. Browser test count remains one.
+- Separate manual benchmark: scripts/benchmark-rendering.test.mjs, run with
+  npm run benchmark:render. Builds production assets and records five navigations
+  each for Home, empty equipment setup, saved equipment stats, Star Force, and
+  Flames. Measures visible-form readiness, DOM nodes, and decoded script bytes.
+  This performance harness is excluded from npm test and npm run test:browser;
+  it asserts route availability, not machine-dependent timing thresholds.
+- Before/after samples are in frontend/rendering-before.json and
+  frontend/rendering-after.json. See PERFORMANCE_UPDATES.txt for limitations.
+- Validation: 79 helper tests, the expanded browser test, performance harness,
+  lint, and production build passed.
+
+Post-calculation Star Force budget selection - 2026-10-07
+- Expanded the existing browser test to verify each estimate requests all five
+  standard percentiles. Selecting 90% displays its matching meso budget without
+  another request or clearing the expected outcome; All restores all five rows.
+- Browser regression, lint, and production build passed. No new test file or
+  additional named test was added.
+
+Editable chance / meso budget - 2026-10-07 (supersedes preset-button checks)
+FILE: frontend/src/data/starforceBudget.test.js
+Tests: 3
+80. budget lookup handles arbitrary percentages and flat CDF regions conservatively
+    Checks zero, exact boundaries, decimal percentages, flat regions, and an
+    unreachable 100% chance using upward budget lookup.
+81. budget to chance floors the grid and rejects values beyond its horizon
+    Checks zero, between-bin budgets, exact limits, and out-of-range budgets.
+82. invalid chance and budget inputs never produce misleading estimates
+    Rejects NaN, infinity, negative values, strings, and percentages above 100.
+- The browser regression now checks average-cost/associated-chance defaults,
+  decimal percentage editing, reverse meso editing, beyond-limit messaging,
+  recovery to valid input, and no additional calculation request. Preset-button
+  assertions were replaced because that interface was removed.
+- Passed: all 82 helper tests, browser regression, lint, and production build.
+
+Flame counts, Potential budgets, and contained focus - 2026-10-07
+FILE: frontend/src/data/rollBudget.test.js
+Tests: 2
+83. independent-roll chance and budget conversions use whole rolls
+    Checks geometric probabilities, whole-roll rounding, fractional confidence,
+    cube costs, and inverse conversion using only affordable whole rolls.
+84. roll budgets handle impossible, guaranteed, and invalid inputs
+    Checks 0/100% targets, impossible and guaranteed rolls, invalid prices,
+    invalid percentages/budgets, and counts outside safe integer precision.
+- Browser regression checks both directions of Flame count and Potential meso
+  inputs without additional API calls. Flames show no meso or price fields.
+  Focus is verified on the field container, with no inner input outline.
+- All 84 helper tests, browser regression, lint, and production build passed.

@@ -2,6 +2,33 @@
   border-top: 1px solid #39465b;
   padding: 14px 0;
 }
+.equipment-analysis .equipment-approach-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 100%;
+  margin-bottom: 12px;
+  padding: 11px 14px;
+  border: 1px solid #38685f;
+  border-radius: 10px;
+  background: #172d2c;
+  color: #a8eadb;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: left;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+.equipment-analysis .equipment-approach-link:hover:not(:disabled) {
+  background: #203d38;
+  border-color: #67b5a2;
+}
+.equipment-approach-link svg {
+  flex-shrink: 0;
+}
 .equipment-analysis-sections {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

@@ -26,11 +26,12 @@ export default function PotentialCalculator() {
     setError('')
     setResult(null)
     try {
-      setResult(await apiRequest('/api/probability', {
+      const calculated = await apiRequest('/api/probability', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      }))
+      })
+      setResult({ ...calculated, cube_type: payload.cube_type })
     } catch (error) {
       setError(error.message)
     } finally {
@@ -64,7 +65,7 @@ export default function PotentialCalculator() {
             <Results result={result} busy={busy} error={error} />
           </div>
           <footer>
-            Independent-roll estimates. Tier-ups, keep/replace decisions, and meso costs are not included.
+            Independent-roll estimates. Meso budgets use your cost per cube; tier-ups and keep/replace decisions are not included.
           </footer>
         </>
       )}

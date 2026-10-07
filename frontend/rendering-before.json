@@ -1,0 +1,218 @@
+{
+  "date": "2026-10-07",
+  "browser": "Headless Firefox",
+  "mode": "Vite production preview; cache disabled; external images disabled; local API availability unchanged",
+  "note": "Ready includes WebDriver scheduling and two animation frames; not isolated React CPU duration or internet load time.",
+  "results": [
+    {
+      "name": "home",
+      "medianReadyMs": 53,
+      "medianDomNodes": 55,
+      "medianScriptBytes": 226814,
+      "runs": [
+        {
+          "apiRequests": [],
+          "domNodes": 55,
+          "readyMs": 70,
+          "scriptsBytes": 226814
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 55,
+          "readyMs": 53,
+          "scriptsBytes": 226814
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 55,
+          "readyMs": 43,
+          "scriptsBytes": 226814
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 55,
+          "readyMs": 40,
+          "scriptsBytes": 226814
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 55,
+          "readyMs": 57,
+          "scriptsBytes": 226814
+        }
+      ]
+    },
+    {
+      "name": "equipment setup",
+      "medianReadyMs": 370,
+      "medianDomNodes": 308,
+      "medianScriptBytes": 415644,
+      "runs": [
+        {
+          "apiRequests": [],
+          "domNodes": 308,
+          "readyMs": 389,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 308,
+          "readyMs": 370,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 308,
+          "readyMs": 375,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 308,
+          "readyMs": 361,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 308,
+          "readyMs": 358,
+          "scriptsBytes": 415644
+        }
+      ]
+    },
+    {
+      "name": "equipment stats",
+      "medianReadyMs": 363,
+      "medianDomNodes": 426,
+      "medianScriptBytes": 415644,
+      "runs": [
+        {
+          "apiRequests": [
+            "/api/item-options"
+          ],
+          "domNodes": 426,
+          "readyMs": 367,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [
+            "/api/item-options"
+          ],
+          "domNodes": 426,
+          "readyMs": 359,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [
+            "/api/item-options"
+          ],
+          "domNodes": 426,
+          "readyMs": 366,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [
+            "/api/item-options"
+          ],
+          "domNodes": 426,
+          "readyMs": 363,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [
+            "/api/item-options"
+          ],
+          "domNodes": 426,
+          "readyMs": 354,
+          "scriptsBytes": 415644
+        }
+      ]
+    },
+    {
+      "name": "starforce",
+      "medianReadyMs": 350,
+      "medianDomNodes": 200,
+      "medianScriptBytes": 446372,
+      "runs": [
+        {
+          "apiRequests": [
+            "/api/starforce-costs"
+          ],
+          "domNodes": 200,
+          "readyMs": 358,
+          "scriptsBytes": 446372
+        },
+        {
+          "apiRequests": [
+            "/api/starforce-costs"
+          ],
+          "domNodes": 200,
+          "readyMs": 351,
+          "scriptsBytes": 446372
+        },
+        {
+          "apiRequests": [
+            "/api/starforce-costs"
+          ],
+          "domNodes": 200,
+          "readyMs": 350,
+          "scriptsBytes": 446372
+        },
+        {
+          "apiRequests": [
+            "/api/starforce-costs"
+          ],
+          "domNodes": 200,
+          "readyMs": 349,
+          "scriptsBytes": 446372
+        },
+        {
+          "apiRequests": [
+            "/api/starforce-costs"
+          ],
+          "domNodes": 200,
+          "readyMs": 349,
+          "scriptsBytes": 446372
+        }
+      ]
+    },
+    {
+      "name": "flames",
+      "medianReadyMs": 349,
+      "medianDomNodes": 129,
+      "medianScriptBytes": 415644,
+      "runs": [
+        {
+          "apiRequests": [],
+          "domNodes": 129,
+          "readyMs": 348,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 129,
+          "readyMs": 351,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 129,
+          "readyMs": 349,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 129,
+          "readyMs": 349,
+          "scriptsBytes": 415644
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 129,
+          "readyMs": 358,
+          "scriptsBytes": 415644
+        }
+      ]
+    }
+  ]
+}

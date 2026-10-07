@@ -90,9 +90,10 @@ class StarForceEstimate:
     attempt_estimates: tuple[dict, ...] = ()
     expected_replacement_cost: float = 0
     meso_estimates: tuple[dict, ...] = ()
+    budget_distribution: dict | None = None
 
 
-def _meso_percentiles(edges, start, percentiles, expected_cost):
+def _meso_percentiles(edges, start, percentiles, expected_cost, distribution=None):
     """Conservative budget quantiles of a cost-weighted absorbing chain.
 
     Round each transition's full cost UP to a budget bin, so rounding cannot
@@ -103,21 +104,41 @@ def _meso_percentiles(edges, start, percentiles, expected_cost):
         return ()
     bins = 65536
     size = len(edges)
+    # States unreachable from the starting star cannot affect the distribution.
+    reachable = {start}
+    pending = [start]
+    while pending:
+        for destination, probability, _ in edges[pending.pop()]:
+            if probability and destination < size and destination not in reachable:
+                reachable.add(destination)
+                pending.append(destination)
+    states = sorted(reachable)
     for scale in (2, 4, 8, 16):
         unit = max(1, ceil(expected_cost * scale / bins))
         rounded = [[(dest, probability, max(1, ceil(cost / unit)))
                     for dest, probability, cost in row if probability] for row in edges]
-        cdf = [array('d', [0.0]) * (bins + 1) for _ in edges]
+        cdf = {state: array('d', [0.0]) * (bins + 1) for state in states}
         for budget in range(1, bins + 1):
-            for state, row in enumerate(rounded):
+            for state in states:
                 total = 0.0
-                for dest, probability, cost in row:
+                for dest, probability, cost in rounded[state]:
                     if cost <= budget:
                         total += probability * (1.0 if dest >= size else cdf[dest][budget - cost])
                 cdf[state][budget] = min(1.0, total)
         if cdf[start][-1] >= max(percentiles):
             break
+    if distribution is not None:
+        # Reuse the solved CDF on a bounded 4,097-point interactive grid.
+        stride = 16
+        distribution.update(
+            step_mesos=unit * stride,
+            probabilities=list(cdf[start][::stride]),
+            mean_success_probability=cdf[start][min(bins, int(expected_cost // unit))],
+            rounding_unit_mesos=unit,
+            calculation_limit_mesos=bins * unit,
+        )
     return tuple({'target_probability': p,
+                  'rounding_unit_mesos': unit, 'calculation_limit_mesos': bins * unit,
                   'mesos': bisect_left(cdf[start], p) * unit if cdf[start][-1] >= p else None}
                  for p in percentiles)
 
@@ -338,6 +359,7 @@ def estimate_starforce(
     shining_starforce_sunday: bool = False,
     mvp_rank: str = 'none',
     superior_item: bool = False,
+    include_budget_distribution: bool = False,
 ) -> StarForceEstimate:
     """Estimate expected spend, attempts, and booms until reaching a target.
 
@@ -455,10 +477,13 @@ def estimate_starforce(
     expected_attempts = _solve_linear_system(matrix, [1.0] * state_count)[start_star]
     expected_booms = _solve_linear_system(matrix, boom_probabilities)[start_star]
     replacement_cost = expected_booms * replacement_cost_mesos
+    distribution = {} if include_budget_distribution else None
+    budgets = _meso_percentiles(cost_edges, start_star, percentiles or ([.99] if include_budget_distribution else ()),
+                               expected_cost + replacement_cost, distribution)
     return StarForceEstimate(expected_cost + replacement_cost, expected_attempts, expected_booms,
                              _attempt_percentiles(transitions, start_star, percentiles),
                              replacement_cost,
-                             _meso_percentiles(cost_edges, start_star, percentiles, expected_cost + replacement_cost))
+                             budgets if percentiles else (), distribution)
 
 
 def main(argv: Sequence[str] | None = None) -> None:

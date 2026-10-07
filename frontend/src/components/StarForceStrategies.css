@@ -1,20 +1,72 @@
-.strategy-view { margin-top: 20px; }
-.strategy-detail { border: 1px solid #35465e; border-radius: 12px; padding: 18px; background: #121e30; }
-.strategy-metrics { display: grid; gap: 10px; }
-.strategy-metrics div { display: flex; justify-content: space-between; gap: 12px; }
-.strategy-metrics dt { color: #aab9cc; }
-.strategy-metrics dd { margin: 0; font-variant-numeric: tabular-nums; }
-.strategy-chart { width: 100%; max-height: 430px; color: #c7d3e4; overflow: visible; margin: 16px 0; }
-.strategy-chart text { fill: currentColor; font-size: 12px; }
-.strategy-chart circle { cursor: pointer; }
-.strategy-chart circle:hover { stroke: white; stroke-width: 3px; }
-.strategy-detail { margin: 20px 0; }
-.strategy-detail li { margin: 8px 0; }
-.strategy-view summary { cursor: pointer; padding: 16px 0; }
-.strategy-view button[aria-pressed="true"] { outline: 2px solid #67d8c4; }
-.custom-strategy-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
-.custom-strategy-editor { margin-top: 20px; }
-.strategy-comparison { margin: 24px 0 16px; }
+.strategy-view {
+  margin-top: 20px;
+}
+.strategy-detail {
+  border: 1px solid #35465e;
+  border-radius: 12px;
+  padding: 18px;
+  background: #121e30;
+}
+.strategy-metrics {
+  display: grid;
+  gap: 10px;
+}
+.strategy-metrics div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.strategy-metrics dt {
+  color: #aab9cc;
+}
+.strategy-metrics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.strategy-chart {
+  width: 100%;
+  max-height: 430px;
+  color: #c7d3e4;
+  overflow: visible;
+  margin: 16px 0;
+}
+.strategy-chart text {
+  fill: currentColor;
+  font-size: 12px;
+}
+.strategy-chart circle {
+  cursor: pointer;
+}
+.strategy-chart circle:hover {
+  stroke: white;
+  stroke-width: 3px;
+}
+.strategy-detail {
+  margin: 20px 0;
+}
+.strategy-detail li {
+  margin: 8px 0;
+}
+.strategy-view summary {
+  cursor: pointer;
+  padding: 16px 0;
+}
+.strategy-view button[aria-pressed="true"] {
+  outline: 2px solid #67d8c4;
+}
+.custom-strategy-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+.custom-strategy-editor {
+  margin-top: 20px;
+}
+.strategy-comparison {
+  margin: 24px 0 16px;
+}
 .strategy-sort-button {
   display: flex;
   align-items: center;
@@ -31,21 +83,48 @@
   text-transform: inherit;
   letter-spacing: inherit;
 }
-.strategy-sort-button span { flex-shrink: 0; font-size: 16px; }
+.strategy-sort-button span {
+  flex-shrink: 0;
+  font-size: 16px;
+}
 .strategy-sort-button:hover,
-th[aria-sort] .strategy-sort-button { color: #67d8c4; }
-.strategy-comparison-container { padding: 8px; border: 1px solid #2d3748; border-radius: 8px; }
+th[aria-sort] .strategy-sort-button {
+  color: #67d8c4;
+}
+.strategy-comparison-container {
+  padding: 8px;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+}
 .strategy-comparison-table {
   width: 100%;
   table-layout: fixed;
   margin: 0;
 }
-.strategy-name-column { width: 24%; }
-.strategy-steps-column { width: 34%; }
-.strategy-difference { display: block; color: #a7b4c9; font-size: 11px; white-space: normal; margin-top: 4px; }
-.strategy-row-apply { text-align: left; white-space: normal; }
-.strategy-row-apply .equipment-strategy-apply { margin: 0; padding: 10px; }
-.strategy-view .equipment-strategy-apply > summary { padding: 0; }
+.strategy-name-column {
+  width: 24%;
+}
+.strategy-steps-column {
+  width: 34%;
+}
+.strategy-difference {
+  display: block;
+  color: #a7b4c9;
+  font-size: 11px;
+  white-space: normal;
+  margin-top: 4px;
+}
+.strategy-row-apply {
+  text-align: left;
+  white-space: normal;
+}
+.strategy-row-apply .equipment-strategy-apply {
+  margin: 0;
+  padding: 10px;
+}
+.strategy-view .equipment-strategy-apply > summary {
+  padding: 0;
+}
 .strategy-comparison-table th,
 .strategy-comparison-table td {
   padding: 16px 14px;
@@ -69,34 +148,61 @@ th[aria-sort] .strategy-sort-button { color: #67d8c4; }
   white-space: normal;
   font-variant-numeric: tabular-nums;
 }
-.strategy-comparison-custom { background: #203345; }
-.strategy-comparison-marker { font-size: 16px; }
+.strategy-comparison-custom {
+  background: #203345;
+}
+.strategy-comparison-marker {
+  font-size: 16px;
+}
 .strategy-comparison-steps {
   font-size: 12px;
 }
-.strategy-comparison-steps ul { list-style: none; padding: 0; margin: 0; }
+.strategy-comparison-steps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 .strategy-comparison-steps li {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   gap: 8px;
   padding: 5px 0;
 }
-.strategy-comparison-steps li + li { border-top: 1px solid #35465e; }
-.strategy-comparison-steps strong { font-weight: 500; color: #c7e9df; }
+.strategy-comparison-steps li + li {
+  border-top: 1px solid #35465e;
+}
+.strategy-comparison-steps strong {
+  font-weight: 500;
+  color: #c7e9df;
+}
 @media (max-width: 760px) {
   .strategy-comparison-table,
   .strategy-comparison-table thead,
-  .strategy-comparison-table tbody { display: block; }
-  .strategy-comparison-table colgroup { display: none; }
-  .strategy-comparison-table tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .strategy-comparison-table tbody {
+    display: block;
+  }
+  .strategy-comparison-table colgroup {
+    display: none;
+  }
+  .strategy-comparison-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .strategy-comparison-table th,
-  .strategy-comparison-table td { padding: 12px 8px; min-width: 0; }
+  .strategy-comparison-table td {
+    padding: 12px 8px;
+    min-width: 0;
+  }
   .strategy-comparison-table thead th:first-child,
   .strategy-comparison-table thead th:nth-child(2),
-  .strategy-comparison-table thead th:last-child { display: none; }
+  .strategy-comparison-table thead th:last-child {
+    display: none;
+  }
   .strategy-comparison-table th[scope="row"],
   .strategy-comparison-table .strategy-steps-cell,
-  .strategy-comparison-table td[colspan] { grid-column: 1 / -1; }
+  .strategy-comparison-table td[colspan] {
+    grid-column: 1 / -1;
+  }
   .strategy-comparison-table td[data-label]::before {
     content: attr(data-label);
     display: block;

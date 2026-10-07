@@ -6,7 +6,8 @@ from typing import Annotated, Literal
 from dataclasses import asdict
 from functools import lru_cache
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from backend.api.limits import calculation_slot, require_finite
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from backend.calc import maplestory_potential as calculator
@@ -40,10 +41,10 @@ def cached_strategies(level, start, target, spare_value):
     return analyze_strategies(level, start, target, spare_value)
 
 
-@app.post('/api/starforce-strategies')
+@app.post('/api/starforce-strategies', dependencies=[Depends(calculation_slot)])
 def starforce_strategies(request: StrategyRequest):
-    return cached_strategies(request.item_level, request.start_star,
-                             request.target_star, request.replacement_cost_mesos)
+    return require_finite(cached_strategies(request.item_level, request.start_star,
+                             request.target_star, request.replacement_cost_mesos))
 
 
 class PotentialTarget(RequestModel):
@@ -97,7 +98,7 @@ def options():
 
 @app.get('/api/item-options')
 def item_options(
-    level: int,
+    level: Annotated[int, Field(gt=0, le=300)],
     potential_equipment_type: str | None = None,
     flame_equipment_type: str | None = None,
     cube_type: str = 'black',
@@ -225,7 +226,7 @@ def item_options(
     }
 
 
-@app.post('/api/probability', response_model=CalculationResult)
+@app.post('/api/probability', response_model=CalculationResult, dependencies=[Depends(calculation_slot)])
 def probability(request: CalculationRequest):
     """Probability that all minimum targets are met on one roll.
 
@@ -260,7 +261,7 @@ class FlameWeightsRequest(RequestModel):
 
 
 class FlameConfigRequest(RequestModel):
-    equipment_level: int
+    equipment_level: int = Field(gt=0, le=300)
     equipment_type: str
     boss_equipment: bool
     flame_type: str
@@ -285,10 +286,11 @@ class FlameProbabilityResult(BaseModel):
 
 
 class StarForceEstimateRequest(RequestModel):
-    replacement_cost_mesos: float = Field(default=0, ge=0, allow_inf_nan=False, strict=True)
+    include_budget_distribution: bool = Field(default=False, strict=True)
+    replacement_cost_mesos: float = Field(default=0, ge=0, le=1e15, allow_inf_nan=False, strict=True)
     percentiles: list[Annotated[float, Field(gt=0, lt=1, allow_inf_nan=False, strict=True)]] = Field(
         default_factory=list, max_length=20)
-    item_level: int = Field(gt=0, strict=True)
+    item_level: int = Field(gt=0, le=300, strict=True)
     start_star: int = Field(ge=0, le=29, strict=True)
     target_star: int = Field(ge=1, le=30, strict=True)
     mode_15_17: int = Field(default=1, ge=1, le=3, strict=True)
@@ -310,6 +312,16 @@ class AttemptEstimate(BaseModel):
 class MesoEstimate(BaseModel):
     target_probability: float
     mesos: int | None
+    rounding_unit_mesos: int
+    calculation_limit_mesos: int
+
+
+class BudgetDistribution(BaseModel):
+    step_mesos: int
+    probabilities: list[float]
+    mean_success_probability: float
+    rounding_unit_mesos: int
+    calculation_limit_mesos: int
 
 
 class StarForceEstimateResult(BaseModel):
@@ -319,6 +331,7 @@ class StarForceEstimateResult(BaseModel):
     expected_booms: float
     attempt_estimates: list[AttemptEstimate] = Field(default_factory=list)
     meso_estimates: list[MesoEstimate] = Field(default_factory=list)
+    budget_distribution: BudgetDistribution | None = None
 
 
 class UpgradeFlameWeightsRequest(RequestModel):
@@ -366,7 +379,7 @@ class UpgradeEquipmentRequest(RequestModel):
         if self.minimum_cooldown_seconds and (self.slot != 'hat' or self.potential_equipment_type != 'hat'):
             raise ValueError('A cooldown minimum is only supported for hats.')
         return self
-    replacement_cost_mesos: float | None = Field(default=None, ge=0, allow_inf_nan=False, strict=True)
+    replacement_cost_mesos: float | None = Field(default=None, ge=0, le=1e15, allow_inf_nan=False, strict=True)
     safeguard_by_star: dict[int, Annotated[bool, Field(strict=True)]] = Field(default_factory=dict)
 
     @field_validator('safeguard_by_star')
@@ -388,7 +401,7 @@ class UpgradeEquipmentRequest(RequestModel):
 
     name: str = Field(min_length=1)
     slot: str = Field(min_length=1)
-    equipment_level: int = Field(gt=0, strict=True)
+    equipment_level: int = Field(gt=0, le=300, strict=True)
     equipment_type: Literal['armor', 'weapon']
     potential_equipment_type: str | None = None
     current_star_force: int = Field(ge=0, le=30, strict=True)
@@ -432,7 +445,7 @@ class EquipmentUpgradePlanRequest(RequestModel):
         return self
 
 
-@app.post('/api/flame-probability', response_model=FlameProbabilityResult)
+@app.post('/api/flame-probability', response_model=FlameProbabilityResult, dependencies=[Depends(calculation_slot)])
 def flame_probability(request: FlameProbabilityRequest):
     """Probability of meeting the target flame score on one roll."""
     data = request.config
@@ -466,7 +479,7 @@ def flame_probability(request: FlameProbabilityRequest):
 
 @app.get('/api/starforce-costs')
 def starforce_costs(
-    level: Annotated[int, Field(gt=0)],
+    level: Annotated[int, Field(gt=0, le=300)],
     shining_starforce_sunday: bool = False,
     mvp_rank: Literal['none', 'silver', 'gold', 'diamond_plus'] = 'none',
     superior_item: bool = False,
@@ -524,7 +537,7 @@ def starforce_costs(
     }
 
 
-@app.post('/api/starforce-estimate', response_model=StarForceEstimateResult)
+@app.post('/api/starforce-estimate', response_model=StarForceEstimateResult, dependencies=[Depends(calculation_slot)])
 def starforce_estimate(request: StarForceEstimateRequest):
     """Estimate expected mesos, attempts, and booms to reach a target star."""
     try:
@@ -540,6 +553,7 @@ def starforce_estimate(request: StarForceEstimateRequest):
             safeguard_by_star=request.safeguard_by_star,
             percentiles=request.percentiles,
             replacement_cost_mesos=request.replacement_cost_mesos,
+            include_budget_distribution=request.include_budget_distribution,
             shining_starforce_sunday=request.shining_starforce_sunday,
             mvp_rank=request.mvp_rank,
             superior_item=request.superior_item,
@@ -547,6 +561,7 @@ def starforce_estimate(request: StarForceEstimateRequest):
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
+    require_finite(asdict(estimate))
     return StarForceEstimateResult(
         expected_replacement_cost=estimate.expected_replacement_cost,
         expected_cost=estimate.expected_cost,
@@ -554,13 +569,14 @@ def starforce_estimate(request: StarForceEstimateRequest):
         expected_booms=estimate.expected_booms,
         attempt_estimates=estimate.attempt_estimates,
         meso_estimates=estimate.meso_estimates,
+        budget_distribution=estimate.budget_distribution,
     )
 
 
-@app.post('/api/equipment-upgrade-plan')
+@app.post('/api/equipment-upgrade-plan', dependencies=[Depends(calculation_slot)])
 def equipment_upgrade_plan(request: EquipmentUpgradePlanRequest):
     """Rank equipped items by current score, expected gain, and meso efficiency."""
     try:
-        return equipment_upgrade.equipment_upgrade_plan(request.model_dump())
-    except (ValueError, KeyError) as error:
+        return require_finite(equipment_upgrade.equipment_upgrade_plan(request.model_dump()))
+    except (ValueError, KeyError, OverflowError) as error:
         raise HTTPException(status_code=422, detail=str(error)) from error

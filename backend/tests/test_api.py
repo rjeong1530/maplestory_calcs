@@ -10,6 +10,22 @@ from backend.calc import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):
+    def test_starforce_interactive_distribution_is_optional(self):
+        from fastapi.testclient import TestClient
+        from backend.api.main import app
+        client = TestClient(app)
+        payload = {'item_level': 150, 'start_star': 0, 'target_star': 1}
+        original = client.post('/api/starforce-estimate', json=payload).json()
+        response = client.post('/api/starforce-estimate', json={**payload, 'include_budget_distribution': True})
+        self.assertEqual(response.status_code, 200)
+        updated = response.json()
+        distribution = updated.pop('budget_distribution')
+        self.assertIsNone(original.pop('budget_distribution'))
+        self.assertEqual(original, updated)
+        self.assertEqual(len(distribution['probabilities']), 4097)
+        self.assertGreater(distribution['mean_success_probability'], .5)
+        self.assertEqual(sorted(distribution['probabilities']), distribution['probabilities'])
+
     def test_starforce_replacement_cost_http_contract(self):
         payload = {'item_level': 200, 'start_star': 15, 'target_star': 22}
         base = self.client.post('/api/starforce-estimate', json=payload).json()

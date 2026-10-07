@@ -1,12 +1,12 @@
-import { lazy } from 'react'
+import { plannerPage, potentialPage } from './preloadPage'
 import Navigation from './components/Navigation'
 import LandingPage from './components/LandingPage'
 import usePageRoute from './hooks/usePageRoute'
 import DeferredPage from './components/DeferredPage'
 import './App.css'
 
-const PotentialCalculator = lazy(() => import('./components/PotentialCalculator'))
-const EquipmentPlanner = lazy(() => import('./components/EquipmentPlanner'))
+const PotentialCalculator = potentialPage.Component
+const EquipmentPlanner = plannerPage.Component
 
 export default function App() {
   const [calculator, navigate] = usePageRoute()

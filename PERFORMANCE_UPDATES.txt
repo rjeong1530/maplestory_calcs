@@ -196,3 +196,153 @@ Earring catalog filter - 2026-10-05
 - Keep only Commanding Force Earring, Estella Earrings, and Superior Gollux
   Earrings on fetches and local filtering. Removed 9 records; 736 remain.
 - All 10 importer tests and 16 frontend equipment tests passed.
+
+Project review fixes and regression checks - 2026-10-06
+- Star Force budget percentiles allocate and process only states reachable from
+  the starting star. This avoids work on unreachable recovery states without
+  changing the 65,536-bin budget grid, rounding rules, costs, or probabilities.
+  Responses now expose rounding_unit_mesos and calculation_limit_mesos; the UI
+  explains precision and distinguishes a numerical limit from impossibility.
+- Star Force and flame requests share cancellation and input-keyed result logic.
+  Superseded requests are aborted and late responses cannot overwrite results
+  for newer inputs. Cost-table updates also respect cancellation.
+- Visited equipment and calculator pages remain mounted during navigation,
+  retaining inputs, results, selected subviews, and custom strategies.
+- Equipment persistence now depends on saved class and score weights instead
+  of the whole flame form. Transient edits no longer rewrite equipment storage;
+  actual saved settings still write immediately using the existing schema.
+- Bulk strategy controls use the shared equipment-group definitions, avoiding
+  duplicate labels and keeping group selection consistent.
+- API validation bounds equipment levels at 300 and replacement costs at 1e15
+  where applicable, and rejects nonfinite calculation results with HTTP 422.
+  Existing valid inputs retain their results; unavailable values remain null.
+- Added bounded, per-process calculation admission: default two concurrent
+  calculations and 300 requests per client per minute. Configure through
+  CALCULATION_CONCURRENCY and CALCULATIONS_PER_MINUTE. Busy/rate-limited requests
+  receive HTTP 503/429 with Retry-After; failed calculations release their slots.
+  Multiworker public deployments still need shared gateway limits.
+- Validation completed for these implementation changes: 123 backend tests,
+  79 frontend helper tests, one Firefox browser regression test, frontend lint,
+  production build, and git diff --check passed. Inventories describe coverage.
+- Compared four representative Star Force scenarios against committed code:
+  all existing output fields, including percentile budgets, matched exactly
+  after excluding the two new precision metadata fields. Catalog and example
+  files are unchanged. Equipment preservation is also covered by regressions.
+- Before/after runtime and memory measurements were subsequently completed;
+  see the benchmark below for measured gains and unchanged/control cases.
+
+Star Force before/after benchmark - 2026-10-06
+
+Method and reproducibility:
+- Baseline: commit dbc3c58ad9466efc83eeb2150d7651969a44f923; compare its
+  backend/calc/starforce_calculator.py with the current working-tree version.
+- Script: backend/benchmark_starforce.py. Raw timings, source hash, input
+  settings, and memory samples: backend/starforce_benchmark_results.json.
+- Windows 10 build 19045, Python 3.11.9 AMD64. One untimed warmup per version
+  per case, then five measured calls per version with alternating execution
+  order. Table reports medians; module loading and garbage collection before
+  each call are excluded. No calculator/API response cache is involved.
+- Peak traced Python allocations are measured in a separate call per version
+  using tracemalloc. These are not total process RAM or browser memory; tracing
+  overhead is excluded from every runtime sample.
+- Percentile targets: 50%, 75%, 90%, 95%, 99%, except the no-percentiles control.
+  Defaults are Mode 1, no events/MVP, and zero spare cost unless stated below.
+
+Scenario                         Before      After       Ratio   Peak MiB before -> after
+Level 200, 0-15                   0.4828 s    0.4812 s     1.00x   15.034 -> 15.036
+Level 200, 15-22                  1.3177 s    0.6901 s     1.91x   22.053 -> 10.052
+Level 200, 18-19, Mode 4 + SSF     1.1048 s    0.0546 s    20.22x   19.045 ->  1.042
+Level 250, 22-25, Gold, 1B spare   1.5648 s    0.8829 s     1.77x   25.063 -> 13.063
+Level 200, 15-22, no percentiles  0.9992 ms   1.1075 ms    0.90x    0.052 ->  0.052
+
+Interpretation:
+- Typical 15-22 runtime fell about 47.6%, with 54.4% lower peak traced memory.
+- The boom-free Mode 4 case has only one reachable state: runtime fell about
+  95.1%, with 94.5% lower peak traced memory. This is a favorable special case,
+  not the expected speedup for every equipment configuration.
+- The high-star case used 43.6% less time and 47.9% less peak traced memory.
+- All states are reachable in the 0-15 case, so there is no meaningful gain.
+  Peak allocation increased by 1,808 bytes for reachability bookkeeping.
+- Without percentiles, the optimized code path is skipped. The measured median
+  was 0.1083 ms slower; ranges overlap (before 0.956-1.108 ms, after 0.959-1.301
+  ms). Five individual calls at this scale do not establish a stable regression
+  or improvement. Memory was identical; no speedup is claimed for this path.
+- Every existing output field matched exactly in all warmup, timing, and memory
+  calls. Only the two added precision metadata fields were excluded from the
+  equality comparison. No probability tables, catalogs, or examples were changed.
+- These are local, sequential calculator benchmarks, not end-to-end API/browser
+  latency, load tests, or a benchmark of the unrelated flame/request/storage
+  changes. Normal machine scheduling can affect samples; raw runs are retained.
+
+Run again from the repository root (PowerShell):
+  .\.venv\Scripts\python.exe -m backend.benchmark_starforce --baseline dbc3c58ad9466efc83eeb2150d7651969a44f923 --repeats 5 --output backend/starforce_benchmark_results.json
+
+Frontend loading and rendering benchmark - 2026-10-07
+
+Measured bottlenecks and fixes:
+- Equipment setup and stats previously mounted together, including hidden
+  controls and effects. Mount each only on first use, then retain it so switching
+  sections preserves state. Shared equipment CSS loads with the equipment page.
+- Equipment UI and Flame UI were part of the shared planner bundle even for
+  other calculators. They now load as separate route chunks.
+- Local readiness remained around 350 ms even after reducing DOM work. Initial
+  route dependencies now preload together, and resolved components render
+  directly instead of suspending again through nested lazy loading boundaries.
+  Initial equipment loading preloads both section modules but mounts only the
+  selected section. Home renders immediately without route preloading.
+
+Method:
+- npm run benchmark:render builds production assets, starts an isolated Vite
+  preview and headless Firefox profile, and measures five fresh navigations per
+  scenario with disk/memory cache disabled. No personal browser data is used.
+- Ready time is navigation start to visible route controls plus two animation
+  frames. It includes browser/WebDriver scheduling, not isolated React CPU time.
+- API responses/calculation results and external icon image downloads are not
+  benchmarked. Images are disabled; preview has no calculator backend. These
+  numbers describe local form rendering, not production network or API latency.
+- Baseline is the working tree before this frontend optimization, including the
+  existing five-equipped-item default-view behavior, not the Git HEAD version.
+- Raw samples: frontend/rendering-before.json and frontend/rendering-after.json.
+
+Route                  Median ready before -> after     DOM nodes before -> after
+Home                     53 ms -> 56 ms                    55 -> 55
+Equipment setup         370 ms -> 97 ms                   308 -> 193
+Equipment stats         363 ms -> 95 ms                   426 -> 273
+Star Force              350 ms -> 78 ms                   200 -> 205
+Flames                  349 ms -> 71 ms                   129 -> 137
+
+Interpretation and remaining limits:
+- Equipment readiness improved about 74%; Star Force about 78%; Flames about
+  80%. Home showed no improvement (3 ms slower in these samples).
+- Initial equipment DOM size fell 37% for setup and 36% for stats. The small
+  Star Force/Flame DOM increases include extra chunk resource/style elements.
+- Decoded JavaScript loaded: equipment 415,644 -> 412,127 bytes; Star Force
+  446,372 -> 407,878 bytes (8.6% lower); Flames 415,644 -> 383,646 bytes (7.7%
+  lower). Home added 1,620 bytes of route-loading coordination code. These are
+  decoded script bytes, not compressed production transfer sizes.
+- Previously visited sections still retain their mounted state. This change
+  does not claim to eliminate all hidden-page updates or measure large result
+  tables, mobile hardware, in-app navigation latency, or server calculations.
+- Passed: 79 frontend helper tests, expanded browser regression test, production
+  rendering benchmark, lint, and production build. Browser assertions cover
+  deferred sections, saved-set default view, on-demand setup, and retained state.
+- Calculator formulas, catalogs, saved equipment format, and example data were
+  not modified by these rendering changes.
+
+Run again from frontend/ after setting GECKODRIVER_PATH and FIREFOX_BINARY if
+needed (same requirements as npm run test:browser):
+  npm run benchmark:render
+Optional BENCHMARK_OUTPUT sets the JSON path; default is rendering-benchmark.json.
+
+Flame/Potential interactive results and focus styling - 2026-10-07
+- Flames expose success chance and whole number of flames, with no cost inputs.
+  Default count is the average rounded up to a whole flame.
+- Potential exposes success chance and meso budget with editable cost per cube;
+  Black/Red defaults use existing project assumptions of 22M/12M. No prices or
+  probability tables were changed. Default budget uses the average roll cost.
+- Both directions use geometric formulas in the browser without further API
+  requests. Removed pre-calculation success-chance checkboxes on both tabs.
+- Replaced the overflowing inner focus outline with an inset container highlight
+  across these controls and Star Force, retaining visible keyboard focus.
+- Passed 84 frontend helper tests, browser regression, lint, and production build.
+  This update does not include a new timing benchmark.

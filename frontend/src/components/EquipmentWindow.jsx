@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react'
 import { CLASS_FAMILIES, EQUIPMENT_SLOTS, SLOT_LABELS, equipmentChoices, FIXED_RING_SLOT } from '../data/flameEquipment'
 import EquipmentGrid, { EquipmentIcon } from './EquipmentGrid'
 import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
-import './EquipmentWindow.css'
 
 export default function EquipmentWindow({
   equipmentClass, mapleClasses, onMapleClassChange, equipment, activeSlot,

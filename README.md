@@ -540,6 +540,24 @@ that the API is reachable.
 
 ## Verification
 
+Calculator requests are limited per API worker to two concurrent calculations
+and 300 requests per client per minute. Configure `CALCULATION_CONCURRENCY`
+and `CALCULATIONS_PER_MINUTE` before starting the API. Busy requests receive
+503; rate-limited requests receive 429, both with `Retry-After`. These are
+per-process controls; a multi-worker public deployment also needs shared limits
+at its gateway. Client identity uses the server-resolved client address.
+Star Force and equipment API levels are limited to 1–300 and spare prices to
+0–1e15 mesos. Nonfinite calculated costs are rejected rather than returned as
+successful null values. These limits do not rewrite saved equipment.
+
+For browser regression tests, install Firefox and put geckodriver on `PATH`
+(or set `GECKODRIVER_PATH` to its executable). Set `FIREFOX_BINARY` if Firefox
+is not found automatically, then run `npm run test:browser` from `frontend/`.
+The test starts an isolated headless profile and a temporary Vite server,
+using mocked calculation responses. It checks stale-response handling,
+navigation retention, sorting, selected-item strategy application, and
+persistence without reading or changing your normal browser data.
+
 Run calculator and API tests from the repository root:
 
 ```powershell
@@ -561,6 +579,28 @@ npm run build
 
 The frontend uses Node's built-in test runner. Tests cover navigation behavior,
 equipment eligibility and import/export, upgrade ordering, and probability helpers.
+
+To reproduce the Star Force before/after benchmark from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.benchmark_starforce --baseline dbc3c58ad9466efc83eeb2150d7651969a44f923 --repeats 5 --output backend/starforce_benchmark_results.json
+```
+
+This compares that committed calculator with the working-tree source, checks
+every existing output field for exact equality, and records alternating timing
+runs plus separate peak Python allocation measurements. Memory tracing makes
+the benchmark slower but is excluded from the timing samples. Results are local
+calculator measurements, not API latency or process-wide memory measurements.
+See `PERFORMANCE_UPDATES.txt` for results and limitations.
+
+To measure frontend loading, run `npm run benchmark:render` from `frontend/`
+with the same Firefox/geckodriver setup as the browser regression test. It builds
+the production app and measures five cache-disabled navigations per route in
+an isolated profile. Set `BENCHMARK_OUTPUT` to choose the output JSON path
+(default `rendering-benchmark.json`). Measurements cover visible form readiness,
+DOM nodes, and decoded JavaScript bytes; API calculations and external images
+are excluded. Recorded before/after samples are `frontend/rendering-before.json`
+and `frontend/rendering-after.json`.
 
 ## Frontend
 
@@ -617,6 +657,11 @@ The cost-distribution calculation rounds each transition cost up to one of
 from twice to sixteen times the mean; unresolved percentiles show as beyond
 the calculation limit. The API returns these as `meso_estimates` and retains
 `attempt_estimates` for compatibility.
+Each meso estimate also returns `rounding_unit_mesos` (the upper bound on
+rounding added per transition) and `calculation_limit_mesos` (the explored
+budget horizon). The UI displays these separately from the estimated budget.
+The solver skips unreachable states but retains the same costs, probabilities,
+budget resolution, and percentile values.
 
 ### Equipment
 

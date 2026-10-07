@@ -18,7 +18,7 @@ export default function EquipmentStrategyApply({ equipment, strategy, onApply })
       replacement costs, and upgrade limits stay as recorded. Upgrade costs are recalculated for each item
       using the event and MVP settings in Equipment.</p>
     <div className="equipment-apply-scopes" role="group" aria-label="Equipment to apply to">
-      {Object.entries({ all: 'All eligible', pitched: 'Pitched', brilliant: 'Brilliant', kalos: 'Kalos Eternals', limbo: 'Limbo Eternals', selected: 'Select equipment' })
+      {Object.entries({ all: 'All eligible', ...Object.fromEntries(Object.entries(EQUIPMENT_GROUPS).filter(([key]) => key !== 'other')), selected: 'Select equipment' })
         .map(([key, label]) => <button type="button" key={key} aria-pressed={scope === key}
           onClick={() => { setScope(key); setMessage('') }}>{label}</button>)}
     </div>

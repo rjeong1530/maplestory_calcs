@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
-import SuccessChances from './SuccessChances'
+import useCalculationRequest from '../hooks/useCalculationRequest'
 import StarForceStrategies from './StarForceStrategies'
+import StarForceBudget from './StarForceBudget'
 import { SUCCESS_CHANCES } from '../data/successChances'
 
 import { count as formatMesos } from '../data/numberFormat'
@@ -25,10 +26,7 @@ const initialForm = {
 
 export default function StarForceCalculator({ planner, view, setView }) {
   const [form, setForm] = useState(initialForm)
-  const [selectedChances, setSelectedChances] = useState(SUCCESS_CHANCES)
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
-  const [result, setResult] = useState(null)
+  const { busy, error, result, run, clear } = useCalculationRequest(JSON.stringify(form))
   const [costRows, setCostRows] = useState(null)
   const [costsBusy, setCostsBusy] = useState(true)
   const [costsError, setCostsError] = useState('')
@@ -47,7 +45,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
       superior_item: String(form.superior_item),
     })
     apiRequest(`/api/starforce-costs?${query}`, { signal: controller.signal })
-      .then(data => setCostRows(data.costs_by_star))
+      .then(data => { if (!controller.signal.aborted) setCostRows(data.costs_by_star) })
       .catch(requestError => {
         if (!controller.signal.aborted) {
           setCostRows(null)
@@ -77,8 +75,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
       setCostsBusy(true)
       setCostsError('')
     }
-    setResult(null)
-    setError('')
+    clear()
   }
 
   function updateStarSetting(name, star, value) {
@@ -86,18 +83,15 @@ export default function StarForceCalculator({ planner, view, setView }) {
       ...current,
       [name]: { ...current[name], [star]: value },
     }))
-    setResult(null)
-    setError('')
+    clear()
   }
 
   async function submit(event) {
     event.preventDefault()
-    setBusy(true)
-    setError('')
-    setResult(null)
 
     const payload = {
-      percentiles: selectedChances.map(chance => chance / 100),
+      percentiles: SUCCESS_CHANCES.map(chance => chance / 100),
+      include_budget_distribution: true,
       item_level: Number(form.item_level),
       start_star: Number(form.start_star),
       target_star: Number(form.target_star),
@@ -111,22 +105,12 @@ export default function StarForceCalculator({ planner, view, setView }) {
       safeguard_by_star: form.safeguard_by_star,
     }
 
-    try {
-      setResult(await apiRequest('/api/starforce-estimate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      }))
-    } catch (requestError) {
-      setError(requestError.message)
-    } finally {
-      setBusy(false)
-    }
+    await run('/api/starforce-estimate', payload)
   }
 
   return (
     <>
-      <div className="calculator-tabs" role="group" aria-label="Star Force view">
+      <div className="calculator-tabs starforce-view-switch" role="group" aria-label="Star Force view">
         <button type="button" aria-pressed={view === 'estimate'} onClick={() => setView('estimate')}>Custom estimate</button>
         <button type="button" aria-pressed={view === 'strategies'} onClick={() => setView('strategies')}>Compare strategies</button>
       </div>
@@ -214,11 +198,6 @@ export default function StarForceCalculator({ planner, view, setView }) {
             <p className="hint starforce-rules-note">
               Safeguarding applies only to selected 15★–17★ attempts. Boom recovery follows the star-specific rules.
             </p>
-            <SuccessChances estimateLabel="total meso budgets" selected={selectedChances} onChange={chances => {
-              setSelectedChances(chances)
-              setResult(null)
-              setError('')
-            }} />
             <button type="submit" className="primary" disabled={busy}>
               {busy ? 'Calculating…' : 'Calculate expected cost'}
             </button>
@@ -252,19 +231,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
                       <dd>{result.expected_booms.toLocaleString('en-US', { maximumFractionDigits: 3 })}</dd>
                     </div>
                   </dl>
-                  {result.meso_estimates?.length > 0 && <>
-                    <table>
-                      <caption>Total meso budget to reach your target stars</caption>
-                      <thead><tr><th scope="col">Success chance</th><th scope="col">Estimated total mesos</th></tr></thead>
-                      <tbody>{result.meso_estimates.map(estimate => (
-                        <tr key={estimate.target_probability}>
-                          <td>{formatRate(estimate.target_probability)}</td>
-                          <td>{estimate.mesos == null ? 'Beyond calculation limit' : formatMesos(estimate.mesos)}</td>
-                        </tr>
-                      ))}</tbody>
-                    </table>
-                    <p className="hint result-note">Approximate budgets for reaching the target at each success chance, including enhancement, boom recovery, and replacement costs with your selected discounts. Costs are rounded up during calculation for conservative estimates. These are budget percentiles, not averages or guarantees.</p>
-                  </>}
+                  {result.budget_distribution && <StarForceBudget result={result} />}
                   <p className="hint result-note">
                     Total mesos include enhancement costs and expected booms multiplied by your replacement cost.
                     The selected Shining Star Force Sunday and MVP discounts are applied to eligible enhancement costs.

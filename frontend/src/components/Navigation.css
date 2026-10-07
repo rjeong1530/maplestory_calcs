@@ -26,7 +26,7 @@
   display: none;
 }
 .calculator-dropdown > summary::after {
-  content: '\25BE';
+  content: "\25BE";
   margin-left: 8px;
 }
 .calculator-dropdown > summary:hover {
@@ -57,7 +57,7 @@
   background: transparent;
 }
 .calculator-menu::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -7px;
   left: 0;

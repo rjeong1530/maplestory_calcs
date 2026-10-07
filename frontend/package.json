@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test src/data/*.test.js",
+    "test:browser": "node --test scripts/browser-regressions.test.mjs",
+    "benchmark:render": "npm run build && node --test scripts/benchmark-rendering.test.mjs",
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",

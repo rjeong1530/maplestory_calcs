@@ -1,12 +1,22 @@
 import { useState } from 'react'
-import EquipmentWindow from './EquipmentWindow'
-import EquipmentStats from './EquipmentStats'
+import { equipmentSetup, equipmentStats } from '../preloadPage'
+import DeferredPage from './DeferredPage'
 import { CLASS_STATS } from '../data/classStats'
+import { FIXED_RING_SLOT } from '../data/flameEquipment'
+import './EquipmentWindow.css'
+
+const EquipmentWindow = equipmentSetup.Component
+const EquipmentStats = equipmentStats.Component
 
 export default function EquipmentPage({ planner, busy, onFlameResultInvalidated, onOpenApproaches }) {
-  const [view, setView] = useState('setup')
   const { equipment, equipmentClass, activeSlot, setActiveSlot, selectEquipment,
     removeEquipment, updateEquipmentClass, importEquipmentJson, exportEquipmentJson } = planner
+  const [view, setView] = useState(() => {
+    // The automatically supplied Ring of Restraint is not a user-selected item.
+    const selectedCount = Object.entries(equipment)
+      .filter(([slot, item]) => slot !== FIXED_RING_SLOT && item?.id).length
+    return selectedCount >= 5 ? 'stats' : 'setup'
+  })
 
   function changeEquipment(action, ...args) {
     action(...args)
@@ -23,20 +33,24 @@ export default function EquipmentPage({ planner, busy, onFlameResultInvalidated,
       </nav>
       <div className="equipment-page-content">
         <div id="equipment-setup-view" hidden={view !== 'setup'}>
-          <EquipmentWindow equipmentClass={equipmentClass}
-            mapleClasses={Object.keys(CLASS_STATS).sort()}
-            onMapleClassChange={value => changeEquipment(updateEquipmentClass, value)} equipment={equipment}
-            activeSlot={activeSlot} onActivate={setActiveSlot}
-            onSelect={(...args) => changeEquipment(selectEquipment, ...args)}
-            onRemove={slot => changeEquipment(removeEquipment, slot)}
-            busy={busy} onExport={exportEquipmentJson}
-            onImport={text => changeEquipment(importEquipmentJson, text)}
-            onOpenStats={() => setView('stats')} />
+          <DeferredPage active={view === 'setup'}>
+            <EquipmentWindow equipmentClass={equipmentClass}
+              mapleClasses={Object.keys(CLASS_STATS).sort()}
+              onMapleClassChange={value => changeEquipment(updateEquipmentClass, value)} equipment={equipment}
+              activeSlot={activeSlot} onActivate={setActiveSlot}
+              onSelect={(...args) => changeEquipment(selectEquipment, ...args)}
+              onRemove={slot => changeEquipment(removeEquipment, slot)}
+              busy={busy} onExport={exportEquipmentJson}
+              onImport={text => changeEquipment(importEquipmentJson, text)}
+              onOpenStats={() => setView('stats')} />
+          </DeferredPage>
         </div>
         <div id="equipment-stats-view" hidden={view !== 'stats'}>
-          <EquipmentStats planner={planner} busy={busy}
-            onOpenApproaches={onOpenApproaches}
-            onOpenSetup={() => setView('setup')} onFlameResultInvalidated={onFlameResultInvalidated} />
+          <DeferredPage active={view === 'stats'}>
+            <EquipmentStats planner={planner} busy={busy}
+              onOpenApproaches={onOpenApproaches}
+              onOpenSetup={() => setView('setup')} onFlameResultInvalidated={onFlameResultInvalidated} />
+          </DeferredPage>
         </div>
       </div>
     </div>

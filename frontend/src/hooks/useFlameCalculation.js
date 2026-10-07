@@ -1,12 +1,9 @@
-import { useState } from 'react'
-import { apiRequest } from '../api'
+import useCalculationRequest from './useCalculationRequest'
 import { CLASS_STATS } from '../data/classStats'
 import { CLASS_WEAPONS, getWeaponConfig } from '../data/flameWeapons'
 
 export default function useFlameCalculation(form) {
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
-  const [result, setResult] = useState(null)
+  const { busy, error, result, run, clear } = useCalculationRequest(JSON.stringify(form))
   const classStats = CLASS_STATS[form.maple_class]
   const isWeapon = form.equipment_type === 'weapon'
   const weaponChoices = CLASS_WEAPONS[form.maple_class]
@@ -15,9 +12,6 @@ export default function useFlameCalculation(form) {
 
   async function submit(event) {
     event.preventDefault()
-    setBusy(true)
-    setError('')
-    setResult(null)
 
     const payload = {
       config: {
@@ -39,22 +33,7 @@ export default function useFlameCalculation(form) {
       target_score: Number(form.target_score),
     }
 
-    try {
-      setResult(await apiRequest('/api/flame-probability', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      }))
-    } catch (requestError) {
-      setError(requestError.message)
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  function clear() {
-    setResult(null)
-    setError('')
+    await run('/api/flame-probability', payload)
   }
 
   return { busy, error, result, submit, clear }

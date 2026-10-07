@@ -37,20 +37,22 @@ export default function useEquipmentPlanner() {
   const [activeSlot, setActiveSlot] = useState(null)
   const [upgradeSettings, setUpgradeSettings] = useState(() =>
     restoreUpgradeSettings(savedSelection.upgrade_settings))
+  const savedClassName = form.maple_class
+  const scoreWeightsKey = JSON.stringify(Object.fromEntries(SCORE_WEIGHT_FIELDS.map(field => [field, form[field]])))
 
   useEffect(() => {
     const savedEquipment = serializeEquipment(equipment)
     const saved = saveEquipmentSelection({
-      maple_class: form.maple_class,
+      maple_class: savedClassName,
       equipment_class: equipmentClass,
       equipment: savedEquipment,
-      score_weights: Object.fromEntries(SCORE_WEIGHT_FIELDS.map(field => [field, form[field]])),
+      score_weights: JSON.parse(scoreWeightsKey),
       upgrade_settings: upgradeSettings,
     })
     // Report the external storage write outcome; it cannot be derived during render.
     // oxlint-disable-next-line react/set-state-in-effect
     setSaveError(saved ? '' : 'Equipment could not be saved in this browser. Export your equipment JSON before closing or refreshing this page.')
-  }, [equipment, equipmentClass, form, upgradeSettings])
+  }, [equipment, equipmentClass, savedClassName, scoreWeightsKey, upgradeSettings])
 
   function selectEquipment(slot, item) {
     if (slot === FIXED_RING_SLOT) return

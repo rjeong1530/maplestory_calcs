@@ -13,6 +13,27 @@ from backend.calc.starforce_calculator import (
 
 
 class StarForceCalculatorTests(unittest.TestCase):
+    def test_interactive_distribution_reuses_cdf_and_preserves_quantiles(self):
+        edges = [[(1, .5, 10), (0, .5, 10)]]
+        distribution = {}
+        expected = _meso_percentiles(edges, 0, [.5, .75], 20)
+        actual = _meso_percentiles(edges, 0, [.5, .75], 20, distribution)
+        self.assertEqual(actual, expected)
+        self.assertEqual(distribution['mean_success_probability'], .75)
+        self.assertEqual(len(distribution['probabilities']), 4097)
+        self.assertEqual(distribution['step_mesos'], 16)
+        self.assertEqual(distribution['probabilities'][0], 0)
+        self.assertEqual(distribution['probabilities'][1], .5)
+        self.assertEqual(distribution['probabilities'][2], .875)
+        self.assertEqual(distribution['calculation_limit_mesos'], 65536)
+
+    def test_budget_resolution_metadata_and_unreachable_states(self):
+        edges = [[(0, 1, 1e15)], [(2, 1, 10)]]
+        row = _meso_percentiles(edges, 1, [.5], 10)[0]
+        self.assertEqual(row['mesos'], 10)
+        self.assertEqual(row['rounding_unit_mesos'], 1)
+        self.assertEqual(row['calculation_limit_mesos'], 65536)
+
     def test_meso_percentiles_charge_replacements_only_on_booms(self):
         # Half succeed for 10; half boom, pay 100 extra, then retry.
         rows = _meso_percentiles([[(1, .5, 10), (0, .5, 110)]], 0, [.5, .75, .875], 120)

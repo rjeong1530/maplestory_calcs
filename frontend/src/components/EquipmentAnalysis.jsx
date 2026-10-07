@@ -173,7 +173,12 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
               )}
           {canStarForce && <>
           <h4>Star Force enhancement modes</h4>
-          <button type="button" onClick={onOpenApproaches}>Compare Star Force approaches</button>
+          <button type="button" className="equipment-approach-link" onClick={onOpenApproaches}>
+            Compare Star Force approaches
+            <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18" fill="none">
+              <path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
           <p className="hint">Choose the mode for each star upgrade. These choices apply to upgrade order costs,
             including recovery. Safeguard at 15–17 stars uses Mode 1 and prevents booms.</p>
           <div className="starforce-mode-wrap">

@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-06
-Total: 112 tests in 9 files
+Total: 125 tests in 10 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -569,3 +569,98 @@ Tests: 2
 112. test_invalid_strategy_requests
    Behavior and purpose: Rejects invalid levels and star ranges, boolean inputs, invalid
    replacement costs, and unsupported event, MVP, or Superior overrides with HTTP 422.
+
+-----------------------------------------------------------------------
+Additional coverage recorded 2026-10-06
+Counts below supplement the per-file entries above.
+
+FILE: backend/tests/test_equipment_upgrade.py
+Additional tests: 1 (27 total in file)
+
+113. test_cooldown_hat_rankings_require_minimum_and_keep_cube
+   Behavior and purpose: Requires a four-second minimum in potential improvements,
+   bounds improvement chance by cooldown rarity, and produces no upgrade for the
+   tested maximum stat roll with two cooldown lines. Red cubes produce a note
+   requiring Black cubes to keep the current roll.
+
+FILE: backend/tests/test_potential.py
+Additional tests: 1 (17 total in file)
+
+114. test_cooldown_constrained_distribution_preserves_probability_mass
+   Behavior and purpose: For zero/two/three/four seconds, distribution mass equals
+   cooldown probability rather than renormalizing to one. Above two seconds, at
+   least two cooldown lines leave at most one 13% stat line in the tested pool.
+
+FILE: backend/tests/test_starforce_strategies.py
+Additional tests: 1 (6 total in file)
+
+115. test_report_baseline_is_full_mode_one_without_safeguards
+   Behavior and purpose: Checks every baseline mode is one and safeguards are off;
+   total cost and expected spares match the calculator under the report's event
+   and replacement-cost assumptions.
+
+FILE: backend/tests/test_starforce.py
+Additional tests: 4 (25 total in file)
+
+116. test_meso_percentiles_charge_replacements_only_on_booms
+   Behavior and purpose: A controlled success/boom model yields budgets of
+   10, 120, and 230, charging replacement cost only on destruction.
+
+117. test_meso_percentiles_accumulate_different_costs_and_recovery
+   Behavior and purpose: A two-state recovery model yields budgets of 30, 160,
+   and 290; an empty percentile request yields no rows.
+
+118. test_meso_percentiles_match_constant_cost_geometric_quantiles
+   Behavior and purpose: Mode 4 single-transition budgets match geometric attempt
+   quantiles times tap cost within upward rounding tolerance, including SSF/MVP.
+
+119. test_budget_resolution_metadata_and_unreachable_states
+   Behavior and purpose: An unreachable expensive state does not change a
+   deterministic budget of 10; rounding unit is 1 and calculation limit is 65,536.
+
+FILE: backend/tests/test_limits.py
+Test class: CalculationLimitTests
+Tests: 4
+
+120. test_slots_release_after_failure_and_reject_excess_concurrency
+   Behavior and purpose: Rejects a second admission with HTTP 503 at capacity;
+   an exception releases the first slot so a later request can enter.
+
+121. test_rate_window_and_client_memory_are_bounded
+   Behavior and purpose: Rejects requests over the per-client allowance with
+   HTTP 429, expires the window after 60 seconds using a fake clock, and bounds
+   tracked client entries.
+
+122. test_nonfinite_results_are_not_successful_responses
+   Behavior and purpose: Infinite output is rejected with HTTP 422; ordinary
+   finite results and the None unavailable sentinel remain intact.
+
+123. test_api_numeric_limits_and_admission_response
+   Behavior and purpose: Extreme item levels/replacement costs and an oversized
+   cost-table level receive HTTP 422. An occupied limiter returns HTTP 503 with
+   Retry-After: 2; freeing its slot permits a successful calculation.
+
+Latest implementation validation: all 123 backend tests passed. This documentation
+update adds inventory entries, not new executable tests. Admission tests verify
+controlled behavior; they are not a production concurrency/load benchmark.
+
+Separate performance verification - 2026-10-06
+- backend/benchmark_starforce.py compares a specified Git baseline with the
+  working-tree calculator over five scenarios. Every run checks exact equality
+  of existing output fields, excluding only the added precision metadata.
+- Warmup, alternating repeated timing runs, and separate tracemalloc passes
+  measure runtime and peak Python allocations. This is a manual benchmark,
+  not an additional unittest; the suite count remains 123.
+- Reproduction command is in README.md; measurements and limitations are in
+  PERFORMANCE_UPDATES.txt, with raw samples in backend/starforce_benchmark_results.json.
+
+Interactive Star Force cost distribution - 2026-10-07
+124. test_interactive_distribution_reuses_cdf_and_preserves_quantiles
+     FILE: backend/tests/test_starforce.py (26 tests total)
+     Checks unchanged percentile rows, bounded 4,097-point output, grid step,
+     exact known geometric probabilities, and success probability at mean cost.
+125. test_starforce_interactive_distribution_is_optional
+     FILE: backend/tests/test_api.py (24 tests total)
+     Checks optional API output, monotonic distribution, correct length, mean
+     chance, and equality of all existing fields with/without the new feature.
+- All 125 backend tests passed.
