@@ -21,7 +21,7 @@ export default function PotentialCalculator() {
     return () => controller.abort()
   }, [retry])
 
-  async function calculate(payload) {
+  async function calculate({ cube_sale, ...payload }) {
     setBusy(true)
     setError('')
     setResult(null)
@@ -31,7 +31,7 @@ export default function PotentialCalculator() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      setResult({ ...calculated, cube_type: payload.cube_type })
+      setResult({ ...calculated, cube_type: payload.cube_type, cube_sale })
     } catch (error) {
       setError(error.message)
     } finally {

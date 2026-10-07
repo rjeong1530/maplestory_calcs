@@ -201,4 +201,62 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
   await until(() => execute("return !!document.querySelector('.equipment-setup')"), 'setup mounts on demand')
   await visibleButton('Stats & upgrades')
   assert.equal(await execute("return document.querySelector('#equipment-stats-view').hidden"), false)
+  const overallSteps = ['flames', 'starforce', 'potential'].map((category, index) => ({
+    step: index + 1, category, slot: 'hat', name: 'Projected hat', equipment_level: 200,
+    current_score: 140, target_score: 173.5, expected_final_score: 185,
+    start_star: 17, next_star: 19, expected_score_gain: 45,
+    action_cost_mesos: 100000000, gain_per_meso: .00000045,
+    expected_booms: category === 'starforce' ? 1.25 : undefined,
+    cumulative_cost_mesos: (index + 1) * 100000000,
+  }))
+  await execute(`
+    const prior = window.fetch;
+    window.__upgradeSteps = arguments[0];
+    window.fetch = (path, init) => {
+      if (path !== '/api/equipment-upgrade-plan') return prior(path, init);
+      window.__upgradePayload = JSON.parse(init.body);
+      const ranks = {gain_per_meso_first:[], largest_gain_first:[], unavailable:[]};
+      return Promise.resolve({ok:true, json:async()=>({
+        rankings:{starforce:ranks,flames:ranks,potential:ranks},
+        flame_rankings:{black:ranks,abyssal:ranks},
+        cost_assumptions_mesos:{black_flame:3000000,abyssal_flame:null},
+        excluded_superior_equipment:[],
+        overall_upgrade_order:{steps:window.__upgradeSteps,unavailable:[],step_limit:20}
+      })});
+    };
+  `, overallSteps)
+  await visibleButton('Calculate upgrade order')
+  await until(() => execute("return !!document.querySelector('[aria-label=\"Upgrade category\"]')"), 'upgrade tabs')
+  assert.deepEqual(await execute("return [...document.querySelectorAll('[aria-label=\"Upgrade category\"] button')].map(b=>b.textContent)"),
+    ['Star Force', 'Flames', 'Potential', 'Overall'])
+  assert.equal(await execute('return window.__upgradePayload.include_overall'), true)
+  await visibleButton('Overall')
+  await until(() => execute("return !!document.querySelector('.overall-upgrade-table')"), 'overall recommendations')
+  assert.equal(await execute("return document.querySelectorAll('.overall-upgrade-table tbody tr').length"), 3)
+  const recommendationText = await execute("return document.querySelector('.overall-upgrade-table').textContent")
+  assert.deepEqual(await execute("return [...document.querySelectorAll('.overall-upgrade-table tbody tr')].map(row => row.cells[4].textContent)"),
+    ['-', '1.25', '-'])
+  await execute("window.__statsEditor = document.querySelector('.equipment-editor-panel')")
+  await visibleButton('Hide stats')
+  assert.equal(await execute("return document.querySelector('#current-equipment-stats-content').hidden"), true)
+  assert.equal(await execute("return document.querySelector('[aria-controls=\"current-equipment-stats-content\"]').getAttribute('aria-expanded')"), 'false')
+  assert.equal(await execute("return document.querySelector('.overall-upgrade-table').getClientRects().length > 0"), true)
+  await visibleButton('Show stats')
+  assert.equal(await execute("return document.querySelector('#current-equipment-stats-content').hidden"), false)
+  assert.equal(await execute("return window.__statsEditor === document.querySelector('.equipment-editor-panel')"), true)
+  assert.ok(await execute("return Math.abs(document.querySelector('.upgrade-plan').getBoundingClientRect().width - document.querySelector('.equipment-page-layout').getBoundingClientRect().width) < 2"))
+  await command(`/session/${session}/window/rect`, { width: 390, height: 900 })
+  assert.ok(await execute("const bounds = document.querySelector('.upgrade-plan').getBoundingClientRect(); return bounds.left >= 0 && bounds.right <= window.innerWidth"),
+    'upgrade panel fits the mobile viewport while its table scrolls internally')
+  for (const text of ['173.5', '185', '17 \u2192 19 stars', 'Black Flames', 'Black cubes', 'Score gain / 100M']) {
+    assert.ok(recommendationText.includes(text), text)
+  }
+  await execute("document.querySelector('.upgrade-plan .cube-sale-control input').click()")
+  await until(() => execute("return !document.querySelector('.overall-upgrade-table')"), 'changed pricing clears stale recommendations')
+  await visibleButton('Calculate upgrade order')
+  await until(() => execute("return !!document.querySelector('.overall-upgrade-table')"), 'overall selection retained after recalculation')
+  assert.equal(await execute('return window.__upgradePayload.cube_sale'), true)
+  await execute('window.__upgradeSteps = []')
+  await visibleButton('Calculate upgrade order')
+  await until(() => execute("return document.querySelector('[aria-label=\"Overall upgrade order\"]')?.textContent.includes('No eligible upgrades')"), 'empty combined plan')
 })

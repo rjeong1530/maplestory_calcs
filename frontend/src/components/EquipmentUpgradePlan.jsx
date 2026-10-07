@@ -3,12 +3,11 @@ import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
 import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, UPGRADE_CATEGORIES, MVP_RANKS, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
 import './EquipmentUpgradePlan.css'
+import { cubeCostLabel } from '../data/cubeCosts'
 import FlameUpgradeOrder from './FlameUpgradeOrder'
+import OverallUpgradeOrder from './OverallUpgradeOrder'
 
 const CATEGORIES = UPGRADE_CATEGORIES
-const ORDERS = {
-  gain_per_meso_first: 'Best gain per meso',
-}
 const scoreFormat = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 })
 const number = value => value == null ? 'Unavailable'
   : scoreFormat.format(value)
@@ -24,8 +23,8 @@ export default function EquipmentUpgradePlan({
 }) {
   const [selectedCategory, setCategory] = useState('starforce')
   const [flameType, setFlameType] = useState('black')
-  const category = settings.categories.includes(selectedCategory) ? selectedCategory : settings.categories[0]
-  const [order, setOrder] = useState('gain_per_meso_first')
+  const category = selectedCategory === 'overall' || settings.categories.includes(selectedCategory)
+    ? selectedCategory : settings.categories[0]
   const [request, setRequest] = useState(null)
   const controllerRef = useRef(null)
   const payload = buildUpgradeRequest(equipment, classStats, flameWeights, settings)
@@ -37,7 +36,7 @@ export default function EquipmentUpgradePlan({
   const rankings = result?.rankings[category]
   const rankedRows = category === 'flames'
     ? [...(rankings?.gain_per_meso_first || [])].sort((a, b) => b.improvement_probability - a.improvement_probability)
-    : rankings?.[order] || []
+    : rankings?.gain_per_meso_first || []
   const groupedRows = category === 'starforce' ? combineStarforceSteps(orderStarforceSteps(rankedRows)) : rankedRows
   const rows = category === 'starforce' ? groupedRows.slice(0, 20) : groupedRows
 
@@ -91,13 +90,19 @@ export default function EquipmentUpgradePlan({
             ))}
           </select>
         </label>
+        <label className="cube-sale-control">
+          <input type="checkbox" checked={settings.cube_sale}
+            onChange={event => onSettingsChange({ ...settings, cube_sale: event.target.checked })} />
+          <span>Cube sale (25% off black and red cubes)</span>
+        </label>
         <div className="upgrade-controls">
           <label>Potential cube
             <select value={settings.cube_type}
               onChange={event => onSettingsChange({ ...settings, cube_type: event.target.value })}>
-              <option value="black">Black cube — 22M mesos</option>
-              <option value="red">Red cube — 12M mesos</option>
+              <option value="black">Black cube</option>
+              <option value="red">Red cube</option>
             </select>
+            <span className="cube-price" aria-live="polite">{cubeCostLabel(settings.cube_type, settings.cube_sale)}</span>
           </label>
           <p className="hint">Flame results include Black and Abyssal Flames. Star Force uses each item's enhancement modes.</p>
         </div>
@@ -135,19 +140,16 @@ export default function EquipmentUpgradePlan({
       {current?.error && <p className="error" role="alert">{current.error}</p>}
       {result && <>
         <div className="upgrade-results-controls">
-          <div className="calculator-tabs" role="group" aria-label="Upgrade category">
+          <div className="upgrade-category-tabs" role="group" aria-label="Upgrade category">
             {Object.entries(CATEGORIES).filter(([key]) => settings.categories.includes(key)).map(([key, label]) => (
               <button type="button" key={key} aria-pressed={category === key}
                 onClick={() => setCategory(key)}>{label}</button>
             ))}
+            <button type="button" aria-pressed={category === 'overall'}
+              onClick={() => setCategory('overall')}>Overall</button>
           </div>
-          {category !== 'flames' && <label>Rank by
-            <select value={order} onChange={event => setOrder(event.target.value)}>
-              {Object.entries(ORDERS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
-            </select>
-          </label>}
         </div>
-        {category !== 'flames' && <p className="hint">Scores are weighted stat points. Gain is measured for each star range or first better roll.
+        {category !== 'flames' && category !== 'overall' && <p className="hint">Scores are weighted stat points. Gain is measured for each star range or first better roll.
           Efficiency is displayed as flame score gain per 100M mesos.</p>}
         {category === 'starforce' && <p className="hint">
           Showing the top {rows.length} of {groupedRows.length} upgrade ranges in the selected order.{' '}
@@ -159,7 +161,9 @@ export default function EquipmentUpgradePlan({
           including all prerequisite steps. After choosing a range, it compares again from the new star levels. Consecutive ranges
           for the same item are combined, so a displayed range may exceed six stars.
         </p>}
-        {category === 'flames' ? <div className="flame-comparison">
+        {category === 'overall' ? <OverallUpgradeOrder plan={result.overall_upgrade_order}
+          categories={settings.categories} cubeType={settings.cube_type} />
+          : category === 'flames' ? <div className="flame-comparison">
           <div className="calculator-tabs flame-type-toggle" role="group" aria-label="Flame results to display">
             {['black', 'abyssal'].map(type => <button type="button" key={type}
               aria-label={type === 'black' ? 'Black Flames' : 'Abyssal Flames'}
@@ -176,7 +180,7 @@ export default function EquipmentUpgradePlan({
         </div> : rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
           role="region" aria-label={`${CATEGORIES[category]} upgrade rankings`}>
           <table className="upgrade-table">
-            <caption>{CATEGORIES[category]} — {ORDERS[order]}</caption>
+            <caption>{CATEGORIES[category]} — Best gain per meso</caption>
             <thead><tr><th scope="col">#</th><th scope="col">Equipment</th>
               <th scope="col">{category === 'starforce' ? 'Score before step' : 'Current score'}</th><th scope="col">Expected gain</th>
               {category === 'starforce' && <th scope="col">Expected booms</th>}
@@ -198,7 +202,7 @@ export default function EquipmentUpgradePlan({
             </tr>)}</tbody>
           </table>
         </div> : <p role="status">No eligible items for this ranking. Check the unavailable estimates below.</p>}
-        {category !== 'flames' && rankings.unavailable?.length > 0 && <details className="upgrade-notes">
+        {category !== 'flames' && category !== 'overall' && rankings.unavailable?.length > 0 && <details className="upgrade-notes">
           <summary>Unavailable {CATEGORIES[category]} estimates ({rankings.unavailable.length})</summary>
           <ul>{rankings.unavailable.map(entry => <li key={entry.slot}>
             <strong>{entry.name}</strong> ({slotName(entry.slot)}

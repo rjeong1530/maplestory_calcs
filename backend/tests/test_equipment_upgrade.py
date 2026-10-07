@@ -6,6 +6,27 @@ from backend.calc import starforce_calculator as starforce
 
 
 class EquipmentUpgradeTests(unittest.TestCase):
+    def test_cube_sale_discounts_costs_without_changing_rolls(self):
+        from backend.api.main import EquipmentUpgradePlanRequest
+        for cube in ('black', 'red'):
+            with self.subTest(cube=cube):
+                request = EquipmentUpgradePlanRequest(**self.plan_request(
+                    cube_type=cube, categories=['potential'])).model_dump()
+                regular = equipment_upgrade_plan(request)
+                request['cube_sale'] = True
+                sale = equipment_upgrade_plan(EquipmentUpgradePlanRequest(**request).model_dump())
+                self.assertTrue(sale['cube_sale'])
+                self.assertEqual(sale['cost_assumptions_mesos']['black_cube'], 16_500_000)
+                self.assertEqual(sale['cost_assumptions_mesos']['red_cube'], 9_000_000)
+                self.assertEqual(sale['cost_assumptions_mesos']['black_flame'],
+                                 regular['cost_assumptions_mesos']['black_flame'])
+                before = regular['rankings']['potential']['gain_per_meso_first'][0]
+                after = sale['rankings']['potential']['gain_per_meso_first'][0]
+                self.assertAlmostEqual(after['action_cost_mesos'], before['action_cost_mesos'] * .75)
+                self.assertAlmostEqual(after['gain_per_meso'], before['gain_per_meso'] / .75)
+                self.assertEqual(after['expected_attempts'], before['expected_attempts'])
+                self.assertEqual(after['expected_score_gain'], before['expected_score_gain'])
+
     def test_secondary_stat_multiplier_applies_to_upgrade_scores(self):
         from backend.calc.equipment_upgrade import _potential_current_score
         item = {'name': 'Hat', 'slot': 'hat', 'equipment_level': 200, 'equipment_type': 'armor'}

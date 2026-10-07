@@ -1,3 +1,4 @@
+import { cubeCost } from '../data/cubeCosts'
 import RollBudget from './RollBudget'
 import { count, percentage } from '../data/numberFormat'
 
@@ -21,7 +22,7 @@ export default function Results({ result, busy, error }) {
               : result.probability === 1 ? 'Guaranteed on every roll.'
                 : `Approximately 1 in ${count(result.one_in)} rolls`}</p>
             {result.probability === 0 && <p className="hint">Try lowering a target or changing the equipment.</p>}
-            <RollBudget probability={result.probability} defaultCost={{ black: 22000000, red: 12000000 }[result.cube_type] ?? null} itemLabel="Cube" />
+            <RollBudget probability={result.probability} defaultCost={cubeCost(result.cube_type, result.cube_sale)} itemLabel="Cube" />
             <p className="hint result-note">All targets must occur together. Estimates describe the chance of at least one successful roll, not a guaranteed number of cubes.</p>
           </>
         )}

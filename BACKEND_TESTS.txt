@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
-Reviewed: 2026-10-06
-Total: 125 tests in 10 files
+Reviewed: 2026-10-07
+Total: 134 tests in 11 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -664,3 +664,49 @@ Interactive Star Force cost distribution - 2026-10-07
      Checks optional API output, monotonic distribution, correct length, mean
      chance, and equality of all existing fields with/without the new feature.
 - All 125 backend tests passed.
+
+Cube sale pricing - 2026-10-07
+FILE: backend/tests/test_equipment_upgrade.py (28 tests total)
+Test class: EquipmentUpgradeTests
+126. test_cube_sale_discounts_costs_without_changing_rolls
+     Behavior and purpose: Passes regular and sale settings through the request
+     model for both cube types. Checks sale cost assumptions of 16.5M for black
+     cubes and 9M for red cubes, 25% lower expected upgrade costs, and the
+     corresponding increase in gain per meso. Expected attempts, score gains,
+     and black flame cost assumptions remain unchanged.
+- All 126 backend tests passed in 6.659 seconds with unittest discovery.
+
+Overall upgrade order - 2026-10-07
+FILE: backend/tests/test_overall_upgrade.py
+Test class: OverallUpgradeTests
+Tests: 8
+
+127. test_flame_target_switches_at_competing_efficiency_and_accounts_for_overshoot
+     Checks automatic stopping thresholds against two competing efficiencies,
+     expected attempts, conditional score including overshoots, and gain per meso.
+128. test_threshold_uses_obtainable_scores_and_reacts_to_current_score_and_cost
+     Checks fractional obtainable targets, changing current scores and prices,
+     maximum-score exhaustion, and next-improvement fallback without competitors.
+129. test_combined_order_switches_categories_and_reprojects_actual_gain
+     Checks flames, potential, and Star Force are interleaved in efficiency order,
+     expected successful flame scores drive subsequent comparisons, cumulative
+     spending is correct, and the original equipment states are not mutated.
+130. test_starforce_lookahead_includes_bridge_cost_and_respects_prerequisites
+     Checks a range includes the cost of reaching its payoff star, increased
+     prerequisite cost changes the chosen category, and missing prerequisites
+     prevent recommendations for a later isolated step.
+131. test_empty_maxed_and_zero_gain_states_do_not_produce_recommendations
+     Checks empty equipment/distributions, maximum potential, zero flame gain,
+     and zero Star Force gain return no recommendations.
+132. test_projected_steps_advance_scores_and_use_remaining_expected_costs
+     Checks later flame steps start from the prior conditional expected score,
+     calculate only remaining gains and spending, and accumulate expected costs.
+133. test_equipment_inputs_determine_targets_and_categories_remain_optional
+     Checks level-dependent distributions produce different targets, boss-flame
+     flags reach the engine, selected categories constrain the plan, and clients
+     omitting overall planning retain the existing response shape.
+134. test_overall_http_contract_and_cube_sale_costs
+     Checks the HTTP plan includes bounded steps, sale prices apply to both cube
+     types throughout projected steps, and malformed include_overall is rejected.
+- All 134 backend tests passed. Overall steps are greedy projections from
+  conditional mean roll results, not guarantees or a globally optimal budget plan.

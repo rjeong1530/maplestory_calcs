@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
-Reviewed: 2026-10-06
-Total: 84 helper tests in 14 files, plus 1 browser test in 1 file
+Reviewed: 2026-10-07
+Total: 86 helper tests in 15 files, plus 1 browser test in 1 file
 
 Run from frontend/:
   npm test
@@ -435,3 +435,42 @@ Tests: 2
   inputs without additional API calls. Flames show no meso or price fields.
   Focus is verified on the field container, with no inner input outline.
 - All 84 helper tests, browser regression, lint, and production build passed.
+
+Cube sale pricing - 2026-10-07
+FILE: frontend/src/data/cubeCosts.test.js
+Tests: 1
+85. cube prices and labels reflect sale pricing for both cubes
+    Behavior and purpose: Checks default and explicit regular prices of 22M for
+    black cubes and 12M for red cubes, sale prices of 16.5M and 9M, and matching
+    sale-price labels in mesos per cube.
+
+FILE: frontend/src/data/equipmentUpgrade.test.js (22 tests total)
+86. cube sale persists and reaches upgrade calculations
+    Behavior and purpose: Checks both true and false sale settings survive
+    restoration and reach the upgrade API request. A saved string 'true' is
+    rejected as a sale flag and falls back to false.
+- The existing saved-settings fallback test also checks cube sale defaults off.
+- All 86 helper tests, lint, and production build passed. The browser regression
+  was not rerun for this change.
+
+Overall upgrade order - 2026-10-07
+FILE: frontend/src/data/equipmentUpgrade.test.js (22 tests total)
+- Expanded "upgrade selections survive restoration and reach the API" to verify
+  include_overall is requested while preserving the selected upgrade categories.
+FILE: frontend/scripts/browser-regressions.test.mjs (1 browser test total)
+- Expanded the existing browser regression with mocked upgrade responses to check
+  all four tabs, switching to Overall, flame and potential score targets, projected
+  results, Star Force ranges, costs/efficiency headings, and the combined request.
+- Changing cube sale hides stale recommendations; recalculation retains Overall
+  selection and sends the new pricing. An empty plan displays the no-upgrades state.
+- All 86 helper tests, the expanded browser regression, lint, and build passed.
+  Backend tests separately verify the planning mathematics and HTTP responses.
+
+Upgrade layout and expected booms - 2026-10-07
+FILE: frontend/scripts/browser-regressions.test.mjs (1 browser test total)
+- Expanded the existing regression to check Overall displays numeric Star Force
+  booms and dashes for flames/potential. Hide stats collapses the editor with an
+  accessible expanded state while preserving its mounted controls and results.
+- Checks the upgrade panel spans the equipment layout on desktop and stays within
+  a 390px browser window, with wide tables scrolling inside the panel.
+- Browser regression, production build, and lint passed. Test counts unchanged.

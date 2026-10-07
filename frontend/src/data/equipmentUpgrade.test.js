@@ -229,7 +229,7 @@ test('saved upgrade settings accept zero weights and recover from invalid values
   assert.deepEqual(restoreUpgradeSettings({ cube_type: 'invalid', base_stat_pct_value: 0,
     attack_pct_value: -1, crit_damage_pct_value: 'Infinity' }), {
     categories: ['starforce', 'flames', 'potential'],
-    cube_type: 'black', shining_starforce_sunday: true, mvp_rank: 'none',
+    cube_type: 'black', cube_sale: false, shining_starforce_sunday: true, mvp_rank: 'none',
     base_stat_pct_value: '0', attack_pct_value: '10', crit_damage_pct_value: '8',
   })
 })
@@ -238,6 +238,7 @@ test('upgrade selections survive restoration and reach the API', () => {
   const settings = restoreUpgradeSettings({ flame_type: 'abyssal', flame_cost_mesos: 9000000,
     categories: ['flames', 'invalid'] })
   const request = buildUpgradeRequest({}, stats, weights, settings)
+  assert.equal(request.include_overall, true)
   assert.equal('flame_type' in settings, false)
   assert.equal('flame_cost_mesos' in settings, false)
   assert.equal('flame_type' in request, false)
@@ -252,4 +253,13 @@ test('fixed ring four is excluded from all upgrade requests', () => {
   const request = buildUpgradeRequest({ 'ring-4': ring, 'ring-1': { ...ring, name: 'Other ring' } },
     stats, weights, restoreUpgradeSettings())
   assert.deepEqual(request.equipment.map(item => item.slot), ['ring-1'])
+})
+
+test('cube sale persists and reaches upgrade calculations', () => {
+  for (const sale of [false, true]) {
+    const settings = restoreUpgradeSettings({ cube_sale: sale })
+    assert.equal(settings.cube_sale, sale)
+    assert.equal(buildUpgradeRequest({}, stats, weights, settings).cube_sale, sale)
+  }
+  assert.equal(restoreUpgradeSettings({ cube_sale: 'true' }).cube_sale, false)
 })

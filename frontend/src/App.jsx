@@ -12,7 +12,7 @@ export default function App() {
   const [calculator, navigate] = usePageRoute()
 
   return (
-    <main>
+    <main className={calculator === 'equipment' ? 'equipment-page-main' : undefined}>
       <Navigation activePage={calculator} onNavigate={navigate} />
       <header className="page-header">
         <span className="eyebrow">MAPLESTORY · POTENTIAL LAB</span>

@@ -1,8 +1,49 @@
 .upgrade-plan {
   margin-top: 24px;
+  width: 100%;
+  min-width: 0;
 }
 .upgrade-plan h2 {
   font-size: 22px;
+}
+.upgrade-category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid #344258;
+  border-radius: 14px;
+  background: #101724;
+}
+.upgrade-category-tabs button {
+  min-height: 44px;
+  padding: 11px 20px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: #bcc8da;
+  font-weight: 600;
+  transition: background-color 150ms, color 150ms, border-color 150ms;
+}
+.upgrade-category-tabs button:hover {
+  background: #263449;
+  color: #f0f3f8;
+}
+.upgrade-category-tabs button[aria-pressed="true"] {
+  background: #a0e4b3;
+  border-color: #a0e4b3;
+  color: #14231b;
+}
+.upgrade-category-tabs button:focus-visible {
+  outline: 2px solid #a0e4b3;
+  outline-offset: 3px;
+}
+@media (max-width: 540px) {
+  .upgrade-category-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
 }
 .upgrade-controls,
 .upgrade-results-controls {
@@ -28,6 +69,7 @@
   margin-bottom: 14px;
 }
 .upgrade-table-scroll {
+  max-width: 100%;
   overflow-x: auto;
 }
 .upgrade-table {
@@ -57,6 +99,12 @@
   color: #a7b4c9;
   font-weight: normal;
   margin-top: 5px;
+}
+.overall-upgrade-table {
+  min-width: 940px;
+}
+.overall-upgrade-table + .hint {
+  margin-top: 16px;
 }
 .upgrade-loss {
   color: #ffafaf;

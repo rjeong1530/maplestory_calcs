@@ -42,6 +42,7 @@ export const MVP_RANKS = {
 export const DEFAULT_UPGRADE_SETTINGS = {
   categories: Object.keys(UPGRADE_CATEGORIES),
   cube_type: 'black',
+  cube_sale: false,
   shining_starforce_sunday: true,
   mvp_rank: 'none',
   base_stat_pct_value: '10', attack_pct_value: '10', crit_damage_pct_value: '8',
@@ -53,6 +54,7 @@ export function restoreUpgradeSettings(saved) {
       ? Object.keys(UPGRADE_CATEGORIES).filter(key => saved.categories.includes(key))
       : [...DEFAULT_UPGRADE_SETTINGS.categories],
     cube_type: saved?.cube_type === 'red' ? 'red' : 'black',
+    cube_sale: saved?.cube_sale === true,
     shining_starforce_sunday: typeof saved?.shining_starforce_sunday === 'boolean'
       ? saved.shining_starforce_sunday
       : DEFAULT_UPGRADE_SETTINGS.shining_starforce_sunday,
@@ -136,10 +138,12 @@ export function combineStarforceSteps(entries) {
 
 export function buildUpgradeRequest(equipment, classStats, flameWeights, settings) {
   return {
+    include_overall: true,
     main_stat: classStats.main,
     secondary_stats: classStats.secondary,
     offense_stat: classStats.offense,
     cube_type: settings.cube_type,
+    cube_sale: Boolean(settings.cube_sale),
     categories: settings.categories,
     shining_starforce_sunday: Boolean(settings.shining_starforce_sunday),
     mvp_rank: settings.mvp_rank,

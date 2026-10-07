@@ -8,6 +8,7 @@ from typing import Any, Mapping
 from backend.calc import maplestory_flames as flames
 from backend.calc import maplestory_potential as potential
 from backend.calc import starforce_calculator as starforce
+from backend.calc.overall_upgrade import overall_upgrade_order
 
 
 BLACK_FLAME_COST = 3_000_000
@@ -344,7 +345,9 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
     flame_weights = request['flame_weights']
     potential_weights = request['potential_weights']
     cube_type = request['cube_type']
-    cube_cost = CUBE_COSTS[cube_type]
+    cube_sale = request.get('cube_sale', False)
+    cube_costs = {cube: cost * 3 // 4 if cube_sale else cost for cube, cost in CUBE_COSTS.items()}
+    cube_cost = cube_costs[cube_type]
     categories = request.get('categories', ['starforce', 'flames', 'potential'])
     potential_effect_weights = _potential_effect_weights(
         main_stat, secondary_stats, offense_stat, flame_weights, potential_weights,
@@ -352,6 +355,8 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
     results = {'starforce': [], 'flames': [], 'potential': []}
     excluded_superior = []
     flame_results = {flame_type: [] for flame_type in FLAME_COSTS}
+    include_overall = request.get('include_overall', False)
+    roll_states = []
 
     for item in request['equipment']:
         name = item['name']
@@ -445,6 +450,11 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                         minimum_cooldown,
                     )
                     potential_entry.update(_next_improvement(distribution, potential_current, cube_cost))
+                    if include_overall:
+                        roll_states.append({
+                            'category': 'potential', 'cost': cube_cost, 'distribution': distribution,
+                            'entry': {**potential_entry, 'equipment_level': level},
+                        })
                 except ValueError as error:
                     potential_entry['note'] = str(error)
             else:
@@ -471,6 +481,11 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
                         )
                         flame_entry['current_score'] = flame_current
                         flame_entry.update(_next_improvement(distribution, flame_current, flame_cost))
+                        if include_overall and flame_type == 'black':
+                            roll_states.append({
+                                'category': 'flames', 'cost': flame_cost, 'distribution': distribution,
+                                'entry': {**flame_entry, 'equipment_level': level},
+                            })
                     except (ValueError, KeyError) as error:
                         flame_entry['note'] = str(error)
                 else:
@@ -480,7 +495,15 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
     results['flames'] = flame_results['black']
 
     return {
+        **({'overall_upgrade_order': {
+            'steps': overall_upgrade_order(results['starforce'], roll_states),
+            'unavailable': [dict(entry, category=category)
+                            for category, entries in results.items() if category in categories
+                            for entry in entries if entry['expected_score_gain'] is None],
+            'step_limit': 20,
+        }} if include_overall else {}),
         'cube_type': cube_type,
+        'cube_sale': cube_sale,
         'categories': categories,
         'potential_probability_source': 'bundled KMS potential tables',
         'potential_tier': 'legendary',
@@ -494,8 +517,8 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
         'cost_assumptions_mesos': {
             'black_flame': BLACK_FLAME_COST,
             'abyssal_flame': FLAME_COSTS['abyssal'],
-            'red_cube': CUBE_COSTS['red'],
-            'black_cube': CUBE_COSTS['black'],
+            'red_cube': cube_costs['red'],
+            'black_cube': cube_costs['black'],
         },
         'excluded_superior_equipment': excluded_superior,
         'flame_rankings': {flame_type: _rank_category(entries)

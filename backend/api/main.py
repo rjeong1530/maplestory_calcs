@@ -420,6 +420,7 @@ class UpgradeEquipmentRequest(RequestModel):
 
 
 class EquipmentUpgradePlanRequest(RequestModel):
+    include_overall: bool = Field(default=False, strict=True)
     categories: list[Literal['starforce', 'flames', 'potential']] = Field(
         default_factory=lambda: ['starforce', 'flames', 'potential'], min_length=1, max_length=3)
     main_stat: Literal['STR', 'DEX', 'INT', 'LUK', 'HP'] | Annotated[
@@ -427,6 +428,7 @@ class EquipmentUpgradePlanRequest(RequestModel):
     secondary_stats: tuple[Literal['STR', 'DEX', 'INT', 'LUK', 'HP'], ...] = Field(max_length=3)
     offense_stat: Literal['ATT', 'MATT']
     cube_type: Literal['red', 'black'] = 'black'
+    cube_sale: bool = Field(default=False, strict=True)
     flame_weights: UpgradeFlameWeightsRequest
     potential_weights: UpgradePotentialWeightsRequest
     shining_starforce_sunday: bool = Field(default=False, strict=True)

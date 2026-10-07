@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { buildPotentialTargets } from '../data/potentialTargets'
+import { cubeCostLabel } from '../data/cubeCosts'
 import TargetRow from './TargetRow'
 
 const title = value => value.replaceAll('_', ' ').replace(/\b\w/g, letter => letter.toUpperCase())
@@ -9,6 +10,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
   const [equipment, setEquipment] = useState('hat')
   const [level, setLevel] = useState(250)
   const [cube, setCube] = useState('black')
+  const [cubeSale, setCubeSale] = useState(false)
   const [targets, setTargets] = useState([
     { id: 0, effect: 'STR_PCT', target: '13' },
     { id: 1, effect: 'COOLDOWN_SEC', target: '4' },
@@ -56,6 +58,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
     if (!canCalculate || busy) return
     onCalculate({
       equipment_type: equipment, level: Number(level), cube_type: cube,
+      cube_sale: cubeSale,
       targets: buildPotentialTargets(availableTargets),
       percentiles: [],
     })
@@ -80,8 +83,14 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             <select value={cube} onChange={event => { setCube(event.target.value); onChange() }}>
               {options.cube_types.map(value => <option key={value} value={value}>{title(value)}</option>)}
             </select>
+            <span className="cube-price" aria-live="polite">{cubeCostLabel(cube, cubeSale)}</span>
           </label>
         </div>
+        <label className="cube-sale-control">
+          <input type="checkbox" checked={cubeSale}
+            onChange={event => { setCubeSale(event.target.checked); onChange() }} />
+          <span>Cube sale (25% off black and red cubes)</span>
+        </label>
         <div className="section-heading"><h2>Potential targets</h2><span>ALL must match</span></div>
         <p className="hint">Minimum totals across three lines. All Stat counts toward each main stat.</p>
         {availableTargets.some(row => row.effect === 'ALL_STAT_PCT') && <p className="hint">
