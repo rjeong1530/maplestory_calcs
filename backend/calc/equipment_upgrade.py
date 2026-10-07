@@ -286,7 +286,7 @@ def _flame_score_distribution(
         'boss_equipment': boss_equipment,
         'base_weapon_offense': base_weapon_offense,
     }, main_stat, secondary_stats, offense_stat, dict(weights), flame_type)
-    return flames.FlameProbabilityEngine(config).score_distribution()
+    return flames.FlameProbabilityEngine(config).score_distribution(decimals=None)
 
 
 @lru_cache(maxsize=128)

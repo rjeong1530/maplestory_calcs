@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from itertools import combinations, product
-from math import ceil, comb, fsum, log
+from math import ceil, comb, fsum, log, isfinite
 from typing import Dict, Iterable, Literal, Mapping, Tuple
 
 Stat = Literal['STR', 'DEX', 'INT', 'LUK']
@@ -325,6 +325,8 @@ def score_values(values: Mapping[str, float], config: FlameConfig) -> float:
     score += values.get('ALL_STAT_PCT', 0.0) * config.weights.all_stat_pct_value
     score += values.get(config.offense_stat, 0.0) * config.weights.attack_value
     score += values.get('BOSS_DAMAGE_PCT', 0.0) * config.weights.boss_damage_pct_value
+    if not isfinite(score):
+        raise ValueError('Flame scores exceed the supported numeric range.')
     return score
 
 
@@ -344,11 +346,22 @@ class FlameProbabilityEngine:
     def __init__(self, config: FlameConfig):
         self.config = config
         self.option_pool = eligible_option_types(config.equipment_type, config.equipment_level)
+        if config.flame_type not in FLAME_TIER_PROBABILITIES:
+            raise ValueError('Unknown flame type.')
         self.raw_tier_probabilities = FLAME_TIER_PROBABILITIES[config.flame_type]
         self._validate()
 
     def _validate(self) -> None:
+        valid_stats = {'STR', 'DEX', 'INT', 'LUK', 'MAX_HP', 'MAX_MP'}
         main_stats = primary_stats(self.config.main_stat)
+        if any(stat not in valid_stats for stat in (*main_stats, *self.config.secondary_stats)):
+            raise ValueError('Unknown flame scoring stat.')
+        if len(set(self.config.secondary_stats)) != len(self.config.secondary_stats):
+            raise ValueError('secondary_stats must be distinct')
+        if self.config.offense_stat not in ('ATT', 'MATT'):
+            raise ValueError('Unknown offense stat.')
+        if any(not isfinite(value) or value < 0 for value in vars(self.config.weights).values()):
+            raise ValueError('Flame weights must be finite and nonnegative.')
         if not main_stats or len(set(main_stats)) != len(main_stats):
             raise ValueError('primary stats must be nonempty and distinct')
         if set(main_stats).intersection(self.config.secondary_stats):
@@ -436,6 +449,8 @@ class FlameProbabilityEngine:
                 for previous_score, previous_probability in distributions[count - 1].items():
                     for option_score, option_probability in option_scores.items():
                         score = previous_score + option_score
+                        if not isfinite(score):
+                            raise ValueError('Flame scores exceed the supported numeric range.')
                         if decimals is not None:
                             score = round(score, 12)
                         distributions[count][score] = distributions[count].get(score, 0.0) + (

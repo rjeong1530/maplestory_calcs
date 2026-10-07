@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-07
-Total: 134 tests in 11 files
+Total: 139 tests in 12 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -710,3 +710,24 @@ Tests: 8
      types throughout projected steps, and malformed include_overall is rejected.
 - All 134 backend tests passed. Overall steps are greedy projections from
   conditional mean roll results, not guarantees or a globally optimal budget plan.
+
+Review regression fixes - 2026-10-07
+FILE: backend/tests/test_review_regressions.py
+Test class: ReviewRegressionTests
+Tests: 5
+135. test_maximum_fractional_flame_score_has_no_phantom_upgrade
+     Checks a maximum attainable flame with fractional weights has no better
+     roll in either the flame ranking or the combined plan.
+136. test_flame_api_rejects_invalid_scoring_inputs
+     Checks unsupported types/stats, duplicate/overlapping stats, negative and
+     nonfinite weights return 422. HP and MAX_HP produce identical positive odds.
+137. test_flame_engine_validates_direct_callers
+     Checks direct engine calls reject unknown flame/offense types, duplicate
+     secondary stats, and NaN weights rather than failing later or miscounting.
+138. test_equipment_text_fields_are_bounded
+     Checks oversized names/slots and invalid slot identifiers are rejected,
+     while a normal equipment request remains valid.
+139. test_body_limit_handles_headers_and_streamed_bytes_before_parsing
+     Checks oversized declared and streamed bodies, absent/misleading/invalid
+     Content-Length, exact-limit bodies, HTTP 413, and unaffected health requests.
+- All 139 backend tests passed.

@@ -20,9 +20,14 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResu
         <h2>Current equipment stats</h2>
         <div className="equipment-stats-actions">
           <button type="button" onClick={onOpenSetup}>Change equipment setup</button>
-          <button type="button" aria-expanded={statsExpanded} aria-controls="current-equipment-stats-content"
+          <button type="button" className="equipment-stats-toggle"
+            aria-label={statsExpanded ? 'Collapse current equipment stats' : 'Expand current equipment stats'}
+            title={statsExpanded ? 'Collapse stats' : 'Expand stats'}
+            aria-expanded={statsExpanded} aria-controls="current-equipment-stats-content"
             onClick={() => setStatsExpanded(expanded => !expanded)}>
-            {statsExpanded ? 'Hide stats' : 'Show stats'}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m9 5 7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
         </div>
       </div>

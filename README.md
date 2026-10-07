@@ -792,3 +792,10 @@ keeping `/api` requests routed to FastAPI and static assets served normally.
 - [x] GMS potential values (KMS roll probabilities retained)
 - [x] Star Force calculator
 - [x] Verify starforce costs
+
+API input limits: request bodies are limited to 256 KiB, including streamed
+requests; larger bodies receive HTTP 413. Equipment names are limited to 200
+characters and slots must use supported identifiers. Invalid flame types, scoring
+stats, duplicate stats, and nonfinite or negative weights receive HTTP 422.
+Calculator requests retain a 30-second timeout even when callers supply a
+cancellation signal. Failed page loads offer a full reload to recover.

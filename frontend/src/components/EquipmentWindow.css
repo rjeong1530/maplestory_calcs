@@ -23,6 +23,21 @@
   min-height: 40px;
   padding: 8px 12px;
 }
+.equipment-stats-actions .equipment-stats-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.equipment-stats-toggle[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+#current-equipment-stats-content > .equipment-class-selector {
+  margin-bottom: 24px;
+}
 .equipment-setup {
   padding: 0;
   border: 0;

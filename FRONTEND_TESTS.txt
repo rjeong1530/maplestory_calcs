@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
 Reviewed: 2026-10-07
-Total: 86 helper tests in 15 files, plus 1 browser test in 1 file
+Total: 90 helper tests in 16 files, plus 1 browser test in 1 file
 
 Run from frontend/:
   npm test
@@ -469,8 +469,25 @@ FILE: frontend/scripts/browser-regressions.test.mjs (1 browser test total)
 Upgrade layout and expected booms - 2026-10-07
 FILE: frontend/scripts/browser-regressions.test.mjs (1 browser test total)
 - Expanded the existing regression to check Overall displays numeric Star Force
-  booms and dashes for flames/potential. Hide stats collapses the editor with an
+  booms and dashes for flames/potential. The chevron collapses the editor with an
   accessible expanded state while preserving its mounted controls and results.
 - Checks the upgrade panel spans the equipment layout on desktop and stays within
   a 390px browser window, with wide tables scrolling inside the panel.
 - Browser regression, production build, and lint passed. Test counts unchanged.
+
+Request timeout and page recovery - 2026-10-07
+FILE: frontend/src/data/api.test.js
+Tests: 4
+87. caller cancellation does not disable the request timeout
+    Checks timeout still rejects a request with a supplied cancellation signal.
+88. caller abort remains cancellation instead of a connection error
+    Checks explicit cancellation preserves AbortError for caller handling.
+89. timeouts while reading the response body report a timeout
+    Checks an abort during JSON loading produces the timeout message.
+90. successful requests and server validation errors retain their behavior
+    Checks successful data and structured API validation messages are preserved.
+FILE: frontend/scripts/browser-regressions.test.mjs (1 browser test total)
+- Expanded the existing browser regression to simulate a rejected React.lazy
+  import inside DeferredPage, verify recovery UI and preserved navigation, and
+  click Reload page to recover without the failed lazy component's cached error.
+- All 90 helper tests, the expanded browser regression, production build, and lint passed.

@@ -7,6 +7,48 @@ from time import monotonic
 import os
 
 from fastapi import HTTPException, Request
+from starlette.responses import JSONResponse
+
+
+class RequestBodyLimit:
+    """Bound JSON input before parsing, including chunked or misleading lengths."""
+
+    def __init__(self, app, max_bytes=262_144):
+        self.app = app
+        self.max_bytes = max_bytes
+
+    async def __call__(self, scope, receive, send):
+        if scope['type'] != 'http':
+            return await self.app(scope, receive, send)
+        rejected = JSONResponse({'detail': 'Request body exceeds 256 KiB.'}, status_code=413)
+        for name, value in scope.get('headers', []):
+            if name.lower() == b'content-length':
+                try:
+                    if int(value) > self.max_bytes:
+                        return await rejected(scope, receive, send)
+                except ValueError:
+                    pass  # Actual received bytes are always checked below.
+        body = bytearray()
+        while True:
+            message = await receive()
+            if message['type'] == 'http.disconnect':
+                return
+            chunk = message.get('body', b'')
+            if len(body) + len(chunk) > self.max_bytes:
+                return await rejected(scope, receive, send)
+            body.extend(chunk)
+            if not message.get('more_body', False):
+                break
+        delivered = False
+
+        async def replay():
+            nonlocal delivered
+            if delivered:
+                return await receive()
+            delivered = True
+            return {'type': 'http.request', 'body': bytes(body), 'more_body': False}
+
+        await self.app(scope, replay, send)
 
 
 class CalculationLimiter:

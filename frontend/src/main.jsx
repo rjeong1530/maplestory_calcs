@@ -2,11 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import PageErrorBoundary from './components/PageErrorBoundary'
 import { preloadPage } from './preloadPage'
 import { pageForPath } from './data/routes'
 
 const root = createRoot(document.getElementById('root'))
-const renderApp = () => root.render(<StrictMode><App /></StrictMode>)
+const renderApp = () => root.render(<StrictMode><PageErrorBoundary><App /></PageErrorBoundary></StrictMode>)
 const initialPage = pageForPath(window.location.pathname)
 if (!initialPage || initialPage === 'home') {
   renderApp()

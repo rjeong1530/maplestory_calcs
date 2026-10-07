@@ -237,11 +237,11 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
   assert.deepEqual(await execute("return [...document.querySelectorAll('.overall-upgrade-table tbody tr')].map(row => row.cells[4].textContent)"),
     ['-', '1.25', '-'])
   await execute("window.__statsEditor = document.querySelector('.equipment-editor-panel')")
-  await visibleButton('Hide stats')
+  await execute("document.querySelector('button[aria-label=\"Collapse current equipment stats\"]').click()")
   assert.equal(await execute("return document.querySelector('#current-equipment-stats-content').hidden"), true)
   assert.equal(await execute("return document.querySelector('[aria-controls=\"current-equipment-stats-content\"]').getAttribute('aria-expanded')"), 'false')
   assert.equal(await execute("return document.querySelector('.overall-upgrade-table').getClientRects().length > 0"), true)
-  await visibleButton('Show stats')
+  await execute("document.querySelector('button[aria-label=\"Expand current equipment stats\"]').click()")
   assert.equal(await execute("return document.querySelector('#current-equipment-stats-content').hidden"), false)
   assert.equal(await execute("return window.__statsEditor === document.querySelector('.equipment-editor-panel')"), true)
   assert.ok(await execute("return Math.abs(document.querySelector('.upgrade-plan').getBoundingClientRect().width - document.querySelector('.equipment-page-layout').getBoundingClientRect().width) < 2"))
@@ -259,4 +259,21 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
   await execute('window.__upgradeSteps = []')
   await visibleButton('Calculate upgrade order')
   await until(() => execute("return document.querySelector('[aria-label=\"Overall upgrade order\"]')?.textContent.includes('No eligible upgrades')"), 'empty combined plan')
+  await execute(`
+    Promise.all([
+      import('/node_modules/.vite/deps/react.js'),
+      import('/node_modules/.vite/deps/react-dom_client.js'),
+      import('/src/components/DeferredPage.jsx')
+    ]).then(([{default: React}, {default: ReactDOM}, {default: DeferredPage}]) => {
+      const host = document.createElement('div');
+      host.id = 'failed-route-test'; document.body.append(host);
+      const BrokenPage = React.lazy(() => Promise.reject(new Error('Simulated chunk failure')));
+      ReactDOM.createRoot(host).render(React.createElement(DeferredPage, {active:true}, React.createElement(BrokenPage)));
+    }).catch(error => { window.__boundaryFailure = error.message; });
+  `)
+  await until(() => execute("return !!document.querySelector('#failed-route-test [role=\"alert\"]') || !!window.__boundaryFailure"), 'rejected lazy import shows recovery UI')
+  assert.equal(await execute('return window.__boundaryFailure ?? null'), null)
+  assert.equal(await execute("return !!document.querySelector('.main-navigation')"), true, 'route failure leaves navigation usable')
+  await execute("document.querySelector('#failed-route-test button').click()")
+  await until(() => execute("return !document.querySelector('#failed-route-test') && !!document.querySelector('.equipment-window')"), 'reload recovers the page')
 })

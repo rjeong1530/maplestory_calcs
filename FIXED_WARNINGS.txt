@@ -1,0 +1,144 @@
+CODE REVIEW: FIXED WARNINGS
+Date: 2026-10-07
+
+Scope: The five warnings identified in the project review. The two suggestions
+about render-time calculations and duplicated Star Force planning logic were
+not part of these fixes. This document records source changes and local
+verification; it is not a dependency vulnerability audit.
+
+1. PHANTOM FLAME UPGRADES CAUSED BY ROUNDING
+Severity: Warning
+Files: backend/calc/equipment_upgrade.py
+
+Issue:
+Future flame scores were rounded to four decimal places, while the current
+equipment score retained its precision. This could make a maximum attainable
+score appear improvable. The review reproduced a current maximum of
+237.0493783 being compared against a rounded future score of 237.0494, producing
+an impossible upgrade recommendation costing approximately 5.814e17 mesos.
+
+Fix:
+The upgrade planner requests score_distribution(decimals=None), preserving
+unrounded scores for comparisons. Display formatting remains separate from
+the calculations. This applies to flame rankings and Overall recommendations.
+
+Verification:
+test_maximum_fractional_flame_score_has_no_phantom_upgrade constructs maximum
+flames with fractional weights and checks that neither ranking recommends an
+improvement.
+
+2. INCOMPLETE FLAME INPUT VALIDATION
+Severity: Warning
+Files: backend/api/main.py; backend/calc/maplestory_flames.py
+
+Issue:
+The flame endpoint accepted unsupported type/stat strings, repeated secondary
+stats, and nonfinite values in some weight fields. An unknown flame type caused
+HTTP 500. Repeating DEX counted its contribution twice; the review reproduced
+the same target changing from approximately 1.505% to 16.163% probability.
+The weights model also accepted the string "NaN".
+
+Fix:
+The request model restricts equipment, flame, offense, and scoring stat types.
+Primary and secondary stats must be distinct and must not overlap. Weight
+fields reject negative and nonfinite values. The HP alias is normalized to
+MAX_HP so the frontend class stat matches the flame engine's stat names.
+The engine also validates direct callers and checks numeric overflow when
+scoring options and combining scores. Unknown flame types are checked before
+the probability table lookup. Invalid endpoint inputs receive HTTP 422.
+
+Verification:
+test_flame_api_rejects_invalid_scoring_inputs covers unsupported values,
+duplicate/overlapping stats, invalid weights, and equivalent HP/MAX_HP results.
+test_flame_engine_validates_direct_callers covers engine validation and
+overflow while combining otherwise finite option scores.
+
+3. UNBOUNDED EQUIPMENT TEXT AND REQUEST SIZE
+Severity: Warning
+Files: backend/api/main.py; backend/api/limits.py
+
+Issue:
+Equipment names and slots had no maximum length. Names are repeated across
+Star Force steps and ranking arrays, amplifying response size. A bounded local
+probe produced a 403,388-byte response from a 4,535-byte request. Larger inputs
+could consume substantial memory and bandwidth on an exposed API.
+
+Fix:
+Equipment names are limited to 200 characters. Slots are limited to 16
+characters and must match supported slot identifiers. ASGI middleware limits
+request bodies to 262,144 bytes (256 KiB) before JSON parsing. It checks both
+declared Content-Length and actual received bytes, including streamed bodies
+with missing or misleading length headers. Oversized bodies receive HTTP 413;
+invalid equipment fields receive HTTP 422.
+
+Verification:
+test_equipment_text_fields_are_bounded checks oversized names, oversized slots,
+unknown slots, invalid ring indices, and a valid request.
+test_body_limit_handles_headers_and_streamed_bytes_before_parsing checks
+declared and streamed limits, misleading/invalid headers, the exact boundary,
+HTTP rejection, and an unaffected health endpoint.
+
+Limits:
+The response still contains repeated equipment metadata. This fix bounds its
+inputs; it does not redesign the response format or replace deployment-level
+traffic controls.
+
+4. CALLER CANCELLATION DISABLED REQUEST TIMEOUTS
+Severity: Warning
+File: frontend/src/api.js
+
+Issue:
+The request helper selected either a caller-provided AbortSignal or the default
+30-second timeout. Options-loading callers supplied cancellation signals, so
+their requests could remain pending indefinitely if the server stalled.
+
+Fix:
+The helper combines caller cancellation and a 30-second timeout with
+AbortSignal.any. Timeout errors receive a specific retry message, while caller
+aborts retain their cancellation reason. This handling covers both the initial
+fetch and failures while reading the JSON response body.
+
+Verification:
+frontend/src/data/api.test.js checks timeout with a supplied signal, explicit
+cancellation, timeout during response-body reading, successful responses, and
+preserved server validation messages.
+
+5. FAILED LAZY IMPORTS HAD NO RECOVERY BOUNDARY
+Severity: Warning
+Files: frontend/src/components/PageErrorBoundary.jsx;
+       frontend/src/components/DeferredPage.jsx; frontend/src/main.jsx
+
+Issue:
+Suspense supplied loading placeholders but did not catch rejected lazy imports.
+A failed page chunk could propagate to the React root and leave the app unusable.
+Clearing a preload promise alone would not reset React.lazy's cached rejection.
+
+Fix:
+Deferred pages are wrapped in an error boundary, with another boundary around
+the app root. A failure displays an explanation and a Reload page button.
+Reloading recreates the page and lazy components, avoiding the cached rejection.
+The message explains that saved equipment is restored and unsaved calculator
+inputs may need to be entered again.
+
+Verification:
+The existing Firefox regression now simulates a rejected React.lazy import
+inside DeferredPage, checks the recovery UI and continued availability of
+navigation, and verifies the reload action restores the equipment page.
+
+VERIFICATION RESULTS
+139 backend tests passed. The five review regressions also passed after the
+final arithmetic overflow guard was added.
+90 frontend helper tests passed.
+The expanded Firefox browser regression passed.
+Production build and lint passed.
+
+Reproduction commands from the repository root:
+  .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t .
+  npm test --prefix frontend
+  npm run build --prefix frontend
+  npm run lint --prefix frontend
+  npm run test:browser --prefix frontend
+
+The browser test requires Firefox and geckodriver. Set GECKODRIVER_PATH if
+geckodriver is not on PATH. Detailed inventories are in BACKEND_TESTS.txt and
+FRONTEND_TESTS.txt. This documentation-only addition did not rerun the suites.

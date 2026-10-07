@@ -7,7 +7,7 @@ from dataclasses import asdict
 from functools import lru_cache
 
 from fastapi import Depends, FastAPI, HTTPException
-from backend.api.limits import calculation_slot, require_finite
+from backend.api.limits import calculation_slot, require_finite, RequestBodyLimit
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from backend.calc import maplestory_potential as calculator
@@ -17,6 +17,7 @@ from backend.calc import equipment_upgrade
 from backend.examples.starforce_strategies import analyze_strategies
 
 app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
+app.add_middleware(RequestBodyLimit)
 
 
 class RequestModel(BaseModel):
@@ -254,23 +255,35 @@ def probability(request: CalculationRequest):
 
 
 class FlameWeightsRequest(RequestModel):
-    all_stat_pct_value: float
+    all_stat_pct_value: float = Field(ge=0, allow_inf_nan=False, strict=True)
     secondary_stat_value: float = Field(ge=0, allow_inf_nan=False)
-    attack_value: float
+    attack_value: float = Field(ge=0, allow_inf_nan=False, strict=True)
     boss_damage_pct_value: float = Field(default=0, ge=0, allow_inf_nan=False)
 
 
 class FlameConfigRequest(RequestModel):
     equipment_level: int = Field(gt=0, le=300)
-    equipment_type: str
+    equipment_type: Literal['armor', 'weapon']
     boss_equipment: bool
-    flame_type: str
-    main_stat: str | Annotated[tuple[Literal['STR', 'DEX', 'INT', 'LUK'], ...], Field(min_length=1, max_length=3)]
-    secondary_stats: tuple[str, ...]
-    offense_stat: str
+    flame_type: Literal['powerful', 'black', 'abyssal']
+    main_stat: Literal['STR', 'DEX', 'INT', 'LUK', 'HP', 'MAX_HP', 'MAX_MP'] | Annotated[tuple[Literal['STR', 'DEX', 'INT', 'LUK'], ...], Field(min_length=1, max_length=3)]
+    secondary_stats: tuple[Literal['STR', 'DEX', 'INT', 'LUK', 'HP', 'MAX_HP', 'MAX_MP'], ...] = Field(max_length=3)
+    offense_stat: Literal['ATT', 'MATT']
     weights: FlameWeightsRequest
     base_weapon_offense: float | None = Field(default=None, gt=0, allow_inf_nan=False)
     weapon_offense_by_stage: dict[int, Annotated[float, Field(ge=0, allow_inf_nan=False)]] | None = None
+
+    @model_validator(mode='after')
+    def distinct_scoring_stats(self):
+        if self.main_stat == 'HP':
+            self.main_stat = 'MAX_HP'
+        self.secondary_stats = tuple('MAX_HP' if stat == 'HP' else stat for stat in self.secondary_stats)
+        primary = flames.primary_stats(self.main_stat)
+        if len(set(primary)) != len(primary) or len(set(self.secondary_stats)) != len(self.secondary_stats):
+            raise ValueError('Scoring stats must be distinct.')
+        if set(primary).intersection(self.secondary_stats):
+            raise ValueError('Primary and secondary stats must not overlap.')
+        return self
 
 
 class FlameProbabilityRequest(RequestModel):
@@ -399,8 +412,8 @@ class UpgradeEquipmentRequest(RequestModel):
                 raise ValueError('Invalid per-star enhancement mode.')
         return value
 
-    name: str = Field(min_length=1)
-    slot: str = Field(min_length=1)
+    name: str = Field(min_length=1, max_length=200)
+    slot: str = Field(max_length=16, pattern=r'^(ring-[1-4]|pendant-[1-2]|hat|emblem|face|badge|eye|earring|medal|weapon|top|shoulder|secondary|shield|pocket|belt|bottom|gloves|cape|shoes|android|heart)$')
     equipment_level: int = Field(gt=0, le=300, strict=True)
     equipment_type: Literal['armor', 'weapon']
     potential_equipment_type: str | None = None
