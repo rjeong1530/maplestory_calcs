@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-07
-Total: 140 tests in 12 files
+Total: 144 tests in 12 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -741,3 +741,22 @@ FILE: backend/tests/test_api.py (25 tests total)
      Runs against FastAPI TestClient; it does not contact the deployed services.
 - The 25-test API suite passed after this change. The full 140-test backend
   suite was not rerun for this documentation update.
+
+Bounded calculation queue - 2026-10-07
+FILE: backend/tests/test_limits.py (8 tests total)
+- Existing admission tests now use asynchronous contexts. Immediate-rejection
+  tests explicitly set max_waiting=0; rate limits and numeric validation remain.
+141. test_queued_requests_run_in_order_without_exceeding_concurrency
+     Checks two waiting requests execute FIFO, one active slot is respected,
+     queue overflow returns 503, and counters return to zero.
+142. test_queue_timeout_and_cancellation_free_waiting_capacity
+     Checks wait timeout, task cancellation, and subsequent admission without
+     leaking a queue entry or an active calculation slot.
+143. test_disconnected_waiter_is_removed_and_rate_limit_counts_once
+     Checks disconnected clients do not execute and admitted requests count
+     toward the per-client rate allowance even if they disconnect while waiting.
+144. test_http_calculation_waits_while_health_remains_available
+     Exercises the real async HTTP dependency: a calculation waits behind an
+     occupied slot while health responds, then succeeds after release.
+- The 143-test full suite passed before the final HTTP test was added; all eight
+  limiter tests, including that additional test, then passed.

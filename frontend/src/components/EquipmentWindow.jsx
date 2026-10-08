@@ -104,7 +104,7 @@ export default function EquipmentWindow({
               aria-label="Import equipment JSON file" onChange={uploadEquipment} />
           </div>
           <p className="hint" id="equipment-import-help">
-            Export your class, equipped items, Star Force, potentials, and flames.
+          Export your class, equipped items, recorded stats, and equipment score weights.
             Import replaces your current equipment set.
           </p>
           {transferError && <p className="error" role="alert">{transferError}</p>}

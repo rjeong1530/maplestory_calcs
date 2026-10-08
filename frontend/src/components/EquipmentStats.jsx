@@ -6,10 +6,10 @@ import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import { CLASS_STATS } from '../data/classStats'
 import { EQUIPMENT_SLOTS, SLOT_LABELS, FIXED_RING_SLOT } from '../data/flameEquipment'
 
-export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResultInvalidated, onOpenApproaches }) {
+export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenApproaches }) {
   const [statsExpanded, setStatsExpanded] = useState(true)
   const { equipment, equipmentClass, activeSlot, setActiveSlot, updateEquipmentRoll,
-    form, setForm, upgradeSettings, setUpgradeSettings } = planner
+    equipmentWeights, setEquipmentWeights, upgradeSettings, setUpgradeSettings } = planner
   const slot = activeSlot || EQUIPMENT_SLOTS.find(key => key && equipment[key])
   const selected = equipment[slot]
   const classStats = CLASS_STATS[equipmentClass]
@@ -64,11 +64,10 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onFlameResu
       </div>
     </section>
     <EquipmentUpgradePlan equipment={equipment} equipmentClass={equipmentClass}
-      classStats={classStats} flameWeights={form}
+      classStats={classStats} flameWeights={equipmentWeights}
       settings={upgradeSettings} onSettingsChange={setUpgradeSettings}
       onFlameWeightChange={(key, value) => {
-        setForm(current => ({ ...current, [key]: value }))
-        onFlameResultInvalidated()
+        setEquipmentWeights(current => ({ ...current, [key]: value }))
       }} />
   </>
 }

@@ -8,7 +8,7 @@ import './EquipmentWindow.css'
 const EquipmentWindow = equipmentSetup.Component
 const EquipmentStats = equipmentStats.Component
 
-export default function EquipmentPage({ planner, busy, onFlameResultInvalidated, onOpenApproaches }) {
+export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
   const { equipment, equipmentClass, activeSlot, setActiveSlot, selectEquipment,
     removeEquipment, updateEquipmentClass, importEquipmentJson, exportEquipmentJson } = planner
   const [view, setView] = useState(() => {
@@ -20,7 +20,6 @@ export default function EquipmentPage({ planner, busy, onFlameResultInvalidated,
 
   function changeEquipment(action, ...args) {
     action(...args)
-    onFlameResultInvalidated()
   }
 
   return (
@@ -49,7 +48,7 @@ export default function EquipmentPage({ planner, busy, onFlameResultInvalidated,
           <DeferredPage active={view === 'stats'}>
             <EquipmentStats planner={planner} busy={busy}
               onOpenApproaches={onOpenApproaches}
-              onOpenSetup={() => setView('setup')} onFlameResultInvalidated={onFlameResultInvalidated} />
+              onOpenSetup={() => setView('setup')} />
           </DeferredPage>
         </div>
       </div>

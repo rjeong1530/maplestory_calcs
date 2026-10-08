@@ -2,7 +2,8 @@ const apiBase = (import.meta.env?.VITE_API_BASE_URL
   ?? (import.meta.env?.PROD ? 'https://maplestory-calcs-1.onrender.com' : '')).replace(/\/+$/, '')
 
 export async function apiRequest(path, init = {}) {
-  const timeout = AbortSignal.timeout(30000)
+  // Calculations may wait in the bounded server queue before execution.
+  const timeout = AbortSignal.timeout(init.method?.toUpperCase() === 'POST' ? 90000 : 30000)
   const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout
   function checkCancellation(error) {
     if (signal.aborted) {

@@ -23,7 +23,7 @@ export default function useCalculationRequest(inputKey) {
       const result = await apiRequest(path, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+        signal: controller.signal,
       })
       if (!controller.signal.aborted) setRequest({ key: inputKey, result })
     } catch (error) {

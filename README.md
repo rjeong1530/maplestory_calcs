@@ -542,10 +542,21 @@ that the API is reachable.
 
 Calculator requests are limited per API worker to two concurrent calculations
 and 300 requests per client per minute. Configure `CALCULATION_CONCURRENCY`
-and `CALCULATIONS_PER_MINUTE` before starting the API. Busy requests receive
-503; rate-limited requests receive 429, both with `Retry-After`. These are
+and `CALCULATIONS_PER_MINUTE` before starting the API. Busy calculations wait in
+a FIFO queue, with up to `CALCULATION_QUEUE_SIZE=8` waiting requests per worker
+and `CALCULATION_QUEUE_TIMEOUT_SECONDS=20` seconds to acquire a slot. Waiting is
+asynchronous, leaving worker threads available for calculations. Queue-full or
+wait-timeout responses return 503; rate-limited requests return 429, both with
+`Retry-After`. Queued admissions count toward the per-client rate limit once;
+cancelled/disconnected waiters are removed. Set queue size to 0 to reject busy
+requests immediately. These are
 per-process controls; a multi-worker public deployment also needs shared limits
 at its gateway. Client identity uses the server-resolved client address.
+For a single-slot deployment, set `CALCULATION_CONCURRENCY=1`; the eight queue
+entries are additional waiting requests, not additional concurrent calculations.
+The frontend allows 90 seconds for POST calculations (queue wait plus execution)
+and 30 seconds for reads. The queue is in memory, is lost on restart/deploy, and
+does not increase CPU capacity or provide durable background jobs.
 Star Force and equipment API levels are limited to 1–300 and spare prices to
 0–1e15 mesos. Nonfinite calculated costs are rejected rather than returned as
 successful null values. These limits do not rewrite saved equipment.

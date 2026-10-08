@@ -346,3 +346,28 @@ Flame/Potential interactive results and focus styling - 2026-10-07
   across these controls and Star Force, retaining visible keyboard focus.
 - Passed 84 frontend helper tests, browser regression, lint, and production build.
   This update does not include a new timing benchmark.
+
+Bounded calculation queue - 2026-10-07
+- Added FIFO asynchronous admission: default eight waiting requests per worker,
+  with a 20-second wait deadline. Running concurrency stays configurable and
+  unchanged; set CALCULATION_CONCURRENCY=1 for a single active calculation.
+- CALCULATION_QUEUE_SIZE and CALCULATION_QUEUE_TIMEOUT_SECONDS configure the
+  queue. Overflow and wait timeout return 503; rate limiting still returns 429.
+- Waiting uses short asynchronous sleeps rather than occupying worker threads.
+  Cancellation/disconnection removes waiting tickets; execution failures release
+  active slots. The in-memory queue is not durable across restart/deploy.
+- Frontend POST timeouts are now 90 seconds including queue wait and execution;
+  reads remain 30 seconds. Removed redundant 30-second calculation deadlines.
+- Queue tests cover FIFO, capacity, timeout, cancellation, disconnect, and a real
+  HTTP request waiting while health remains responsive. Frontend tests check
+  timeout selection. No throughput or production load benchmark was performed.
+
+Independent score weights and equipment transfer - 2026-10-07
+- Equipment flame/Star Force weights are independent from Flame Calculator
+  weights. Legacy saved shared weights seed both independently on first load.
+- Equipment exports optionally include score_weights.flame and
+  score_weights.potential. Imports validate nonnegative finite numeric weights;
+  older exports without weights preserve current settings. Equipment changes
+  no longer clear unrelated Flame Calculator results.
+- Existing equipment records and calculator formulas are unchanged. Independent
+  weights persist in local storage. No performance benchmark was run.

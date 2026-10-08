@@ -51,7 +51,7 @@ export default function EquipmentUpgradePlan({
     try {
       const data = await apiRequest('/api/equipment-upgrade-plan', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestKey,
-        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+        signal: controller.signal,
       })
       if (!controller.signal.aborted) setRequest({ key: requestKey, status: 'done', result: data })
     } catch (error) {

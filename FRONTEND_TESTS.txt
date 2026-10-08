@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
 Reviewed: 2026-10-07
-Total: 90 helper tests in 16 files, plus 1 browser test in 1 file
+Total: 93 helper tests in 16 files, plus 1 browser test in 1 file
 
 Run from frontend/:
   npm test
@@ -505,3 +505,25 @@ Inventory reconciliation and recent UI/deployment checks - 2026-10-07
 - Moving import/export beside the job selectors and revising the flame hints
   passed lint and production build. No new automated layout or hint tests were
   added for those edits; existing import/export data tests remain documented above.
+
+Queued calculation timeout - 2026-10-07
+FILE: frontend/src/data/api.test.js (5 tests total)
+91. calculation requests have time to queue while reads retain a shorter timeout
+    Checks POST requests use a 90-second timeout and reads retain 30 seconds.
+    Calculation callers now pass their cancellation signal to the shared API
+    wrapper without imposing a separate 30-second deadline.
+- All 91 helper tests, lint, and production build passed. Browser regressions
+  were not rerun for this server-admission/timeout change.
+
+Independent equipment score weights - 2026-10-07
+FILE: frontend/src/data/equipmentSave.test.js (11 tests total)
+92. equipment exports round-trip flame and potential weights including zero
+    Checks numeric JSON serialization, decimal/zero preservation, restored form
+    strings, and compatibility with old exports lacking score_weights.
+93. equipment imports reject malformed weights before applying any equipment
+    Rejects malformed groups, unknown keys, negative/non-numeric values, and
+    invalid export values instead of silently overwriting settings.
+- Extended browser coverage verifies independent Flame Calculator/equipment
+  weights, exporting both equipment weight groups, importing changed weights
+  without changing Flame Calculator weights, and persistence across reload.
+- All 93 helper tests, browser regression, lint, and build passed.

@@ -5,6 +5,29 @@ import { exportEquipment, importEquipment, serializeEquipment, restoreEquipment 
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
 
+test('equipment exports round-trip flame and potential weights including zero', () => {
+  const weights = { flame: { attack_value: '0', secondary_stat_value: '0.25' },
+    potential: { attack_pct_value: '4.5' } }
+  const text = exportEquipment({ hat }, 'Hero', weights)
+  assert.deepEqual(JSON.parse(text).score_weights, {
+    flame: { attack_value: 0, secondary_stat_value: .25 }, potential: { attack_pct_value: 4.5 },
+  })
+  assert.deepEqual(importEquipment(text).scoreWeights, weights)
+  assert.equal(importEquipment(exportEquipment({ hat }, 'Hero')).scoreWeights, undefined)
+})
+
+test('equipment imports reject malformed weights before applying any equipment', () => {
+  const saved = JSON.parse(exportEquipment({ hat }, 'Hero'))
+  for (const weights of [null, [], { unknown: {} }, { flame: [] },
+    ...[-1, true, '3', null, 'Infinity'].map(value => ({ flame: { attack_value: value } })),
+    { potential: { unknown: 1 } }]) {
+    assert.throws(() => importEquipment(JSON.stringify({ ...saved, score_weights: weights })), /score weight/)
+  }
+  for (const value of ['', Infinity, NaN, -1]) {
+    assert.throws(() => exportEquipment({ hat }, 'Hero', { flame: { attack_value: value } }), /score weight/)
+  }
+})
+
 test('hat cooldown minimum survives exports and rejects invalid imported values', () => {
   const saved = JSON.parse(exportEquipment({ hat: { ...hat, minimumCooldownSeconds: 4 } }, 'Hero'))
   assert.equal(importEquipment(JSON.stringify(saved)).equipment.hat.minimumCooldownSeconds, 4)

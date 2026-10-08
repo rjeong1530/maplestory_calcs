@@ -2,6 +2,18 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { apiRequest } from '../api.js'
 
+test('calculation requests have time to queue while reads retain a shorter timeout', async t => {
+  const timeouts = []
+  t.mock.method(AbortSignal, 'timeout', milliseconds => {
+    timeouts.push(milliseconds)
+    return new AbortController().signal
+  })
+  t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({}) }))
+  await apiRequest('/api/options')
+  await apiRequest('/api/starforce-estimate', { method: 'POST' })
+  assert.deepEqual(timeouts, [30000, 90000])
+})
+
 test('caller cancellation does not disable the request timeout', async t => {
   const timeout = new AbortController()
   const caller = new AbortController()

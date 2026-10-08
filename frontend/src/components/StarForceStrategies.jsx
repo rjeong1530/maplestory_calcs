@@ -71,7 +71,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...JSON.parse(key), mode_by_star: modes, safeguard_by_star: safeguards,
           shining_starforce_sunday: true, mvp_rank: 'none', percentiles: [] }),
-        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+        signal: controller.signal,
       })
       if (!controller.signal.aborted) {
         const id = nextCustomId.current++
@@ -104,7 +104,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
     try {
       const report = await apiRequest('/api/starforce-strategies', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: key,
-        signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+        signal: controller.signal,
       })
       if (!controller.signal.aborted) {
         setSelection({ section: 'efficient_frontier', index: 0 })

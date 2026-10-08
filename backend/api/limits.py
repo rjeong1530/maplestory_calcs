@@ -1,10 +1,11 @@
 """Per-process admission limits for CPU-heavy calculator requests."""
 from collections import OrderedDict, deque
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 from math import isfinite
-from threading import BoundedSemaphore, Lock
+from threading import Lock
 from time import monotonic
 import os
+import asyncio
 
 from fastapi import HTTPException, Request
 from starlette.responses import JSONResponse
@@ -52,16 +53,25 @@ class RequestBodyLimit:
 
 
 class CalculationLimiter:
-    def __init__(self, concurrent=2, per_minute=300, max_clients=1024, clock=monotonic):
-        self.slots = BoundedSemaphore(concurrent)
+    """Bounded FIFO admission; waiting happens asynchronously, not in worker threads."""
+
+    def __init__(self, concurrent=2, per_minute=300, max_clients=1024, clock=monotonic,
+                 max_waiting=8, wait_seconds=20):
+        self.concurrent = concurrent
+        self.active = 0
+        self.waiting = deque()
+        self.max_waiting = max_waiting
+        self.wait_seconds = wait_seconds
         self.per_minute = per_minute
         self.max_clients = max_clients
         self.clock = clock
         self.clients = OrderedDict()
         self.lock = Lock()
 
-    @contextmanager
-    def admit(self, client):
+    @asynccontextmanager
+    async def admit(self, client, disconnected=None):
+        ticket = object()
+        acquired = False
         with self.lock:
             now = self.clock()
             requests = self.clients.pop(client, deque())
@@ -72,24 +82,51 @@ class CalculationLimiter:
                 self.clients.popitem(last=False)
             if len(requests) >= self.per_minute:
                 raise HTTPException(429, 'Too many calculations. Try again shortly.', headers={'Retry-After': '60'})
-            if not self.slots.acquire(blocking=False):
-                raise HTTPException(503, 'Calculators are busy. Try again shortly.', headers={'Retry-After': '2'})
+            if self.active < self.concurrent and not self.waiting:
+                self.active += 1
+                acquired = True
+            else:
+                if len(self.waiting) >= self.max_waiting:
+                    raise HTTPException(503, 'The calculation queue is full. Please try again shortly.', headers={'Retry-After': '2'})
+                self.waiting.append(ticket)
+            # Count admission once, including queued requests, rather than every poll.
             requests.append(now)
+        deadline = monotonic() + self.wait_seconds
         try:
+            while not acquired:
+                if disconnected is not None and await disconnected():
+                    raise HTTPException(499, 'Calculation request disconnected while waiting.')
+                if monotonic() >= deadline:
+                    raise HTTPException(503, 'The calculation queue wait timed out. Please try again.', headers={'Retry-After': '2'})
+                with self.lock:
+                    if self.waiting[0] is ticket and self.active < self.concurrent:
+                        self.waiting.popleft()
+                        self.active += 1
+                        acquired = True
+                if not acquired:
+                    # Short asynchronous polling keeps admission independent of a
+                    # particular event loop and leaves the thread pool available.
+                    await asyncio.sleep(min(.05, max(0, deadline - monotonic())))
             yield
         finally:
-            self.slots.release()
+            with self.lock:
+                if acquired:
+                    self.active -= 1
+                else:
+                    self.waiting.remove(ticket)
 
 
 limiter = CalculationLimiter(
     concurrent=max(1, int(os.getenv('CALCULATION_CONCURRENCY', '2'))),
     per_minute=max(1, int(os.getenv('CALCULATIONS_PER_MINUTE', '300'))),
+    max_waiting=max(0, int(os.getenv('CALCULATION_QUEUE_SIZE', '8'))),
+    wait_seconds=max(0, float(os.getenv('CALCULATION_QUEUE_TIMEOUT_SECONDS', '20'))),
 )
 
 
-def calculation_slot(request: Request):
+async def calculation_slot(request: Request):
     # Use the server's resolved client, not untrusted forwarded headers.
-    with limiter.admit(request.client.host if request.client else 'unknown'):
+    async with limiter.admit(request.client.host if request.client else 'unknown', request.is_disconnected):
         yield
 
 

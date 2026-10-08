@@ -21,8 +21,7 @@ export default function EquipmentPlanner({ activeTab, onNavigate }) {
         onOpenApproaches={() => {
           setStarforceView('strategies')
           onNavigate('starforce')
-        }}
-        onFlameResultInvalidated={calculation.clear} />
+        }} />
     </DeferredPage>
     <DeferredPage active={activeTab === 'flame'}>
       <FlameCalculator form={planner.form} setForm={planner.setForm} calculation={calculation} />

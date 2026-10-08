@@ -1,6 +1,21 @@
 import { equipInSlot, equipmentChoices, EQUIPMENT_SLOTS, CLASS_FAMILIES, FIXED_RING_SLOT, withFixedRing } from './flameEquipment.js'
 import { maxStarForceForEquipment, replacementCostForEquipment } from './starforce.js'
 import { isObject, LINE_FIELDS, restoreEquipmentLines } from './equipmentLines.js'
+import { FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from './equipmentUpgrade.js'
+
+function validateScoreWeights(weights) {
+  if (!isObject(weights)) throw new Error('Invalid equipment score weights.')
+  const allowed = { flame: FLAME_WEIGHT_LABELS, potential: POTENTIAL_WEIGHT_LABELS }
+  return Object.fromEntries(Object.entries(weights).map(([group, values]) => {
+    if (!Object.hasOwn(allowed, group) || !isObject(values)) throw new Error('Invalid equipment score weights.')
+    return [group, Object.fromEntries(Object.entries(values).map(([key, value]) => {
+      if (!Object.hasOwn(allowed[group], key) || typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+        throw new Error(`Invalid equipment score weight: ${key}.`)
+      }
+      return [key, String(value)]
+    }))]
+  }))
+}
 
 export function serializeEquipment(equipment) {
   return Object.fromEntries(Object.entries(equipment).filter(([slot]) => slot !== FIXED_RING_SLOT).map(([slot, item]) => [slot, {
@@ -20,10 +35,21 @@ export function serializeEquipment(equipment) {
   }]))
 }
 
-export function exportEquipment(equipment, equipmentClass) {
+export function exportEquipment(equipment, equipmentClass, scoreWeights) {
+  let weights
+  if (scoreWeights !== undefined) {
+    weights = Object.fromEntries(Object.entries(scoreWeights).map(([group, values]) => [group,
+      Object.fromEntries(Object.entries(values).map(([key, value]) => {
+        if (value == null || typeof value === 'boolean' || String(value).trim() === '') throw new Error('Enter valid score weights before exporting.')
+        return [key, Number(value)]
+      })),
+    ]))
+    validateScoreWeights(weights)
+  }
   return JSON.stringify({
     format: 'maplestory-equipment', version: 1,
     equipment_class: equipmentClass, equipment: serializeEquipment(equipment),
+    ...(weights ? { score_weights: weights } : {}),
   }, null, 2)
 }
 
@@ -37,6 +63,7 @@ export function importEquipment(text) {
   if (!isObject(saved) || saved.format !== 'maplestory-equipment' || saved.version !== 1) {
     throw new Error('This file is not a supported equipment export (version 1).')
   }
+  const scoreWeights = saved.score_weights === undefined ? null : validateScoreWeights(saved.score_weights)
   if (!Object.values(CLASS_FAMILIES).flat().includes(saved.equipment_class)
     || !isObject(saved.equipment)) {
     throw new Error('The file must contain a valid equipment class and equipment set.')
@@ -84,7 +111,7 @@ export function importEquipment(text) {
       Object.keys(saved.equipment).filter(slot => slot !== FIXED_RING_SLOT).length) {
     throw new Error('The equipment set contains conflicting slots.')
   }
-  return { equipment, equipmentClass: saved.equipment_class }
+  return { equipment, equipmentClass: saved.equipment_class, ...(scoreWeights ? { scoreWeights } : {}) }
 }
 
 export function restoreEquipment(savedEquipment, mapleClass) {

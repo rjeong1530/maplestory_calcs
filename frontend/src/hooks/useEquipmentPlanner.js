@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CLASS_STATS } from '../data/classStats'
 import { restoreEquipment, serializeEquipment, exportEquipment, importEquipment } from '../data/equipmentSave'
-import { restoreUpgradeSettings, restoreFlameWeights, DEFAULT_FLAME_WEIGHTS } from '../data/equipmentUpgrade'
+import { restoreUpgradeSettings, restoreFlameWeights, DEFAULT_FLAME_WEIGHTS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
 import { equipInSlot, compatibleEquipment, FIXED_RING_SLOT } from '../data/flameEquipment'
 import { readEquipmentSelection, saveEquipmentSelection } from '../data/equipmentStorage'
 import { applyStrategyToEquipment } from '../data/equipmentGroups'
@@ -32,6 +32,8 @@ export default function useEquipmentPlanner() {
     ...restoreFlameWeights(savedSelection.score_weights),
   }))
   const [equipmentClass, setEquipmentClass] = useState(savedEquipmentClass)
+  const [equipmentWeights, setEquipmentWeights] = useState(() =>
+    restoreFlameWeights(savedSelection.equipment_score_weights ?? savedSelection.score_weights))
   const [equipment, setEquipment] = useState(() =>
     restoreEquipment(savedSelection.equipment, savedEquipmentClass))
   const [activeSlot, setActiveSlot] = useState(null)
@@ -47,12 +49,13 @@ export default function useEquipmentPlanner() {
       equipment_class: equipmentClass,
       equipment: savedEquipment,
       score_weights: JSON.parse(scoreWeightsKey),
+      equipment_score_weights: equipmentWeights,
       upgrade_settings: upgradeSettings,
     })
     // Report the external storage write outcome; it cannot be derived during render.
     // oxlint-disable-next-line react/set-state-in-effect
     setSaveError(saved ? '' : 'Equipment could not be saved in this browser. Export your equipment JSON before closing or refreshing this page.')
-  }, [equipment, equipmentClass, savedClassName, scoreWeightsKey, upgradeSettings])
+  }, [equipment, equipmentClass, savedClassName, scoreWeightsKey, equipmentWeights, upgradeSettings])
 
   function selectEquipment(slot, item) {
     if (slot === FIXED_RING_SLOT) return
@@ -102,15 +105,22 @@ export default function useEquipmentPlanner() {
     const imported = importEquipment(text)
     setEquipmentClass(imported.equipmentClass)
     setEquipment(imported.equipment)
+    if (imported.scoreWeights) {
+      setEquipmentWeights(current => ({ ...current, ...imported.scoreWeights.flame }))
+      setUpgradeSettings(current => ({ ...current, ...imported.scoreWeights.potential }))
+    }
     setActiveSlot(null)
   }
 
   return {
     applyEquipmentStrategy: (slots, strategy) => setEquipment(current => applyStrategyToEquipment(current, slots, strategy)),
     saveError,
-    form, setForm, equipment, equipmentClass, activeSlot, setActiveSlot,
+    form, setForm, equipmentWeights, setEquipmentWeights, equipment, equipmentClass, activeSlot, setActiveSlot,
     upgradeSettings, setUpgradeSettings, selectEquipment, removeEquipment,
     updateEquipmentRoll, updateEquipmentClass, importEquipmentJson,
-    exportEquipmentJson: () => exportEquipment(equipment, equipmentClass),
+    exportEquipmentJson: () => exportEquipment(equipment, equipmentClass, {
+      flame: equipmentWeights,
+      potential: Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS).map(key => [key, upgradeSettings[key]])),
+    }),
   }
 }
