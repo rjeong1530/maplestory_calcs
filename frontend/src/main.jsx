@@ -5,6 +5,11 @@ import App from './App.jsx'
 import PageErrorBoundary from './components/PageErrorBoundary'
 import { preloadPage } from './preloadPage'
 import { pageForPath } from './data/routes'
+import { apiRequest } from './api'
+
+// Start waking the backend on arrival without delaying rendering or showing errors.
+// Run outside React so StrictMode and component remounts do not repeat the request.
+void apiRequest('/api/health', { cache: 'no-store' }).catch(() => {})
 
 const root = createRoot(document.getElementById('root'))
 const renderApp = () => root.render(<StrictMode><PageErrorBoundary><App /></PageErrorBoundary></StrictMode>)

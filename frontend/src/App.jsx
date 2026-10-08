@@ -15,8 +15,11 @@ export default function App() {
     <main className={calculator === 'equipment' ? 'equipment-page-main' : undefined}>
       <Navigation activePage={calculator} onNavigate={navigate} />
       <header className="page-header">
-        <span className="eyebrow">MAPLESTORY · POTENTIAL LAB</span>
-        <h1>{calculator === 'home' ? 'Plan your next upgrade.' : 'Plan your next roll.'}</h1>
+        <span className="eyebrow">MAPLESTORY CALCULATOR · EQUIPMENT UPGRADE LAB</span>
+        <div className="page-title">
+          {calculator === 'home' && <img className="page-logo" src="/maplecalculator.png" alt="MapleStory Calculator logo" width="72" height="72" />}
+          <h1>{calculator === 'home' ? 'Plan your next upgrade.' : 'Plan your next roll.'}</h1>
+        </div>
         <p>{calculator === 'home'
           ? 'Explore your odds, estimate enhancement costs, and find the next step for your character.'
           : 'Estimate your odds or plan your equipment upgrades.'}</p>
