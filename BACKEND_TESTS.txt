@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-07
-Total: 139 tests in 12 files
+Total: 140 tests in 12 files
 
 Run from the repository root (Windows PowerShell):
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -731,3 +731,13 @@ Tests: 5
      Checks oversized declared and streamed bodies, absent/misleading/invalid
      Content-Length, exact-limit bodies, HTTP 413, and unaffected health requests.
 - All 139 backend tests passed.
+
+Production frontend API access - 2026-10-07
+FILE: backend/tests/test_api.py (25 tests total)
+140. test_deployed_frontend_cors_and_preflight
+     Checks that health responses allow the configured default production
+     frontend origin, JSON POST preflight requests succeed for that origin,
+     and an unrelated origin receives no Access-Control-Allow-Origin header.
+     Runs against FastAPI TestClient; it does not contact the deployed services.
+- The 25-test API suite passed after this change. The full 140-test backend
+  suite was not rerun for this documentation update.

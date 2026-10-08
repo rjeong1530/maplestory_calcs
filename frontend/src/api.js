@@ -1,3 +1,6 @@
+const apiBase = (import.meta.env?.VITE_API_BASE_URL
+  ?? (import.meta.env?.PROD ? 'https://maplestory-calcs-1.onrender.com' : '')).replace(/\/+$/, '')
+
 export async function apiRequest(path, init = {}) {
   const timeout = AbortSignal.timeout(30000)
   const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout
@@ -12,17 +15,17 @@ export async function apiRequest(path, init = {}) {
   }
   let response
   try {
-    response = await fetch(path, { ...init, signal })
+    response = await fetch(`${apiBase}${path}`, { ...init, signal })
   } catch (error) {
     checkCancellation(error)
-    throw new Error('Could not reach the calculator. Check that the API is running on port 8000, then try again.')
+    throw new Error('Could not reach the calculator service. Please try again shortly.')
   }
   let data
   try {
     data = await response.json()
   } catch (error) {
     checkCancellation(error)
-    throw new Error('The server returned an unexpected response. Check that the API is running and restart the Vite development server.')
+    throw new Error('The server returned an unexpected response. Check the API address and deployment routing.')
   }
   if (!response.ok) {
     const detail = data.detail

@@ -5,8 +5,10 @@ Run from the repository root: python -m uvicorn backend.api.main:app --reload
 from typing import Annotated, Literal
 from dataclasses import asdict
 from functools import lru_cache
+import os
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from backend.api.limits import calculation_slot, require_finite, RequestBodyLimit
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -18,6 +20,14 @@ from backend.examples.starforce_strategies import analyze_strategies
 
 app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
 app.add_middleware(RequestBodyLimit)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip().rstrip('/') for origin in os.getenv(
+        'CORS_ALLOWED_ORIGINS', 'https://maplestory-calculator.onrender.com',
+    ).split(',') if origin.strip()],
+    allow_methods=['GET', 'POST'],
+    allow_headers=['Content-Type'],
+)
 
 
 class RequestModel(BaseModel):

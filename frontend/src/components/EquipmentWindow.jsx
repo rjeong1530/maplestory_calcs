@@ -69,29 +69,48 @@ export default function EquipmentWindow({
         </div>
       </div>
       <p className="hint">Choose your current gear. Stats and upgrade calculations use this same setup.</p>
-      <fieldset className="equipment-job-selection">
-        <legend>1. Select your job type</legend>
-        <div className="equipment-job-controls">
-          <label>Job type
-            <select disabled={busy} value={family} onChange={event => {
-              const nextFamily = event.target.value
-              setPreferredFamily(nextFamily)
-              if (!CLASS_FAMILIES[nextFamily].includes(equipmentClass)) {
-                onMapleClassChange(mapleClasses.find(name => CLASS_FAMILIES[nextFamily].includes(name)))
-              }
-            }}>
-              {Object.keys(CLASS_FAMILIES).map(name => <option key={name} value={name}>{name}</option>)}
-            </select>
-          </label>
-          <label>Equipment class
-            <select disabled={busy} value={equipmentClass} onChange={event => onMapleClassChange(event.target.value)}>
-              {jobClasses.map(mapleClass => (
-                <option key={mapleClass} value={mapleClass}>{mapleClass}</option>
-              ))}
-            </select>
-          </label>
+      <div className="equipment-setup-toolbar">
+        <fieldset className="equipment-job-selection">
+          <legend>1. Select your job type</legend>
+          <div className="equipment-job-controls">
+            <label>Job type
+              <select disabled={busy} value={family} onChange={event => {
+                const nextFamily = event.target.value
+                setPreferredFamily(nextFamily)
+                if (!CLASS_FAMILIES[nextFamily].includes(equipmentClass)) {
+                  onMapleClassChange(mapleClasses.find(name => CLASS_FAMILIES[nextFamily].includes(name)))
+                }
+              }}>
+                {Object.keys(CLASS_FAMILIES).map(name => <option key={name} value={name}>{name}</option>)}
+              </select>
+            </label>
+            <label>Equipment class
+              <select disabled={busy} value={equipmentClass} onChange={event => onMapleClassChange(event.target.value)}>
+                {jobClasses.map(mapleClass => (
+                  <option key={mapleClass} value={mapleClass}>{mapleClass}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </fieldset>
+        <div className="equipment-transfer-panel" role="group" aria-label="Import or export equipment">
+          <div className="equipment-transfer-actions">
+            <button type="button" disabled={busy} onClick={downloadEquipment}>Export JSON</button>
+            <button type="button" disabled={busy} aria-describedby="equipment-import-help"
+              onClick={() => fileInput.current?.click()}>
+              {importing ? 'Importing…' : 'Import JSON'}
+            </button>
+            <input ref={fileInput} type="file" accept=".json,application/json" hidden
+              aria-label="Import equipment JSON file" onChange={uploadEquipment} />
+          </div>
+          <p className="hint" id="equipment-import-help">
+            Export your class, equipped items, Star Force, potentials, and flames.
+            Import replaces your current equipment set.
+          </p>
+          {transferError && <p className="error" role="alert">{transferError}</p>}
+          {transferMessage && <p className="hint" role="status">{transferMessage}</p>}
         </div>
-      </fieldset>
+      </div>
       <p className="hint">2. Set up your equipment. Click a slot in the equipment window to jump to its items.</p>
       <div className="equipment-setup-layout">
         <section className="equipment-catalog" aria-label="Available equipment">
@@ -132,24 +151,7 @@ export default function EquipmentWindow({
           <button type="button" className="primary" onClick={onOpenStats}>Edit stats & upgrades &rarr;</button>
         </div>
       </div>
-      <details className="equipment-transfer-panel">
-        <summary>Import or export equipment</summary>
-        <div className="equipment-transfer-actions">
-          <button type="button" disabled={busy} onClick={downloadEquipment}>Export JSON</button>
-          <button type="button" disabled={busy} aria-describedby="equipment-import-help"
-            onClick={() => fileInput.current?.click()}>
-            {importing ? 'Importing…' : 'Import JSON'}
-          </button>
-          <input ref={fileInput} type="file" accept=".json,application/json" hidden
-            aria-label="Import equipment JSON file" onChange={uploadEquipment} />
-        </div>
-        <p className="hint" id="equipment-import-help">
-          Export your class, equipped items, Star Force, potentials, and flames.
-          Import replaces your current equipment set.
-        </p>
-        {transferError && <p className="error" role="alert">{transferError}</p>}
-        {transferMessage && <p className="hint" role="status">{transferMessage}</p>}
-      </details>
+
     </section>
   )
 }

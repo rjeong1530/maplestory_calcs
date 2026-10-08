@@ -10,6 +10,21 @@ from backend.calc import starforce_calculator as starforce
 
 
 class ApiTests(unittest.TestCase):
+    def test_deployed_frontend_cors_and_preflight(self):
+        client = TestClient(app)
+        origin = 'https://maplestory-calculator.onrender.com'
+        response = client.get('/api/health', headers={'Origin': origin})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['access-control-allow-origin'], origin)
+        response = client.options('/api/starforce-estimate', headers={
+            'Origin': origin, 'Access-Control-Request-Method': 'POST',
+            'Access-Control-Request-Headers': 'content-type',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['access-control-allow-origin'], origin)
+        response = client.get('/api/health', headers={'Origin': 'https://unrelated.example'})
+        self.assertNotIn('access-control-allow-origin', response.headers)
+
     def test_starforce_interactive_distribution_is_optional(self):
         from fastapi.testclient import TestClient
         from backend.api.main import app

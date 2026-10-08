@@ -491,3 +491,17 @@ FILE: frontend/scripts/browser-regressions.test.mjs (1 browser test total)
   import inside DeferredPage, verify recovery UI and preserved navigation, and
   click Reload page to recover without the failed lazy component's cached error.
 - All 90 helper tests, the expanded browser regression, production build, and lint passed.
+
+Inventory reconciliation and recent UI/deployment checks - 2026-10-07
+- Compared this inventory with every named helper test: all 90 tests across
+  16 files are documented. The browser regression remains one integrated test;
+  the rendering benchmark remains a separate performance harness.
+- Direct production API routing: the existing helper tests, lint, and build
+  passed. These helper tests use mocked fetch and do not verify a live Render
+  deployment or browser CORS; backend CORS coverage is in BACKEND_TESTS.txt.
+- Compact meso formatting was checked manually for B/M/K and T/B/M/K breakdowns,
+  exact millions, zero, blank, negative, and infinite input. This was an ad hoc
+  assertion run, not an additional committed test file.
+- Moving import/export beside the job selectors and revising the flame hints
+  passed lint and production build. No new automated layout or hint tests were
+  added for those edits; existing import/export data tests remain documented above.

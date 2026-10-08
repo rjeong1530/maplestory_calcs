@@ -604,6 +604,19 @@ and `frontend/rendering-after.json`.
 
 ## Frontend
 
+For the Render static site, production builds default to the API origin
+`https://maplestory-calcs-1.onrender.com`. Override `VITE_API_BASE_URL` at build
+time to use a different backend; use an empty value for same-origin API routing.
+The backend allows `https://maplestory-calculator.onrender.com` by default.
+Override `CORS_ALLOWED_ORIGINS` with a comma-separated list of frontend origins
+if the site address changes. Deploy both frontend and backend for these settings
+to take effect. Keep the Render static-site rewrite `/*` -> `/index.html` for
+client routes; an API rewrite is unnecessary when using the direct backend URL.
+The Vite development proxy only applies to the development server.
+
+For local production-preview benchmarks, build with `VITE_API_BASE_URL` set to
+an empty string to keep API requests local rather than contacting production.
+
 The React + Vite frontend lives in `frontend/` alongside the Python calculator.
 Use a current Node.js LTS release. Start the API in one terminal from the
 repository root:
