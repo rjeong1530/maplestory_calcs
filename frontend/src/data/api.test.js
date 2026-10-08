@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { apiRequest } from '../api.js'
 
-test('calculation requests have time to queue while reads retain a shorter timeout', async t => {
+test('both form options and submissions allow time for backend cold starts', async t => {
   const timeouts = []
   t.mock.method(AbortSignal, 'timeout', milliseconds => {
     timeouts.push(milliseconds)
@@ -11,7 +11,26 @@ test('calculation requests have time to queue while reads retain a shorter timeo
   t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({}) }))
   await apiRequest('/api/options')
   await apiRequest('/api/starforce-estimate', { method: 'POST' })
-  assert.deepEqual(timeouts, [30000, 90000])
+  assert.deepEqual(timeouts, [90000, 90000])
+})
+
+test('HTML overload responses show a recoverable error without retrying calculations', async t => {
+  for (const [status, message] of [[429, /wait a minute/], [502, /starting up or busy/], [503, /starting up or busy/]]) {
+    let calls = 0
+    t.mock.method(globalThis, 'fetch', async () => {
+      calls++
+      return { ok: false, status, json: async () => { throw new SyntaxError('HTML response') } }
+    })
+    await assert.rejects(apiRequest('/api/starforce-estimate', { method: 'POST' }), message)
+    assert.equal(calls, 1)
+  }
+})
+
+test('JSON queue rejection preserves the backend explanation', async t => {
+  t.mock.method(globalThis, 'fetch', async () => ({
+    ok: false, status: 503, json: async () => ({ detail: 'The calculation queue is full. Please try again shortly.' }),
+  }))
+  await assert.rejects(apiRequest('/api/probability', { method: 'POST' }), /queue is full/)
 })
 
 test('caller cancellation does not disable the request timeout', async t => {

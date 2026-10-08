@@ -31,7 +31,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
   useEffect(() => {
     const controller = new AbortController()
     apiRequest(`/api/item-options?${optionsKey}`, {
-      signal: AbortSignal.any([controller.signal, AbortSignal.timeout(30000)]),
+      signal: controller.signal,
     }).then(data => {
       if (controller.signal.aborted) return
       const allowedEffects = data.potential.effects

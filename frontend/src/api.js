@@ -2,8 +2,8 @@ const apiBase = (import.meta.env?.VITE_API_BASE_URL
   ?? (import.meta.env?.PROD ? 'https://maplestory-calcs-1.onrender.com' : '')).replace(/\/+$/, '')
 
 export async function apiRequest(path, init = {}) {
-  // Calculations may wait in the bounded server queue before execution.
-  const timeout = AbortSignal.timeout(init.method?.toUpperCase() === 'POST' ? 90000 : 30000)
+  // Even option reads can wake the free backend. Allow startup plus queue time.
+  const timeout = AbortSignal.timeout(90000)
   const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout
   function checkCancellation(error) {
     if (signal.aborted) {
@@ -26,10 +26,16 @@ export async function apiRequest(path, init = {}) {
     data = await response.json()
   } catch (error) {
     checkCancellation(error)
+    if (response.status === 429) {
+      throw new Error('Too many calculations. Please wait a minute and try again.')
+    }
+    if (response.status >= 500) {
+      throw new Error('The calculator service is starting up or busy. Please try again shortly.')
+    }
     throw new Error('The server returned an unexpected response. Check the API address and deployment routing.')
   }
   if (!response.ok) {
-    const detail = data.detail
+    const detail = data?.detail
     const message = Array.isArray(detail)
       ? detail.map(item => item.msg).join('; ')
       : typeof detail === 'string' ? detail : 'Calculation failed. Please try again.'

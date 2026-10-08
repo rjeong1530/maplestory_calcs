@@ -302,4 +302,55 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
   const restoredWeights = await execute("return JSON.parse(localStorage.getItem('maplestory-flame-equipment'))")
   assert.equal(restoredWeights.score_weights.attack_value, '17')
   assert.equal(restoredWeights.equipment_score_weights.attack_value, '31')
+
+  // Invalid values should be stopped by browser validation before using a server slot.
+  await execute(`window.__reviewRequests = []; window.__rejectFlame = false;
+    const prior = window.fetch;
+    window.fetch = async (path, init) => {
+      window.__reviewRequests.push({ path: String(path), method: init?.method || 'GET' });
+      if (String(path).startsWith('/api/starforce-costs')) return { ok: true, json: async () => ({ costs_by_star: [] }) };
+      if (path === '/api/flame-probability') return window.__rejectFlame
+        ? { ok: false, status: 503, json: async () => { throw new SyntaxError('HTML gateway response'); } }
+        : { ok: true, json: async () => ({ probability: .5, percentage: 50, one_in: 2 }) };
+      return prior(path, init);
+    };`)
+  const editField = (selector, value) => execute(`const input = document.querySelector(arguments[0]);
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, arguments[1]);
+    input.dispatchEvent(new Event('input', { bubbles: true }));`, selector, value)
+  await navigate('/calculators/flames')
+  await until(() => execute("return !!document.querySelector('.flame-form')"), 'flame validation form')
+  for (const [name, invalid, valid] of [['attack_value', '-1', '3'], ['all_stat_pct_value', '-1', '10'], ['equipment_level', '301', '200']]) {
+    await editField(`.flame-form input[name="${name}"]`, invalid)
+    assert.equal(await execute("return document.querySelector('.flame-form').checkValidity()"), false, name)
+    await execute("document.querySelector('.flame-form').requestSubmit()")
+    await editField(`.flame-form input[name="${name}"]`, valid)
+  }
+  assert.equal(await execute("return window.__reviewRequests.filter(r => r.method === 'POST').length"), 0)
+  await execute("window.__rejectFlame = true; document.querySelector('.flame-form').requestSubmit()")
+  await until(() => execute("return [...document.querySelectorAll('.error')].some(e => e.textContent.includes('starting up or busy'))"), 'overload message')
+  assert.equal(await execute("return document.querySelector('.flame-form fieldset').disabled"), false)
+  await execute("window.__rejectFlame = false; document.querySelector('.flame-form').requestSubmit()")
+  await until(() => execute("return !!document.querySelector('.flame-form + .results .probability')"), 'manual retry succeeds')
+
+  await navigate('/calculators/starforce')
+  await until(() => execute("return !!document.querySelector('.starforce-form')"), 'Star Force validation form')
+  await visibleButton('Custom estimate')
+  await delay(350)
+  await execute('window.__reviewRequests = []')
+  for (const level of ['2', '21', '210']) await editField('.starforce-form input[name="item_level"]', level)
+  await delay(400)
+  assert.equal(await execute("return window.__reviewRequests.filter(r => r.path.startsWith('/api/starforce-costs')).length"), 1,
+    'rapid level edits should send only the final cost-table request')
+  await editField('.starforce-form input[name="item_level"]', '301')
+  assert.equal(await execute("return document.querySelector('.starforce-form').checkValidity()"), false)
+  await execute("document.querySelector('.starforce-form input[name=\"shining_starforce_sunday\"]').click()")
+  await delay(350)
+  assert.equal(await execute("return window.__reviewRequests.filter(r => r.path.startsWith('/api/starforce-costs')).length"), 1)
+  assert.ok(await execute("return [...document.querySelectorAll('.starforce-cost-panel .error')].some(e => e.textContent.includes('1 to 300'))"))
+  await editField('.starforce-form input[name="item_level"]', '200')
+  await editField('.starforce-form input[name="target_star"]', '15')
+  assert.equal(await execute("return document.querySelector('.starforce-form').checkValidity()"), false)
+  assert.equal(await execute("return document.querySelector('.strategy-view > form').checkValidity()"), false)
+  await execute("document.querySelector('.starforce-form').requestSubmit(); document.querySelector('.strategy-view > form').requestSubmit()")
+  assert.equal(await execute("return window.__reviewRequests.filter(r => r.method === 'POST').length"), 0)
 })

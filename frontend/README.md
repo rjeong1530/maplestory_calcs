@@ -9,14 +9,21 @@ npm ci
 npm run dev
 ```
 
-Vite proxies `/api` to `http://127.0.0.1:8000` during development.
+Vite currently proxies `/api` to the deployed Render backend during development.
+To use a local backend, change the proxy target in `vite.config.js` to
+`http://127.0.0.1:8000`.
 
 - `npm run build`: production output in `dist/`.
 - `npm run lint`: check JavaScript source.
-- `node --test src/data/*.test.js`: run data-helper tests with Node's built-in
-  test runner (there is no `npm test` script).
-- `npm run preview`: preview the production build. Production API routing
-  requires a reverse proxy; the development proxy is not part of the build.
+- `npm test`: run data-helper and API-client tests with Node's built-in test runner.
+- `npm run test:browser`: run UI regressions in an isolated headless Firefox profile.
+- `npm run test:deployed`: explicitly run real, sequential form submissions against
+  the deployed Render services. Requires Firefox and geckodriver on PATH, or
+  `GECKODRIVER_PATH` pointing to its executable. Optional `SMOKE_SITE_URL` and
+  `SMOKE_API_URL` override the targets. This test is not included in `npm test`.
+- `npm run preview`: preview the production build. Production defaults to
+  `https://maplestory-calcs-1.onrender.com`; `VITE_API_BASE_URL` overrides it at build
+  time. The development proxy is not part of the build.
 
 ## Source layout
 

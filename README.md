@@ -554,8 +554,8 @@ per-process controls; a multi-worker public deployment also needs shared limits
 at its gateway. Client identity uses the server-resolved client address.
 For a single-slot deployment, set `CALCULATION_CONCURRENCY=1`; the eight queue
 entries are additional waiting requests, not additional concurrent calculations.
-The frontend allows 90 seconds for POST calculations (queue wait plus execution)
-and 30 seconds for reads. The queue is in memory, is lost on restart/deploy, and
+The frontend allows 90 seconds for both reads and POST calculations, including
+cold startup and queue wait. The queue is in memory, is lost on restart/deploy, and
 does not increase CPU capacity or provide durable background jobs.
 Star Force and equipment API levels are limited to 1–300 and spare prices to
 0–1e15 mesos. Nonfinite calculated costs are rejected rather than returned as
@@ -821,5 +821,5 @@ API input limits: request bodies are limited to 256 KiB, including streamed
 requests; larger bodies receive HTTP 413. Equipment names are limited to 200
 characters and slots must use supported identifiers. Invalid flame types, scoring
 stats, duplicate stats, and nonfinite or negative weights receive HTTP 422.
-Calculator requests retain a 30-second timeout even when callers supply a
+Calculator requests retain a 90-second timeout even when callers supply a
 cancellation signal. Failed page loads offer a full reload to recover.

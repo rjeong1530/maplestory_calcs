@@ -33,7 +33,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
 
   useEffect(() => {
     const level = Number(form.item_level)
-    if (!Number.isInteger(level) || level <= 0) {
+    if (!Number.isInteger(level) || level <= 0 || level > 300) {
       return undefined
     }
 
@@ -44,36 +44,39 @@ export default function StarForceCalculator({ planner, view, setView }) {
       mvp_rank: form.mvp_rank,
       superior_item: String(form.superior_item),
     })
-    apiRequest(`/api/starforce-costs?${query}`, { signal: controller.signal })
-      .then(data => { if (!controller.signal.aborted) setCostRows(data.costs_by_star) })
-      .catch(requestError => {
-        if (!controller.signal.aborted) {
-          setCostRows(null)
-          setCostsError(requestError.message)
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setCostsBusy(false)
-      })
-    return () => controller.abort()
+    // Wait for typing to settle instead of fetching a cost table per keystroke.
+    const timer = setTimeout(() => {
+      apiRequest(`/api/starforce-costs?${query}`, { signal: controller.signal })
+        .then(data => { if (!controller.signal.aborted) setCostRows(data.costs_by_star) })
+        .catch(requestError => {
+          if (!controller.signal.aborted) {
+            setCostRows(null)
+            setCostsError(requestError.message)
+          }
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setCostsBusy(false)
+        })
+    }, 250)
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
   }, [form.item_level, form.shining_starforce_sunday, form.mvp_rank, form.superior_item])
 
   function update(event) {
     const { name, value, type, checked } = event.target
     setForm(current => ({ ...current, [name]: type === 'checkbox' ? checked : value }))
-    if (name === 'item_level') {
-      const level = Number(value)
-      if (Number.isInteger(level) && level > 0) {
+    if (['item_level', 'shining_starforce_sunday', 'mvp_rank', 'superior_item'].includes(name)) {
+      const level = Number(name === 'item_level' ? value : form.item_level)
+      if (Number.isInteger(level) && level > 0 && level <= 300) {
         setCostsBusy(true)
         setCostsError('')
       } else {
         setCostRows(null)
         setCostsBusy(false)
-        setCostsError('Enter a positive equipment level to view tap costs.')
+        setCostsError('Enter an equipment level from 1 to 300 to view tap costs.')
       }
-    } else if (['shining_starforce_sunday', 'mvp_rank', 'superior_item'].includes(name)) {
-      setCostsBusy(true)
-      setCostsError('')
     }
     clear()
   }
@@ -122,11 +125,11 @@ export default function StarForceCalculator({ planner, view, setView }) {
             <legend>Star Force settings</legend>
             <div className="starforce-fields">
               <label>Replacement cost per boom (mesos)
-                <input name="replacement_cost_mesos" type="number" min="0" step="any"
+                <input name="replacement_cost_mesos" type="number" min="0" max="1000000000000000" step="any"
                   value={form.replacement_cost_mesos} onChange={update} required />
               </label>
               <label>Equipment level
-                <input name="item_level" type="number" min="1" step="1"
+                <input name="item_level" type="number" min="1" max="300" step="1"
                   value={form.item_level} onChange={update} required />
               </label>
               <label>Starting stars
@@ -134,7 +137,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
                   value={form.start_star} onChange={update} required />
               </label>
               <label>Target stars
-                <input name="target_star" type="number" min="1" max="30" step="1"
+                <input name="target_star" type="number" min={Number(form.start_star) + 1} max="30" step="1"
                   value={form.target_star} onChange={update} required />
               </label>
               <label className="starforce-safeguard-control">

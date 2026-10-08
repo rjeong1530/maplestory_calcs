@@ -123,7 +123,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
       <div className="starforce-fields">
         {[
           ['item_level', 'Equipment level', 1, 300], ['start_star', 'Starting stars', 0, 29],
-          ['target_star', 'Target stars', 1, 30],
+          ['target_star', 'Target stars', Number(form.start_star) + 1, 30],
           ['replacement_cost_mesos', 'Replacement cost per spare (mesos)', 0, 1e15],
         ].map(([name, label, min, max]) => <label key={name}>{label}
           <input name={name} type="number" required min={min} max={max} step={name === 'replacement_cost_mesos' ? 'any' : '1'}

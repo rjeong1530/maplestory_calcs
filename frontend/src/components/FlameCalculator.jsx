@@ -53,6 +53,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
             name="equipment_level"
             type="number"
             min="1"
+            max="300"
             value={isWeapon ? weaponConfig.equipment_level : form.equipment_level}
             readOnly={isWeapon}
             onChange={update}
@@ -121,6 +122,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           <input
             name="all_stat_pct_value"
             type="number"
+            min="0"
             step="any"
             value={form.all_stat_pct_value}
             onChange={update}
@@ -144,6 +146,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           <input
             name="attack_value"
             type="number"
+            min="0"
             step="any"
             value={form.attack_value}
             onChange={update}
