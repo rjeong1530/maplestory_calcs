@@ -1,29 +1,30 @@
-import { UPGRADE_CATEGORIES } from '../data/equipmentUpgrade'
+import { MVP_RANKS, UPGRADE_CATEGORIES } from '../data/equipmentUpgrade'
 
 const score = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 })
 const mesos = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
 
-export default function OverallUpgradeOrder({ plan, categories, cubeType }) {
+export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
   const steps = plan?.steps ?? []
   return <section aria-label="Overall upgrade order">
     <h3>Best next upgrades across your equipment</h3>
-    <p className="hint">Compares {categories.map(category => UPGRADE_CATEGORIES[category]).join(', ')} using
-      your score weights and current equipment. Black Flames cost 3M mesos each; potential uses your
-      selected cubes and sale pricing. Abyssal Flames have no meso price and are excluded.</p>
-    <p className="hint">Flame targets are stopping thresholds: once an item reaches that score or higher,
-      another available upgrade is estimated to offer at least as much gain per meso as continuing to flame it.
-      Targets account for level, boss flames,
-      weapon stats, class weights, and the other upgrades available to you. With no competing upgrade,
-      the target is the next obtainable improvement.</p>
-    <p className="hint">The starting score is your recorded score, or a projected score for a later step.
-      The average result is the mean of successful rolls that meet the target, including rolls that exceed it.
-      Expected gain equals that average result minus the starting score, not the target minus the starting score.
-      For example, 186.446 → ≥186.806 with an average result of 195.410 gives an expected gain of
-      8.964, even though the minimum gain is only 0.360.</p>
+    <p className="hint">Cube sale: {settings.cube_sale ? 'On' : 'Off'} · Shining Star Force: {settings.shining_starforce_sunday ? 'On' : 'Off'} · MVP discount: {MVP_RANKS[settings.mvp_rank] ?? 'None'}</p>
+    <p className="hint">For flames, <strong>stop at ≥ target</strong> means keep rolling until you reach that
+      score or higher. At that point, another available upgrade is estimated to give at least as much
+      gain per meso as further flaming. Continuing can still improve the item; it may simply be less
+      efficient. With no competing upgrade, the target is the next obtainable improvement.</p>
+    <p className="hint"><strong>Average result</strong> is the average of all rolls that meet or exceed
+      the stopping target, including lucky rolls far above it. For example, 186.446 → ≥186.806 with an
+      average result of 195.410 means stop at any roll of at least 186.806—not keep rolling until 195.410.
+      Your actual result could be below or above that average. The expected gain is 8.964; the minimum
+      gain is only 0.360.</p>
+    <p className="hint">Choosing to continue until ≥195.410 would be a different, more expensive target:
+      rolls between 186.806 and 195.410 would no longer qualify, so the displayed expected cost would
+      not apply. Record your actual flame score and recalculate to decide what to upgrade next.
+      Black Flames are priced at 3M each; Abyssal Flames are excluded because they have no meso price.</p>
     {steps.length ? <>
-      <p className="hint">Showing up to {plan.step_limit} projected steps. Later steps use the expected score
-        of successful rolls, which can exceed the target. Record your actual results and recalculate
-        after each upgrade. These are expected costs, not a guaranteed budget or a globally optimal plan.</p>
+      <p className="hint">Showing up to {plan.step_limit} projected steps. Later flame steps start from
+        the projected average result, which may differ from your actual roll. Costs are averages,
+        not guaranteed budgets.</p>
       <div className="upgrade-table-scroll" role="region" aria-label="Combined upgrade recommendations" tabIndex="0">
         <table className="upgrade-table overall-upgrade-table">
           <caption>Automatic targets and projected upgrade order</caption>
@@ -56,13 +57,6 @@ export default function OverallUpgradeOrder({ plan, categories, cubeType }) {
           </tr>)}</tbody>
         </table>
       </div>
-      <p className="hint">Order is chosen from the efficiency at the start of each step. The displayed
-        efficiency averages the whole recommended step, including rolls up to a flame target.
-        Star Force compares ranges of up to six stars, with targets through 21 for items below 15,
-        and includes all prerequisite costs. M = million; B = billion; T = trillion mesos.</p>
-      {cubeType === 'red' && categories.includes('potential') && <p className="hint">
-        Red cubes replace the current potential. Intermediate rolls can be worse while you pursue a better score.
-      </p>}
     </> : <p role="status">No eligible upgrades with positive score gain and a known meso cost.</p>}
     {plan?.unavailable?.length > 0 && <details className="upgrade-notes">
       <summary>Unavailable estimates ({plan.unavailable.length})</summary>

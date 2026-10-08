@@ -162,7 +162,7 @@ export default function EquipmentUpgradePlan({
           for the same item are combined, so a displayed range may exceed six stars.
         </p>}
         {category === 'overall' ? <OverallUpgradeOrder plan={result.overall_upgrade_order}
-          categories={settings.categories} cubeType={settings.cube_type} />
+          settings={settings} cubeType={settings.cube_type} />
           : category === 'flames' ? <div className="flame-comparison">
           <div className="calculator-tabs flame-type-toggle" role="group" aria-label="Flame results to display">
             {['black', 'abyssal'].map(type => <button type="button" key={type}
