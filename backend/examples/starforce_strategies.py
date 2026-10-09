@@ -139,6 +139,27 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
     published_winners = [
         publish(min(candidates, key=key), name) for name, key in objectives
     ]
+    baseline = _evaluate((1,) * 7, start, target, terms)
+    baseline_cost = baseline['enhancement_cost_mesos']
+    baseline_spares = baseline['expected_spares']
+    # No ratio exists when the baseline has no booms or no policy reduces them.
+    value_candidates = [row for row in frontier
+                        if baseline_spares > 0 and baseline_cost > 0
+                        and row['expected_spares'] < baseline_spares * (1 - 1e-12)]
+
+    def baseline_value_key(row):
+        extra_cost = (row['enhancement_cost_mesos'] - baseline_cost) / baseline_cost
+        reduction = (baseline_spares - row['expected_spares']) / baseline_spares
+        # A reduction at no extra cost takes priority over any paid reduction.
+        if extra_cost <= 1e-12:
+            return (0, -reduction, row['enhancement_cost_mesos'])
+        return (1, -reduction / extra_cost,
+                row['enhancement_cost_mesos'] + spare_value * row['expected_spares'],
+                row['enhancement_cost_mesos'])
+
+    if value_candidates:
+        published_winners.append(publish(min(value_candidates, key=baseline_value_key),
+                                         'Best value versus baseline'))
     scenarios_by_policy = {}
     for row in published_winners:
         policy = (
@@ -165,12 +186,13 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
                 'Total cost adds the assigned spare value per expected boom; it is not a budget percentile.',
                 'Presets optimize enhancement spending, total cost at the assigned spare value, expected spares, or a balanced tradeoff.',
                 'The balanced preset minimizes the equal-weight sum of normalized enhancement spending and expected spares, scaled between the frontier extremes.',
+                'Best value versus baseline maximizes percentage fewer expected booms divided by percentage extra enhancement spending versus Full Mode 1. Reductions at no extra cost take priority; ties use total cost, then enhancement spending. It is omitted when no boom reduction is available.',
                 'Presets with the same policy are combined in scenarios; recommendations retains one row per priority.',
                 'Every preset is on the cost/spare frontier.',
             ],
         },
         'scenarios': scenarios,
-        'baseline': publish(_evaluate((1,) * 7, start, target, terms), 'Full Mode 1 (baseline)'),
+        'baseline': publish(baseline, 'Full Mode 1 (baseline)'),
         'recommendations': published_winners,
         'efficient_frontier': [publish(row, f'Tradeoff {index}') for index, row in enumerate(frontier, 1)],
     }

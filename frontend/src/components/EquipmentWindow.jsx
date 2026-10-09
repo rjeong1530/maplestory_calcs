@@ -6,7 +6,7 @@ import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 export default function EquipmentWindow({
   equipmentClass, mapleClasses, onMapleClassChange, equipment, activeSlot,
   onActivate, onSelect, onRemove, busy: calculating,
-  onExport, onImport, onOpenStats,
+  onExport, onImport, onOpenStats, dirty, onSave, onDiscard, saveError,
 }) {
   const slots = EQUIPMENT_SLOTS.filter(slot => slot && slot !== 'android')
   const pickerSlot = activeSlot || slots[0]
@@ -53,7 +53,7 @@ export default function EquipmentWindow({
     try {
       if (file.size > 1024 * 1024) throw new Error('Choose an equipment JSON file smaller than 1 MB.')
       onImport(await file.text())
-      setTransferMessage('Equipment imported. Your current set has been replaced.')
+      setTransferMessage('Equipment loaded into the preview. Click Save equips to apply it.')
     } catch (error) {
       setTransferError(error.message || 'Could not read the equipment file.')
     } finally {
@@ -68,7 +68,7 @@ export default function EquipmentWindow({
           <h2>Equipment setup</h2>
         </div>
       </div>
-      <p className="hint">Choose your current gear. Stats and upgrade calculations use this same setup.</p>
+      <p className="hint">Preview your gear, then click Save equips to use it for stats and upgrade calculations.</p>
       <div className="equipment-setup-toolbar">
         <fieldset className="equipment-job-selection">
           <legend>1. Select your job type</legend>
@@ -105,7 +105,7 @@ export default function EquipmentWindow({
           </div>
           <p className="hint" id="equipment-import-help">
           Export your class, equipped items, recorded stats, and equipment score weights.
-            Import replaces your current equipment set.
+            Import replaces the preview. Save equips applies it to your current set.
           </p>
           {transferError && <p className="error" role="alert">{transferError}</p>}
           {transferMessage && <p className="hint" role="status">{transferMessage}</p>}
@@ -131,7 +131,7 @@ export default function EquipmentWindow({
               onClick={() => onSelect(pickerSlot, item)}>
               <EquipmentIcon item={item} />
               <span><small>Lv. {item.config.equipment_level}</small>{item.name}</span>
-              {selected?.id === item.id && <span className="equipment-equipped-label">Equipped</span>}
+              {selected?.id === item.id && <span className="equipment-equipped-label">Selected</span>}
                 </button>)}
               </div>
             })}
@@ -145,13 +145,20 @@ export default function EquipmentWindow({
           <EquipmentGrid equipment={equipment} activeSlot={pickerSlot} onActivate={onActivate} busy={busy} />
           <p className="equipment-summary" aria-live="polite">
             {selected ? <><strong>{selected.name}</strong><br />Level {selected.config.equipment_level} · {selected.currentStarForce ?? 0}★ Star Force</>
-              : 'Select an item from the list to equip it.'}
+              : 'Select an item from the list to preview it.'}
           </p>
-          <p className="hint">Changes are saved automatically in this browser.</p>
-          <button type="button" className="primary" onClick={onOpenStats}>Edit stats & upgrades &rarr;</button>
+          <p className="hint">Stats and upgrades use your saved equipment.</p>
+          <button type="button" onClick={onOpenStats}>Edit stats & upgrades &rarr;</button>
         </div>
       </div>
-
+      <div className="equipment-setup-save">
+        <p className="hint" role="status">{dirty ? 'Unsaved equipment changes.'
+          : saveError ? 'Equipment could not be saved in this browser.' : 'No unsaved equipment changes.'}</p>
+        <div className="equipment-transfer-actions">
+          <button type="button" className="primary" disabled={busy || !dirty} onClick={onSave}>Save equips</button>
+          <button type="button" disabled={busy || !dirty} onClick={onDiscard}>Discard changes</button>
+        </div>
+      </div>
     </section>
   )
 }

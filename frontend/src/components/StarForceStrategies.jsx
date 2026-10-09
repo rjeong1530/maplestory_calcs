@@ -280,6 +280,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
         </div>
       </details>
       <p className="hint">The balanced tradeoff gives equal weight to enhancement mesos and expected spares after normalizing each between the efficient frontier's extremes.</p>
+      <p className="hint">Best value versus baseline gives the most percentage reduction in expected booms per percentage increase in enhancement spending compared with Full Mode 1. It can favor a small, efficient improvement. It is only shown when a boom reduction is available.</p>
       <p className="hint">Expected spares count booms and exclude the original item. Averages assume replacement availability; they are not guarantees or success chances for a fixed spare budget. Above 22 stars, no strategy here removes all boom risk.</p>
     </>}
   </section>

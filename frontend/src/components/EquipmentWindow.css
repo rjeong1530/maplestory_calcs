@@ -39,10 +39,15 @@
   margin-bottom: 24px;
 }
 .equipment-setup {
-  padding: 0;
+  padding: 0 0 48px;
   border: 0;
   border-radius: 0;
   background: transparent;
+}
+.equipment-setup-save {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #39465b;
 }
 .equipment-setup > .equipment-window-heading {
   justify-content: center;
@@ -322,6 +327,9 @@
 @media (max-width: 480px) {
   .equipment-window {
     padding: 10px;
+  }
+  .equipment-window.equipment-setup {
+    padding-bottom: 48px;
   }
   .equipment-slots {
     gap: 4px;

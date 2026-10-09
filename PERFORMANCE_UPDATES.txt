@@ -371,3 +371,43 @@ Independent score weights and equipment transfer - 2026-10-07
   no longer clear unrelated Flame Calculator results.
 - Existing equipment records and calculator formulas are unchanged. Independent
   weights persist in local storage. No performance benchmark was run.
+
+-----------------------------------------------------------------------
+Star Force budget calculation optimization - 2026-10-09
+
+Changes:
+- Resolve destination probability buffers before iterating over budget bins,
+  avoiding repeated dictionary lookups and absorbing-state checks per edge.
+- Replace the inner-loop min() call with a direct conditional clamp.
+- Preserve the 65,536-bin grid, rounding rules, probability tables, and outputs.
+  The absorbing-state buffer adds approximately 0.5 MiB of array storage;
+  total peak memory was not measured for this update.
+
+Local before/after timings:
+Star range       Before       After       Time reduction
+0-15             0.429 s      0.286 s      33%
+15-22            0.523 s      0.356 s      32%
+22-25            0.682 s      0.478 s      30%
+25-30            1.352 s      0.914 s      32%
+
+Method and limits:
+- Compared the committed calculator with the optimized working-tree version.
+- One timed call per version per case, before then after; these are individual
+  samples, not repeated-run medians. Module loading was outside the timings.
+- Level 200, default Mode 1, no event or MVP discount, zero replacement cost,
+  percentiles 50/75/90/95/99%, and include_budget_distribution=True.
+- Compared complete dataclass outputs, including the full budget distribution:
+  every field matched exactly in all four cases.
+- Detailed budget distributions are substantially more expensive than the
+  averages used in equipment upgrade calculations. High-star calculations
+  can therefore take longer than evaluating averages for a full equipment set.
+- Measurements are local sequential calculator timings, not deployed Render
+  latency. Startup, network, queueing, and concurrent load were not measured.
+- This is a separate optimization from the 2026-10-06 benchmark above; its
+  measurements do not replace backend/starforce_benchmark_results.json.
+
+Validation:
+- All 144 backend tests passed after the optimization.
+- git diff --check passed.
+
+Implementation: backend/calc/starforce_calculator.py (_meso_percentiles)

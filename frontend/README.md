@@ -56,7 +56,10 @@ embedded at build time; see the root README for `VITE_API_BASE_URL`.
 - `src/data/`: bundled equipment, request builders, import/export helpers, and tests.
 - `src/App.css`, `src/index.css`, and component styles: presentation.
 
-Equipment and settings use local storage. JSON import/export is handled by
+Equipment setup previews selections, removals, class changes, and imports until
+**Save equips** is clicked; **Discard changes** restores the saved set. Stats and
+upgrade settings still save automatically. Equipment and settings use local storage.
+JSON import/export is handled by
 [data helpers](src/data/equipmentSave.js); storage and legacy-cookie migration
 are handled by [equipmentStorage.js](src/data/equipmentStorage.js).
 

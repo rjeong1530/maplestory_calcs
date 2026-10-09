@@ -118,13 +118,18 @@ def _meso_percentiles(edges, start, percentiles, expected_cost, distribution=Non
         rounded = [[(dest, probability, max(1, ceil(cost / unit)))
                     for dest, probability, cost in row if probability] for row in edges]
         cdf = {state: array('d', [0.0]) * (bins + 1) for state in states}
+        # Resolve destination buffers once, rather than doing dictionary lookups
+        # and checking for absorption on every edge of every budget bin.
+        absorbed = array('d', [1.0]) * (bins + 1)
+        rows = [(cdf[state], [(cdf[dest] if dest < size else absorbed, probability, cost)
+                             for dest, probability, cost in rounded[state]]) for state in states]
         for budget in range(1, bins + 1):
-            for state in states:
+            for output, row in rows:
                 total = 0.0
-                for dest, probability, cost in rounded[state]:
+                for source, probability, cost in row:
                     if cost <= budget:
-                        total += probability * (1.0 if dest >= size else cdf[dest][budget - cost])
-                cdf[state][budget] = min(1.0, total)
+                        total += probability * source[budget - cost]
+                output[budget] = 1.0 if total > 1.0 else total
         if cdf[start][-1] >= max(percentiles):
             break
     if distribution is not None:

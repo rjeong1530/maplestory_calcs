@@ -63,7 +63,8 @@ class StarforceStrategyTests(unittest.TestCase):
         self.assertEqual(
             [row['name'] for row in report['recommendations']],
             ['Lowest enhancement spending', 'Fewest expected spares',
-             'Lowest total cost at your spare value', 'Best balanced tradeoff'],
+             'Lowest total cost at your spare value', 'Best balanced tradeoff',
+             'Best value versus baseline'],
         )
         policies = [
             (tuple(sorted(row['mode_by_star'].items())),
@@ -71,7 +72,7 @@ class StarforceStrategyTests(unittest.TestCase):
             for row in report['scenarios']
         ]
         self.assertEqual(len(policies), len(set(policies)))
-        self.assertEqual(len(report['scenarios']), 3)
+        self.assertEqual(len(report['scenarios']), 4)
         self.assertIn(
             'Lowest enhancement spending + Lowest total cost at your spare value',
             report['scenarios'][0]['name'],
@@ -98,6 +99,18 @@ class StarforceStrategyTests(unittest.TestCase):
             self.assertLessEqual(balanced_score, score + 1e-12)
         self.assertGreater(report['scenarios'][0]['expected_spares'], 0)
         frontier = report['efficient_frontier']
+        baseline = report['baseline']
+        value = report['recommendations'][4]
+        def ratio(row):
+            reduction = 1 - row['expected_spares'] / baseline['expected_spares']
+            extra_cost = row['enhancement_cost_mesos'] / baseline['enhancement_cost_mesos'] - 1
+            return reduction / extra_cost
+        self.assertGreater(value['enhancement_cost_mesos'], baseline['enhancement_cost_mesos'])
+        self.assertLess(value['expected_spares'], baseline['expected_spares'])
+        for row in frontier:
+            if (row['enhancement_cost_mesos'] > baseline['enhancement_cost_mesos'] * (1 + 1e-12)
+                    and row['expected_spares'] < baseline['expected_spares'] * (1 - 1e-12)):
+                self.assertGreaterEqual(ratio(value) + 1e-10, ratio(row))
         self.assertTrue(all(row['on_efficient_frontier'] for row in frontier))
         for previous, current in zip(frontier, frontier[1:]):
             self.assertGreater(current['enhancement_cost_mesos'], previous['enhancement_cost_mesos'])
@@ -112,6 +125,7 @@ class StarforceStrategyTests(unittest.TestCase):
         self.assertEqual(report['assumptions']['policies_evaluated'], 1)
         self.assertEqual(len(report['efficient_frontier']), 1)
         self.assertTrue(all(row['expected_spares'] == 0 for row in report['scenarios']))
+        self.assertNotIn('Best value versus baseline', [row['name'] for row in report['recommendations']])
         for args in ((0, 0, 22, 0), (200, 22, 22, 0), (200, 0, 31, 0),
                      (200, 0, 22, -1), (200, 0, 22, float('inf')), (200, 0, 22, True)):
             with self.assertRaises(ValueError):

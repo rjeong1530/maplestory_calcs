@@ -11,7 +11,7 @@ class StrategyApiTests(unittest.TestCase):
             first = client.post('/api/starforce-strategies', json=payload)
             self.assertEqual(first.status_code, 200, first.text)
             report = first.json()
-            self.assertLessEqual(len(report['scenarios']), 3)
+            self.assertLessEqual(len(report['scenarios']), 5)
             policies = [
                 (tuple(sorted(row['mode_by_star'].items())),
                  tuple(sorted(row['safeguard_by_star'].items())))
@@ -19,7 +19,8 @@ class StrategyApiTests(unittest.TestCase):
             ]
             self.assertEqual(len(policies), len(set(policies)))
             self.assertTrue(all(row['on_efficient_frontier'] for row in report['scenarios']))
-            self.assertEqual(len(report['recommendations']), 4)
+            self.assertEqual(len(report['recommendations']), 5)
+            self.assertEqual(report['recommendations'][-1]['name'], 'Best value versus baseline')
             self.assertTrue(report['assumptions']['shining_starforce_sunday'])
             self.assertEqual(report['assumptions']['mvp_rank'], 'none')
             self.assertEqual(report['assumptions']['policies_evaluated'], 64)

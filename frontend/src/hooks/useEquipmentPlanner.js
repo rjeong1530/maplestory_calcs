@@ -37,6 +37,9 @@ export default function useEquipmentPlanner() {
   const [equipment, setEquipment] = useState(() =>
     restoreEquipment(savedSelection.equipment, savedEquipmentClass))
   const [activeSlot, setActiveSlot] = useState(null)
+  const [setupDraft, setSetupDraft] = useState(null)
+  const setupEquipment = setupDraft?.equipment ?? equipment
+  const setupClass = setupDraft?.equipmentClass ?? equipmentClass
   const [upgradeSettings, setUpgradeSettings] = useState(() =>
     restoreUpgradeSettings(savedSelection.upgrade_settings))
   const savedClassName = form.maple_class
@@ -59,8 +62,9 @@ export default function useEquipmentPlanner() {
 
   function selectEquipment(slot, item) {
     if (slot === FIXED_RING_SLOT) return
-    setEquipment(current => {
-      const previous = current[slot]
+    setSetupDraft(draft => {
+      const current = draft?.equipment ?? equipment
+      const previous = current[slot]?.id === item.id ? current[slot] : equipment[slot]
       const selected = previous?.id === item.id
         ? { ...item, currentPotential: previous.currentPotential, currentFlames: previous.currentFlames,
           currentFlameType: previous.currentFlameType, currentBossEquipment: previous.currentBossEquipment,
@@ -71,7 +75,8 @@ export default function useEquipmentPlanner() {
           starForceSafeguards: previous.starForceSafeguards }
         : { ...item, currentStarForce: 0, currentPotential: [], currentFlames: [], currentFlameType: form.flame_type,
           currentBossEquipment: item.config.boss_equipment ?? form.boss_equipment }
-      return equipInSlot(current, slot, selected)
+      return { ...draft, equipmentClass: draft?.equipmentClass ?? equipmentClass,
+        equipment: equipInSlot(current, slot, selected) }
     })
     setActiveSlot(slot)
   }
@@ -86,41 +91,51 @@ export default function useEquipmentPlanner() {
 
   function removeEquipment(slot) {
     if (slot === FIXED_RING_SLOT) return
-    setEquipment(current => {
-      const next = { ...current }
+    setSetupDraft(draft => {
+      const next = { ...(draft?.equipment ?? equipment) }
       delete next[slot]
-      return next
+      return { ...draft, equipmentClass: draft?.equipmentClass ?? equipmentClass, equipment: next }
     })
     if (activeSlot === slot) setActiveSlot(null)
   }
 
   function updateEquipmentClass(value) {
-    setEquipmentClass(value)
-    const compatible = compatibleEquipment(equipment, value)
-    setEquipment(compatible)
+    const compatible = compatibleEquipment(setupEquipment, value)
+    setSetupDraft(current => ({ ...current, equipmentClass: value, equipment: compatible }))
     if (!compatible[activeSlot]) setActiveSlot(null)
   }
 
   function importEquipmentJson(text) {
     const imported = importEquipment(text)
-    setEquipmentClass(imported.equipmentClass)
-    setEquipment(imported.equipment)
-    if (imported.scoreWeights) {
-      setEquipmentWeights(current => ({ ...current, ...imported.scoreWeights.flame }))
-      setUpgradeSettings(current => ({ ...current, ...imported.scoreWeights.potential }))
-    }
+    setSetupDraft({ ...imported, imported: true })
     setActiveSlot(null)
+  }
+
+  function saveEquipmentSetup() {
+    if (!setupDraft) return
+    setEquipmentClass(setupDraft.equipmentClass)
+    // Keep any stats edited in another tab for unchanged items; imports supply their own stats.
+    setEquipment(current => Object.fromEntries(Object.entries(setupDraft.equipment).map(([slot, item]) =>
+      [slot, !setupDraft.imported && current[slot]?.id === item.id ? current[slot] : item])))
+    if (setupDraft.scoreWeights) {
+      setEquipmentWeights(current => ({ ...current, ...setupDraft.scoreWeights.flame }))
+      setUpgradeSettings(current => ({ ...current, ...setupDraft.scoreWeights.potential }))
+    }
+    setSetupDraft(null)
   }
 
   return {
     applyEquipmentStrategy: (slots, strategy) => setEquipment(current => applyStrategyToEquipment(current, slots, strategy)),
     saveError,
+    setupEquipment, setupClass, setupDirty: setupDraft !== null, saveEquipmentSetup,
+    discardEquipmentSetup: () => setSetupDraft(null),
     form, setForm, equipmentWeights, setEquipmentWeights, equipment, equipmentClass, activeSlot, setActiveSlot,
     upgradeSettings, setUpgradeSettings, selectEquipment, removeEquipment,
     updateEquipmentRoll, updateEquipmentClass, importEquipmentJson,
-    exportEquipmentJson: () => exportEquipment(equipment, equipmentClass, {
-      flame: equipmentWeights,
-      potential: Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS).map(key => [key, upgradeSettings[key]])),
+    exportEquipmentJson: () => exportEquipment(setupEquipment, setupClass, {
+      flame: { ...equipmentWeights, ...setupDraft?.scoreWeights?.flame },
+      potential: { ...Object.fromEntries(Object.keys(POTENTIAL_WEIGHT_LABELS).map(key => [key, upgradeSettings[key]])),
+        ...setupDraft?.scoreWeights?.potential },
     }),
   }
 }

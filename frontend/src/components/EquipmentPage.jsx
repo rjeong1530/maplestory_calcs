@@ -9,7 +9,8 @@ const EquipmentWindow = equipmentSetup.Component
 const EquipmentStats = equipmentStats.Component
 
 export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
-  const { equipment, equipmentClass, activeSlot, setActiveSlot, selectEquipment,
+  const { equipment, setupEquipment, setupClass, setupDirty, saveEquipmentSetup, discardEquipmentSetup,
+    activeSlot, setActiveSlot, selectEquipment,
     removeEquipment, updateEquipmentClass, importEquipmentJson, exportEquipmentJson } = planner
   const [view, setView] = useState(() => {
     // The automatically supplied Ring of Restraint is not a user-selected item.
@@ -33,14 +34,16 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
       <div className="equipment-page-content">
         <div id="equipment-setup-view" hidden={view !== 'setup'}>
           <DeferredPage active={view === 'setup'}>
-            <EquipmentWindow equipmentClass={equipmentClass}
+            <EquipmentWindow equipmentClass={setupClass}
               mapleClasses={Object.keys(CLASS_STATS).sort()}
-              onMapleClassChange={value => changeEquipment(updateEquipmentClass, value)} equipment={equipment}
+              onMapleClassChange={value => changeEquipment(updateEquipmentClass, value)} equipment={setupEquipment}
               activeSlot={activeSlot} onActivate={setActiveSlot}
               onSelect={(...args) => changeEquipment(selectEquipment, ...args)}
               onRemove={slot => changeEquipment(removeEquipment, slot)}
               busy={busy} onExport={exportEquipmentJson}
               onImport={text => changeEquipment(importEquipmentJson, text)}
+              dirty={setupDirty} onSave={saveEquipmentSetup} onDiscard={discardEquipmentSetup}
+              saveError={planner.saveError}
               onOpenStats={() => setView('stats')} />
           </DeferredPage>
         </div>
