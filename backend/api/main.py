@@ -6,6 +6,7 @@ from typing import Annotated, Literal
 from dataclasses import asdict
 from functools import lru_cache
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,8 +18,18 @@ from backend.calc import maplestory_flames as flames
 from backend.calc import starforce_calculator as starforce
 from backend.calc import equipment_upgrade
 from backend.examples.starforce_strategies import analyze_strategies
+from backend.api.bug_reports import router as bug_report_router, close_report_client
 
-app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0')
+@asynccontextmanager
+async def lifespan(app):
+    try:
+        yield
+    finally:
+        close_report_client()
+
+
+app = FastAPI(title='MapleStory Potential Calculator', version='0.1.0', lifespan=lifespan)
+app.include_router(bug_report_router)
 app.add_middleware(RequestBodyLimit)
 app.add_middleware(
     CORSMiddleware,

@@ -4,6 +4,7 @@ export const PAGE_PATHS = {
   flame: '/calculators/flames',
   starforce: '/calculators/starforce',
   equipment: '/equipment',
+  bugs: '/bug-report',
 }
 
 export function pageForPath(pathname) {

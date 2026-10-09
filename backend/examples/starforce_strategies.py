@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-from itertools import product
 import json
 from pathlib import Path
 from typing import Sequence
@@ -63,17 +62,43 @@ def _evaluate(choices, start, target, terms):
     }
 
 
-def _verified(row, level, start, target, spare_value):
-    """Publish estimates from the existing calculator for every selected row."""
-    estimate = estimate_starforce(level, start, target,
-        mode_by_star=row['mode_by_star'], safeguard_by_star=row['safeguard_by_star'],
-        shining_starforce_sunday=True, mvp_rank='none', replacement_cost_mesos=spare_value)
+def _candidates(start, target, terms):
+    """Visit shared policy prefixes once, in the original product order.
+
+    Keep recovery increments below start: later booms can revisit those stars.
+    Use the same summation order as _evaluate to preserve search ties exactly.
+    """
+    costs, attempts, booms = [], [], []
+    choices = [1] * 7
+
+    def visit(star):
+        if star == target:
+            yield {**_policy(choices),
+                   'enhancement_cost_mesos': sum(costs[start:]),
+                   'expected_attempts': sum(attempts[start:]),
+                   'expected_spares': sum(booms[start:])}
+            return
+        for action in range(1, 5) if 15 <= star <= 21 else (1,):
+            if 15 <= star <= 21:
+                choices[star - 15] = action
+            cost, taps, boom_ratio, recovery = terms[star, action]
+            costs.append(cost + boom_ratio * sum(costs[recovery:star]))
+            attempts.append(taps + boom_ratio * sum(attempts[recovery:star]))
+            booms.append(boom_ratio * (1 + sum(booms[recovery:star])))
+            yield from visit(star + 1)
+            costs.pop()
+            attempts.pop()
+            booms.pop()
+
+    return list(visit(0))
+
+
+def _priced(row, spare_value):
+    """Publish recurrence expectations, independently checked by solver tests."""
+    replacement = row['expected_spares'] * spare_value
     return {**row,
-        'enhancement_cost_mesos': estimate.expected_cost - estimate.expected_replacement_cost,
-        'expected_attempts': estimate.expected_attempts,
-        'expected_spares': estimate.expected_booms,
-        'expected_replacement_cost_mesos': estimate.expected_replacement_cost,
-        'total_cost_mesos': estimate.expected_cost,
+        'expected_replacement_cost_mesos': replacement,
+        'total_cost_mesos': row['enhancement_cost_mesos'] + replacement,
     }
 
 
@@ -88,11 +113,7 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
     estimate_starforce(level, start, target, replacement_cost_mesos=spare_value,
                        shining_starforce_sunday=True, mvp_rank='none')
     terms = _terms(level, target)
-    active = range(15, min(target, 22))
-    candidates = []
-    for actions in product(range(1, 5), repeat=len(active)):
-        choices = actions + (1,) * (7 - len(actions))
-        candidates.append(_evaluate(choices, start, target, terms))
+    candidates = _candidates(start, target, terms)
     frontier = []
     best_spares = float('inf')
     for row in sorted(candidates, key=lambda r: (r['enhancement_cost_mesos'], r['expected_spares'])):
@@ -134,8 +155,7 @@ def analyze_strategies(level=200, start=15, target=22, spare_value=1_000_000_000
             and other['expected_spares'] <= row['expected_spares']
             and (other['enhancement_cost_mesos'] < row['enhancement_cost_mesos']
                  or other['expected_spares'] < row['expected_spares']) for other in frontier)
-        return _verified({**row, 'name': name, 'on_efficient_frontier': efficient},
-                         level, start, target, spare_value)
+        return _priced({**row, 'name': name, 'on_efficient_frontier': efficient}, spare_value)
     published_winners = [
         publish(min(candidates, key=key), name) for name, key in objectives
     ]

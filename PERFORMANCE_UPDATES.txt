@@ -465,3 +465,39 @@ Artifacts:
 Reproduce after installing the native package:
   python -m backend.benchmark_starforce --baseline 7d1106135d4023591f3bba7479a01c3be8ebf928 --repeats 5 --skip-memory
   python -m backend.benchmark_starforce --baseline 7d1106135d4023591f3bba7479a01c3be8ebf928 --repeats 1 --case "single calculator: 0-25"
+
+-----------------------------------------------------------------------
+Star Force strategy search reuse - 2026-10-09
+
+- Reuse shared policy prefixes instead of recalculating every star for every
+  policy. Preserve recovery below the starting star, arithmetic order, candidate
+  ordering, and tie-breaking. Search still covers all 16,384 full-range policies.
+- Publish recurrence expectations directly instead of re-solving three dense
+  systems for every frontier row. The independent solver remains a test oracle.
+- No new dependencies, deployment settings, or caches. Existing API cache stays
+  bounded at 32 reports. Improvements apply to uncached requests.
+
+Local uncached medians, five alternating before/after runs:
+Range / level                Before      After       Speedup
+15-22 / 200                  0.3164 s    0.0599 s      5.3x
+0-25 / 200                   0.5089 s    0.1032 s      4.9x
+22-25 / 250                  0.5082 s    0.0998 s      5.1x
+29-30 / 250                  0.6959 s    0.1417 s      4.9x
+0-10 / 150                   0.0011 s    0.0002 s      4.8x
+
+Validation:
+- All 150 backend tests passed. Exhaustive prefix-search comparisons preserve
+  every candidate exactly; full report comparisons preserve policies, names,
+  recommendation order, and frontier order. Numerical outputs match within
+  1e-8 relative / 1e-6 absolute tolerance (different floating-point operation
+  order from the dense solver, not a new probability approximation).
+- Regression tests check published frontier estimates against the independent
+  solver, including recovery to lower stars and high replacement values.
+- Windows 10 / CPython 3.11.9. Timings exclude imports and bypass the API cache.
+  No production deployment or Render latency measurement was performed.
+- Backend redeploy required; network, queueing, and service wake-up remain
+  outside these local measurements. Memory usage was not benchmarked here.
+
+Artifact: backend/strategies_benchmark.json
+Reproduce:
+  python -m backend.benchmark_strategies --baseline 47f3ec1e51b123b2bd3406aa81380c621bd02ffd --output backend/strategies_benchmark.json

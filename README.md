@@ -16,9 +16,12 @@ planning equipment upgrades.
   safeguards, and strategies; explore success chances for a meso budget.
 - **Equipment:** save gear and recorded stats, import/export JSON, and compare
   Star Force, flame, and potential upgrades by expected gain and cost.
+- **Bug reports:** prepare a structured report at `/bug-report`, review it, and
+  submit it directly to private MongoDB storage. Copy/download is also available.
+  Configure the backend's `MONGODB_URI` to enable submissions.
 
-Equipment and settings are stored in your browser. No account or database is
-required. [Sample equipment builds](examples/equipment/README.md) cover all 47
+Equipment and settings are stored in your browser. Calculators require no account
+or database; bug reports use MongoDB. [Sample equipment builds](examples/equipment/README.md) cover all 47
 supported classes.
 
 ## Quick start

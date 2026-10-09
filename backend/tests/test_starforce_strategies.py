@@ -11,7 +11,7 @@ import unittest
 
 from backend.calc.starforce_calculator import estimate_starforce
 from backend.examples.starforce_strategies import (
-    _evaluate, _policy, _terms, analyze_strategies, main,
+    _candidates, _evaluate, _policy, _terms, analyze_strategies, main,
 )
 
 
@@ -23,8 +23,35 @@ class StarforceStrategyTests(unittest.TestCase):
         self.assertFalse(any(row['safeguard_by_star'].values()))
         expected = estimate_starforce(200, 15, 22, shining_starforce_sunday=True,
                                       replacement_cost_mesos=1_000_000_000)
-        self.assertAlmostEqual(row['total_cost_mesos'], expected.expected_cost)
+        self.assertAlmostEqual(row['total_cost_mesos'] / expected.expected_cost, 1, places=10)
         self.assertAlmostEqual(row['expected_spares'], expected.expected_booms)
+
+    def test_shared_prefix_search_preserves_every_policy_and_tie_order(self):
+        for start, target in ((0, 10), (17, 18), (0, 22), (22, 25)):
+            terms = _terms(200, target)
+            count = len(range(15, min(target, 22)))
+            expected = [_evaluate(actions + (1,) * (7 - count), start, target, terms)
+                        for actions in product(range(1, 5), repeat=count)]
+            with self.subTest(start=start, target=target):
+                self.assertEqual(_candidates(start, target, terms), expected)
+
+    def test_published_frontier_matches_independent_solver(self):
+        # Relative checks accommodate different floating-point operation orders
+        # on large meso amounts; compare every displayed frontier policy.
+        for start, target, value in ((0, 25, 1e9), (29, 30, 1e15)):
+            report = analyze_strategies(250, start, target, value)
+            for row in report['efficient_frontier'] + report['recommendations'] + [report['baseline']]:
+                reference = estimate_starforce(250, start, target,
+                    mode_by_star=row['mode_by_star'], safeguard_by_star=row['safeguard_by_star'],
+                    shining_starforce_sunday=True, replacement_cost_mesos=value)
+                for actual, expected in ((row['total_cost_mesos'], reference.expected_cost),
+                        (row['expected_attempts'], reference.expected_attempts),
+                        (row['expected_spares'], reference.expected_booms),
+                        (row['expected_replacement_cost_mesos'], reference.expected_replacement_cost)):
+                    if expected:
+                        self.assertAlmostEqual(actual / expected, 1, places=8)
+                    else:
+                        self.assertEqual(actual, 0)
 
     def test_fast_search_matches_calculator_including_recovery_below_start(self):
         rng = random.Random(123)

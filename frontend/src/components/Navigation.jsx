@@ -54,6 +54,8 @@ export default function Navigation({ activePage, onNavigate }) {
       </details>
       <a href={PAGE_PATHS.equipment} aria-current={activePage === 'equipment' ? 'page' : undefined}
         onClick={event => onNavigate('equipment', event)}>Equipment upgrade</a>
+      <a href={PAGE_PATHS.bugs} aria-current={activePage === 'bugs' ? 'page' : undefined}
+        onClick={event => onNavigate('bugs', event)}>Report a bug</a>
     </nav>
   )
 }

@@ -21,6 +21,7 @@ function lazyPage(load) {
 }
 
 export const potentialPage = lazyPage(() => import('./components/PotentialCalculator'))
+export const bugReportPage = lazyPage(() => import('./components/BugReportPage'))
 export const plannerPage = lazyPage(() => import('./components/EquipmentPlanner'))
 export const flamePage = lazyPage(() => import('./components/FlameCalculator'))
 export const starforcePage = lazyPage(() => import('./components/StarForceCalculator'))
@@ -31,6 +32,7 @@ export const equipmentStats = lazyPage(() => import('./components/EquipmentStats
 // Resolve the first route before mounting it so nested lazy boundaries do not
 // repeatedly suspend. Other routes remain demand-loaded.
 export async function preloadPage(page) {
+  if (page === 'bugs') return bugReportPage.preload()
   if (page === 'potential') return potentialPage.preload()
   if (!['equipment', 'flame', 'starforce'].includes(page)) return
   const requests = [plannerPage.preload()]

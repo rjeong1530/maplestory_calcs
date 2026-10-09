@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
 Reviewed: 2026-10-09
-Total: 148 test methods in 13 files
+Total: 157 test methods in 14 files
 
 Run from the repository root:
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -17,11 +17,23 @@ Audit: retained all test methods. Engine and HTTP tests guard different layers;
 importer and bundled-catalog tests validate different artifacts. Specific weapon
 boss-weight validation overlaps general armor-weight validation but uses a distinct
 weapon configuration. Queue cases cover separate admission and cleanup failures.
-Latest local run: all 148 tests passed with the native Star Force kernel installed.
+Latest local run: all 157 tests passed with the native Star Force kernel installed.
 Existing httpx deprecation warning remains. Native parity tests skip when the
 optional local extension is absent; Linux requirements install the extension.
 
 Inventory policy: one entry per current named test, grouped by source file.
+
+==============================================================================
+FILE: backend/tests/test_bug_reports.py
+Tests: 7 (mocked MongoDB; no live database required)
+
+- test_saved_document_and_reference: document fields, timestamp and receipt.
+- test_retry_is_idempotent_but_conflicting_payload_is_rejected: duplicate recovery.
+- test_validation_rejects_empty_oversized_and_extra_fields: validation before writes.
+- test_unconfigured_database_does_not_break_health: optional database behavior.
+- test_database_errors_do_not_expose_connection_details: safe failure responses/logs.
+- test_rate_limit_and_no_public_read_endpoint: bounded submissions and private reports.
+- test_client_reuse_and_shutdown: pooled client reuse and cleanup.
 
 ==============================================================================
 FILE: backend/tests/test_starforce_native.py
@@ -681,7 +693,15 @@ Class: StarForceCalculatorTests
 
 ==============================================================================
 FILE: backend/tests/test_starforce_strategies.py
-Tests: 6
+Tests: 8
+
+Additional search optimization coverage:
+- test_shared_prefix_search_preserves_every_policy_and_tie_order compares all
+  policy rows exactly with the original recurrence, including recovery below
+  the starting star, short ranges, and targets above 22.
+- test_published_frontier_matches_independent_solver checks every frontier row,
+  recommendation, and baseline for 0-25 and 29-30, including high replacement
+  values. Uses relative tolerance for differing floating-point operation order.
 
 Class: StarforceStrategyTests
 

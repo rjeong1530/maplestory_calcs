@@ -1,5 +1,7 @@
 fastapi>=0.115,<1
 pydantic>=2.10,<3
 uvicorn>=0.34,<1
+pymongo>=4.11,<5
+python-dotenv>=1,<2
 # Compile once at install time on Render/Linux; Windows retains the Python fallback.
 ./backend/native ; sys_platform == "linux"
