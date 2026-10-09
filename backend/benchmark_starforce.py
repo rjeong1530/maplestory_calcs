@@ -21,6 +21,11 @@ import types
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = 'backend/calc/starforce_calculator.py'
 CASES = [
+    ('single calculator: 0-25', dict(item_level=200, start_star=0, target_star=25,
+                                   include_budget_distribution=True)),
+    ('single calculator with event: 0-25', dict(item_level=200, start_star=0, target_star=25,
+          shining_starforce_sunday=True, safeguard_15_17=True, mvp_rank='gold',
+          replacement_cost_mesos=1_000_000_000, include_budget_distribution=True)),
     ('all reachable: 0-15', dict(item_level=200, start_star=0, target_star=15)),
     ('typical recovery: 15-22', dict(item_level=200, start_star=15, target_star=22)),
     ('no booms: 18-19 Mode 4', dict(item_level=200, start_star=18, target_star=19,
@@ -40,12 +45,7 @@ def load_source(name, source):
 
 
 def comparable(result):
-    result = asdict(result)
-    result.pop('budget_distribution', None)
-    for row in result['meso_estimates']:
-        row.pop('rounding_unit_mesos', None)
-        row.pop('calculation_limit_mesos', None)
-    return result
+    return asdict(result)
 
 
 def main():
@@ -53,6 +53,10 @@ def main():
     parser.add_argument('--baseline', default='HEAD')
     parser.add_argument('--repeats', type=int, default=5)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--skip-memory', action='store_true',
+                        help='Skip the separate, slow tracemalloc pass.')
+    parser.add_argument('--case', choices=[name for name, _ in CASES],
+                        help='Run just one named case.')
     args = parser.parse_args()
     if args.repeats < 1:
         parser.error('--repeats must be positive')
@@ -61,9 +65,14 @@ def main():
     new = (ROOT / SOURCE).read_bytes()
     modules = [load_source('_benchmark_before', old), load_source('_benchmark_after', new)]
     report = dict(baseline_commit=commit, current_source_sha256=hashlib.sha256(new).hexdigest(),
+                  native_kernel=bool(getattr(modules[1], '_native_budget_cdf', None)),
+                  native_source_sha256=hashlib.sha256(
+                      (ROOT / 'backend/native/_starforce_budget.pyx').read_bytes()).hexdigest(),
                   python=sys.version, platform=platform.platform(), processor=platform.processor(),
                   repeats=args.repeats, percentile_probabilities=[.5, .75, .9, .95, .99], cases=[])
     for name, settings in CASES:
+        if args.case and name != args.case:
+            continue
         settings = {'percentiles': report['percentile_probabilities'], **settings}
         # One untimed warmup per version, also checking every existing output field.
         expected = comparable(modules[0].estimate_starforce(**settings))
@@ -80,9 +89,12 @@ def main():
                 if comparable(result) != expected:
                     raise AssertionError(f'Output mismatch: {name}')
         medians = [statistics.median(sample) for sample in samples]
-        print(f'{name}: timing {medians[0]:.4f}s -> {medians[1]:.4f}s; measuring memory...', flush=True)
+        print(f'{name}: timing {medians[0]:.4f}s -> {medians[1]:.4f}s', flush=True)
         peaks = []
         for module in modules:
+            if args.skip_memory:
+                peaks.append(None)
+                continue
             gc.collect()
             tracemalloc.start()
             try:
@@ -98,7 +110,9 @@ def main():
                    before_peak_traced_bytes=peaks[0], after_peak_traced_bytes=peaks[1],
                    existing_outputs_equal=True)
         report['cases'].append(row)
-        print(f'  peak traced memory {peaks[0] / 1048576:.3f} -> {peaks[1] / 1048576:.3f} MiB; outputs identical', flush=True)
+        if not args.skip_memory:
+            print(f'  peak traced memory {peaks[0] / 1048576:.3f} -> {peaks[1] / 1048576:.3f} MiB', flush=True)
+        print('  complete outputs identical', flush=True)
     if args.output:
         args.output.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     else:

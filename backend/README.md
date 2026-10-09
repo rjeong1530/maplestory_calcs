@@ -8,6 +8,30 @@ See the [project README](../README.md#quick-start) for setup and
 Run Python commands from the **repository root**, using the virtual environment.
 Runtime dependencies are in [requirements.txt](../requirements.txt).
 
+### Star Force performance on Render
+
+The single Star Force calculator solves a 65,536-bin budget distribution, while
+equipment planning only needs expected values. The budget recurrence uses a small
+Cython extension compiled during `pip install -r requirements.txt` on Linux.
+The existing Render build/start commands still apply; redeploy the backend to
+install it. Compilation never runs during startup or a calculation, and Cython
+is only a build dependency. The grid, cost rounding, and probability results are
+the same as the Python implementation.
+
+[Render's native runtime](https://render.com/docs/native-runtimes) includes GCC.
+Verify the extension in a build or shell with
+`python -c "from _starforce_budget import budget_cdf; print('Native Star Force ready')"`.
+A failed Linux compilation fails installation rather than silently deploying the
+slower implementation. Windows setup skips this dependency and uses the portable
+Python fallback; with MSVC installed, `python -m pip install ./backend/native`
+enables the extension locally too.
+
+Run `python -m backend.benchmark_starforce --skip-memory` to compare the working
+tree with a committed baseline, including complete output equality and 0–25
+timings. The JSON report records whether the native kernel was loaded.
+Local timings measure calculation time, not network, queueing, or Render's
+[free-service wake-up delay](https://render.com/docs/free).
+
 ## API
 
 Run the server with `python -m uvicorn backend.api.main:app --reload`.

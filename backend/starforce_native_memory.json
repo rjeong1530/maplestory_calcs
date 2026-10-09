@@ -1,0 +1,47 @@
+{
+  "baseline_commit": "7d1106135d4023591f3bba7479a01c3be8ebf928",
+  "current_source_sha256": "7918eebfece89e08e3f628a7e8ca697aefff9e038954bea9219ee5ec5279eca5",
+  "native_kernel": true,
+  "native_source_sha256": "0d4940e7e44864d682b74626858507dbc9d5711e3655b31dacb232c36d72bcee",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "repeats": 1,
+  "percentile_probabilities": [
+    0.5,
+    0.75,
+    0.9,
+    0.95,
+    0.99
+  ],
+  "cases": [
+    {
+      "name": "single calculator: 0-25",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 200,
+        "start_star": 0,
+        "target_star": 25,
+        "include_budget_distribution": true
+      },
+      "before_seconds": [
+        0.8470242000039434
+      ],
+      "after_seconds": [
+        0.038354799995431677
+      ],
+      "before_median_seconds": 0.8470242000039434,
+      "after_median_seconds": 0.038354799995431677,
+      "speedup": 22.083916487762416,
+      "before_peak_traced_bytes": 27340320,
+      "after_peak_traced_bytes": 14220788,
+      "existing_outputs_equal": true
+    }
+  ]
+}

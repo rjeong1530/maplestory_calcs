@@ -8,6 +8,30 @@ from dataclasses import dataclass
 from math import ceil, fsum, isfinite
 from typing import Mapping, Sequence
 
+try:
+    from _starforce_budget import budget_cdf as _native_budget_cdf
+except ModuleNotFoundError as error:
+    if error.name != '_starforce_budget':
+        raise
+    _native_budget_cdf = None
+
+
+def _python_budget_cdf(rounded, states, start, bins):
+    """Portable reference/fallback for the install-time compiled budget kernel."""
+    size = len(rounded)
+    cdf = {state: array('d', [0.0]) * (bins + 1) for state in states}
+    absorbed = array('d', [1.0]) * (bins + 1)
+    rows = [(cdf[state], [(cdf[dest] if dest < size else absorbed, probability, cost)
+                         for dest, probability, cost in rounded[state]]) for state in states]
+    for budget in range(1, bins + 1):
+        for output, row in rows:
+            total = 0.0
+            for source, probability, cost in row:
+                if cost <= budget:
+                    total += probability * source[budget - cost]
+            output[budget] = 1.0 if total > 1.0 else total
+    return cdf[start]
+
 
 # Probabilities are percentages supplied for Global MapleStory, including the
 # automatic Star Catching success-rate bonus.
@@ -117,34 +141,22 @@ def _meso_percentiles(edges, start, percentiles, expected_cost, distribution=Non
         unit = max(1, ceil(expected_cost * scale / bins))
         rounded = [[(dest, probability, max(1, ceil(cost / unit)))
                     for dest, probability, cost in row if probability] for row in edges]
-        cdf = {state: array('d', [0.0]) * (bins + 1) for state in states}
-        # Resolve destination buffers once, rather than doing dictionary lookups
-        # and checking for absorption on every edge of every budget bin.
-        absorbed = array('d', [1.0]) * (bins + 1)
-        rows = [(cdf[state], [(cdf[dest] if dest < size else absorbed, probability, cost)
-                             for dest, probability, cost in rounded[state]]) for state in states]
-        for budget in range(1, bins + 1):
-            for output, row in rows:
-                total = 0.0
-                for source, probability, cost in row:
-                    if cost <= budget:
-                        total += probability * source[budget - cost]
-                output[budget] = 1.0 if total > 1.0 else total
-        if cdf[start][-1] >= max(percentiles):
+        cdf = (_native_budget_cdf or _python_budget_cdf)(rounded, states, start, bins)
+        if cdf[-1] >= max(percentiles):
             break
     if distribution is not None:
         # Reuse the solved CDF on a bounded 4,097-point interactive grid.
         stride = 16
         distribution.update(
             step_mesos=unit * stride,
-            probabilities=list(cdf[start][::stride]),
-            mean_success_probability=cdf[start][min(bins, int(expected_cost // unit))],
+            probabilities=list(cdf[::stride]),
+            mean_success_probability=cdf[min(bins, int(expected_cost // unit))],
             rounding_unit_mesos=unit,
             calculation_limit_mesos=bins * unit,
         )
     return tuple({'target_probability': p,
                   'rounding_unit_mesos': unit, 'calculation_limit_mesos': bins * unit,
-                  'mesos': bisect_left(cdf[start], p) * unit if cdf[start][-1] >= p else None}
+                  'mesos': bisect_left(cdf, p) * unit if cdf[-1] >= p else None}
                  for p in percentiles)
 
 

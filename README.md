@@ -104,6 +104,11 @@ The backend defaults to two concurrent calculations per worker with a bounded
 waiting queue. See [backend request limits](backend/README.md#request-limits) for
 environment variables, worker configuration, and error responses.
 
+On Linux, the requirements install also builds the native Star Force budget
+kernel. Redeploy the backend to enable this acceleration; the build and start
+commands above stay the same. See [Star Force performance](backend/README.md#star-force-performance-on-render)
+for verification and the Windows fallback.
+
 ## Calculation assumptions
 
 - Potential covers Legendary main potential, using bundled KMS probabilities

@@ -14,6 +14,9 @@ env/
 build/
 dist/
 *.egg-info/
+*.pyd
+*.so
+backend/native/_starforce_budget.c
 
 # Node dependencies and Vite caches
 node_modules/

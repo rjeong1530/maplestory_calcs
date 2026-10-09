@@ -411,3 +411,57 @@ Validation:
 - git diff --check passed.
 
 Implementation: backend/calc/starforce_calculator.py (_meso_percentiles)
+
+-----------------------------------------------------------------------
+Native Star Force budget recurrence - 2026-10-09
+
+Problem:
+- Single-item calculations include a detailed 65,536-bin budget CDF; equipment
+  planning uses expected values only. The Python budget recurrence remained
+  expensive even after the previous loop cleanup.
+
+Changes:
+- Build a small Cython kernel during the existing Linux requirements install.
+  No request-time JIT, runtime Cython dependency, extra workers, or result cache.
+- Retain the same budget grid, horizon retries, transition order, double
+  precision, cost rounding, percentiles, and full interactive distribution.
+- Release the GIL during the recurrence; all buffers are request-local.
+- Keep the portable Python fallback for local environments without a compiler.
+- Linux installation fails if compilation fails. Render's existing build command
+  installs the kernel; a backend redeploy is required to activate it.
+
+Sequential local timings (five alternating before/after runs, median):
+Case                         Before      After       Speedup
+0-25, interactive grid       0.8379 s    0.0383 s     21.9x
+0-25, event + safeguards     0.8085 s    0.0358 s     22.6x
+0-15                         0.2853 s    0.0091 s     31.5x
+15-22                        0.3556 s    0.0161 s     22.1x
+18-19 Mode 4                 0.0384 s    0.0049 s      7.8x
+22-25, replacements + MVP    0.4802 s    0.0267 s     18.0x
+No-percentile control        0.0009 s    0.0009 s     approximately unchanged
+
+Separate 0-25 tracemalloc pass:
+- Peak traced allocations: 26.074 -> 13.562 MiB. This is per-call allocation,
+  not total process RSS or a measurement of Render's memory usage.
+- Baseline retained previous horizon buffers while allocating the next; the
+  helper boundary now retains only the starting-state CDF between horizons.
+
+Validation and limits:
+- All 148 backend tests passed, including four new native parity/concurrency
+  tests. Full dataclass outputs matched exactly in every benchmark case.
+- Windows 10, CPython 3.11.9; native module compiled locally using Cython 3.3.0
+  and Zig 0.13.0 (-O3, -ffp-contract=off, Windows 64-bit Python ABI). Render
+  uses its GCC toolchain via setuptools; its deployed build was not run here.
+- Package isolated build metadata and Windows requirements parsing checked.
+- These are local calculation timings, not deployed latency. Network, queuing,
+  free-service wake-up, and Render CPU contention remain outside this benchmark.
+- No production deployment was performed.
+
+Artifacts:
+- backend/starforce_native_benchmark.json (five-run timings and source hashes)
+- backend/starforce_native_memory.json (separate traced-allocation pass)
+- backend/native/_starforce_budget.pyx (compiled recurrence)
+
+Reproduce after installing the native package:
+  python -m backend.benchmark_starforce --baseline 7d1106135d4023591f3bba7479a01c3be8ebf928 --repeats 5 --skip-memory
+  python -m backend.benchmark_starforce --baseline 7d1106135d4023591f3bba7479a01c3be8ebf928 --repeats 1 --case "single calculator: 0-25"

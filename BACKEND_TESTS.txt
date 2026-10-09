@@ -1,6 +1,6 @@
 BACKEND TEST INVENTORY
-Reviewed: 2026-10-08
-Total: 144 test methods in 12 files
+Reviewed: 2026-10-09
+Total: 148 test methods in 13 files
 
 Run from the repository root:
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
@@ -17,9 +17,32 @@ Audit: retained all test methods. Engine and HTTP tests guard different layers;
 importer and bundled-catalog tests validate different artifacts. Specific weapon
 boss-weight validation overlaps general armor-weight validation but uses a distinct
 weapon configuration. Queue cases cover separate admission and cleanup failures.
-Latest local run: all 144 tests passed. Existing httpx deprecation warning remains.
+Latest local run: all 148 tests passed with the native Star Force kernel installed.
+Existing httpx deprecation warning remains. Native parity tests skip when the
+optional local extension is absent; Linux requirements install the extension.
 
 Inventory policy: one entry per current named test, grouped by source file.
+
+==============================================================================
+FILE: backend/tests/test_starforce_native.py
+Tests: 4
+
+Class: NativeStarForceTests
+
+1. test_every_bin_matches_reference_for_cyclic_chains
+  Compares every CDF bin for seeded random 1-, 5-, and 30-state chains,
+  including maintain/recovery cycles and costs beyond native integer range.
+
+2. test_noncontiguous_reachable_states_and_absorption
+  Checks state remapping, unreachable states, and absorption against Python.
+
+3. test_complete_estimates_match_fallback
+  Exact dataclass equality including the full interactive grid for 0-25,
+  event/MVP/replacement/safeguard/mode combinations, 25-30 with recovery to
+  zero, and a no-boom single step.
+
+4. test_concurrent_requests_have_independent_buffers
+  Simultaneous 0-, 15-, and 22-to-25 calculations match sequential results.
 Historical counts/change logs removed. Descriptions summarize assertions and do
 not claim exhaustive input coverage. Update the relevant entry after test changes.
 

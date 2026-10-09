@@ -1,0 +1,268 @@
+{
+  "baseline_commit": "7d1106135d4023591f3bba7479a01c3be8ebf928",
+  "current_source_sha256": "7918eebfece89e08e3f628a7e8ca697aefff9e038954bea9219ee5ec5279eca5",
+  "native_kernel": true,
+  "native_source_sha256": "0d4940e7e44864d682b74626858507dbc9d5711e3655b31dacb232c36d72bcee",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "repeats": 5,
+  "percentile_probabilities": [
+    0.5,
+    0.75,
+    0.9,
+    0.95,
+    0.99
+  ],
+  "cases": [
+    {
+      "name": "single calculator: 0-25",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 200,
+        "start_star": 0,
+        "target_star": 25,
+        "include_budget_distribution": true
+      },
+      "before_seconds": [
+        0.8280577999976231,
+        0.8240107000019634,
+        0.8418023999984143,
+        0.8400495999958366,
+        0.837855199999467
+      ],
+      "after_seconds": [
+        0.03833370000211289,
+        0.03747080000175629,
+        0.038710999993782025,
+        0.03907020000042394,
+        0.03817840000556316
+      ],
+      "before_median_seconds": 0.837855199999467,
+      "after_median_seconds": 0.03833370000211289,
+      "speedup": 21.856883106856,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    },
+    {
+      "name": "single calculator with event: 0-25",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 200,
+        "start_star": 0,
+        "target_star": 25,
+        "shining_starforce_sunday": true,
+        "safeguard_15_17": true,
+        "mvp_rank": "gold",
+        "replacement_cost_mesos": 1000000000,
+        "include_budget_distribution": true
+      },
+      "before_seconds": [
+        0.824396700001671,
+        0.8085103999983403,
+        0.783031300001312,
+        0.7969690000027185,
+        0.823847300001944
+      ],
+      "after_seconds": [
+        0.03595879999920726,
+        0.0365590000001248,
+        0.035450900002615526,
+        0.035003800003323704,
+        0.035760700004175305
+      ],
+      "before_median_seconds": 0.8085103999983403,
+      "after_median_seconds": 0.035760700004175305,
+      "speedup": 22.608908659616315,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    },
+    {
+      "name": "all reachable: 0-15",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 200,
+        "start_star": 0,
+        "target_star": 15
+      },
+      "before_seconds": [
+        0.28202999999484746,
+        0.28709149999485817,
+        0.2793002000034903,
+        0.2853012999985367,
+        0.29200549999950454
+      ],
+      "after_seconds": [
+        0.009000999998534098,
+        0.00915789999999106,
+        0.009384200006024912,
+        0.008992099996248726,
+        0.0090658999979496
+      ],
+      "before_median_seconds": 0.2853012999985367,
+      "after_median_seconds": 0.0090658999979496,
+      "speedup": 31.469716196192568,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    },
+    {
+      "name": "typical recovery: 15-22",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 200,
+        "start_star": 15,
+        "target_star": 22
+      },
+      "before_seconds": [
+        0.36038969999935944,
+        0.35991919999651145,
+        0.3524189000017941,
+        0.35564209999574814,
+        0.35314280000602594
+      ],
+      "after_seconds": [
+        0.016091199999209493,
+        0.015930900000967085,
+        0.016075500003353227,
+        0.016004400000383612,
+        0.01708860000508139
+      ],
+      "before_median_seconds": 0.35564209999574814,
+      "after_median_seconds": 0.016075500003353227,
+      "speedup": 22.12323721946838,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    },
+    {
+      "name": "no booms: 18-19 Mode 4",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 200,
+        "start_star": 18,
+        "target_star": 19,
+        "mode_18_21": 4,
+        "shining_starforce_sunday": true
+      },
+      "before_seconds": [
+        0.03764260000025388,
+        0.03929480000078911,
+        0.038354899996193126,
+        0.03870430000097258,
+        0.03807129999768222
+      ],
+      "after_seconds": [
+        0.005004899998311885,
+        0.004905099995085038,
+        0.0048393000033684075,
+        0.00490709999576211,
+        0.0048754999952507205
+      ],
+      "before_median_seconds": 0.038354899996193126,
+      "after_median_seconds": 0.004905099995085038,
+      "speedup": 7.819392068382936,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    },
+    {
+      "name": "high stars: 22-25",
+      "settings": {
+        "percentiles": [
+          0.5,
+          0.75,
+          0.9,
+          0.95,
+          0.99
+        ],
+        "item_level": 250,
+        "start_star": 22,
+        "target_star": 25,
+        "replacement_cost_mesos": 1000000000,
+        "mvp_rank": "gold"
+      },
+      "before_seconds": [
+        0.4815463999984786,
+        0.4795298000026378,
+        0.48212889999558683,
+        0.47402219999639783,
+        0.48017719999916153
+      ],
+      "after_seconds": [
+        0.026702200004365295,
+        0.026484300004085526,
+        0.026833600000827573,
+        0.027011600002879277,
+        0.026349100000516046
+      ],
+      "before_median_seconds": 0.48017719999916153,
+      "after_median_seconds": 0.026702200004365295,
+      "speedup": 17.9826830718316,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    },
+    {
+      "name": "no percentiles control: 15-22",
+      "settings": {
+        "percentiles": [],
+        "item_level": 200,
+        "start_star": 15,
+        "target_star": 22
+      },
+      "before_seconds": [
+        0.0009040000004461035,
+        0.000905399996554479,
+        0.0009055999980773777,
+        0.0009089999948628247,
+        0.0009153000064543448
+      ],
+      "after_seconds": [
+        0.0009305000057793222,
+        0.000920900005439762,
+        0.00090230000205338,
+        0.0009206999966409057,
+        0.0009242000014637597
+      ],
+      "before_median_seconds": 0.0009055999980773777,
+      "after_median_seconds": 0.000920900005439762,
+      "speedup": 0.9833858103246746,
+      "before_peak_traced_bytes": null,
+      "after_peak_traced_bytes": null,
+      "existing_outputs_equal": true
+    }
+  ]
+}
