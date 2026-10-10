@@ -10,4 +10,7 @@ test('report preview preserves multiline reports and special characters', () => 
   assert.ok(report.includes(fields.steps))
   assert.ok(report.includes(fields.actual))
   assert.ok(report.endsWith('Not provided'))
+  for (const contact of ['Discord: maple_user', 'Reddit: u/maple_user', 'X: @maple_user']) {
+    assert.ok(formatBugReport({ ...fields, contact: ` ${contact} ` }).endsWith(`## Contact information\n${contact}`))
+  }
 })

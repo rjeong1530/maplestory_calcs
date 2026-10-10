@@ -31,6 +31,7 @@ class BugReport(BaseModel):
     expected: str = Field(min_length=1, max_length=2000, strict=True)
     actual: str = Field(min_length=1, max_length=2000, strict=True)
     environment: str = Field(default='', max_length=200, strict=True)
+    contact: str = Field(default='', max_length=200, strict=True)
 
 
 def report_limit(request: Request):
@@ -84,7 +85,8 @@ def submit_bug_report(report: BugReport):
         except DuplicateKeyError:
             # A retry after a lost HTTP response must not create a second report.
             existing = collection.find_one({'_id': report_id})
-            if existing is None or any(existing.get(key) != value for key, value in fields.items()):
+            if existing is None or any(existing.get(key, '' if key == 'contact' else None) != value
+                                       for key, value in fields.items()):
                 raise HTTPException(409, 'This report ID is already in use. Prepare a new report.') from None
     except (PyMongoError, ValueError) as error:
         # Driver errors can include connection details; log only the error class.

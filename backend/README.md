@@ -76,6 +76,9 @@ process environment variables. To load the ignored root `.env` file locally, run
 reports through MongoDB tools; there is no public read endpoint. IP addresses
 are used for transient rate limiting and are not stored with reports.
 
+`contact` is optional (up to 200 characters), for a Discord username, Reddit
+username, or X handle. It is included in the report preview and stored with the report.
+
 Retries of an unchanged report reuse its ID to avoid duplicate inserts. Database
 errors or missing configuration return 503 without clearing the form. Calculators
 remain available without MongoDB. Connections are created on demand, pooled (up

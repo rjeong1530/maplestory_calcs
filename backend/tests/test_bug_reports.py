@@ -29,6 +29,12 @@ class BugReportTests(unittest.TestCase):
         self.assertIsNotNone(document['created_at'].tzinfo)
         self.assertNotIn('request_id', document)
         self.assertNotIn('ip', document)
+        self.assertEqual(document['contact'], '')
+        for contact in ('Discord: maple_user', 'Reddit: u/maple_user', 'X: @maple_user'):
+            with patch.object(reports, 'report_collection', return_value=collection):
+                response = self.client.post('/api/bug-reports', json={**self.payload, 'contact': f' {contact} '})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(collection.insert_one.call_args.args[0]['contact'], contact)
 
     def test_retry_is_idempotent_but_conflicting_payload_is_rejected(self):
         collection = MagicMock()
@@ -40,7 +46,8 @@ class BugReportTests(unittest.TestCase):
 
     def test_validation_rejects_empty_oversized_and_extra_fields(self):
         for changes in ({'summary': '  '}, {'steps': '\n '}, {'actual': 'x' * 2001},
-                        {'area': 'Unknown'}, {'request_id': 'invalid'}, {'status': 'closed'}, {'summary': 123}):
+                        {'area': 'Unknown'}, {'request_id': 'invalid'}, {'status': 'closed'}, {'summary': 123},
+                        {'contact': 'x' * 201}, {'contact': 123}):
             reports._clients.clear()
             with patch.object(reports, 'report_collection') as storage:
                 response = self.client.post('/api/bug-reports', json={**self.payload, **changes})

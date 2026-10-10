@@ -1,4 +1,4 @@
-export function formatBugReport({ area, summary, steps, expected, actual, environment }) {
+export function formatBugReport({ area, summary, steps, expected, actual, environment, contact = '' }) {
   return [
     `# ${summary.trim()}`,
     `## Area\n${area}`,
@@ -6,5 +6,6 @@ export function formatBugReport({ area, summary, steps, expected, actual, enviro
     `## Expected behavior\n${expected.trim()}`,
     `## Actual behavior\n${actual.trim()}`,
     `## Browser / device\n${environment.trim() || 'Not provided'}`,
+    `## Contact information\n${contact.trim() || 'Not provided'}`,
   ].join('\n\n')
 }

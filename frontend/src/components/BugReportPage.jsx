@@ -4,7 +4,7 @@ import { apiRequest } from '../api'
 import './BugReportPage.css'
 
 export default function BugReportPage() {
-  const [fields, setFields] = useState({ area: 'Star Force', summary: '', steps: '', expected: '', actual: '', environment: '' })
+  const [fields, setFields] = useState({ area: 'Star Force', summary: '', steps: '', expected: '', actual: '', environment: '', contact: '' })
   const [report, setReport] = useState(null)
   const [copyStatus, setCopyStatus] = useState('')
   const [submission, setSubmission] = useState({})
@@ -86,6 +86,11 @@ export default function BugReportPage() {
       <label>Browser and device (optional)
         <input name="environment" value={fields.environment} onChange={change} maxLength={200} placeholder="Example: Firefox on Windows 11, or Safari on iPhone" />
       </label>
+      <label>Contact information (optional)
+        <input name="contact" value={fields.contact} onChange={change} maxLength={200}
+          aria-describedby="bug-report-contact-hint" placeholder="Discord: username, Reddit: u/username, or X: @handle" />
+      </label>
+      <p id="bug-report-contact-hint" className="hint">Leave a Discord username, Reddit username, or X handle if you would like to be contacted about your report. Include the platform so we know where to reach you.</p>
       <p className="hint">Only the details you enter are included. Do not include passwords, account credentials, or other private information.</p>
       <button className="primary" type="submit">Prepare report</button>
       </fieldset>
