@@ -337,6 +337,74 @@ def _rank_category(entries: list[dict[str, Any]]) -> dict[str, list[dict[str, An
     }
 
 
+def _laddering_states(request, entries, main_stat, secondary_stats, offense_stat, flame_weights, potential_weights):
+    states, notes = {}, []
+    if 'starforce' not in request.get('categories', ['starforce']):
+        return states, notes
+    for item in request['equipment']:
+        settings = item.get('laddering')
+        if not settings or is_superior_equipment(item['name']):
+            continue
+        slot = item['slot']
+        state = {'name': item['name'], 'slot': slot, 'start_star': settings['start_star'],
+                 'current_star': item['current_star_force'], 'current_scores': {},
+                 'active': item['current_star_force'] >= settings['start_star']}
+        states[slot] = state
+        try:
+            cap = maximum_star_force(item['equipment_level'], item['name'])
+            if item.get('max_star_force') is not None:
+                cap = min(cap, item['max_star_force'])
+            copy = settings.get('second_copy')
+            spare_star = copy['current_star_force'] if copy else 0
+            if spare_star > cap:
+                raise ValueError('Second-copy stars exceed the selected upgrade cap.')
+            if item.get('minimum_cooldown_seconds', 0):
+                raise ValueError('Laddering cannot verify a second copy’s cooldown lines from a weighted score. Disable the cooldown minimum to use laddering.')
+            potential_score = _potential_current_score(item.get('current_potential', []), main_stat,
+                secondary_stats, offense_stat, flame_weights, potential_weights)
+            flame_score = 0
+            spare_flame = 0
+            spare_potential = 0
+            if copy:
+                spare_potential = _potential_current_score(copy.get('current_potential', []), main_stat,
+                    secondary_stats, offense_stat, flame_weights, potential_weights)
+                spare_flame = 0
+            if slot.split('-', 1)[0] in FLAME_SLOTS:
+                config = _flame_config(item, main_stat, secondary_stats, offense_stat, flame_weights, 'black')
+                flame_score = _current_flame_score(item, config)
+                if copy:
+                    spare_flame = _current_flame_score({**item, 'current_flames': copy.get('current_flames', [])}, config)
+            if slot.split('-', 1)[0] not in FLAME_SLOTS and (spare_flame or (copy and copy.get('current_flames'))):
+                raise ValueError('This slot cannot have a second-copy flame score.')
+            if not item.get('potential_equipment_type') and spare_potential:
+                raise ValueError('This item cannot have a second-copy potential score.')
+            cached = {row['start_star']: row for row in entries if row['slot'] == slot and row.get('action_cost_mesos') is not None}
+            replacement = item.get('replacement_cost_mesos')
+            if replacement is None:
+                replacement = 1e9 if slot == 'secondary' and item['name'].startswith('Astra ') else 0
+            steps = []
+            for star in range(cap):
+                if star in cached:
+                    steps.append(cached[star])
+                else:
+                    result = starforce.estimate_starforce(item['equipment_level'], star, star + 1,
+                        mode_by_star=item.get('mode_by_star', {}), safeguard_by_star=item.get('safeguard_by_star', {}),
+                        replacement_cost_mesos=replacement,
+                        shining_starforce_sunday=request.get('shining_starforce_sunday', False),
+                        mvp_rank=request.get('mvp_rank', 'none'))
+                    steps.append({'action_cost_mesos': result.expected_cost, 'expected_attempts': result.expected_attempts,
+                                  'expected_booms': result.expected_booms, 'expected_replacement_cost': result.expected_replacement_cost})
+            state.update(cap=cap, steps=steps, spare_star=spare_star, assumed_copy=copy is None,
+                sf_scores=[starforce_weighted_score(item, star, main_stat, secondary_stats, offense_stat, flame_weights)
+                           for star in range(max(cap, item['current_star_force']) + 1)],
+                current_scores={'flames': flame_score, 'potential': potential_score},
+                spare_scores={'flames': spare_flame, 'potential': spare_potential})
+        except (ValueError, KeyError) as error:
+            state['blocked'] = True
+            notes.append({'name': item['name'], 'slot': slot, 'category': 'starforce', 'note': str(error)})
+    return states, notes
+
+
 def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
     """Rank future Star Force steps and each item's next roll improvement."""
     main_stat = flames.primary_stats(request['main_stat'])
@@ -494,14 +562,29 @@ def equipment_upgrade_plan(request: Mapping[str, Any]) -> dict[str, Any]:
 
     results['flames'] = flame_results['black']
 
-    return {
-        **({'overall_upgrade_order': {
-            'steps': overall_upgrade_order(results['starforce'], roll_states),
+    overall = None
+    if include_overall:
+        ladder_states, ladder_notes = _laddering_states(request, results['starforce'], main_stat,
+            secondary_stats, offense_stat, flame_weights, potential_weights)
+        steps = overall_upgrade_order(results['starforce'], roll_states,
+            laddering_states=ladder_states, laddering_notes=ladder_notes)
+        overall = {
+            'steps': steps, 'laddering_enabled': any(item.get('laddering') for item in request['equipment']),
+            'laddering_status': [
+                {'slot': item['slot'],
+                 'enforced': item['slot'] in ladder_states,
+                 'upgrade_selected': any(row.get('laddering') and row['slot'] == item['slot'] for row in steps),
+                 'note': next((note['note'] for note in ladder_notes if note['slot'] == item['slot']), None)}
+                for item in request['equipment'] if item.get('laddering')
+            ],
             'unavailable': [dict(entry, category=category)
                             for category, entries in results.items() if category in categories
-                            for entry in entries if entry['expected_score_gain'] is None],
+                            for entry in entries if entry['expected_score_gain'] is None] + ladder_notes,
             'step_limit': 20,
-        }} if include_overall else {}),
+        }
+
+    return {
+        **({'overall_upgrade_order': overall} if include_overall else {}),
         'cube_type': cube_type,
         'cube_sale': cube_sale,
         'categories': categories,

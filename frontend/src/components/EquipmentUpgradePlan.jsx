@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
 import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, UPGRADE_CATEGORIES, MVP_RANKS, FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
@@ -27,17 +27,18 @@ export default function EquipmentUpgradePlan({
     ? selectedCategory : settings.categories[0]
   const [request, setRequest] = useState(null)
   const controllerRef = useRef(null)
-  const payload = buildUpgradeRequest(equipment, classStats, flameWeights, settings)
-  const requestKey = JSON.stringify(payload)
+  const payload = useMemo(() => buildUpgradeRequest(equipment, classStats, flameWeights, settings),
+    [equipment, classStats, flameWeights, settings])
+  const requestKey = useMemo(() => JSON.stringify(payload), [payload])
   const current = request?.key === requestKey ? request : null
   const busy = current?.status === 'loading'
   const result = current?.result
   const flameRankings = result?.flame_rankings[flameType]
   const rankings = result?.rankings[category]
-  const rankedRows = category === 'flames'
-    ? [...(rankings?.gain_per_meso_first || [])].sort((a, b) => b.improvement_probability - a.improvement_probability)
-    : rankings?.gain_per_meso_first || []
-  const groupedRows = category === 'starforce' ? combineStarforceSteps(orderStarforceSteps(rankedRows)) : rankedRows
+  const groupedRows = useMemo(() => {
+    const rankedRows = rankings?.gain_per_meso_first ?? []
+    return category === 'starforce' ? combineStarforceSteps(orderStarforceSteps(rankedRows)) : rankedRows
+  }, [category, rankings])
   const rows = category === 'starforce' ? groupedRows.slice(0, 20) : groupedRows
 
   useEffect(() => () => controllerRef.current?.abort(), [requestKey])
@@ -68,6 +69,9 @@ export default function EquipmentUpgradePlan({
         {' '}{classStats.secondary.length ? `${classStats.secondary.join(' / ')} secondary` : 'no secondary stat'}, {classStats.offense}.
         Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
       <form onSubmit={submit}>
+        <p><strong>Overall upgrade mode: {payload.laddering_enabled ? 'Laddering' : 'Standard'}</strong></p>
+        <p className="hint">Each item's laddering checkbox enforces its starting threshold in the Overall tab.
+          Items without laddering settings use standard upgrades. Record second-copy stats in Current equipment stats; minimum scores are calculated automatically.</p>
         <fieldset className="upgrade-categories">
           <legend>Upgrade orders to calculate</legend>
           {Object.entries(CATEGORIES).map(([key, label]) => <label key={key}>
@@ -149,6 +153,7 @@ export default function EquipmentUpgradePlan({
               onClick={() => setCategory('overall')}>Overall</button>
           </div>
         </div>
+
         {category !== 'flames' && category !== 'overall' && <p className="hint">Scores are weighted stat points. Gain is measured for each star range or first better roll.
           Efficiency is displayed as flame score gain per 100M mesos.</p>}
         {category === 'starforce' && <p className="hint">

@@ -28,6 +28,12 @@ export const LINE_FIELDS = {
   current_flames: { label: 'option', value: 'stage', limit: 4, labels: FLAME_LABELS },
 }
 
+export function equipmentLinesForRequest(lines, key) {
+  const { label, value } = LINE_FIELDS[key]
+  return (lines || []).filter(line => line[label] && line[value] !== '' && line[value] != null)
+    .map(line => ({ [label]: line[label], [value]: Number(line[value]) }))
+}
+
 export function validEquipmentLine(line, key) {
   const { label, value, labels } = LINE_FIELDS[key]
   if (!isObject(line) || typeof line[label] !== 'string'

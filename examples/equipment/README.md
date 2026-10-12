@@ -1,5 +1,8 @@
 # Equipment samples
 
+For a focused second-copy upgrade example, see the
+[laddering sample](../laddering/README.md), which includes spare potential preparation.
+
 These 47 JSON files cover every class currently supported by the app. Each has
 eight items: weapon, secondary, hat, top, bottom, gloves, ring, and pendant.
 They are test builds, not recommended gear sets. The samples exercise physical

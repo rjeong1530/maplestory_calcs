@@ -11,9 +11,6 @@
 .equipment-page-content {
   min-width: 0;
 }
-.equipment-page-main {
-  max-width: 1600px;
-}
 .equipment-stats-actions {
   display: flex;
   flex-wrap: wrap;

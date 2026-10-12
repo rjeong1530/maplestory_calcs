@@ -385,7 +385,8 @@ th:last-child {
 .flame-settings > label {
   margin-bottom: 16px;
 }
-.flame-weapon-settings {
+.flame-weapon-settings,
+.equipment-strategy-apply {
   margin: 20px 0;
   padding: 16px;
   border: 1px solid #39465b;

@@ -1,9 +1,3 @@
-.equipment-strategy-apply {
-  margin: 20px 0;
-  padding: 16px;
-  border: 1px solid #39465b;
-  border-radius: 8px;
-}
 .equipment-strategy-apply > summary {
   cursor: pointer;
   padding: 0;

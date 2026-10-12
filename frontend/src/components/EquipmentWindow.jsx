@@ -6,7 +6,7 @@ import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 export default function EquipmentWindow({
   equipmentClass, mapleClasses, onMapleClassChange, equipment, activeSlot,
   onActivate, onSelect, onRemove, busy: calculating,
-  onExport, onImport, onOpenStats, dirty, onSave, onDiscard, saveError,
+  onExport, onImport, onOpenStats, dirty, onSave, onDiscard, saveError, saveConfirmed,
 }) {
   const slots = EQUIPMENT_SLOTS.filter(slot => slot && slot !== 'android')
   const pickerSlot = activeSlot || slots[0]
@@ -153,9 +153,12 @@ export default function EquipmentWindow({
       </div>
       <div className="equipment-setup-save">
         <p className="hint" role="status">{dirty ? 'Unsaved equipment changes.'
-          : saveError ? 'Equipment could not be saved in this browser.' : 'No unsaved equipment changes.'}</p>
+          : saveError ? 'Equipment could not be saved in this browser.'
+            : saveConfirmed ? '✓ Equipment saved in this browser.' : 'No unsaved equipment changes.'}</p>
         <div className="equipment-transfer-actions">
-          <button type="button" className="primary" disabled={busy || !dirty} onClick={onSave}>Save equips</button>
+          <button type="button" className="primary" disabled={busy || !dirty} onClick={onSave}>
+            {saveConfirmed && !dirty && !saveError ? 'Saved equips' : 'Save equips'}
+          </button>
           <button type="button" disabled={busy || !dirty} onClick={onDiscard}>Discard changes</button>
         </div>
       </div>

@@ -5,13 +5,16 @@ import EquipmentUpgradePlan from './EquipmentUpgradePlan'
 import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import { CLASS_STATS } from '../data/classStats'
 import { EQUIPMENT_SLOTS, SLOT_LABELS, FIXED_RING_SLOT } from '../data/flameEquipment'
+import { secondCopyItem, updateSecondCopy } from '../data/laddering'
 
 export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenApproaches }) {
   const [statsExpanded, setStatsExpanded] = useState(true)
+  const [copyView, setCopyView] = useState('equipped')
   const { equipment, equipmentClass, activeSlot, setActiveSlot, updateEquipmentRoll,
     equipmentWeights, setEquipmentWeights, upgradeSettings, setUpgradeSettings } = planner
   const slot = activeSlot || EQUIPMENT_SLOTS.find(key => key && equipment[key])
   const selected = equipment[slot]
+  const editingSecond = copyView === 'second' && !!selected?.laddering
   const classStats = CLASS_STATS[equipmentClass]
 
   return <>
@@ -49,11 +52,24 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenAppro
             {selected ? <>
               <h3>{selected.name}</h3>
               <p className="hint">{SLOT_LABELS[slot.split('-')[0]]} · Level {selected.config.equipment_level}</p>
+              {selected.laddering && <>
+                <div role="group" aria-label="Equipment copy" className="equipment-copy-selector">
+                  <button type="button" aria-pressed={!editingSecond} onClick={() => setCopyView('equipped')}>Equipped copy</button>
+                  <button type="button" aria-pressed={editingSecond} onClick={() => setCopyView('second')}>Second copy</button>
+                </div>
+                {editingSecond && <>
+                  <p className="hint">Editing the second {selected.name}. These stars, flames, and potential are saved separately; the equipped copy is unchanged. Both copies use the equipped item's enhancement modes and equipment type.</p>
+                  {!selected.laddering.second_copy && <p className="hint">No second-copy stats recorded: the planner starts at 0 stars and zero roll scores, then calculates the required targets and preparation costs.</p>}
+                  {selected.laddering.second_copy && <button type="button" onClick={() => updateEquipmentRoll(slot, { laddering: { ...selected.laddering, second_copy: null } })}>Clear second-copy stats</button>}
+                </>}
+              </>}
               {slot === FIXED_RING_SLOT
                 ? <p className="hint">Ring 4 is fixed to Ring of Restraint. It has no editable enhancements and is excluded from upgrade rankings.</p>
-                : <EquipmentAnalysis key={`${slot}-${selected.id}`} slot={slot} item={selected}
+                : <EquipmentAnalysis key={`${slot}-${selected.id}-${editingSecond}`} slot={slot} item={editingSecond ? secondCopyItem(selected) : selected}
+                  secondCopy={editingSecond}
                   onOpenApproaches={onOpenApproaches}
-                  offenseStat={classStats.offense} onChange={updates => updateEquipmentRoll(slot, updates)} />}
+                  offenseStat={classStats.offense} onChange={updates => updateEquipmentRoll(slot, editingSecond
+                    ? { laddering: updateSecondCopy(selected.laddering, updates) } : updates)} />}
             </> : <>
               <h3>No equipment in this slot</h3>
               <p className="hint">Select an equipped item or add one in Equipment setup.</p>

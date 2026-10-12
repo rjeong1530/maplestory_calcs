@@ -1,6 +1,10 @@
 BACKEND TEST INVENTORY
-Reviewed: 2026-10-09
-Total: 157 test methods in 14 files
+Reviewed: 2026-10-11
+Total: 169 test methods in 15 files
+
+Laddering: 12 tests cover automatic minimum targets (including exhaustive-search parity), spare catch-up and preparation costs, total-score swaps,
+alternating copies, starting thresholds, actual second-copy scoring, missing-copy
+defaults, input validation, and unavailable preparation without risky fallback.
 
 Run from the repository root:
   .\.venv\Scripts\python.exe -m unittest discover -s backend/tests -t . -v
