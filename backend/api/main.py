@@ -405,7 +405,29 @@ class CurrentFlameLine(RequestModel):
         return value
 
 
+class LadderingCopyRequest(RequestModel):
+    current_star_force: int = Field(default=0, ge=0, le=30, strict=True)
+    current_flames: list[CurrentFlameLine] = Field(default_factory=list, max_length=4)
+    current_potential: list[CurrentPotentialLine] = Field(default_factory=list, max_length=3)
+
+
+class LadderingRequest(RequestModel):
+    start_star: int = Field(ge=0, le=30, strict=True)
+    second_copy: LadderingCopyRequest | None = None
+    minimum_flame_score: float = Field(default=0, ge=0, le=1e9, strict=True, allow_inf_nan=False)
+    minimum_potential_score: float = Field(default=0, ge=0, le=1e9, strict=True, allow_inf_nan=False)
+
+
 class UpgradeEquipmentRequest(RequestModel):
+    laddering: LadderingRequest | None = None
+
+    @model_validator(mode='after')
+    def laddering_star_cap(self):
+        if self.laddering:
+            cap = equipment_upgrade.maximum_star_force(self.equipment_level, self.name)
+            if cap == 0 or self.laddering.start_star > cap or (self.laddering.second_copy and self.laddering.second_copy.current_star_force > cap):
+                raise ValueError('Laddering stars must be within this equipment’s Star Force cap.')
+        return self
     minimum_cooldown_seconds: int = Field(default=0, ge=0, le=6, strict=True)
 
     @model_validator(mode='after')
@@ -454,6 +476,7 @@ class UpgradeEquipmentRequest(RequestModel):
 
 
 class EquipmentUpgradePlanRequest(RequestModel):
+    laddering_enabled: bool = Field(default=False, strict=True)
     include_overall: bool = Field(default=False, strict=True)
     categories: list[Literal['starforce', 'flames', 'potential']] = Field(
         default_factory=lambda: ['starforce', 'flames', 'potential'], min_length=1, max_length=3)

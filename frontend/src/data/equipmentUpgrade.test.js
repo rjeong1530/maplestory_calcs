@@ -230,6 +230,7 @@ test('saved upgrade settings accept zero weights and recover from invalid values
     attack_pct_value: -1, crit_damage_pct_value: 'Infinity' }), {
     categories: ['starforce', 'flames', 'potential'],
     cube_type: 'black', cube_sale: false, shining_starforce_sunday: true, mvp_rank: 'none',
+    laddering_enabled: false,
     base_stat_pct_value: '0', attack_pct_value: '10', crit_damage_pct_value: '8',
   })
 })

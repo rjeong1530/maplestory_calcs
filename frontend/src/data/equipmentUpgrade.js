@@ -1,6 +1,7 @@
 import { potentialEquipmentType, FIXED_RING_SLOT } from './flameEquipment.js'
 import { replacementCostForEquipment } from './starforce.js'
-import { isFiniteNumeric } from './equipmentLines.js'
+import { equipmentLinesForRequest, isFiniteNumeric } from './equipmentLines.js'
+import { ladderingForRequest } from './laddering.js'
 
 export const FLAME_WEIGHT_LABELS = {
   all_stat_pct_value: 'Points per 1% all stat',
@@ -45,11 +46,13 @@ export const DEFAULT_UPGRADE_SETTINGS = {
   cube_sale: false,
   shining_starforce_sunday: true,
   mvp_rank: 'none',
+  laddering_enabled: false,
   base_stat_pct_value: '10', attack_pct_value: '10', crit_damage_pct_value: '8',
 }
 
 export function restoreUpgradeSettings(saved) {
   return {
+    laddering_enabled: saved?.laddering_enabled === true,
     categories: Array.isArray(saved?.categories) && saved.categories.some(key => Object.hasOwn(UPGRADE_CATEGORIES, key))
       ? Object.keys(UPGRADE_CATEGORIES).filter(key => saved.categories.includes(key))
       : [...DEFAULT_UPGRADE_SETTINGS.categories],
@@ -139,6 +142,7 @@ export function combineStarforceSteps(entries) {
 export function buildUpgradeRequest(equipment, classStats, flameWeights, settings) {
   return {
     include_overall: true,
+    laddering_enabled: Object.values(equipment).some(item => item?.laddering),
     main_stat: classStats.main,
     secondary_stats: classStats.secondary,
     offense_stat: classStats.offense,
@@ -158,6 +162,7 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       equipment_type: item.config.equipment_type,
       potential_equipment_type: potentialEquipmentType(slot, item),
       current_star_force: item.currentStarForce ?? 0,
+      ...(item.laddering ? { laddering: ladderingForRequest(item.laddering) } : {}),
       minimum_cooldown_seconds: slot === 'hat' ? item.minimumCooldownSeconds ?? 0 : 0,
       replacement_cost_mesos: replacementCostForEquipment(item, slot),
       ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
@@ -167,12 +172,8 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
         ? item.currentBossEquipment ?? item.config.boss_equipment
         : item.config.boss_equipment ?? item.currentBossEquipment) ?? false,
       base_weapon_offense: item.config.base_weapon_offense ?? null,
-      current_potential: (item.currentPotential || [])
-        .filter(line => line.effect && line.value !== '' && line.value != null)
-        .map(line => ({ effect: line.effect, value: Number(line.value) })),
-      current_flames: (item.currentFlames || [])
-        .filter(line => line.option && line.stage !== '' && line.stage != null)
-        .map(line => ({ option: line.option, stage: Number(line.stage) })),
+      current_potential: equipmentLinesForRequest(item.currentPotential, 'current_potential'),
+      current_flames: equipmentLinesForRequest(item.currentFlames, 'current_flames'),
     })),
   }
 }

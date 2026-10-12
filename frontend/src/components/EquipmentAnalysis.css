@@ -2,6 +2,26 @@
   border-top: 1px solid #39465b;
   padding: 14px 0;
 }
+.equipment-laddering {
+  flex-basis: 100%;
+  min-width: 0;
+  border-top: 1px solid #39465b;
+  padding-top: 18px;
+}
+.equipment-laddering .hint {
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.equipment-copy-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.equipment-copy-selector [aria-pressed="true"] {
+  border-color: #99deb0;
+  color: #99deb0;
+}
 .equipment-analysis .equipment-approach-link {
   display: inline-flex;
   align-items: center;

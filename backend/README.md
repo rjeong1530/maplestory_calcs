@@ -166,7 +166,7 @@ and usage instructions are in [examples/equipment](../examples/equipment/README.
 
 TODO:
 
-- [ ] Laddering Equipement Upgrades
+- [x] Laddering equipment upgrades (two-copy Overall projection)
 - [ ] Destiny Lib Pt2
 - [ ] KMS Inner Ability
 - [ ] KMS Soul Enhancement

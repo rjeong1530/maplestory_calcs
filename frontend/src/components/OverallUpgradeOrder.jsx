@@ -7,6 +7,20 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
   const steps = plan?.steps ?? []
   return <section aria-label="Overall upgrade order">
     <h3>Best next upgrades across your equipment</h3>
+    {plan?.laddering_enabled && <details className="upgrade-notes">
+      <summary>How laddering costs and efficiency work</summary>
+      <p>A laddering recommendation includes the <strong>full cost needed before swapping</strong>:</p>
+      <ul>
+        <li>Star Force from the second copy's current stars to its target.</li>
+        <li>Potential and flame rerolls needed to reach the calculated minimum scores.</li>
+        <li>Expected boom replacement costs, if configured.</li>
+      </ul>
+      <p>Its efficiency is <strong>expected total score gain over your equipped item divided by that combined cost</strong>.</p>
+      <p>A spare needing substantial rerolling can rank lower or fall outside the recommended steps,
+        even if its Star Force upgrade alone looks efficient. Already-sufficient rolls add no reroll cost.
+        Only enabled roll categories can contribute preparation.</p>
+      <p className="hint"><strong>Laddering mode:</strong> configured items keep their equipped copy safe while the second copy is enhanced. Each step includes spare Star Force and any rolling needed to meet its minimum scores. Swap when total score improves; a better-rolled copy may win at equal or lower stars. The old equipped copy becomes the next spare. Minimum scores are calculated automatically. No recorded second-copy stats means 0 stars and zero roll scores, with preparation costs included. Costs assume both copies are owned and potential is Legendary. Per-category tabs still show standard upgrades.</p>
+    </details>}
     <p className="hint">Cube sale: {settings.cube_sale ? 'On' : 'Off'} · Shining Star Force: {settings.shining_starforce_sunday ? 'On' : 'Off'} · MVP discount: {MVP_RANKS[settings.mvp_rank] ?? 'None'}</p>
     <p className="hint">For flames, <strong>stop at ≥ target</strong> means keep rolling until you reach that
       score or higher. At that point, another available upgrade is estimated to give at least as much
@@ -37,14 +51,26 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
           </tr></thead>
           <tbody>{steps.map(entry => <tr key={entry.step}>
             <td>{entry.step}</td>
-            <th scope="row">{entry.name}
+            <th scope="row">{entry.name}{entry.copy_label && ` — ${entry.copy_label}`}
+              {entry.copy_label && <small>{entry.laddering ? 'Backup copy → equipped after this step' : 'Equipped copy'}</small>}
               <small>{entry.slot}{entry.equipment_level != null && ` · Lv. ${entry.equipment_level}`}</small>
               <small>{entry.category === 'flames' ? 'Black Flames'
                 : entry.category === 'potential' ? `${cubeType === 'black' ? 'Black' : 'Red'} cubes`
-                  : 'Star Force'}</small>
+                  : entry.laddering ? 'Star Force · Ladder second copy' : 'Star Force'}</small>
+              {entry.category === 'starforce' && <small>Laddering used: {entry.laddering ? 'Yes' : 'No'}</small>}
             </th>
             <td>{entry.category === 'starforce'
-              ? `${entry.start_star} → ${entry.next_star} stars`
+              ? <>{entry.start_star} → {entry.next_star} stars
+                {entry.laddering && <>
+                  <small>Keep {entry.protected_copy_label || 'equipped copy'} at {entry.protected_star}★ until the swap.</small>
+                  {entry.copy_label && <small>Equip {entry.copy_label} after this step; {entry.protected_copy_label} becomes the backup. Original and Spare labels stay with their copies throughout this plan.</small>}
+                  {entry.assumed_second_copy && <small>No spare stats recorded: starting at 0 stars and zero roll scores; preparation costs are included.</small>}
+                  <small>Spare flame: {score.format(entry.spare_flame_score)} · Minimum: {score.format(entry.minimum_flame_score)} · Average after preparation: {score.format(entry.expected_flame_score)}</small>
+                  <small>Spare potential: {score.format(entry.spare_potential_score)} · Minimum: {score.format(entry.minimum_potential_score)} · Average after preparation: {score.format(entry.expected_potential_score)}</small>
+                  <small>To improve total score at {entry.next_star}★: combined flame + potential must exceed {score.format(entry.break_even_combined_roll_score)}.</small>
+                  <small>Preparation: {mesos.format(entry.preparation_cost_mesos)} mesos included; then swap copies.</small>
+                </>}
+              </>
               : <>{score.format(entry.current_score)} → ≥{score.format(entry.target_score)}
                 <small>{entry.category === 'flames' ? 'Flame score' : 'Potential weighted score'}</small>
                 <small>Average result: {score.format(entry.expected_final_score)}</small></>}
@@ -52,7 +78,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
             <td>+{score.format(entry.expected_score_gain)}</td>
             <td>{entry.category === 'starforce' ? score.format(entry.expected_booms ?? 0) : '-'}</td>
             <td title={score.format(entry.action_cost_mesos)}>{mesos.format(entry.action_cost_mesos)}</td>
-            <td>{score.format(entry.gain_per_meso * 100_000_000)}</td>
+            <td>{entry.action_cost_mesos === 0 ? 'No spending needed' : score.format(entry.gain_per_meso * 100_000_000)}</td>
             <td title={score.format(entry.cumulative_cost_mesos)}>{mesos.format(entry.cumulative_cost_mesos)}</td>
           </tr>)}</tbody>
         </table>

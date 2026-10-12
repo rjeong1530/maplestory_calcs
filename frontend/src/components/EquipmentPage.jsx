@@ -19,10 +19,6 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
     return selectedCount >= 5 ? 'stats' : 'setup'
   })
 
-  function changeEquipment(action, ...args) {
-    action(...args)
-  }
-
   return (
     <div className="equipment-page-layout">
       <nav className="equipment-section-navigation" aria-label="Equipment sections">
@@ -36,14 +32,13 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
           <DeferredPage active={view === 'setup'}>
             <EquipmentWindow equipmentClass={setupClass}
               mapleClasses={Object.keys(CLASS_STATS).sort()}
-              onMapleClassChange={value => changeEquipment(updateEquipmentClass, value)} equipment={setupEquipment}
+              onMapleClassChange={updateEquipmentClass} equipment={setupEquipment}
               activeSlot={activeSlot} onActivate={setActiveSlot}
-              onSelect={(...args) => changeEquipment(selectEquipment, ...args)}
-              onRemove={slot => changeEquipment(removeEquipment, slot)}
+              onSelect={selectEquipment} onRemove={removeEquipment}
               busy={busy} onExport={exportEquipmentJson}
-              onImport={text => changeEquipment(importEquipmentJson, text)}
+              onImport={importEquipmentJson}
               dirty={setupDirty} onSave={saveEquipmentSetup} onDiscard={discardEquipmentSetup}
-              saveError={planner.saveError}
+              saveError={planner.saveError} saveConfirmed={planner.saveConfirmed}
               onOpenStats={() => setView('stats')} />
           </DeferredPage>
         </div>
