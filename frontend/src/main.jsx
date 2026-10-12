@@ -17,7 +17,10 @@ const initialPage = pageForPath(window.location.pathname)
 if (!initialPage || initialPage === 'home') {
   renderApp()
 } else {
-  root.render(<p role="status">Loading calculator tools…</p>)
+  // Keep the build-time guide visible until the interactive route is ready.
+  if (!document.getElementById('root').hasChildNodes()) {
+    root.render(<p role="status">Loading calculator tools…</p>)
+  }
   // On failure, retry through the ordinary lazy loading path.
   preloadPage(initialPage).catch(() => {}).then(renderApp)
 }

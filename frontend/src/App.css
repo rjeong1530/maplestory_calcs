@@ -6,6 +6,20 @@ main {
 .page-header {
   margin-bottom: 36px;
 }
+.page-guide {
+  margin-top: 36px;
+}
+.page-guide h2 {
+  font-size: 20px;
+}
+.page-guide p {
+  line-height: 1.7;
+}
+.page-guide nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+}
 .page-title {
   display: flex;
   align-items: center;

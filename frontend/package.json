@@ -6,10 +6,11 @@
   "scripts": {
     "test": "node --test src/data/*.test.js",
     "test:browser": "node --test scripts/browser-regressions.test.mjs",
+    "test:prerender": "npm run build && node --test scripts/prerender.test.mjs",
     "test:deployed": "node --test scripts/deployed-smoke.test.mjs",
     "benchmark:render": "npm run build && node --test scripts/benchmark-rendering.test.mjs",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },
