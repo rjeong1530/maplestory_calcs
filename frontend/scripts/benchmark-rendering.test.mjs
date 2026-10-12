@@ -7,8 +7,6 @@ import { createServer } from 'node:net'
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
-
-
 const root = fileURLToPath(new URL('../', import.meta.url))
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 async function port() {
@@ -103,7 +101,7 @@ test('production frontend performance', { timeout: 180000 }, async t => {
     console.log(JSON.stringify(results.at(-1)))
   }
   await writeFile(process.env.BENCHMARK_OUTPUT || 'rendering-benchmark.json', JSON.stringify({
-    date: '2026-10-07', browser: 'Headless Firefox', mode: 'Vite production preview; cache disabled; external images disabled; local API availability unchanged',
+    date: new Date().toISOString().slice(0, 10), browser: 'Headless Firefox', mode: 'Vite production preview; cache disabled; external images disabled; local API availability unchanged',
     note: 'Ready includes WebDriver scheduling and two animation frames; not isolated React CPU duration or internet load time.', results,
   }, null, 2) + '\n')
 })

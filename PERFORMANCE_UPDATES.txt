@@ -1,3 +1,71 @@
+Code cleanup and formatting - 2026-10-11
+
+Changes:
+- Removed forwarding-only equipment callbacks and passed handlers directly.
+- Replaced the single-field laddering form loop with a direct star input.
+- Shared flame/potential request serialization between equipped and spare copies.
+- Reused the existing object validation helper and simplified ladder candidate
+  selection without changing free-upgrade priority or efficiency comparisons.
+- Corrected JSX indentation and removed excess blank lines.
+
+This is a maintainability cleanup; no additional runtime speedup was measured.
+Validation: 99 frontend tests, 20 relevant backend tests, browser regressions,
+lint, git diff --check, and production build all passed.
+
+Performance review - 2026-10-11
+Laddering, frontend rendering, and CSS
+
+Laddering optimizations (backend/calc/laddering.py):
+- Build sorted spare score/cost arrays once per candidate search and reuse them
+  across target stars instead of rebuilding them for every target.
+- Enumerate the smaller roll table and binary-search the other table for the
+  minimum qualifying score, avoiding an exhaustive flame/potential cross product.
+- Compare precomputed costs directly; construct full expected-roll estimates
+  only for the selected pair instead of every qualifying pair.
+- Calculate the equipped total-score baseline once per candidate search.
+- Skip the target search when existing spare rolls already meet the required
+  combined score; sufficient rolls incur no preparation cost.
+- Preserve strict total-score improvement, free-swap priority, and expected
+  preparation costs. Randomized exhaustive-search tests verify cost parity.
+The measured before/after improvement below comes from reusing options and
+avoiding repeated estimate construction; binary search was already present.
+
+Frontend and CSS optimizations:
+- Memoize frontend upgrade request construction/serialization and Star Force
+  ordering when their inputs have not changed.
+- Remove an unused flame sorting operation from the generic ranking path;
+  the flame results component already receives its own sorted rows.
+- Share identical flame-settings/strategy-panel CSS declarations and remove
+  the unused .upgrade-results-controls > label selector. A source class-name
+  audit found no clearly orphaned class rules; dynamic selectors were retained.
+- Replace the browser benchmark's hard-coded report date with its runtime date.
+
+Local CPU benchmark (synthetic 5,000 flame / 500 potential scores, 12-star
+spare, 24-star equipped item, 25-star cap; best of 3 batches of 10 calls):
+- Before: 19.372 ms per ladder candidate search.
+- After: 1.720 ms, approximately 11.3x faster.
+- Identical selected stars, minimum targets, and expected cost.
+- Reproduce: python -m backend.benchmark_laddering
+- This isolates preparation/search CPU, not distribution generation, network
+  requests, free Render cold starts, or full equipment-plan latency.
+
+Production frontend benchmark (five fresh navigations per route, medians):
+                      Before (ms)   After (ms)
+Home                       53           50
+Equipment setup            83           61
+Equipment stats            69           71
+Star Force                 57           57
+Flames                     55           55
+These short local runs include WebDriver scheduling and animation frames.
+Images/browser cache were disabled; API responses and deployed Render latency
+were not benchmarked. Variation is too large to claim a frontend speedup.
+Raw latest runs: frontend/rendering-benchmark.json
+Reproduce: npm --prefix frontend run benchmark:render (Firefox/geckodriver).
+
+Validation: 169 backend tests, including randomized exhaustive-search parity
+for minimum preparation costs; 99 frontend tests; browser regression harness;
+lint; production build; production rendering benchmark all passed.
+
 Performance update - 2026-10-02
 Single flame calculator
 

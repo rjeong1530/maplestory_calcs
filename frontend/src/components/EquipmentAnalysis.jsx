@@ -4,10 +4,11 @@ import { POTENTIAL_LABELS, FLAME_LABELS } from '../data/equipmentLines'
 import { FLAME_SLOTS, potentialEquipmentType } from '../data/flameEquipment'
 import { maxStarForceForEquipment, supportsStarForce, replacementCostForEquipment } from '../data/starforce'
 import './EquipmentAnalysis.css'
+import EquipmentLaddering from './EquipmentLaddering'
 
 const emptyPotentialLine = () => ({ effect: '', value: '' })
 
-export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, onOpenApproaches }) {
+export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, onOpenApproaches, secondCopy = false }) {
   const [itemOptions, setItemOptions] = useState(null)
   const [optionsError, setOptionsError] = useState('')
   const [bossEquipment, setBossEquipment] = useState(
@@ -114,7 +115,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
       <div className="equipment-analysis-sections">
         <section className="current-potential-section">
           <h4>Current potential</h4>
-          {slot === 'hat' && <>
+          {slot === 'hat' && !secondCopy && <>
             <label>Minimum cooldown reduction for upgrades
               <select value={item.minimumCooldownSeconds ?? 0}
                 onChange={event => onChange({ minimumCooldownSeconds: Number(event.target.value) })}>
@@ -171,7 +172,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                   })}
                 </div>
               )}
-          {canStarForce && <>
+          {canStarForce && !secondCopy && <>
           <h4>Star Force enhancement modes</h4>
           <button type="button" className="equipment-approach-link" onClick={onOpenApproaches}>
             Compare Star Force approaches
@@ -221,7 +222,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
               : !availableOptions ? <p className="hint" role="status">Loading flame options…</p>
                 : (
                   <>
-                    {item.needsFlameType && <label className="flame-checkbox">
+                    {item.needsFlameType && !secondCopy && <label className="flame-checkbox">
                         <input type="checkbox" checked={bossEquipment}
                           onChange={event => updateBossEquipment(event.target.checked)} />
                         Boss / special equipment
@@ -301,7 +302,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
             <span>/ {maximumStarForce}★</span>
           </span>
         </label>
-        <label className="current-starforce-control">Max Star Force for upgrades
+        {!secondCopy && <><label className="current-starforce-control">Max Star Force for upgrades
           <input type="number" min="0" max={maximumStarForce} step="1"
             value={item.maxStarForce ?? maximumStarForce}
             onChange={event => {
@@ -321,6 +322,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
             }} />
           <small>Astra secondaries default to 1 billion mesos. You can override this.</small>
         </label>
+        <EquipmentLaddering item={item} cap={maximumStarForce} onChange={onChange} />
+        </>}
       </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
     </div>
   )

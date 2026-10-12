@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://maplestory-calcs-1.onrender.com',
+       '/api': 'https://maplestory-calcs-1.onrender.com',
+      //'/api':"http://127.0.0.1:8000/",
     },
   },
 })

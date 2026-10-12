@@ -1,7 +1,11 @@
 FRONTEND TEST INVENTORY
-Reviewed: 2026-10-08
-Total: 95 helper/API-client tests in 16 files, plus 3 separate browser harnesses
+Reviewed: 2026-10-11
+Total: 99 helper/API-client tests in 18 files, plus 3 separate browser harnesses
 Harnesses: 1 regression test, 1 live deployment smoke test, 1 rendering benchmark
+
+Laddering coverage includes independent second-copy editing, save/export/import,
+request serialization, missing versus recorded zero stats, and invalid data.
+The browser regression also checks the copy editor, persistence, and API payload.
 
 Run from frontend/:
   npm test

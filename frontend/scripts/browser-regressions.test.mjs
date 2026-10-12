@@ -381,4 +381,36 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
   assert.equal(await execute("return document.querySelector('.strategy-view > form').checkValidity()"), false)
   await execute("document.querySelector('.starforce-form').requestSubmit(); document.querySelector('.strategy-view > form').requestSubmit()")
   assert.equal(await execute("return window.__reviewRequests.filter(r => r.method === 'POST').length"), 0)
+
+  // Edit a saved second copy without changing the equipped item, and send both.
+  // The earlier refresh cleared the upgrade mock installed on the old document.
+  await execute(`const prior = window.fetch; window.fetch = async (path, init) => {
+    if (path !== '/api/equipment-upgrade-plan') return prior(path, init);
+    window.__upgradePayload = JSON.parse(init.body);
+    const ranks = {gain_per_meso_first:[], largest_gain_first:[], unavailable:[]};
+    return {ok:true, json:async()=>({rankings:{starforce:ranks,flames:ranks,potential:ranks},
+      flame_rankings:{black:ranks,abyssal:ranks}, excluded_superior_equipment:[],
+      overall_upgrade_order:{steps:[],unavailable:[],step_limit:20,laddering_enabled:true}})};
+  };`)
+  await navigate('/equipment')
+  await visibleButton('Stats & upgrades')
+  await execute(`const select = document.querySelector('#current-equipment-stats-content .equipment-class-selector select');
+    select.value = 'hat'; select.dispatchEvent(new Event('change', { bubbles: true }));`)
+  await until(() => execute("return !!document.querySelector('.equipment-laddering input[type=checkbox]')"), 'laddering editor')
+  const equippedStars = await execute("return document.querySelector('.equipment-editor-panel input[aria-label=\"Current Star Force\"]').value")
+  await execute("document.querySelector('.equipment-laddering input[type=checkbox]').click()")
+  await visibleButton('Second copy')
+  assert.equal(await execute("return document.querySelector('.equipment-editor-panel input[aria-label=\"Current Star Force\"]').value"), '0')
+  await editField('.equipment-editor-panel input[aria-label="Current Star Force"]', '17')
+  await until(async () => (await readSavedGear()).hat.laddering?.second_copy?.current_star_force === 17, 'second copy saved')
+  await visibleButton('Equipped copy')
+  assert.equal(await execute("return document.querySelector('.equipment-editor-panel input[aria-label=\"Current Star Force\"]').value"), equippedStars)
+  await visibleButton('Calculate upgrade order')
+  await until(() => execute('return window.__upgradePayload.laddering_enabled === true'), 'laddering request')
+  assert.equal(await execute("return window.__upgradePayload.equipment.find(i => i.slot === 'hat').laddering.second_copy.current_star_force"), 17)
+  assert.equal(await execute("return window.__upgradePayload.equipment.find(i => i.slot === 'hat').current_star_force"), Number(equippedStars))
+  await navigate('/')
+  await navigate('/equipment')
+  await visibleButton('Second copy')
+  assert.equal(await execute("return document.querySelector('.equipment-editor-panel input[aria-label=\"Current Star Force\"]').value"), '17')
 })

@@ -1,6 +1,8 @@
 """Projected upgrade order using comparable weighted score gain per meso."""
 from bisect import bisect_left, bisect_right
 from math import fsum
+from copy import deepcopy
+from backend.calc.laddering import ladder_candidate
 
 
 class RollScores:
@@ -81,7 +83,7 @@ def _starforce_candidate(queue):
     return best
 
 
-def overall_upgrade_order(starforce_entries, roll_states, limit=20):
+def overall_upgrade_order(starforce_entries, roll_states, limit=20, laddering_states=None, laddering_notes=None):
     """Re-evaluate after each projected action; actual rolls require recalculation.
 
     The next action maximizes current gain/meso (with Star Force lookahead).
@@ -99,12 +101,36 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20):
             del queues[slot]
     states = [{**state, 'entry': dict(state['entry']), 'scores': RollScores(state['distribution'])}
               for state in roll_states]
+    ladders = deepcopy(laddering_states or {})
+    for ladder in ladders.values():
+        ladder.setdefault('active', ladder['current_star'] >= ladder['start_star'])
+        ladder['current_copy_label'] = 'Original'
+        ladder['spare_copy_label'] = 'Spare'
     rows = []
     cumulative_cost = 0.0
     for _ in range(limit):
         candidates = []
         for slot, queue in queues.items():
-            candidate = _starforce_candidate(queue)
+            ladder = ladders.get(slot)
+            if ladder and ladder['active']:
+                continue
+            eligible = [row for row in queue if not ladder or row['next_star'] <= ladder['start_star']]
+            candidate = _starforce_candidate(eligible) if eligible else None
+            if candidate:
+                candidates.append((candidate['gain_per_meso'], 'starforce', slot, candidate))
+        for slot, ladder in ladders.items():
+            rolls = {state['category']: state for state in states if state['entry']['slot'] == slot}
+            for category, state in rolls.items():
+                ladder['current_scores'][category] = state['entry']['current_score']
+            if not ladder['active']:
+                continue
+            try:
+                candidate = ladder_candidate(ladder, rolls)
+            except ValueError as error:
+                if laddering_notes is not None and not ladder.get('blocked'):
+                    laddering_notes.append({'slot': slot, 'name': ladder['name'], 'category': 'starforce', 'note': str(error)})
+                ladder['blocked'] = True
+                candidate = None
             if candidate:
                 candidates.append((candidate['gain_per_meso'], 'starforce', slot, candidate))
         for index, state in enumerate(states):
@@ -113,14 +139,35 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20):
                 candidates.append((efficiency, state['category'], index, state))
         if not candidates:
             break
-        candidates.sort(key=lambda candidate: -candidate[0])
+        candidates.sort(key=lambda candidate: (
+            0 if candidate[1] == 'starforce' and candidate[3]['action_cost_mesos'] == 0 else 1,
+            -candidate[0]))
         efficiency, category, key, candidate = candidates[0]
         competitor = candidates[1][0] if len(candidates) > 1 else 0
         if category == 'starforce':
             row = dict(candidate)
-            del queues[key][:row.pop('_length')]
-            if not queues[key]:
-                del queues[key]
+            if row.get('laddering'):
+                ladder = ladders[key]
+                row['copy_label'] = ladder['spare_copy_label']
+                row['protected_copy_label'] = ladder['current_copy_label']
+                ladder['current_copy_label'], ladder['spare_copy_label'] = (
+                    ladder['spare_copy_label'], ladder['current_copy_label'])
+                ladder['spare_star'] = ladder['current_star']
+                ladder['spare_scores'] = dict(ladder['current_scores'])
+                ladder['current_star'] = row['next_star']
+                ladder['assumed_copy'] = False
+                ladder['current_scores'] = {'flames': row['expected_flame_score'], 'potential': row['expected_potential_score']}
+                for state in states:
+                    if state['entry']['slot'] == key:
+                        state['entry']['current_score'] = ladder['current_scores'][state['category']]
+                queues.pop(key, None)
+            else:
+                del queues[key][:row.pop('_length')]
+                if key in ladders:
+                    ladders[key]['current_star'] = row['next_star']
+                    ladders[key]['active'] = row['next_star'] >= ladders[key]['start_star']
+                if not queues[key]:
+                    del queues[key]
         else:
             state = candidate
             current = state['entry']['current_score']
@@ -132,6 +179,8 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20):
                 **state['scores'].estimate(current, target, state['cost']),
             }
             state['entry']['current_score'] = row['expected_final_score']
+        if row['slot'] in ladders and not row.get('laddering'):
+            row['copy_label'] = ladders[row['slot']]['current_copy_label']
         cumulative_cost += row['action_cost_mesos']
         rows.append({
             **row, 'step': len(rows) + 1,

@@ -24,6 +24,34 @@ Equipment and settings are stored in your browser. Calculators require no accoun
 or database; bug reports use MongoDB. [Sample equipment builds](examples/equipment/README.md) cover all 47
 supported classes.
 
+### Laddering equipment upgrades
+
+In **Equipment → Stats & upgrades**, enable laddering on each item and choose its
+starting star. The calculator determines minimum flame/potential scores for each
+target star by comparing total weighted scores. Use **Second copy** to
+record that item's spare stars, flame lines, and potential lines. Both copies are
+saved locally and included in equipment JSON exports. An unrecorded second copy
+defaults to 0 stars with zero flame/potential scores; an
+explicitly recorded copy uses its actual stats, including zero values.
+
+Enabling laddering on an item automatically enforces it in **Overall**; there is
+no separate global switch to enable. Calculate and open **Overall**.
+At the selected star, the projection enhances the spare while preserving the
+equipped copy. It includes catch-up Star Force costs and any rolls needed to reach
+the minimum scores, then swaps only when the combined weighted Star Force,
+flame, and potential score improves. The former equipped copy becomes the next
+spare. Better rolls can justify a swap at equal or lower stars.
+
+These are projected upgrades, not edits to saved equipment. Recalculate after
+actual rolls. Copies are assumed owned and potential is assumed Legendary;
+acquisition and tier-up costs are excluded. Required preparation is priced using
+enabled roll categories. The planner chooses the cheapest attainable pair of
+stopping scores that guarantees a total-score improvement for each target star;
+it then compares the resulting upgrades by expected gain per meso. Recorded copies
+and automatic targets are rescored when weights change. Older saved manual minimums
+are ignored. Cooldown-minimum hats are not supported in laddering.
+Individual category tabs continue to show standard upgrade rankings.
+
 ## Quick start
 
 Requires Python 3.10+ and Node.js 20.19+ (20.x) or 22.12+. The commands below use

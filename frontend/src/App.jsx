@@ -16,7 +16,7 @@ export default function App() {
   usePageMetadata(calculator)
 
   return (
-    <main className={calculator === 'equipment' ? 'equipment-page-main' : undefined}>
+    <main>
       <Navigation activePage={calculator} onNavigate={navigate} />
       <PageHeader page={calculator} />
 

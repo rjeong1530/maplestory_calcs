@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CLASS_STATS } from '../data/classStats'
 import { restoreEquipment, serializeEquipment, exportEquipment, importEquipment } from '../data/equipmentSave'
 import { restoreUpgradeSettings, restoreFlameWeights, DEFAULT_FLAME_WEIGHTS, POTENTIAL_WEIGHT_LABELS } from '../data/equipmentUpgrade'
@@ -23,6 +23,8 @@ const SCORE_WEIGHT_FIELDS = Object.keys(DEFAULT_FLAME_WEIGHTS)
 export default function useEquipmentPlanner() {
   const [savedSelection] = useState(readEquipmentSelection)
   const [saveError, setSaveError] = useState('')
+  const [saveConfirmed, setSaveConfirmed] = useState(false)
+  const setupSavePending = useRef(false)
   const savedClass = Object.hasOwn(CLASS_STATS, savedSelection.maple_class) ? savedSelection.maple_class : initialForm.maple_class
   const savedEquipmentClass = Object.hasOwn(CLASS_STATS, savedSelection.equipment_class)
     ? savedSelection.equipment_class : savedClass
@@ -58,6 +60,12 @@ export default function useEquipmentPlanner() {
     // Report the external storage write outcome; it cannot be derived during render.
     // oxlint-disable-next-line react/set-state-in-effect
     setSaveError(saved ? '' : 'Equipment could not be saved in this browser. Export your equipment JSON before closing or refreshing this page.')
+    if (setupSavePending.current) {
+      setupSavePending.current = false
+      // Confirm only after the browser storage write succeeds.
+      // oxlint-disable-next-line react/set-state-in-effect
+      setSaveConfirmed(saved)
+    }
   }, [equipment, equipmentClass, savedClassName, scoreWeightsKey, equipmentWeights, upgradeSettings])
 
   function selectEquipment(slot, item) {
@@ -70,6 +78,7 @@ export default function useEquipmentPlanner() {
           currentFlameType: previous.currentFlameType, currentBossEquipment: previous.currentBossEquipment,
           currentStarForce: previous.currentStarForce ?? 0, starForceModes: previous.starForceModes,
           maxStarForce: previous.maxStarForce,
+          laddering: previous.laddering,
           replacementCostMesos: previous.replacementCostMesos,
           minimumCooldownSeconds: previous.minimumCooldownSeconds,
           starForceSafeguards: previous.starForceSafeguards }
@@ -113,6 +122,8 @@ export default function useEquipmentPlanner() {
 
   function saveEquipmentSetup() {
     if (!setupDraft) return
+    setupSavePending.current = true
+    setSaveConfirmed(false)
     setEquipmentClass(setupDraft.equipmentClass)
     // Keep any stats edited in another tab for unchanged items; imports supply their own stats.
     setEquipment(current => Object.fromEntries(Object.entries(setupDraft.equipment).map(([slot, item]) =>
@@ -126,7 +137,7 @@ export default function useEquipmentPlanner() {
 
   return {
     applyEquipmentStrategy: (slots, strategy) => setEquipment(current => applyStrategyToEquipment(current, slots, strategy)),
-    saveError,
+    saveError, saveConfirmed,
     setupEquipment, setupClass, setupDirty: setupDraft !== null, saveEquipmentSetup,
     discardEquipmentSetup: () => setSetupDraft(null),
     form, setForm, equipmentWeights, setEquipmentWeights, equipment, equipmentClass, activeSlot, setActiveSlot,
