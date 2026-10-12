@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import useCalculationRequest from '../hooks/useCalculationRequest'
@@ -210,7 +211,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
         <section className="panel results starforce-result" aria-live="polite" aria-busy={busy}>
           <span className="eyebrow">STAR FORCE ESTIMATE</span>
           <h2>Expected outcome</h2>
-          {busy ? <p role="status">Calculating expected costs…</p>
+          {busy ? <LoadingStatus>Calculating expected costs…</LoadingStatus>
             : error ? <p className="error" role="alert">{error}</p>
               : !result ? (
                 <div className="empty">
@@ -254,7 +255,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
           portion while the safeguard surcharge remains unchanged. MVP: {MVP_RANKS[form.mvp_rank]}
           {form.superior_item ? ' (excluded for this Superior item)' : ''}. The Mode 4 cost column shows safeguard costs from 15★ to 17★;
           Mode 4 rates are unavailable there.</p>
-        {costsBusy ? <p role="status">Loading tap costs…</p>
+        {costsBusy ? <LoadingStatus>Loading tap costs…</LoadingStatus>
           : costsError ? <p className="error" role="alert">{costsError}</p>
             : costRows && (
               <div className="starforce-table-wrap">
@@ -299,7 +300,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
           MVP rank changes costs, not success or boom chances. Compare modes without safeguard. Mode 4 is unavailable from 15★ to 17★.
           Rates outside 15★–21★ are identical across modes. Fail excludes booms;
           failures lose one star from 10★–14★ and 22★ onward, and otherwise keep the current star.</p>
-        {costsBusy ? <p role="status">Loading rates…</p>
+        {costsBusy ? <LoadingStatus>Loading rates…</LoadingStatus>
           : costsError ? <p className="error" role="alert">{costsError}</p>
             : costRows && <>
               <div className="starforce-table-wrap" tabIndex="0" role="region" aria-label="Star Force rates by mode">

@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { frontierPoints, nameCustomStrategies, strategySteps, percentDifference } from '../data/starforceStrategies'
@@ -134,7 +135,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
       <button className="primary" disabled={busy}>{busy ? 'Comparing…' : 'Compare strategies'}</button>
     </form>
     <div aria-live="polite">
-      {busy && <p role="status">Searching per-star mode and safeguard combinations…</p>}
+      {busy && <LoadingStatus>Searching per-star mode and safeguard combinations…</LoadingStatus>}
       {current?.error && <p className="error" role="alert">{current.error}</p>}
       {request && !current && <p>Inputs changed. Compare again to refresh the comparison.</p>}
     </div>
@@ -156,7 +157,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
           <p className="hint">Add multiple strategies to compare them together. Changing these choices keeps your plotted strategies.</p>
           <button className="primary" disabled={customCurrent?.loading}>{customCurrent?.loading ? 'Calculating...' : 'Add strategy to comparison'}</button>
           <div aria-live="polite">
-            {customCurrent?.loading && <p role="status">Calculating your strategy&hellip;</p>}
+            {customCurrent?.loading && <LoadingStatus>Calculating your strategy&hellip;</LoadingStatus>}
             {customCurrent?.error && <p className="error" role="alert">{customCurrent.error}</p>}
           </div>
         </form>

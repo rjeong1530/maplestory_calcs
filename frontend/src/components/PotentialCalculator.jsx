@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import CalculatorForm from './CalculatorForm'
@@ -52,7 +53,7 @@ export default function PotentialCalculator() {
           </button>
         </div>
       ) : !options ? (
-        <p role="status">Loading calculator options…</p>
+        <LoadingStatus>Loading calculator options…</LoadingStatus>
       ) : (
         <>
           <div className="calculator-grid">

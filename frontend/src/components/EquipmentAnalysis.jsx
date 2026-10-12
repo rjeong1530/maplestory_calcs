@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { POTENTIAL_LABELS, FLAME_LABELS } from '../data/equipmentLines'
@@ -132,7 +133,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
             </p>}
           </>}
           {optionsError ? <p className="error" role="alert">{optionsError}</p>
-            : !availableOptions ? <p className="hint" role="status">Loading potential options…</p>
+            : !availableOptions ? <LoadingStatus>Loading potential options…</LoadingStatus>
               : !availableOptions.potential.available ? (
                 <p className="hint">No potential chart is available for this equipment and level.</p>
               ) : (
@@ -172,8 +173,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                   })}
                 </div>
               )}
-          {canStarForce && !secondCopy && <>
-          <h4>Star Force enhancement modes</h4>
+          {canStarForce && !secondCopy && <details className="equipment-mode-details">
+          <summary>Star Force modes & safeguards</summary>
           <button type="button" className="equipment-approach-link" onClick={onOpenApproaches}>
             Compare Star Force approaches
             <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18" fill="none">
@@ -212,14 +213,51 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
               ))}</tbody>
             </table>
           </div>
-          </>}
+          </details>}
         </section>
 
-        <section>
+      {canStarForce ? <section className="current-starforce-section" aria-label="Current Star Force">
+        <div>
+          <h4>Current Star Force</h4>
+          <p className="hint">Maximum for level {item.config.equipment_level}: {maximumStarForce}★</p>
+        </div>
+        <label className="current-starforce-control">Current stars
+          <span className="current-starforce-input">
+            <input type="number" min="0" max={maximumStarForce} step="1"
+              aria-label="Current Star Force"
+              value={currentStarForce} onChange={event => updateStarForce(event.target.value)} />
+            <span>/ {maximumStarForce}★</span>
+          </span>
+        </label>
+        {!secondCopy && <><label className="current-starforce-control">Max Star Force for upgrades
+          <input type="number" min="0" max={maximumStarForce} step="1"
+            value={item.maxStarForce ?? maximumStarForce}
+            onChange={event => {
+              const value = Number(event.target.value)
+              if (event.target.value !== '' && Number.isInteger(value)) {
+                onChange({ maxStarForce: Math.min(maximumStarForce, Math.max(0, value)) })
+              }
+            }} />
+          <small>Upgrade recommendations stop here.</small>
+        </label>
+        <label className="current-starforce-control">Replacement cost per boom (mesos)
+          <input type="number" min="0" step="any"
+            value={replacementCostForEquipment(item, slot)}
+            onChange={event => {
+              const value = Number(event.target.value)
+              if (Number.isFinite(value) && value >= 0) onChange({ replacementCostMesos: value })
+            }} />
+          <small>Astra secondaries default to 1 billion mesos. You can override this.</small>
+        </label>
+        <EquipmentLaddering item={item} cap={maximumStarForce} onChange={onChange} />
+        </>}
+      </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
+
+        <section className="current-flames-section">
           <h4>Current flames</h4>
           {!supportsFlames ? <p className="hint">Flames are not supported for this slot.</p>
             : optionsError ? <p className="error" role="alert">{optionsError}</p>
-              : !availableOptions ? <p className="hint" role="status">Loading flame options…</p>
+              : !availableOptions ? <LoadingStatus>Loading flame options…</LoadingStatus>
                 : (
                   <>
                     {item.needsFlameType && !secondCopy && <label className="flame-checkbox">
@@ -233,7 +271,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                       ))}
                     </div>
                     <p className="hint">Select up to four cells to record this item's current flame lines.</p>
-                    <div className="flame-values-scroll">
+                    <div className="flame-values-wrap">
                       <table className="flame-values-table">
                         <thead>
                           <tr>
@@ -289,42 +327,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                 )}
         </section>
       </div>
-      {canStarForce ? <section className="current-starforce-section" aria-label="Current Star Force">
-        <div>
-          <h4>Current Star Force</h4>
-          <p className="hint">Maximum for level {item.config.equipment_level}: {maximumStarForce}★</p>
-        </div>
-        <label className="current-starforce-control">Current stars
-          <span className="current-starforce-input">
-            <input type="number" min="0" max={maximumStarForce} step="1"
-              aria-label="Current Star Force"
-              value={currentStarForce} onChange={event => updateStarForce(event.target.value)} />
-            <span>/ {maximumStarForce}★</span>
-          </span>
-        </label>
-        {!secondCopy && <><label className="current-starforce-control">Max Star Force for upgrades
-          <input type="number" min="0" max={maximumStarForce} step="1"
-            value={item.maxStarForce ?? maximumStarForce}
-            onChange={event => {
-              const value = Number(event.target.value)
-              if (event.target.value !== '' && Number.isInteger(value)) {
-                onChange({ maxStarForce: Math.min(maximumStarForce, Math.max(0, value)) })
-              }
-            }} />
-          <small>Upgrade recommendations stop here.</small>
-        </label>
-        <label className="current-starforce-control">Replacement cost per boom (mesos)
-          <input type="number" min="0" step="any"
-            value={replacementCostForEquipment(item, slot)}
-            onChange={event => {
-              const value = Number(event.target.value)
-              if (Number.isFinite(value) && value >= 0) onChange({ replacementCostMesos: value })
-            }} />
-          <small>Astra secondaries default to 1 billion mesos. You can override this.</small>
-        </label>
-        <EquipmentLaddering item={item} cap={maximumStarForce} onChange={onChange} />
-        </>}
-      </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
+
     </div>
   )
 }

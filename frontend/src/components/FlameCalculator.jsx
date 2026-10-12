@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { CLASS_WEAPONS, WEAPON_KINDS, WEAPON_SERIES, getWeaponConfig } from '../data/flameWeapons'
 import { CLASS_STATS } from '../data/classStats'
 import RollBudget from './RollBudget'
@@ -189,7 +190,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
       <section className="panel results" aria-live="polite" aria-busy={busy}>
         <span className="eyebrow">YOUR ODDS</span>
         <h2>Flame odds</h2>
-        {busy ? <p role="status">Calculating your flame score…</p>
+        {busy ? <LoadingStatus>Calculating your flame score…</LoadingStatus>
           : error ? <p className="error" role="alert">{error}</p>
           : !result ? (
             <div className="empty">

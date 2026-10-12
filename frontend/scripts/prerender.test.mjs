@@ -19,10 +19,13 @@ test('built public pages expose unique metadata, guides and navigation without J
     for (const path of Object.values(PAGE_PATHS)) assert.ok(html.includes(`href="${path}"`))
     assert.match(html, /<script type="module"[^>]+src="\/assets\//)
     assert.doesNotMatch(html, /noindex/)
+    if (page !== 'home') {
+      assert.equal(await readFile(new URL(`../dist${PAGE_PATHS[page]}.html`, import.meta.url), 'utf8'), html)
+    }
   }
   assert.equal(titles.size, Object.keys(PAGE_CONTENT).length)
   const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8')
-  for (const page of Object.keys(PAGE_CONTENT).filter(page => page !== 'bugs')) {
+  for (const page of Object.keys(PAGE_CONTENT)) {
     assert.ok(sitemap.includes(`<loc>${SITE_URL}${PAGE_PATHS[page]}</loc>`))
   }
 })

@@ -9,7 +9,8 @@ Run the commands below from `frontend/`.
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start Vite with the `/api` development proxy. |
-| `npm run build` | Build production assets in `dist/`. |
+| `npm run build` | Build production assets and prerender public pages in `dist/`. |
+| `npm run test:prerender` | Build and validate static page content, metadata, links, and sitemap. |
 | `npm run preview` | Serve the production build locally; no development API proxy. |
 | `npm run lint` | Run Oxlint. |
 | `npm test` | Run Node data-helper and API-client tests. |
@@ -28,6 +29,36 @@ For benchmarks that should use same-origin API URLs, build with
 `VITE_API_BASE_URL` set to an empty string.
 
 ## Routing and requests
+
+Production builds generate one HTML document per public route, including the bug
+report page. Titles, descriptions, canonical URLs, headings, examples, and source
+links come from `src/data/pageContent.js`. The static and interactive pages share
+`PublicPageContent.js`, so their guides remain consistent. Calculator controls
+and saved user equipment still load in the browser; this is prerendered public
+content, not server rendering of personalized calculations. No extra service or
+build-time API calls are required.
+
+`scripts/prerender.mjs` generates the production sitemap from the route list.
+`public/sitemap.xml` provides the same URLs in development. Deploy using
+`npm run build` and publish `dist/`. Builds include both directory index files
+and `.html` aliases for static hosts. Render serves existing static resources
+before fallback rewrite rules. To ensure clean URLs serve their own HTML, place
+these **Rewrite** rules above the existing `/*` → `/index.html` fallback:
+
+| Source | Destination |
+| --- | --- |
+| `/calculators/:tool` | `/calculators/:tool/index.html` |
+| `/equipment` | `/equipment/index.html` |
+| `/bug-report` | `/bug-report/index.html` |
+
+After deployment, inspect the raw HTML at each calculator URL to confirm its
+unique heading and canonical URL, then resubmit `sitemap.xml` in Search Console.
+See [Render routing](https://render.com/docs/redirects-rewrites) and
+[Google JavaScript SEO guidance](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics).
+
+Metadata also updates on in-app navigation and browser history changes. Unknown
+client routes receive `noindex`. Calculator loading messages explain that the
+free backend may need to wake after inactivity; they do not promise a fixed wait.
 
 [Routes](src/data/routes.js) map `/` to the landing page, `/calculators/potential`,
 `/calculators/flames`, and `/calculators/starforce` to calculators, and `/equipment`

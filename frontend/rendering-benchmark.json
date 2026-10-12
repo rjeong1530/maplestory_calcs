@@ -6,191 +6,191 @@
   "results": [
     {
       "name": "home",
-      "medianReadyMs": 50,
-      "medianDomNodes": 66,
-      "medianScriptBytes": 230785,
+      "medianReadyMs": 38,
+      "medianDomNodes": 90,
+      "medianScriptBytes": 240208,
       "runs": [
         {
           "apiRequests": [],
-          "domNodes": 66,
-          "readyMs": 51,
-          "scriptsBytes": 230785
+          "domNodes": 90,
+          "readyMs": 48,
+          "scriptsBytes": 240208
         },
         {
           "apiRequests": [],
-          "domNodes": 66,
-          "readyMs": 52,
-          "scriptsBytes": 230785
+          "domNodes": 90,
+          "readyMs": 38,
+          "scriptsBytes": 240208
         },
         {
           "apiRequests": [],
-          "domNodes": 66,
-          "readyMs": 50,
-          "scriptsBytes": 230785
+          "domNodes": 90,
+          "readyMs": 38,
+          "scriptsBytes": 240208
         },
         {
           "apiRequests": [],
-          "domNodes": 66,
-          "readyMs": 47,
-          "scriptsBytes": 230785
+          "domNodes": 90,
+          "readyMs": 35,
+          "scriptsBytes": 240208
         },
         {
           "apiRequests": [],
-          "domNodes": 66,
-          "readyMs": 45,
-          "scriptsBytes": 230785
+          "domNodes": 90,
+          "readyMs": 36,
+          "scriptsBytes": 240208
         }
       ]
     },
     {
       "name": "equipment setup",
-      "medianReadyMs": 61,
-      "medianDomNodes": 208,
-      "medianScriptBytes": 431065,
+      "medianReadyMs": 55,
+      "medianDomNodes": 238,
+      "medianScriptBytes": 439976,
       "runs": [
         {
           "apiRequests": [],
-          "domNodes": 208,
-          "readyMs": 65,
-          "scriptsBytes": 431065
+          "domNodes": 238,
+          "readyMs": 55,
+          "scriptsBytes": 439976
         },
         {
           "apiRequests": [],
-          "domNodes": 209,
-          "readyMs": 58,
-          "scriptsBytes": 431065
+          "domNodes": 239,
+          "readyMs": 55,
+          "scriptsBytes": 439976
         },
         {
           "apiRequests": [],
-          "domNodes": 208,
-          "readyMs": 61,
-          "scriptsBytes": 431065
+          "domNodes": 238,
+          "readyMs": 109,
+          "scriptsBytes": 439976
         },
         {
           "apiRequests": [],
-          "domNodes": 209,
-          "readyMs": 59,
-          "scriptsBytes": 431065
+          "domNodes": 238,
+          "readyMs": 72,
+          "scriptsBytes": 439976
         },
         {
           "apiRequests": [],
-          "domNodes": 208,
-          "readyMs": 62,
-          "scriptsBytes": 431065
+          "domNodes": 239,
+          "readyMs": 41,
+          "scriptsBytes": 439976
         }
       ]
     },
     {
       "name": "equipment stats",
-      "medianReadyMs": 71,
-      "medianDomNodes": 301,
-      "medianScriptBytes": 431065,
+      "medianReadyMs": 50,
+      "medianDomNodes": 333,
+      "medianScriptBytes": 439976,
       "runs": [
         {
           "apiRequests": [],
-          "domNodes": 301,
-          "readyMs": 142,
-          "scriptsBytes": 431065
-        },
-        {
-          "apiRequests": [],
-          "domNodes": 301,
-          "readyMs": 101,
-          "scriptsBytes": 431065
-        },
-        {
-          "apiRequests": [],
-          "domNodes": 301,
-          "readyMs": 67,
-          "scriptsBytes": 431065
-        },
-        {
-          "apiRequests": [],
-          "domNodes": 301,
-          "readyMs": 71,
-          "scriptsBytes": 431065
-        },
-        {
-          "apiRequests": [],
-          "domNodes": 301,
+          "domNodes": 333,
           "readyMs": 60,
-          "scriptsBytes": 431065
+          "scriptsBytes": 439976
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 333,
+          "readyMs": 45,
+          "scriptsBytes": 439976
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 333,
+          "readyMs": 50,
+          "scriptsBytes": 439976
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 333,
+          "readyMs": 47,
+          "scriptsBytes": 439976
+        },
+        {
+          "apiRequests": [],
+          "domNodes": 333,
+          "readyMs": 53,
+          "scriptsBytes": 439976
         }
       ]
     },
     {
       "name": "starforce",
-      "medianReadyMs": 57,
-      "medianDomNodes": 200,
-      "medianScriptBytes": 415004,
+      "medianReadyMs": 47,
+      "medianDomNodes": 231,
+      "medianScriptBytes": 424127,
       "runs": [
         {
           "apiRequests": [],
-          "domNodes": 200,
-          "readyMs": 93,
-          "scriptsBytes": 415004
+          "domNodes": 231,
+          "readyMs": 47,
+          "scriptsBytes": 424127
         },
         {
           "apiRequests": [],
-          "domNodes": 200,
-          "readyMs": 57,
-          "scriptsBytes": 415004
+          "domNodes": 231,
+          "readyMs": 41,
+          "scriptsBytes": 424127
         },
         {
           "apiRequests": [],
-          "domNodes": 200,
-          "readyMs": 50,
-          "scriptsBytes": 415004
+          "domNodes": 231,
+          "readyMs": 48,
+          "scriptsBytes": 424127
         },
         {
           "apiRequests": [],
-          "domNodes": 200,
-          "readyMs": 72,
-          "scriptsBytes": 415004
+          "domNodes": 231,
+          "readyMs": 43,
+          "scriptsBytes": 424127
         },
         {
           "apiRequests": [],
-          "domNodes": 200,
-          "readyMs": 55,
-          "scriptsBytes": 415004
+          "domNodes": 231,
+          "readyMs": 51,
+          "scriptsBytes": 424127
         }
       ]
     },
     {
       "name": "flames",
-      "medianReadyMs": 55,
-      "medianDomNodes": 132,
-      "medianScriptBytes": 392320,
+      "medianReadyMs": 43,
+      "medianDomNodes": 159,
+      "medianScriptBytes": 401507,
       "runs": [
         {
           "apiRequests": [],
-          "domNodes": 132,
-          "readyMs": 71,
-          "scriptsBytes": 392320
+          "domNodes": 159,
+          "readyMs": 40,
+          "scriptsBytes": 401507
         },
         {
           "apiRequests": [],
-          "domNodes": 132,
-          "readyMs": 55,
-          "scriptsBytes": 392320
+          "domNodes": 159,
+          "readyMs": 44,
+          "scriptsBytes": 401507
         },
         {
           "apiRequests": [],
-          "domNodes": 132,
-          "readyMs": 62,
-          "scriptsBytes": 392320
+          "domNodes": 159,
+          "readyMs": 42,
+          "scriptsBytes": 401507
         },
         {
           "apiRequests": [],
-          "domNodes": 132,
-          "readyMs": 54,
-          "scriptsBytes": 392320
+          "domNodes": 159,
+          "readyMs": 46,
+          "scriptsBytes": 401507
         },
         {
           "apiRequests": [],
-          "domNodes": 132,
-          "readyMs": 54,
-          "scriptsBytes": 392320
+          "domNodes": 159,
+          "readyMs": 43,
+          "scriptsBytes": 401507
         }
       ]
     }

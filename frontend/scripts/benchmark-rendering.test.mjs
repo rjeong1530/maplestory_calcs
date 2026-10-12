@@ -6,6 +6,8 @@ import { spawn } from 'node:child_process'
 import { createServer } from 'node:net'
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
+import { PAGE_CONTENT, SITE_URL } from '../src/data/pageContent.js'
+import { PAGE_PATHS, pageForPath } from '../src/data/routes.js'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -64,6 +66,13 @@ test('production frontend performance', { timeout: 180000 }, async t => {
   const execute = (script, ...args) => command(`/session/${session}/execute/sync`, { script, args })
   const sample = JSON.parse(await readFile(new URL('../../examples/equipment/hero.json', import.meta.url), 'utf8'))
   const results = []
+  for (const [page, path] of Object.entries(PAGE_PATHS)) {
+    const response = await fetch(`http://127.0.0.1:${webPort}${path}`)
+    assert.equal(response.status, 200)
+    const html = await response.text()
+    assert.ok(html.includes(`<h1>${PAGE_CONTENT[page].heading}</h1>`), `Static heading for ${path}`)
+    assert.ok(html.includes(`href="${SITE_URL}${path}"`), `Static canonical for ${path}`)
+  }
   for (const [name, path, selector, equipped] of [
     ['home', '/', '.landing-tools', false],
     ['equipment setup', '/equipment', '.equipment-setup', false],
@@ -94,6 +103,7 @@ test('production frontend performance', { timeout: 180000 }, async t => {
           } check();`, args: [selector],
       })
       assert.ok(!result.error, result.error)
+      assert.equal(await execute('return document.title'), PAGE_CONTENT[pageForPath(path)].title)
       runs.push(result)
     }
     const median = key => runs.map(r => r[key]).sort((a,b) => a-b)[2]

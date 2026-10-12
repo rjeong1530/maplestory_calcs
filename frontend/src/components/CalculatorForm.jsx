@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { buildPotentialTargets } from '../data/potentialTargets'
@@ -97,7 +98,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
           All Stat adds its percentage to STR, DEX, INT, and LUK targets, including your main and secondary stats.
           These are combined stat totals; matching rolls do not need a specific All Stat line.
         </p>}
-        {loadingOptions ? <p role="status">Loading obtainable potential lines…</p>
+        {loadingOptions ? <LoadingStatus>Loading obtainable potential lines…</LoadingStatus>
           : currentOptions.error ? <div role="alert">
             <p className="error">{currentOptions.error}</p>
             <button type="button" onClick={() => {

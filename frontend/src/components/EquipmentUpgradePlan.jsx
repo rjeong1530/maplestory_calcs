@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
@@ -138,7 +139,7 @@ export default function EquipmentUpgradePlan({
       {!settings.categories.length && <p className="hint">Select at least one upgrade order.</p>}
       {!payload.equipment.length && <p className="hint">Equip an item above to compare upgrades.</p>}
       <div aria-live="polite">
-        {busy && <p role="status">Calculating expected gains for {payload.equipment.length} items…</p>}
+        {busy && <LoadingStatus>Calculating expected gains for {payload.equipment.length} items…</LoadingStatus>}
         {request && !current && <p className="hint">Inputs changed. Calculate again to refresh the rankings.</p>}
       </div>
       {current?.error && <p className="error" role="alert">{current.error}</p>}

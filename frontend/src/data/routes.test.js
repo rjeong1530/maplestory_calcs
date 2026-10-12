@@ -7,6 +7,8 @@ test('root and calculator/equipment URLs resolve to their pages', () => {
   for (const [page, path] of Object.entries(PAGE_PATHS)) {
     assert.equal(pageForPath(path), page)
     assert.equal(pageForPath(`${path}/`), page)
+    assert.equal(pageForPath(path === '/' ? '/index.html' : `${path}/index.html`), page)
+    if (path !== '/') assert.equal(pageForPath(`${path}.html`), page)
   }
   assert.equal(pageForPath('/unknown'), null)
   assert.equal(pageForPath('/calculators/flames/unknown'), null)

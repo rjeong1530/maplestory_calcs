@@ -1,5 +1,6 @@
 import { Suspense, useState } from 'react'
 import PageErrorBoundary from './PageErrorBoundary'
+import LoadingStatus from './LoadingStatus'
 
 // Load on first visit, then retain form state across navigation.
 export default function DeferredPage({ active, children }) {
@@ -10,7 +11,7 @@ export default function DeferredPage({ active, children }) {
 
   return <div hidden={!active}>
     <PageErrorBoundary>
-      <Suspense fallback={<p role="status">Loading calculator tools…</p>}>
+      <Suspense fallback={<LoadingStatus />}>
         {children}
       </Suspense>
     </PageErrorBoundary>

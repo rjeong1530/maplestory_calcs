@@ -8,7 +8,7 @@ export const PAGE_PATHS = {
 }
 
 export function pageForPath(pathname) {
-  const path = pathname.replace(/\/+$/, '') || '/'
+  const path = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '').replace(/\/+$/, '') || '/'
   return Object.keys(PAGE_PATHS).find(page => PAGE_PATHS[page] === path) ?? null
 }
 

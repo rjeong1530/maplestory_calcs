@@ -35,10 +35,12 @@ for (const page of Object.keys(PAGE_CONTENT)) {
   const path = join(output, PAGE_PATHS[page].slice(1), 'index.html')
   await mkdir(dirname(path), { recursive: true })
   await writeFile(path, html)
+  // Vite preview resolves extensionless URLs via .html; directory hosts use index.html.
+  if (page !== 'home') await writeFile(join(output, `${PAGE_PATHS[page].slice(1)}.html`), html)
 }
 
 // Use the same route list for discovery and generated pages.
-const urls = Object.keys(PAGE_CONTENT).filter(page => page !== 'bugs')
+const urls = Object.keys(PAGE_CONTENT)
   .map(page => `  <url><loc>${SITE_URL}${PAGE_PATHS[page]}</loc></url>`).join('\n')
 await writeFile(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`)
 console.log(`Prerendered ${Object.keys(PAGE_CONTENT).length} public pages.`)

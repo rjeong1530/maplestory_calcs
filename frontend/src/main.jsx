@@ -6,6 +6,7 @@ import PageErrorBoundary from './components/PageErrorBoundary'
 import { preloadPage } from './preloadPage'
 import { pageForPath } from './data/routes'
 import { apiRequest } from './api'
+import LoadingStatus from './components/LoadingStatus'
 
 // Start waking the backend on arrival without delaying rendering or showing errors.
 // Run outside React so StrictMode and component remounts do not repeat the request.
@@ -19,7 +20,7 @@ if (!initialPage || initialPage === 'home') {
 } else {
   // Keep the build-time guide visible until the interactive route is ready.
   if (!document.getElementById('root').hasChildNodes()) {
-    root.render(<p role="status">Loading calculator tools…</p>)
+    root.render(<LoadingStatus />)
   }
   // On failure, retry through the ordinary lazy loading path.
   preloadPage(initialPage).catch(() => {}).then(renderApp)

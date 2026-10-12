@@ -6,19 +6,101 @@ main {
 .page-header {
   margin-bottom: 36px;
 }
-.page-guide {
-  margin-top: 36px;
+.panel.page-guide {
+  margin-top: 40px;
+  padding: clamp(20px, 4vw, 36px);
+  background: linear-gradient(135deg, #1b2934, #171f2e 55%);
 }
 .page-guide h2 {
-  font-size: 20px;
+  margin: 0 0 12px;
+  color: #e3eaf4;
+  font-size: 18px;
+  line-height: 1.4;
 }
 .page-guide p {
-  line-height: 1.7;
+  margin: 0;
+  color: #b4c0d2;
+  font-size: 14px;
+  line-height: 1.8;
 }
-.page-guide nav {
+.page-guide-heading {
+  margin-bottom: 28px;
+}
+.page-guide-heading h2 {
+  margin-top: 10px;
+  font-size: clamp(22px, 3vw, 28px);
+}
+.page-guide-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 36px;
+}
+.page-guide-section {
+  border-top: 1px solid #39465b;
+  padding-top: 20px;
+  min-width: 0;
+}
+.page-guide-sources {
+  margin-top: 32px;
+  padding: 22px;
+  border: 1px solid #344b4d;
+  border-left: 3px solid #99deb0;
+  border-radius: 8px;
+  background: #101b26;
+}
+.page-guide-source-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 20px;
+  gap: 10px 24px;
+  margin-top: 16px;
+}
+.page-guide a {
+  color: #99deb0;
+  font-size: 13px;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.page-guide a:hover {
+  color: #d0f6dc;
+}
+.page-guide a:focus-visible {
+  outline: 2px solid #99deb0;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.page-guide-footer {
+  margin-top: 28px;
+}
+.page-guide-related {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.page-guide-related a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  min-height: 44px;
+  border: 1px solid #39465b;
+  border-radius: 8px;
+  text-decoration: none;
+  background: #101724;
+}
+.page-guide-related a:hover {
+  border-color: #99deb0;
+  background: #20332f;
+}
+@media (max-width: 640px) {
+  .page-guide-sections,
+  .page-guide-related {
+    grid-template-columns: 1fr;
+  }
+  .page-guide-sources {
+    padding: 18px;
+  }
 }
 .page-title {
   display: flex;
@@ -31,8 +113,8 @@ main {
   margin: 0;
 }
 .page-logo {
-  width: clamp(48px, 8vw, 72px);
-  height: auto;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
 }
 .eyebrow {

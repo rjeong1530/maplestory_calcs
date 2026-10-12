@@ -1,3 +1,4 @@
+import LoadingStatus from './LoadingStatus'
 import { cubeCost } from '../data/cubeCosts'
 import RollBudget from './RollBudget'
 import { count, percentage } from '../data/numberFormat'
@@ -7,7 +8,7 @@ export default function Results({ result, busy, error }) {
     <section className="panel results" aria-live="polite" aria-busy={busy}>
       <span className="eyebrow">YOUR ODDS</span>
       <h2>Roll outcome</h2>
-      {busy ? <p role="status">Calculating your potential combination…</p>
+      {busy ? <LoadingStatus>Calculating your potential combination…</LoadingStatus>
         : error ? <p className="error" role="alert">{error}</p>
         : !result ? (
           <div className="empty">

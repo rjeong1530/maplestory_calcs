@@ -8,6 +8,8 @@ import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { equipmentChoices } from '../src/data/flameEquipment.js'
 import { serializeEquipment } from '../src/data/equipmentSave.js'
+import { PAGE_CONTENT, SITE_URL } from '../src/data/pageContent.js'
+import { PAGE_PATHS } from '../src/data/routes.js'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -120,6 +122,9 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
     Storage.prototype.setItem = function(...args) { window.__writes++; return set.apply(this,args); };
   `, report)
   await visibleButton('Stats & upgrades')
+  await until(() => execute("return !!document.querySelector('.equipment-mode-details summary')"), 'collapsed enhancement settings')
+  assert.equal(await execute("return document.querySelector('.equipment-mode-details').open"), false)
+  await execute("document.querySelector('.equipment-mode-details summary').click()")
   await until(() => visibleButton('Compare Star Force approaches'), 'approaches shortcut')
   await until(() => execute("return document.querySelector('.strategy-view')?.getClientRects().length > 0"), 'direct approaches navigation')
   await visibleButton('Custom estimate')
@@ -413,4 +418,13 @@ test('navigation, stale responses, persistence, sorting, and selected equipment 
   await navigate('/equipment')
   await visibleButton('Second copy')
   assert.equal(await execute("return document.querySelector('.equipment-editor-panel input[aria-label=\"Current Star Force\"]').value"), '17')
+  for (const [page, path] of Object.entries(PAGE_PATHS)) {
+    await navigate(path)
+    await until(() => execute('return document.title === arguments[0]', PAGE_CONTENT[page].title), 'route metadata updated')
+    assert.equal(await execute('return document.querySelector("link[rel=canonical]").href'), SITE_URL + path)
+    assert.equal(await execute('return document.querySelector("meta[name=description]").content'), PAGE_CONTENT[page].description)
+    assert.equal(await execute('return document.querySelector(".page-header h1").textContent'), PAGE_CONTENT[page].heading)
+  }
+  await command(`/session/${session}/back`, {})
+  await until(() => execute('return document.title === arguments[0]', PAGE_CONTENT.equipment.title), 'back restores metadata')
 })

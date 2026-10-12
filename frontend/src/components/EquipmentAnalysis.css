@@ -1,6 +1,32 @@
 .equipment-analysis {
   border-top: 1px solid #39465b;
-  padding: 14px 0;
+  padding: 12px 0;
+  container-type: inline-size;
+}
+.equipment-mode-details {
+  margin-top: 16px;
+  border: 1px solid #39465b;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.equipment-mode-details > summary {
+  cursor: pointer;
+  color: #bcc8da;
+  font-size: 13px;
+  font-weight: 600;
+}
+.equipment-mode-details[open] > summary {
+  margin-bottom: 12px;
+}
+.equipment-mode-details > summary:focus-visible {
+  outline: 2px solid #99deb0;
+  outline-offset: 4px;
+}
+@container (min-width: 640px) {
+  .equipment-analysis .equipment-analysis-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
 }
 .equipment-laddering {
   flex-basis: 100%;
@@ -57,15 +83,21 @@
 .equipment-analysis-sections > section {
   min-width: 0;
 }
+.current-flames-section {
+  grid-column: 1 / -1;
+  border-top: 1px solid #39465b;
+  padding-top: 16px;
+}
 .current-starforce-section {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
   gap: 12px 20px;
-  border-top: 1px solid #39465b;
-  margin-top: 14px;
-  padding-top: 14px;
+  align-content: start;
+}
+.current-starforce-section > div:first-child {
+  flex-basis: 100%;
 }
 .current-starforce-section h4 {
   margin: 0 0 5px;
@@ -145,7 +177,7 @@
   font-size: 14px;
 }
 .equipment-analysis label {
-  margin: 10px 0;
+  margin: 6px 0;
 }
 .current-stat-row {
   display: grid;
@@ -167,29 +199,32 @@
   color: #bcc8da;
   font-size: 10px;
 }
-.flame-values-scroll {
+.flame-values-wrap {
   max-width: 100%;
-  overflow-x: auto;
 }
 .flame-values-table {
-  min-width: 540px;
+  width: 100%;
+  table-layout: fixed;
   margin: 12px 0 0;
   font-size: 11px;
 }
 .flame-values-table th,
 .flame-values-table td {
-  padding: 5px 7px;
-  white-space: nowrap;
+  padding: 5px 2px;
+  white-space: normal;
+  overflow-wrap: anywhere;
   text-align: center;
 }
 .flame-values-table th:first-child {
-  min-width: 118px;
+  width: 24%;
   text-align: left;
 }
 .flame-value-cell {
   width: 100%;
-  min-width: 42px;
-  padding: 5px 4px;
+  min-width: 0;
+  padding: 7px 2px;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border-color: transparent;
   background: transparent;
   font-size: 11px;

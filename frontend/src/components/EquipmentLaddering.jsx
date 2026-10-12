@@ -10,7 +10,7 @@ export default function EquipmentLaddering({ item, cap, onChange }) {
       <span>Configure laddering for this item</span>
     </label>
     {settings && <>
-      <p className="hint">In Overall laddering mode, keep the equipped copy safe once it reaches the starting star below. Enhance a second copy of the same item, then swap when its combined score improves. Edit the second copy using the copy selector above.</p>
+      <p className="hint">Protect the equipped copy from the starting star below. Record spare stats using the copy selector above.</p>
       <div className="upgrade-weights">
         <label>Start laddering at equipped stars
           <input type="number" min="0" max={cap} step="1"
@@ -22,7 +22,10 @@ export default function EquipmentLaddering({ item, cap, onChange }) {
             }} />
         </label>
       </div>
-      <p className="hint">The calculator determines the minimum flame and potential scores needed to improve your total score at each target star, including preparation costs for enabled roll categories. Record the second copy's actual stats; missing stats count as zero. Both copies are assumed owned and potential is Legendary; acquisition and tier-up costs are excluded.</p>
+      <details className="upgrade-notes">
+        <summary>How spare scores and costs are calculated</summary>
+        <p className="hint">The calculator determines the minimum flame and potential scores needed to improve your total score at each target star, including preparation costs for enabled roll categories. Record the second copy's actual stats; missing stats count as zero. Both copies are assumed owned and potential is Legendary; acquisition and tier-up costs are excluded.</p>
+      </details>
     </>}
   </section>
 }
