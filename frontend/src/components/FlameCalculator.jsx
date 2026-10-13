@@ -194,18 +194,18 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           : error ? <p className="error" role="alert">{error}</p>
           : !result ? (
             <div className="empty">
-              <span className="empty-icon" aria-hidden="true">◇</span>
+              <span className="text-[56px] text-[#a0967c]" aria-hidden="true">◇</span>
               <h3>What are you flaming for?</h3>
               <p>Choose your flame setup and target score, then calculate to see your probability.</p>
             </div>
           ) : (
           <>
             <div className="probability">{percentage(result.percentage)}<span>%</span></div>
-            <p className="odds">{result.probability === 0 ? 'This flame score cannot occur.'
+            <p className="text-[#d0cec3] text-[14px] mt-2.25">{result.probability === 0 ? 'This flame score cannot occur.'
               : result.probability === 1 ? 'Guaranteed on every roll.'
                 : `Approximately 1 in ${count(result.one_in)} rolls`}</p>
             {result.probability === 0 && <p className="hint">Try lowering your target score or changing the equipment.</p>}
-            <p className="hint result-note">The chance per roll of reaching at least your target flame score.</p>
+            <p className="hint mt-5.5 mb-0">The chance per roll of reaching at least your target flame score.</p>
             <RollBudget probability={result.probability} defaultCost={1} itemLabel="Flame" countOnly />
           </>
         )}

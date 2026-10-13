@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { PAGE_PATHS, pageForPath, isPlainNavigation, navigateToPage } from './routes.js'
+import { PAGE_PATHS, pageForPath, isPlainNavigation, navigateToPage } from '../src/data/routes.js'
 
 test('root and calculator/equipment URLs resolve to their pages', () => {
   assert.equal(pageForPath('/'), 'home')

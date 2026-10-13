@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { budgetForChance, chanceForBudget } from './starforceBudget.js'
+import { budgetForChance, chanceForBudget } from '../src/data/starforceBudget.js'
 
 const distribution = { step_mesos: 10, probabilities: [0, .2, .2, .8, .95], calculation_limit_mesos: 40 }
 

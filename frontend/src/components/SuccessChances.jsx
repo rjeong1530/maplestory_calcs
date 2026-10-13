@@ -3,7 +3,7 @@ import { SUCCESS_CHANCES } from '../data/successChances'
 export default function SuccessChances({ selected, onChange, estimateLabel = 'attempts' }) {
   return (
     <fieldset>
-      <legend className="success-chances-heading">Success chance estimates</legend>
+      <legend className="text-[17px] mt-6 mb-2.5 mx-0">Success chance estimates</legend>
       <p className="hint">Choose the chances of reaching your target to estimate {estimateLabel}.</p>
       <div className="percentiles">
         {SUCCESS_CHANCES.map(chance => (

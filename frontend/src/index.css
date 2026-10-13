@@ -1,44 +1,66 @@
-:root {
-  font-family: Inter, "Segoe UI", sans-serif;
-  color: #e9edf5;
-  background: #0e1420;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  color-scheme: dark;
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "./";
+
+/* Keep the existing form reset; Tailwind utilities can override component styles. */
+@theme {
+  --color-maple: #e5b567;
+  --color-ink: #191918;
+  --color-surface: #222220;
+  --color-rule: #41413a;
+  --color-muted: #b3b1a6;
+  --font-sans: "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: Consolas, "Liberation Mono", monospace;
 }
-* {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  min-width: 320px;
-}
-button,
-input,
-select {
-  font: inherit;
-  border-radius: 8px;
-}
-button {
-  cursor: pointer;
-}
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline: 2px solid #a7e8ba;
-  outline-offset: 3px;
-}
-h1,
-h2,
-h3,
-p {
-  margin-top: 0;
-}
-p {
-  line-height: 1.6;
+
+@layer base {
+  :root {
+    font-family: var(--font-sans);
+    color: #eeede6;
+    background: var(--color-ink);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    min-width: 320px;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    border-radius: 4px;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--color-maple);
+    outline-offset: 3px;
+  }
+  h1,
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+  p {
+    line-height: 1.6;
+  }
 }

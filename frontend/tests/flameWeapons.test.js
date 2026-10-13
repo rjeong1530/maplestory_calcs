@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
-import { CLASS_STATS } from './classStats.js'
+import { CLASS_STATS } from '../src/data/classStats.js'
 import test from 'node:test'
-import { CLASS_WEAPONS, WEAPON_SERIES, getWeaponConfig } from './flameWeapons.js'
+import { CLASS_WEAPONS, WEAPON_SERIES, getWeaponConfig } from '../src/data/flameWeapons.js'
 
 test('every class offered by the form has weapon data for all five series', () => {
   const classes = Object.keys(CLASS_STATS)

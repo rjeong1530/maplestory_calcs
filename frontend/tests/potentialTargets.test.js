@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildPotentialTargets } from './potentialTargets.js'
+import { buildPotentialTargets } from '../src/data/potentialTargets.js'
 
 test('All Stat expands into four stat totals supported by the API', () => {
   assert.deepEqual(buildPotentialTargets([{ effect: 'ALL_STAT_PCT', target: '7' }]), [

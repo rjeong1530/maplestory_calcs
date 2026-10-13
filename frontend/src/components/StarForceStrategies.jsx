@@ -11,7 +11,7 @@ const defaultActions = Object.fromEntries(Array.from({ length: 7 }, (_, i) => [i
 
 function Difference({ value, baseline }) {
   const difference = percentDifference(value, baseline)
-  return <small className="strategy-difference">
+  return <small className="block text-muted text-[11px] whitespace-normal mt-1">
     {difference == null ? 'N/A vs baseline' : `${difference > 0 ? '+' : ''}${difference.toFixed(1)}% vs baseline`}
   </small>
 }
@@ -141,7 +141,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
     </div>
     {report && <>
       <p className="hint">Compared {number(report.assumptions.policies_evaluated)} policies for level {report.assumptions.item_level}, {report.assumptions.start_star} → {report.assumptions.target_star} stars.</p>
-      <details className="custom-strategy-editor" open>
+      <details className="custom-strategy-editor mt-5" open>
         <summary>Add your own strategy</summary>
         <form onSubmit={submitCustom}>
           <div className="starforce-fields">
@@ -191,7 +191,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
         })}
       </svg>
       <div aria-label="Your plotted strategies" aria-live="polite">
-        {customs.map(custom => <div className="custom-strategy-row" key={custom.id}>
+        {customs.map(custom => <div className="flex items-center flex-wrap gap-2.5 my-3 mx-0" key={custom.id}>
           <span style={{ color: custom.color }} aria-hidden="true">&#9679;</span>
           <span>{custom.name} &middot; {mesos(custom.enhancement_cost_mesos)} mesos &middot; {number(custom.expected_spares)} spares</span>
           <button type="button" aria-label={`View my steps for ${custom.name}`}
@@ -230,7 +230,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
         </li>)}</ul>
         {row.on_efficient_frontier === false && <p className="hint">Another policy improves cost or spare usage without worsening the other.</p>}
       </section>}
-      <details className="strategy-comparison" open>
+      <details className="strategy-comparison mt-6 mx-0 mb-4" open>
         <summary>Compare optimized approaches and your strategies</summary>
         <p className="hint">Percentage differences compare against full Mode 1 with no safeguards, using the same level,
           star range, spare cost, Shining event, and MVP settings. Negative means less spending or fewer spares.
@@ -239,10 +239,10 @@ export default function StarForceStrategies({ form, onChange, planner }) {
           {' '}{number(report.baseline.expected_spares)} expected spares, {mesos(report.baseline.total_cost_mesos)} total mesos.</p>}
         <p className="hint" id="strategy-comparison-help">Steps include boom recovery below your starting stars.</p>
         {!customs.length && <p className="hint">Add your own strategy above to compare it alongside these optimized approaches.</p>}
-        <div className="strategy-comparison-container"
+        <div className="p-2 border border-rule rounded-sm"
           role="region" aria-label="Optimized and custom strategy comparison" aria-describedby="strategy-comparison-help">
           <table className="strategy-comparison-table">
-            <colgroup><col className="strategy-name-column" /><col /><col /><col /><col className="strategy-steps-column" /></colgroup>
+            <colgroup><col className="w-[24%]" /><col /><col /><col /><col className="w-[34%]" /></colgroup>
             <thead><tr><th scope="col">Strategy</th><th scope="col">Enhancement mesos</th>
               {[['expected_spares', 'Expected spares'], ['total_cost_mesos', 'Total mesos']].map(([field, label]) => {
                 const direction = comparisonSort?.field === field ? comparisonSort.direction : null
@@ -259,7 +259,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
               <tr
               className={scenario.id != null ? 'strategy-comparison-custom' : undefined}>
               <th scope="row">
-                {scenario.color && <span className="strategy-comparison-marker" style={{ color: scenario.color }} aria-hidden="true">&#9679; </span>}
+                {scenario.color && <span className="text-[16px]" style={{ color: scenario.color }} aria-hidden="true">&#9679; </span>}
                 {scenario.name}
               </th>
               <td data-label="Enhancement mesos">{mesos(scenario.enhancement_cost_mesos)}<Difference value={scenario.enhancement_cost_mesos} baseline={report.baseline?.enhancement_cost_mesos} /></td>

@@ -68,7 +68,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
   return (
     <form className="panel" onSubmit={submit}>
       <fieldset disabled={busy}>
-        <legend>Build your roll</legend>
+        <legend className="flex items-center gap-3"><span className="font-mono text-xs text-maple" aria-hidden="true">01 /</span> Equipment &amp; cube</legend>
         <div className="equipment-grid">
           <label>Equipment
             <select value={equipment} onChange={event => { setEquipment(event.target.value); onChange() }}>
@@ -92,7 +92,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             onChange={event => { setCubeSale(event.target.checked); onChange() }} />
           <span>Cube sale (25% off black and red cubes)</span>
         </label>
-        <div className="section-heading"><h2>Potential targets</h2><span>ALL must match</span></div>
+        <div className="section-heading border-t border-rule pt-5"><h2 className="flex items-center gap-3"><span className="font-mono text-xs text-maple" aria-hidden="true">02 /</span> Potential targets</h2><span>All must match</span></div>
         <p className="hint">Minimum totals across three lines. All Stat counts toward each main stat.</p>
         {availableTargets.some(row => row.effect === 'ALL_STAT_PCT') && <p className="hint">
           All Stat adds its percentage to STR, DEX, INT, and LUK targets, including your main and secondary stats.
@@ -109,7 +109,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             : !currentOptions.potential.available && <p className="hint">
               No potential table is available for this equipment, level, and cube.
             </p>}
-        <div className="target-list">
+        <div className="target-list grid gap-4 mb-4.5">
           {availableTargets.map((row, index) => (
             <TargetRow key={row.id} row={row} index={index} effects={effects}
               usedEffects={availableTargets.filter(item => item.id !== row.id).map(item => item.effect)}
@@ -124,7 +124,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             setNextId(value => value + 1)
             onChange()
           }}>+ Add potential target</button>
-        <button type="submit" className="primary" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
+        <button type="submit" className="primary mt-6" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
       </fieldset>
     </form>
   )

@@ -1,3 +1,4 @@
+import './App.css'
 import { bugReportPage, plannerPage, potentialPage } from './preloadPage'
 import Navigation from './components/Navigation'
 import LandingPage from './components/LandingPage'
@@ -5,7 +6,6 @@ import usePageRoute from './hooks/usePageRoute'
 import DeferredPage from './components/DeferredPage'
 import { PageHeader, PageGuide } from './components/PublicPageContent'
 import usePageMetadata from './hooks/usePageMetadata'
-import './App.css'
 
 const PotentialCalculator = potentialPage.Component
 const EquipmentPlanner = plannerPage.Component

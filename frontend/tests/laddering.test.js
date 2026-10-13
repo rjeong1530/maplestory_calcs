@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { DEFAULT_LADDERING, DEFAULT_TRANSFER, secondCopyItem, updateSecondCopy, validLaddering } from './laddering.js'
-import { equipmentChoices } from './flameEquipment.js'
-import { exportEquipment, importEquipment, restoreEquipment } from './equipmentSave.js'
-import { buildUpgradeRequest, restoreUpgradeSettings } from './equipmentUpgrade.js'
-import { CLASS_STATS } from './classStats.js'
+import { DEFAULT_LADDERING, DEFAULT_TRANSFER, secondCopyItem, updateSecondCopy, validLaddering } from '../src/data/laddering.js'
+import { equipmentChoices } from '../src/data/flameEquipment.js'
+import { exportEquipment, importEquipment, restoreEquipment } from '../src/data/equipmentSave.js'
+import { buildUpgradeRequest, restoreUpgradeSettings } from '../src/data/equipmentUpgrade.js'
+import { CLASS_STATS } from '../src/data/classStats.js'
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
 

@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { apiRequest } from '../api.js'
+import { apiRequest } from '../src/api.js'
 
 test('both form options and submissions allow time for backend cold starts', async t => {
   const timeouts = []

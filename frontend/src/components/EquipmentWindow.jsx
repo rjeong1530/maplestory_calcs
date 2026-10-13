@@ -121,7 +121,7 @@ export default function EquipmentWindow({
             <button type="button" disabled={busy} aria-label="Next equipment slot"
               onClick={() => onActivate(slots[(slots.indexOf(pickerSlot) + 1) % slots.length])}>&rarr;</button>
           </div>
-          <div className="equipment-catalog-items" key={pickerSlot}>
+          <div className="flex flex-col gap-2 h-[340px] overflow-y-auto mb-3.5" key={pickerSlot}>
             {Object.entries(EQUIPMENT_GROUPS).map(([group, label]) => {
               const items = choices.filter(item => equipmentGroup(item, pickerSlot) === group)
               return items.length > 0 && <div className="equipment-catalog-group" key={group}>
@@ -131,7 +131,7 @@ export default function EquipmentWindow({
               onClick={() => onSelect(pickerSlot, item)}>
               <EquipmentIcon item={item} />
               <span><small>Lv. {item.config.equipment_level}</small>{item.name}</span>
-              {selected?.id === item.id && <span className="equipment-equipped-label">Selected</span>}
+              {selected?.id === item.id && <span className="ml-auto text-maple text-[10px]">Selected</span>}
                 </button>)}
               </div>
             })}
@@ -151,7 +151,7 @@ export default function EquipmentWindow({
           <button type="button" onClick={onOpenStats}>Edit stats & upgrades &rarr;</button>
         </div>
       </div>
-      <div className="equipment-setup-save">
+      <div className="mt-7 pt-5 border-t border-rule">
         <p className="hint" role="status">{dirty ? 'Unsaved equipment changes.'
           : saveError ? 'Equipment could not be saved in this browser.'
             : saveConfirmed ? '✓ Equipment saved in this browser.' : 'No unsaved equipment changes.'}</p>

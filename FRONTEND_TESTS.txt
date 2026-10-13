@@ -15,7 +15,7 @@ Optional live check (real requests to deployed services):
 Optional measurement harness:
   npm run benchmark:render
 Single helper file:
-  node --test src/data/routes.test.js
+  node --test tests/routes.test.js
 
 Browser scripts require Firefox and geckodriver on PATH or GECKODRIVER_PATH.
 Regression/benchmark scripts also accept FIREFOX_BINARY. Live smoke tests accept
@@ -39,7 +39,7 @@ Historical counts/change logs removed. Descriptions summarize assertions and do
 not claim exhaustive input coverage. Update the relevant entry after test changes.
 
 ==============================================================================
-FILE: frontend/src/data/api.test.js
+FILE: frontend/tests/api.test.js
 Tests: 7
 
 1. both form options and submissions allow time for backend cold starts
@@ -65,7 +65,7 @@ Tests: 7
   Checks successful data and structured API validation messages are preserved.
 
 ==============================================================================
-FILE: frontend/src/data/cubeCosts.test.js
+FILE: frontend/tests/cubeCosts.test.js
 Tests: 1
 
 1. cube prices and labels reflect sale pricing for both cubes
@@ -73,7 +73,7 @@ Tests: 1
   sale prices of 16.5M and 9M, and matching sale-price labels in mesos per cube.
 
 ==============================================================================
-FILE: frontend/src/data/equipmentGroups.test.js
+FILE: frontend/tests/equipmentGroups.test.js
 Tests: 3
 
 1. Brilliant catalog items are grouped separately from Pitched
@@ -90,7 +90,7 @@ Tests: 3
   original input remains unchanged.
 
 ==============================================================================
-FILE: frontend/src/data/equipmentSamples.test.js
+FILE: frontend/tests/equipmentSamples.test.js
 Tests: 4
 
 1. JSON samples cover every class and survive import, browser restoration and API serialization
@@ -116,7 +116,7 @@ Tests: 4
   default.
 
 ==============================================================================
-FILE: frontend/src/data/equipmentSave.test.js
+FILE: frontend/tests/equipmentSave.test.js
 Tests: 11
 
 1. equipment exports round-trip flame and potential weights including zero
@@ -166,7 +166,7 @@ Tests: 11
   changing ring-1.
 
 ==============================================================================
-FILE: frontend/src/data/equipmentStorage.test.js
+FILE: frontend/tests/equipmentStorage.test.js
 Tests: 3
 
 1. full equipment sets larger than a cookie survive storage and restoration
@@ -184,7 +184,7 @@ Tests: 3
   Quota failures are also reported.
 
 ==============================================================================
-FILE: frontend/src/data/equipmentUpgrade.test.js
+FILE: frontend/tests/equipmentUpgrade.test.js
 Tests: 22
 
 1. upgrade requests carry the hat cooldown minimum
@@ -274,7 +274,7 @@ Tests: 22
   request. A saved string 'true' is rejected as a sale flag and falls back to false.
 
 ==============================================================================
-FILE: frontend/src/data/flameEquipment.test.js
+FILE: frontend/tests/flameEquipment.test.js
 Tests: 16
 
 1. catalog excludes unwanted series and limits pocket choices to cup and spellbooks
@@ -346,7 +346,7 @@ Tests: 16
   unsupported medal slot.
 
 ==============================================================================
-FILE: frontend/src/data/flameUpgrade.test.js
+FILE: frontend/tests/flameUpgrade.test.js
 Tests: 4
 
 1. flame counts reach each confidence with the minimum number of independent rolls
@@ -367,7 +367,7 @@ Tests: 4
   seven times 3M. Impossible chances and unknown costs return null.
 
 ==============================================================================
-FILE: frontend/src/data/flameWeapons.test.js
+FILE: frontend/tests/flameWeapons.test.js
 Tests: 3
 
 1. every class offered by the form has weapon data for all five series
@@ -383,7 +383,7 @@ Tests: 3
   353) and rejects incompatible weapon kinds or unknown series.
 
 ==============================================================================
-FILE: frontend/src/data/potentialTargets.test.js
+FILE: frontend/tests/potentialTargets.test.js
 Tests: 3
 
 1. All Stat expands into four stat totals supported by the API
@@ -397,7 +397,7 @@ Tests: 3
   Converts an ordinary ATT target string to a number without changing its fractional value.
 
 ==============================================================================
-FILE: frontend/src/data/rollBudget.test.js
+FILE: frontend/tests/rollBudget.test.js
 Tests: 2
 
 1. independent-roll chance and budget conversions use whole rolls
@@ -409,7 +409,7 @@ Tests: 2
   percentages/budgets, and counts outside safe integer precision.
 
 ==============================================================================
-FILE: frontend/src/data/routes.test.js
+FILE: frontend/tests/routes.test.js
 Tests: 4
 
 1. root and calculator/equipment URLs resolve to their pages
@@ -430,7 +430,7 @@ Tests: 4
   and support for navigation without a click event.
 
 ==============================================================================
-FILE: frontend/src/data/starforce.test.js
+FILE: frontend/tests/starforce.test.js
 Tests: 5
 
 1. medals,emblems, badges and unsupported secondaries or shields have no Star Force controls
@@ -453,7 +453,7 @@ Tests: 5
   Superior Gollux/Sweetwater Earring 30. Cap lookup is separate from slot eligibility.
 
 ==============================================================================
-FILE: frontend/src/data/starforceBudget.test.js
+FILE: frontend/tests/starforceBudget.test.js
 Tests: 3
 
 1. budget lookup handles arbitrary percentages and flat CDF regions conservatively
@@ -467,7 +467,7 @@ Tests: 3
   Rejects NaN, infinity, negative values, strings, and percentages above 100.
 
 ==============================================================================
-FILE: frontend/src/data/starforceStrategies.test.js
+FILE: frontend/tests/starforceStrategies.test.js
 Tests: 4
 
 1. baseline differences use signed percentages and handle zero baselines
@@ -530,7 +530,7 @@ Tests: 1
   without upgrade errors. Sequential requests only; no cold-start or saturation testing.
 
 ==============================================================================
-FILE: frontend/src/data/laddering.test.js
+FILE: frontend/tests/laddering.test.js
 Tests: 5
 
 1. Astra secondaries discard legacy laddering and never send it to the API

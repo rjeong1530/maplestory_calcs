@@ -169,8 +169,8 @@ export default function EquipmentUpgradePlan({
         </p>}
         {category === 'overall' ? <OverallUpgradeOrder plan={result.overall_upgrade_order}
           settings={settings} cubeType={settings.cube_type} />
-          : category === 'flames' ? <div className="flame-comparison">
-          <div className="calculator-tabs flame-type-toggle" role="group" aria-label="Flame results to display">
+          : category === 'flames' ? <div className="grid gap-7">
+          <div className="flame-type-toggle" role="group" aria-label="Flame results to display">
             {['black', 'abyssal'].map(type => <button type="button" key={type}
               aria-label={type === 'black' ? 'Black Flames' : 'Abyssal Flames'}
               title={type === 'black' ? 'Black Flames' : 'Abyssal Flames'}
@@ -183,7 +183,7 @@ export default function EquipmentUpgradePlan({
             rows={[...flameRankings.largest_gain_first].sort((a, b) => b.improvement_probability - a.improvement_probability)}
             unavailable={flameRankings.unavailable}
             costPerFlame={result.cost_assumptions_mesos[flameType + '_flame']} />
-        </div> : rows.length ? <div className="upgrade-table-scroll" tabIndex="0"
+        </div> : rows.length ? <div className="max-w-full overflow-x-auto" tabIndex="0"
           role="region" aria-label={`${CATEGORIES[category]} upgrade rankings`}>
           <table className="upgrade-table">
             <caption>{CATEGORIES[category]} — Best gain per meso</caption>

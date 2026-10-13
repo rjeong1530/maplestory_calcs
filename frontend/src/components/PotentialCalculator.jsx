@@ -1,3 +1,5 @@
+import './Calculator.css'
+import './PotentialCalculator.css'
 import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'

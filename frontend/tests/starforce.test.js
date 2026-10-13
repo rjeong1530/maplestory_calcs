@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { maxStarForceForEquipment, supportsStarForce } from './starforce.js'
-import { equipmentChoices } from './flameEquipment.js'
+import { maxStarForceForEquipment, supportsStarForce } from '../src/data/starforce.js'
+import { equipmentChoices } from '../src/data/flameEquipment.js'
 
 test('medals,emblems, badges and unsupported secondaries or shields have no Star Force controls', () => {
   for (const name of ['Crystal Ventus Badge', 'Ghost Ship Exorcist', 'Sengoku Hakase Badge']) {

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { equipmentChoices, fixedRing, equipInSlot, compatibleEquipment } from './flameEquipment.js'
-import { exportEquipment, importEquipment, serializeEquipment, restoreEquipment } from './equipmentSave.js'
+import { equipmentChoices, fixedRing, equipInSlot, compatibleEquipment } from '../src/data/flameEquipment.js'
+import { exportEquipment, importEquipment, serializeEquipment, restoreEquipment } from '../src/data/equipmentSave.js'
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
 

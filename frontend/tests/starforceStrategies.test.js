@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { frontierPoints, nameCustomStrategies, strategySteps, percentDifference } from './starforceStrategies.js'
+import { frontierPoints, nameCustomStrategies, strategySteps, percentDifference } from '../src/data/starforceStrategies.js'
 
 test('baseline differences use signed percentages and handle zero baselines', () => {
   assert.equal(percentDifference(150, 100), 50)

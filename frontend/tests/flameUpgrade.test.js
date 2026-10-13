@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { costForConfidence, FLAME_CONFIDENCES, flamesForConfidence, formatFlameChance } from './flameUpgrade.js'
+import { costForConfidence, FLAME_CONFIDENCES, flamesForConfidence, formatFlameChance } from '../src/data/flameUpgrade.js'
 
 test('flame counts reach each confidence with the minimum number of independent rolls', () => {
   for (const probability of [0.5, 0.00036, 0.000009, 1e-12]) {

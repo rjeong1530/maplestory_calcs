@@ -27,7 +27,7 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
         <button type="button" aria-pressed={view === 'stats'} aria-controls="equipment-stats-view"
           onClick={() => setView('stats')}>Stats & upgrades</button>
       </nav>
-      <div className="equipment-page-content">
+      <div className="min-w-0">
         <div id="equipment-setup-view" hidden={view !== 'setup'}>
           <DeferredPage active={view === 'setup'}>
             <EquipmentWindow equipmentClass={setupClass}

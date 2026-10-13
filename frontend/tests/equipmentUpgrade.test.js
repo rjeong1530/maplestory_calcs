@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { CLASS_STATS } from './classStats.js'
-import { equipmentChoices } from './flameEquipment.js'
-import { restoreEquipment } from './equipmentSave.js'
-import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, restoreUpgradeSettings, restoreSecondaryStatWeight } from './equipmentUpgrade.js'
+import { CLASS_STATS } from '../src/data/classStats.js'
+import { equipmentChoices } from '../src/data/flameEquipment.js'
+import { restoreEquipment } from '../src/data/equipmentSave.js'
+import { buildUpgradeRequest, combineStarforceSteps, orderStarforceSteps, restoreUpgradeSettings, restoreSecondaryStatWeight } from '../src/data/equipmentUpgrade.js'
 
 test('upgrade requests carry the hat cooldown minimum', () => {
   const hat = { ...equipmentChoices('hat', 'Hero')[0], minimumCooldownSeconds: 4 }

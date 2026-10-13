@@ -1,0 +1,25 @@
+@layer components {
+  .equipment-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 0.9fr;
+    gap: 12px;
+  }
+  .target-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 116px 32px;
+    align-items: end;
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .equipment-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .equipment-grid label:first-child {
+      grid-column: 1 / -1;
+    }
+    .target-row {
+      grid-template-columns: minmax(0, 1fr) 88px 28px;
+      gap: 7px;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { equipmentGroup, applyStrategyToEquipment } from './equipmentGroups.js'
-import { equipmentChoices, fixedRing } from './flameEquipment.js'
+import { equipmentGroup, applyStrategyToEquipment } from '../src/data/equipmentGroups.js'
+import { equipmentChoices, fixedRing } from '../src/data/flameEquipment.js'
 
 test('Brilliant catalog items are grouped separately from Pitched', () => {
   for (const [slot, name] of [['ring-1', 'Whisper of the Source'], ['ring-2', 'Blissful Nightmare'],

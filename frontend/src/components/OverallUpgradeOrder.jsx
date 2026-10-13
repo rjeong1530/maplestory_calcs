@@ -39,7 +39,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
       <p className="hint">Showing up to {plan.step_limit} projected steps. Later flame steps start from
         the projected average result, which may differ from your actual roll. Costs are averages,
         not guaranteed budgets.</p>
-      <div className="upgrade-table-scroll" role="region" aria-label="Combined upgrade recommendations" tabIndex="0">
+      <div className="max-w-full overflow-x-auto" role="region" aria-label="Combined upgrade recommendations" tabIndex="0">
         <table className="upgrade-table overall-upgrade-table">
           <caption>Automatic targets and projected upgrade order</caption>
           <colgroup>{[4, 19, 25, 10, 12, 10, 10, 10].map((width, index) => <col key={index} style={{ width: `${width}%` }} />)}</colgroup>

@@ -184,7 +184,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
           </button>
           <p className="hint">Choose the mode for each star upgrade. These choices apply to upgrade order costs,
             including recovery. Safeguard at 15–17 stars uses Mode 1 and prevents booms.</p>
-          <div className="starforce-mode-wrap">
+          <div className="overflow-x-auto">
             <table className="starforce-mode-table equipment-mode-table">
               <thead><tr><th scope="col">Stars</th><th scope="col">Enhancement mode</th></tr></thead>
               <tbody>{Array.from({ length: Math.max(0, Math.min(maximumStarForce, 22) - 15) }, (_, index) => index + 15).map(star => (
@@ -256,7 +256,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
         </>}
       </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
 
-        <section className="current-flames-section">
+        <section className="col-span-full border-t border-rule pt-4">
           <h4>Current flames</h4>
           {!supportsFlames ? <p className="hint">Flames are not supported for this slot.</p>
             : optionsError ? <p className="error" role="alert">{optionsError}</p>
@@ -274,7 +274,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                       ))}
                     </div>
                     <p className="hint">Select up to four cells to record this item's current flame lines.</p>
-                    <div className="flame-values-wrap">
+                    <div className="max-w-full">
                       <table className="flame-values-table">
                         <thead>
                           <tr>

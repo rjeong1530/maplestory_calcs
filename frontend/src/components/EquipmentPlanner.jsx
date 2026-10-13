@@ -1,3 +1,4 @@
+import './Calculator.css'
 import useEquipmentPlanner from '../hooks/useEquipmentPlanner'
 import useFlameCalculation from '../hooks/useFlameCalculation'
 import { useState } from 'react'

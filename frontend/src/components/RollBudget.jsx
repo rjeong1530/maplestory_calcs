@@ -1,3 +1,4 @@
+import './RollBudget.css'
 import { useId, useState } from 'react'
 import { rollBudgetForChance, rollChanceForBudget } from '../data/rollBudget'
 import { count, mesoBreakdown } from '../data/numberFormat'
@@ -82,7 +83,7 @@ export default function RollBudget({ probability, defaultCost, itemLabel, countO
     <p id={noteId} className="hint" aria-live="polite">{message || (budget !== ''
       ? `${amountLabel}: ${count(Number(budget))} ${unit}. Edit either input to update the other instantly.`
       : countOnly ? 'Enter a success chance or number of flames.' : 'Set your cost per roll, then edit either input.')}</p>
-    <p className="hint result-note">{countOnly
+    <p className="hint mt-5.5 mb-0">{countOnly
       ? 'Uses independent rolls and whole flames. The average is not necessarily a 50% chance.'
       : 'Uses your price and independent rolls. Budgets round up to whole rolls; entered budgets buy only whole rolls. The average is not necessarily a 50% chance. Tier-ups and keep/replace decisions are excluded.'}</p>
   </section>

@@ -99,7 +99,7 @@ aborts retain their cancellation reason. This handling covers both the initial
 fetch and failures while reading the JSON response body.
 
 Verification:
-frontend/src/data/api.test.js checks timeout with a supplied signal, explicit
+frontend/tests/api.test.js checks timeout with a supplied signal, explicit
 cancellation, timeout during response-body reading, successful responses, and
 preserved server validation messages.
 

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { readSamples, sampleEquipment } from '../../scripts/equipment-samples.mjs'
-import { CLASS_STATS } from './classStats.js'
-import { compatibleEquipment, equipmentChoices, potentialEquipmentType } from './flameEquipment.js'
-import { exportEquipment, importEquipment, restoreEquipment, serializeEquipment } from './equipmentSave.js'
-import { buildUpgradeRequest, DEFAULT_FLAME_WEIGHTS, restoreUpgradeSettings, restoreFlameWeights } from './equipmentUpgrade.js'
+import { readSamples, sampleEquipment } from '../scripts/equipment-samples.mjs'
+import { CLASS_STATS } from '../src/data/classStats.js'
+import { compatibleEquipment, equipmentChoices, potentialEquipmentType } from '../src/data/flameEquipment.js'
+import { exportEquipment, importEquipment, restoreEquipment, serializeEquipment } from '../src/data/equipmentSave.js'
+import { buildUpgradeRequest, DEFAULT_FLAME_WEIGHTS, restoreUpgradeSettings, restoreFlameWeights } from '../src/data/equipmentUpgrade.js'
 
 test('JSON samples cover every class and survive import, browser restoration and API serialization', () => {
   const samples = readSamples()

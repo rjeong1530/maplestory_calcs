@@ -1,3 +1,4 @@
+import './StarForceCalculator.css'
 import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
@@ -114,14 +115,14 @@ export default function StarForceCalculator({ planner, view, setView }) {
 
   return (
     <>
-      <div className="calculator-tabs starforce-view-switch" role="group" aria-label="Star Force view">
+      <div className="starforce-view-switch" role="group" aria-label="Star Force view">
         <button type="button" aria-pressed={view === 'estimate'} onClick={() => setView('estimate')}>Custom estimate</button>
         <button type="button" aria-pressed={view === 'strategies'} onClick={() => setView('strategies')}>Compare strategies</button>
       </div>
       <div hidden={view !== 'strategies'}><StarForceStrategies form={form} onChange={update} planner={planner} /></div>
       <div hidden={view !== 'estimate'}>
       <div className="calculator-grid">
-        <form className="panel starforce-form" onSubmit={submit}>
+        <form className="panel starforce-form min-w-0" onSubmit={submit}>
           <fieldset disabled={busy}>
             <legend>Star Force settings</legend>
             <div className="starforce-fields">
@@ -164,7 +165,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
               <h2>Per-star settings</h2>
               <span>15★ TO 21★</span>
             </div>
-            <div className="starforce-mode-wrap">
+            <div className="overflow-x-auto">
               <table className="starforce-mode-table">
                 <thead>
                   <tr><th scope="col">Transition</th><th scope="col">Mode</th><th scope="col">Safeguard</th></tr>
@@ -192,14 +193,14 @@ export default function StarForceCalculator({ planner, view, setView }) {
                               )} />
                             <span>On</span>
                           </label>
-                        ) : <span className="starforce-not-applicable">N/A</span>}
+                        ) : <span className="text-muted text-[12px]">N/A</span>}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <p className="hint starforce-rules-note">
+            <p className="hint mt-3 mx-0 mb-6">
               Safeguarding applies only to selected 15★–17★ attempts. Boom recovery follows the star-specific rules.
             </p>
             <button type="submit" className="primary" disabled={busy}>
@@ -215,7 +216,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
             : error ? <p className="error" role="alert">{error}</p>
               : !result ? (
                 <div className="empty">
-                  <span className="empty-icon" aria-hidden="true">☆</span>
+                  <span className="text-[56px] text-[#a0967c]" aria-hidden="true">☆</span>
                   <h3>Set your target</h3>
                   <p>Choose an item level and star range to estimate the cost and booms.</p>
                 </div>
@@ -236,7 +237,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
                     </div>
                   </dl>
                   {result.budget_distribution && <StarForceBudget result={result} />}
-                  <p className="hint result-note">
+                  <p className="hint mt-5.5 mb-0">
                     Total mesos include enhancement costs and expected booms multiplied by your replacement cost.
                     The selected Shining Star Force Sunday and MVP discounts are applied to eligible enhancement costs.
                   </p>
@@ -245,7 +246,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
         </section>
       </div>
 
-      <section className="panel starforce-cost-panel">
+      <section className="panel starforce-cost-panel mt-6">
         <div className="section-heading starforce-cost-heading">
           <h2>Cost per tap</h2>
           <span>{form.shining_starforce_sunday ? 'SHINING ON' : 'SHINING OFF'} · {form.item_level ? `LEVEL ${form.item_level}` : 'SET A LEVEL'}</span>
@@ -290,7 +291,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
               </div>
             )}
       </section>
-      <section className="panel starforce-cost-panel">
+      <section className="panel starforce-cost-panel mt-6">
         <div className="section-heading starforce-cost-heading">
           <h2>Success, fail and boom chances</h2>
           <span>{form.shining_starforce_sunday ? 'SHINING ON' : 'SHINING OFF'} · ALL FOUR MODES</span>

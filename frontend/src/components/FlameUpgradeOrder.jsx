@@ -9,13 +9,13 @@ function ItemIcon({ item, name }) {
   return item?.icon && item.icon !== failedUrl
     ? <img src={item.icon} alt="" width="36" height="36" loading="lazy"
       onError={() => setFailedUrl(item.icon)} />
-    : <span className="flame-icon-fallback" aria-hidden="true">{name.slice(0, 2)}</span>
+    : <span className="inline-grid place-items-center size-9 rounded-md bg-rule" aria-hidden="true">{name.slice(0, 2)}</span>
 }
 
 export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerFlame, unavailable = [] }) {
   const label = flameType === 'abyssal' ? 'Abyssal Flames' : 'Black Flames'
   return <section className="flame-upgrade-order" aria-label={label}>
-    <div className="flame-order-heading">
+    <div className="text-center">
       <h3 className="flame-type-badge">
         <img src={`/images/flames/${flameType}.png`} alt="" width="32" height="34" />
         {label}
@@ -41,14 +41,14 @@ export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerF
           : 'Meso cost for an X% chance of a better result'}</h4>
         <div className="flame-confidence-scroll" role="region" aria-labelledby={flameType + '-' + metric + '-heading'} tabIndex="0">
           <table className="flame-confidence-table">
-            <thead><tr><th scope="col"><span className="flame-sr-only">Equipment</span></th>
+            <thead><tr><th scope="col"><span className="sr-only">Equipment</span></th>
               {FLAME_CONFIDENCES.map(confidence => <th scope="col" key={confidence}>{confidence * 100}%</th>)}
             </tr></thead>
             <tbody>{rows.map(entry => <tr key={entry.slot}
               id={metric === 'count' ? 'flame-upgrade-' + flameType + '-' + entry.slot : undefined} tabIndex="-1">
               <th scope="row" title={entry.name + ' (' + entry.slot + ')'}>
                 <ItemIcon item={equipment[entry.slot]} name={entry.name} />
-                <span className="flame-sr-only">{entry.name} ({entry.slot})</span>
+                <span className="sr-only">{entry.name} ({entry.slot})</span>
               </th>
               {FLAME_CONFIDENCES.map(confidence => {
                 const value = metric === 'count'

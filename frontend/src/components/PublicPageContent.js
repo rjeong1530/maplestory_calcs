@@ -16,7 +16,7 @@ export function PageHeader({ page }) {
   return h('header', { className: 'page-header' },
     h('span', { className: 'eyebrow' }, 'MAPLESTORY CALCULATOR · EQUIPMENT UPGRADE LAB'),
     h('div', { className: 'page-title' },
-      h('img', { className: 'page-logo', src: '/maplecalculator48.png',
+      h('img', { className: 'size-12 shrink-0', src: '/maplecalculator48.png',
         alt: 'MapleStory Calculator logo', width: 48, height: 48 }),
       h('h1', null, content.heading)),
     h('p', null, content.description))
@@ -31,7 +31,7 @@ export function PageGuide({ page, onNavigate }) {
       h('h2', null, 'Understand your next upgrade'),
       h('p', null, 'Practical examples, scoring assumptions, and how to read your results.')),
     h('div', { className: 'page-guide-sections' },
-      ...content.sections.map(([heading, text, id]) => h('section', { key: heading, id, className: 'page-guide-section' },
+      ...content.sections.map(([heading, text, id]) => h('section', { key: heading, id, className: 'min-w-0 border-t border-rule pt-5' },
         h('h2', null, heading), h('p', null, text)))),
     h('aside', { className: 'page-guide-sources', 'aria-label': 'Model scope and data sources' },
     h('h2', null, 'Model scope and data sources'),
@@ -43,7 +43,7 @@ export function PageGuide({ page, onNavigate }) {
       h('a', { href: 'https://maplestory.nexon.com/Guide/OtherProbability/cube/black' }, 'Nexon cube probability disclosures'),
       h('a', { href: 'https://maplestory.io/' }, 'MapleStory.io equipment data'),
       h('a', { href: PAGE_PATHS.bugs, onClick: event => onNavigate?.('bugs', event) }, 'Report an incorrect result'))),
-    h('footer', { className: 'page-guide-footer' },
+    h('footer', { className: 'mt-7' },
     h('span', { className: 'eyebrow' }, 'EXPLORE OTHER TOOLS'),
     h('nav', { className: 'page-guide-related', 'aria-label': 'Related calculators' },
       ...Object.keys(RELATED_LABELS).filter(key => key !== page).map(key =>

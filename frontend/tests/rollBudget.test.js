@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { rollsForChance, rollBudgetForChance, rollChanceForBudget } from './rollBudget.js'
+import { rollsForChance, rollBudgetForChance, rollChanceForBudget } from '../src/data/rollBudget.js'
 
 test('independent-roll chance and budget conversions use whole rolls', () => {
   assert.equal(rollsForChance(.5, 75), 2)

@@ -3,10 +3,10 @@ import test from 'node:test'
 import {
   equipmentChoices, equipInSlot, compatibleEquipment, CLASS_FAMILIES, FLAME_SLOTS,
   potentialEquipmentType,
-} from './flameEquipment.js'
-import { CLASS_WEAPONS } from './flameWeapons.js'
-import { SECONDARY_JOBS } from './secondaryEquipment.js'
-import catalog from './equipment_140_250.json' with { type: 'json' }
+} from '../src/data/flameEquipment.js'
+import { CLASS_WEAPONS } from '../src/data/flameWeapons.js'
+import { SECONDARY_JOBS } from '../src/data/secondaryEquipment.js'
+import catalog from '../src/data/equipment_140_250.json' with { type: 'json' }
 
 test('catalog excludes unwanted series and limits pocket choices to cup and spellbooks', () => {
   assert.ok(!catalog.some(item => /^(Red Beryl|Frontier|Commerci)/.test(item.name)))

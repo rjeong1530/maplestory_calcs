@@ -215,8 +215,8 @@ Primary implementation files:
 - frontend/src/data/classStats.js
 
 Regression tests:
-- frontend/src/data/flameEquipment.test.js
-- frontend/src/data/routes.test.js
+- frontend/tests/flameEquipment.test.js
+- frontend/tests/routes.test.js
 
 -----------------------------------------------------------------------
 Star Force replacement costs - 2026-10-05

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { formatBugReport } from './bugReport.js'
+import { formatBugReport } from '../src/data/bugReport.js'
 
 test('report preview preserves multiline reports and special characters', () => {
   const fields = { summary: ' Stars & booms? #25 ', area: 'Star Force', steps: '1. Set 0–25\n2. Compare',

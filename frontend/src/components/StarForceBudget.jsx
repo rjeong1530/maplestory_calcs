@@ -1,3 +1,4 @@
+import './RollBudget.css'
 import { useState } from 'react'
 import { budgetForChance, chanceForBudget } from '../data/starforceBudget'
 import { count, mesoBreakdown } from '../data/numberFormat'
@@ -51,7 +52,7 @@ export default function StarForceBudget({ result }) {
     <p id="budget-input-note" className="hint" aria-live="polite">
       {message || `Edit either input to update the other instantly. Budget: ${count(Number(budget))} mesos.`}
     </p>
-    <p className="hint result-note">Approximate chance of reaching your target within the budget, including boom recovery and replacement costs. The average is not necessarily a 50% chance.
+    <p className="hint mt-5.5 mb-0">Approximate chance of reaching your target within the budget, including boom recovery and replacement costs. The average is not necessarily a 50% chance.
       {' '}Interactive budget steps: {count(distribution.step_mesos)} mesos; budgets round up and chances round down to the sampled cost grid.
       {' '}Calculation limit: {count(distribution.calculation_limit_mesos)} mesos.</p>
   </section>

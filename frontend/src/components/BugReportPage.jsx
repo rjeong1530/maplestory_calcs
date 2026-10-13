@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { formatBugReport } from '../data/bugReport'
 import { apiRequest } from '../api'
-import './BugReportPage.css'
 
 export default function BugReportPage() {
   const [fields, setFields] = useState({ area: 'Star Force', summary: '', steps: '', expected: '', actual: '', environment: '', contact: '' })
@@ -61,13 +60,13 @@ export default function BugReportPage() {
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
-  return <section className="panel bug-report" aria-labelledby="bug-report-heading">
+  return <section className="panel mx-auto max-w-[760px] [&_.hint]:leading-[1.7]" aria-labelledby="bug-report-heading">
     <span className="eyebrow">FEEDBACK</span>
     <h2 id="bug-report-heading">Report a bug</h2>
     <p className="hint">Prepare your report, review the details, then submit it directly to the app's developer. No account or email app is needed.</p>
     <p className="hint">Include the inputs you used, such as equipment level, star range, modes, events, and replacement cost. For an incorrect result, include the result you expected and its source.</p>
     <form onSubmit={prepare}>
-      <fieldset className="bug-report-form" disabled={submission.loading}>
+      <fieldset className="grid gap-4.5" disabled={submission.loading}>
       <label>Which part of the app?
         <select name="area" value={fields.area} onChange={change}>
           {['Star Force', 'Star Force strategies', 'Potential', 'Flames', 'Equipment upgrade', 'Navigation / display', 'Other'].map(area => <option key={area}>{area}</option>)}
@@ -95,11 +94,11 @@ export default function BugReportPage() {
       <button className="primary" type="submit">Prepare report</button>
       </fieldset>
     </form>
-    {report && <section className="bug-report-preview" aria-labelledby="report-preview-heading">
+    {report && <section className="mt-7 border-t border-rule pt-3" aria-labelledby="report-preview-heading">
       <h3 id="report-preview-heading">Review your report</h3>
       <p className="hint">{submission.saved ? 'Your report has been saved. Thank you for helping improve the app.' : 'Review the details below before submitting your report.'}</p>
       <label>Report text<textarea readOnly value={report} rows={12} /></label>
-      <div className="bug-report-actions">
+      <div className="mt-4.5 flex flex-wrap gap-3">
         <button className="primary" type="button" disabled={submission.loading || !!submission.saved} onClick={submitReport}>
           {submission.loading ? 'Submitting…' : submission.saved ? 'Report submitted' : 'Submit report'}
         </button>

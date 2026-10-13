@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { EQUIPMENT_STORAGE_KEY, readEquipmentSelection, saveEquipmentSelection } from './equipmentStorage.js'
-import { EQUIPMENT_SLOTS, equipmentChoices } from './flameEquipment.js'
-import { serializeEquipment, restoreEquipment } from './equipmentSave.js'
+import { EQUIPMENT_STORAGE_KEY, readEquipmentSelection, saveEquipmentSelection } from '../src/data/equipmentStorage.js'
+import { EQUIPMENT_SLOTS, equipmentChoices } from '../src/data/flameEquipment.js'
+import { serializeEquipment, restoreEquipment } from '../src/data/equipmentSave.js'
 
 function browser() {
   const values = new Map()
