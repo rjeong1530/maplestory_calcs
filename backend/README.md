@@ -1,4 +1,4 @@
-﻿# Backend
+# Backend
 
 FastAPI HTTP endpoints over Python probability and equipment-planning engines.
 Calculators use bundled data without a database or user accounts. Bug reports
@@ -170,3 +170,17 @@ TODO:
 - [ ] Destiny Lib Pt2
 - [ ] KMS Inner Ability
 - [ ] KMS Soul Enhancement
+## SoS transfer planner
+
+`calc/gollux_transfer.py` evaluates equipped and spare transfer alternatives.
+Each has separate preparation costs and SoS/Gollux boom counts. Route selection
+prioritizes SoS risk, then score gain per meso. Missing spare stats start at zero;
+the initial donor/spare are assumed owned. Legacy `restore_trace` is accepted but
+ignored, and Astra secondaries reject laddering at API validation.
+
+Recovery estimates are cached only inside a request and shared between recipients
+and planner iterations. Roll preparation is reused by final target within each
+recipient evaluation; score changes rebuild preparation without repeating the
+Star Force solves. One SoS sequence is projected before requiring actual results.
+See [transfer assumptions](../examples/laddering/GOLLUX_TRANSFER.md) and
+[test inventory](../BACKEND_TESTS.txt).

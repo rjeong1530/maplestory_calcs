@@ -6,6 +6,7 @@ import { FLAME_SLOTS, potentialEquipmentType } from '../data/flameEquipment'
 import { maxStarForceForEquipment, supportsStarForce, replacementCostForEquipment } from '../data/starforce'
 import './EquipmentAnalysis.css'
 import EquipmentLaddering from './EquipmentLaddering'
+import { isAstraSecondary } from '../data/laddering'
 
 const emptyPotentialLine = () => ({ effect: '', value: '' })
 
@@ -249,7 +250,9 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
             }} />
           <small>Astra secondaries default to 1 billion mesos. You can override this.</small>
         </label>
-        <EquipmentLaddering item={item} cap={maximumStarForce} onChange={onChange} />
+        {isAstraSecondary(item, slot)
+          ? <p className="hint">Astra secondaries cannot be laddered.</p>
+          : <EquipmentLaddering item={item} cap={maximumStarForce} onChange={onChange} />}
         </>}
       </section> : <p className="hint">Starforce is not supported for this equipment.</p>}
 

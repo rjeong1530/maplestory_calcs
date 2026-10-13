@@ -9,6 +9,7 @@ from backend.calc import maplestory_flames as flames
 from backend.calc import maplestory_potential as potential
 from backend.calc import starforce_calculator as starforce
 from backend.calc.overall_upgrade import overall_upgrade_order
+from backend.calc.gollux_transfer import configure_transfer
 
 
 BLACK_FLAME_COST = 3_000_000
@@ -399,6 +400,8 @@ def _laddering_states(request, entries, main_stat, secondary_stats, offense_stat
                            for star in range(max(cap, item['current_star_force']) + 1)],
                 current_scores={'flames': flame_score, 'potential': potential_score},
                 spare_scores={'flames': spare_flame, 'potential': spare_potential})
+            if settings.get('transfer'):
+                configure_transfer(state, item, request)
         except (ValueError, KeyError) as error:
             state['blocked'] = True
             notes.append({'name': item['name'], 'slot': slot, 'category': 'starforce', 'note': str(error)})

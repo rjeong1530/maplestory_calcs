@@ -1,3 +1,20 @@
+Transfer planning cleanup - 2026-10-12
+
+- Cache SoS recovery solves within each request, shared by equipped/spare options
+  and later overall-planner iterations. No cross-request cache or stale weights.
+- Build preparation options once per recipient evaluation and reuse each final
+  star's roll preparation across donor targets.
+- Share route-priority comparison and exit early when Potential is unavailable.
+- Updated README, transfer example documentation, and test inventories to match
+  equipped/spare alternatives, separate boom counts, Astra restrictions, and
+  legacy checkbox compatibility.
+
+Evidence: a regression with two donor targets requires three unique recovery
+solves across both recipients. Repeated evaluation and changed current scores
+perform no additional recovery solves; clearing the cache produces identical
+results. This verifies reduced work, not a measured Render latency speedup.
+Validation: 183 backend tests, 101 frontend tests, lint, build and prerender pass.
+
 Code cleanup and formatting - 2026-10-11
 
 Changes:

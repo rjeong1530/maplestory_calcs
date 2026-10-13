@@ -1,4 +1,4 @@
-﻿# Frontend
+# Frontend
 
 React 19 + Vite 8. See the [project README](../README.md#quick-start) for
 installation and the [deployment settings](../README.md#deployment) for Render.
@@ -103,3 +103,11 @@ verification file also live here.
 Equipment data is bundled, so ordinary development needs no refresh. See the
 [backend data tools](../backend/README.md#data-and-examples) for refresh commands,
 and [sample builds](../examples/equipment/README.md) for importable equipment.
+## Transfer recommendations
+
+SoS steps display equipped/spare alternatives with independent targets, separate
+potential/flame preparation costs, and SoS/Gollux boom counts. Only the labeled
+ranking option contributes to cumulative totals. Transfer settings link to the
+equipment page guide; the same text is included in prerendered HTML. Astra
+secondaries hide the copy editor and discard legacy laddering on save restoration.
+See [transfer assumptions](../examples/laddering/GOLLUX_TRANSFER.md).

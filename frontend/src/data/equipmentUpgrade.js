@@ -1,7 +1,7 @@
 import { potentialEquipmentType, FIXED_RING_SLOT } from './flameEquipment.js'
 import { replacementCostForEquipment } from './starforce.js'
 import { equipmentLinesForRequest, isFiniteNumeric } from './equipmentLines.js'
-import { ladderingForRequest } from './laddering.js'
+import { ladderingForRequest, isAstraSecondary } from './laddering.js'
 
 export const FLAME_WEIGHT_LABELS = {
   all_stat_pct_value: 'Points per 1% all stat',
@@ -142,7 +142,7 @@ export function combineStarforceSteps(entries) {
 export function buildUpgradeRequest(equipment, classStats, flameWeights, settings) {
   return {
     include_overall: true,
-    laddering_enabled: Object.values(equipment).some(item => item?.laddering),
+    laddering_enabled: Object.entries(equipment).some(([slot, item]) => item?.laddering && !isAstraSecondary(item, slot)),
     main_stat: classStats.main,
     secondary_stats: classStats.secondary,
     offense_stat: classStats.offense,
@@ -162,7 +162,7 @@ export function buildUpgradeRequest(equipment, classStats, flameWeights, setting
       equipment_type: item.config.equipment_type,
       potential_equipment_type: potentialEquipmentType(slot, item),
       current_star_force: item.currentStarForce ?? 0,
-      ...(item.laddering ? { laddering: ladderingForRequest(item.laddering) } : {}),
+      ...(item.laddering && !isAstraSecondary(item, slot) ? { laddering: ladderingForRequest(item.laddering) } : {}),
       minimum_cooldown_seconds: slot === 'hat' ? item.minimumCooldownSeconds ?? 0 : 0,
       replacement_cost_mesos: replacementCostForEquipment(item, slot),
       ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),

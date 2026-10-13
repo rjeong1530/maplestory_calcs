@@ -5,7 +5,7 @@ import EquipmentUpgradePlan from './EquipmentUpgradePlan'
 import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import { CLASS_STATS } from '../data/classStats'
 import { EQUIPMENT_SLOTS, SLOT_LABELS, FIXED_RING_SLOT } from '../data/flameEquipment'
-import { secondCopyItem, updateSecondCopy } from '../data/laddering'
+import { secondCopyItem, updateSecondCopy, isAstraSecondary } from '../data/laddering'
 
 export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenApproaches }) {
   const [statsExpanded, setStatsExpanded] = useState(true)
@@ -14,7 +14,8 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenAppro
     equipmentWeights, setEquipmentWeights, upgradeSettings, setUpgradeSettings } = planner
   const slot = activeSlot || EQUIPMENT_SLOTS.find(key => key && equipment[key])
   const selected = equipment[slot]
-  const editingSecond = copyView === 'second' && !!selected?.laddering
+  const hasLaddering = !!selected?.laddering && !isAstraSecondary(selected, slot)
+  const editingSecond = copyView === 'second' && hasLaddering
   const classStats = CLASS_STATS[equipmentClass]
 
   return <>
@@ -52,7 +53,7 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenAppro
             {selected ? <>
               <h3>{selected.name}</h3>
               <p className="hint">{SLOT_LABELS[slot.split('-')[0]]} · Level {selected.config.equipment_level}</p>
-              {selected.laddering && <>
+              {hasLaddering && <>
                 <div role="group" aria-label="Equipment copy" className="equipment-copy-selector">
                   <button type="button" aria-pressed={!editingSecond} onClick={() => setCopyView('equipped')}>Equipped copy</button>
                   <button type="button" aria-pressed={editingSecond} onClick={() => setCopyView('second')}>Second copy</button>

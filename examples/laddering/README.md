@@ -29,3 +29,10 @@ not guaranteed budgets.
 The sample was verified through the frontend importer/request builder and backend
 planner with Shining both on and off. Both produce a laddering recommendation
 with positive Star Force and potential preparation costs.
+
+## Gollux transfer example
+
+For equipped-versus-spare Source of Suffering transfers, import
+[gollux-transfer.json](gollux-transfer.json). See
+[transfer assumptions and costs](GOLLUX_TRANSFER.md). The displayed alternatives
+may choose different target stars; they are not consecutive steps.

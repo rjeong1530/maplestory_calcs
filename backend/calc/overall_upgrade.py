@@ -3,6 +3,7 @@ from bisect import bisect_left, bisect_right
 from math import fsum
 from copy import deepcopy
 from backend.calc.laddering import ladder_candidate
+from backend.calc.gollux_transfer import transfer_candidate
 
 
 class RollScores:
@@ -110,6 +111,7 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20, laddering_st
     cumulative_cost = 0.0
     for _ in range(limit):
         candidates = []
+        pending_transfers = set()
         for slot, queue in queues.items():
             ladder = ladders.get(slot)
             if ladder and ladder['active']:
@@ -125,7 +127,7 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20, laddering_st
             if not ladder['active']:
                 continue
             try:
-                candidate = ladder_candidate(ladder, rolls)
+                candidate = transfer_candidate(ladder, rolls) if ladder.get('transfer') else ladder_candidate(ladder, rolls)
             except ValueError as error:
                 if laddering_notes is not None and not ladder.get('blocked'):
                     laddering_notes.append({'slot': slot, 'name': ladder['name'], 'category': 'starforce', 'note': str(error)})
@@ -133,7 +135,15 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20, laddering_st
                 candidate = None
             if candidate:
                 candidates.append((candidate['gain_per_meso'], 'starforce', slot, candidate))
+                if candidate.get('transfer_route') in ('spare_transfer', 'equipped_transfer', 'restore_then_transfer'):
+                    pending_transfers.add(slot)
         for index, state in enumerate(states):
+            # Finish the selected transfer bundle before cubing. Otherwise a
+            # locally efficient roll can improve a copy that becomes the backup
+            # (or loses its potential), and keep raising the transfer's target.
+            # The bundle already prices potential preparation after transfer.
+            if state['category'] == 'potential' and state['entry']['slot'] in pending_transfers:
+                continue
             efficiency = state['scores'].efficiency(state['entry']['current_score'], state['cost'])
             if efficiency > 0:
                 candidates.append((efficiency, state['category'], index, state))
@@ -146,7 +156,16 @@ def overall_upgrade_order(starforce_entries, roll_states, limit=20, laddering_st
         competitor = candidates[1][0] if len(candidates) > 1 else 0
         if category == 'starforce':
             row = dict(candidate)
-            if row.get('laddering'):
+            if row.get('transfer_route'):
+                ladder = ladders[key]
+                row['copy_label'] = (ladder['spare_copy_label'] if row['laddering'] else ladder['current_copy_label'])
+                row['protected_copy_label'] = ladder['current_copy_label']
+                # The donor inventory depends on whether a boom actually
+                # happened. Do not project another bundle from fractional gear.
+                ladder['blocked'] = True
+                queues.pop(key, None)
+                states = [state for state in states if state['entry']['slot'] != key]
+            elif row.get('laddering'):
                 ladder = ladders[key]
                 row['copy_label'] = ladder['spare_copy_label']
                 row['protected_copy_label'] = ladder['current_copy_label']

@@ -1,6 +1,6 @@
 FRONTEND TEST INVENTORY
-Reviewed: 2026-10-11
-Total: 99 helper/API-client tests in 18 files, plus 3 separate browser harnesses
+Reviewed: 2026-10-12
+Total: 101 helper/API-client tests in 18 files, plus 3 separate browser harnesses and 1 prerender test
 Harnesses: 1 regression test, 1 live deployment smoke test, 1 rendering benchmark
 
 Laddering coverage includes independent second-copy editing, save/export/import,
@@ -32,7 +32,7 @@ and rendered interactions protect different boundaries. Frontend Star Force orde
 and backend combined planning run different implementations. Roll-count and budget
 helpers have distinct units and edge cases. Similar assertions alone do not make
 these tests redundant. Live smoke and benchmark were reviewed, not rerun in this audit.
-Latest local run: all 95 helper tests and the integrated browser regression passed.
+Latest local run: all 101 helper/API-client tests, the prerender test, and the isolated Firefox regression passed.
 
 Inventory policy: one entry per current named test, grouped by source file.
 Historical counts/change logs removed. Descriptions summarize assertions and do
@@ -528,3 +528,21 @@ Tests: 1
   and added custom row. Checks captured POST statuses and browser errors before reloading
   into equipment. Restores one Hero hat, submits upgrades, and checks rendered results
   without upgrade errors. Sequential requests only; no cold-start or saturation testing.
+
+==============================================================================
+FILE: frontend/src/data/laddering.test.js
+Tests: 5
+
+1. Astra secondaries discard legacy laddering and never send it to the API
+2. Gollux transfer settings survive save/import and API serialization only on SoS
+3. second copy is independently edited, persisted, exported and sent to the planner
+4. unrecorded copy stays distinct from recorded zero stats and old saves stay standard
+5. invalid laddering saves are rejected on import and ignored on browser restore
+
+==============================================================================
+FILE: frontend/scripts/prerender.test.mjs
+Tests: 1
+Run: npm run test:prerender
+Checks all six public documents for unique metadata, headings, guides, navigation,
+canonical links, HTML aliases, and sitemap entries. Build uses the shared page
+guide, including the Source of Suffering transfer sections.

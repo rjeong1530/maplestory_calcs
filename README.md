@@ -49,8 +49,28 @@ enabled roll categories. The planner chooses the cheapest attainable pair of
 stopping scores that guarantees a total-score improvement for each target star;
 it then compares the resulting upgrades by expected gain per meso. Recorded copies
 and automatic targets are rescored when weights change. Older saved manual minimums
-are ignored. Cooldown-minimum hats are not supported in laddering.
+are ignored. Astra secondaries and cooldown-minimum hats are not supported in laddering.
 Individual category tabs continue to show standard upgrade rankings.
+
+### Source of Suffering transfers
+
+SoS laddering offers a Gollux transfer mode with two alternatives in each step:
+transfer onto the equipped SoS (retain its flame; rebuild potential) or onto a
+spare (include needed flame and potential preparation). Each shows its own target,
+roll costs, total cost, and separate SoS/Gollux booms. Targets are optimized
+independently; only the option labeled **Used for ranking** contributes to totals.
+
+Transfer mode prioritizes fewer SoS booms, then meso efficiency. Transfers land
+at least at 22 stars and the equipped star level; subsequent SoS taps stay within
+its cap. Boom recovery restores the trace and transfers a rebuilt donor. Enter
+the expected Legendary tier-up cost explicitly. Initial donor/spare copies are
+assumed owned; missing spare stats count as zero. Recalculate after one SoS
+sequence with actual results and remaining inventory.
+
+The equipped option includes optional +2-donor tapping advice; that advice is
+not part of the cost model. Legacy `restore_trace` values are accepted but ignored.
+See the [transfer guide](examples/laddering/GOLLUX_TRANSFER.md) and
+[importable example](examples/laddering/gollux-transfer.json).
 
 ## Quick start
 

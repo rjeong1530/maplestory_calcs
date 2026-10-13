@@ -1,12 +1,40 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { DEFAULT_LADDERING, secondCopyItem, updateSecondCopy, validLaddering } from './laddering.js'
+import { DEFAULT_LADDERING, DEFAULT_TRANSFER, secondCopyItem, updateSecondCopy, validLaddering } from './laddering.js'
 import { equipmentChoices } from './flameEquipment.js'
 import { exportEquipment, importEquipment, restoreEquipment } from './equipmentSave.js'
 import { buildUpgradeRequest, restoreUpgradeSettings } from './equipmentUpgrade.js'
 import { CLASS_STATS } from './classStats.js'
 
 const hat = equipmentChoices('hat', 'Hero').find(item => item.config.equipment_level === 200)
+
+test('Astra secondaries discard legacy laddering and never send it to the API', () => {
+  const astra = equipmentChoices('secondary', 'Hero').find(item => item.name.startsWith('Astra '))
+  assert.ok(astra)
+  const equipped = { ...astra, currentStarForce: 17, laddering: { ...DEFAULT_LADDERING } }
+  const payload = buildUpgradeRequest({ secondary: equipped }, CLASS_STATS.Hero, {}, restoreUpgradeSettings())
+  assert.equal(payload.laddering_enabled, false)
+  assert.equal(payload.equipment[0].laddering, undefined)
+  const saved = JSON.parse(exportEquipment({ secondary: equipped }, 'Hero'))
+  assert.equal(saved.equipment.secondary.laddering, undefined)
+  saved.equipment.secondary.laddering = { ...DEFAULT_LADDERING }
+  for (const restored of [restoreEquipment(saved.equipment, 'Hero'), importEquipment(JSON.stringify(saved)).equipment]) {
+    assert.equal(restored.secondary.laddering, undefined)
+    assert.equal(restored.secondary.currentStarForce, 17)
+  }
+})
+
+test('Gollux transfer settings survive save/import and API serialization only on SoS', () => {
+  const sos = equipmentChoices('pendant-1', 'Hero').find(item => item.name === 'Source of Suffering')
+  const settings = { ...DEFAULT_LADDERING, transfer: { ...DEFAULT_TRANSFER, donor_star: 26, tier_up_cost_mesos: 1e9 } }
+  const restored = importEquipment(exportEquipment({ 'pendant-1': { ...sos, laddering: settings } }, 'Hero')).equipment
+  assert.deepEqual(restored['pendant-1'].laddering.transfer, settings.transfer)
+  const payload = buildUpgradeRequest(restored, CLASS_STATS.Hero, {}, restoreUpgradeSettings())
+  assert.deepEqual(payload.equipment.find(item => item.slot === 'pendant-1').laddering.transfer, settings.transfer)
+  assert.throws(() => importEquipment(exportEquipment({ hat: { ...hat, laddering: settings } }, 'Hero')), /Invalid equipment/)
+  assert.equal(validLaddering({ ...settings, transfer: { ...settings.transfer, donor_star: 27 } }), false)
+  assert.equal(validLaddering({ ...settings, transfer: { ...settings.transfer, tier_up_cost_mesos: -1 } }), false)
+})
 
 test('second copy is independently edited, persisted, exported and sent to the planner', () => {
   const equipped = { ...hat, currentStarForce: 21, currentPotential: [{ effect: 'STR_PCT', value: 12 }],

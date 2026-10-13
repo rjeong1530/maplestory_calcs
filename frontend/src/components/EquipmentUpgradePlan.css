@@ -100,7 +100,28 @@
   margin-top: 5px;
 }
 .overall-upgrade-table {
-  min-width: 940px;
+  min-width: 720px;
+  table-layout: fixed;
+}
+.overall-upgrade-table th,
+.overall-upgrade-table td {
+  min-width: 0;
+  padding: 12px 6px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.overall-upgrade-table th[scope="row"] {
+  min-width: 0;
+}
+.upgrade-step-details {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.upgrade-step-details summary {
+  cursor: pointer;
+  color: #a0e4b3;
 }
 .overall-upgrade-table + .hint {
   margin-top: 16px;

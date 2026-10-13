@@ -411,7 +411,22 @@ class LadderingCopyRequest(RequestModel):
     current_potential: list[CurrentPotentialLine] = Field(default_factory=list, max_length=3)
 
 
+class GolluxTransferRequest(RequestModel):
+    donor_star: int = Field(default=0, ge=0, le=30, strict=True)
+    donor_target: int = Field(default=26, ge=16, le=30, strict=True)
+    donor_cost_mesos: float = Field(default=0, ge=0, le=1e15, strict=True, allow_inf_nan=False)
+    tier_up_cost_mesos: float | None = Field(default=None, ge=0, le=1e15, strict=True, allow_inf_nan=False)
+    restore_trace: bool = Field(default=True, strict=True)
+
+    @model_validator(mode='after')
+    def donor_range(self):
+        if self.donor_star > self.donor_target:
+            raise ValueError('Donor stars exceed the maximum transfer star.')
+        return self
+
+
 class LadderingRequest(RequestModel):
+    transfer: GolluxTransferRequest | None = None
     start_star: int = Field(ge=0, le=30, strict=True)
     second_copy: LadderingCopyRequest | None = None
     minimum_flame_score: float = Field(default=0, ge=0, le=1e9, strict=True, allow_inf_nan=False)
@@ -424,6 +439,11 @@ class UpgradeEquipmentRequest(RequestModel):
     @model_validator(mode='after')
     def laddering_star_cap(self):
         if self.laddering:
+            if self.slot == 'secondary' and self.name.startswith('Astra '):
+                raise ValueError('Astra secondaries cannot be laddered.')
+            if self.laddering.transfer and (self.name != 'Source of Suffering' or self.equipment_level != 160
+                                           or self.slot.split('-', 1)[0] != 'pendant'):
+                raise ValueError('Gollux transfer planning is only supported for Source of Suffering.')
             cap = equipment_upgrade.maximum_star_force(self.equipment_level, self.name)
             if cap == 0 or self.laddering.start_star > cap or (self.laddering.second_copy and self.laddering.second_copy.current_star_force > cap):
                 raise ValueError('Laddering stars must be within this equipment’s Star Force cap.')

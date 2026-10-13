@@ -1,8 +1,8 @@
 BACKEND TEST INVENTORY
-Reviewed: 2026-10-11
-Total: 169 test methods in 15 files
+Reviewed: 2026-10-12
+Total: 183 test methods in 16 files
 
-Laddering: 12 tests cover automatic minimum targets (including exhaustive-search parity), spare catch-up and preparation costs, total-score swaps,
+Laddering: 13 tests cover automatic minimum targets (including exhaustive-search parity), spare catch-up and preparation costs, total-score swaps,
 alternating copies, starting thresholds, actual second-copy scoring, missing-copy
 defaults, input validation, and unavailable preparation without risky fallback.
 
@@ -21,7 +21,7 @@ Audit: retained all test methods. Engine and HTTP tests guard different layers;
 importer and bundled-catalog tests validate different artifacts. Specific weapon
 boss-weight validation overlaps general armor-weight validation but uses a distinct
 weapon configuration. Queue cases cover separate admission and cleanup failures.
-Latest local run: all 157 tests passed with the native Star Force kernel installed.
+Latest local run: all 183 tests passed. Includes native Star Force parity checks.
 Existing httpx deprecation warning remains. Native parity tests skip when the
 optional local extension is absent; Linux requirements install the extension.
 
@@ -756,3 +756,45 @@ Class: StrategyApiTests
 2. test_invalid_strategy_requests
   Rejects invalid levels and star ranges, boolean inputs, invalid replacement costs, and
   unsupported event, MVP, or Superior overrides with HTTP 422.
+
+==============================================================================
+FILE: backend/tests/test_laddering.py
+Tests: 13
+
+1. test_astra_secondary_rejects_laddering_but_allows_standard_upgrades
+2. test_automatic_preparation_matches_exhaustive_search
+3. test_slime_ring_at_24_enforces_laddering_despite_saved_global_off
+4. test_catchup_cost_counts_all_spare_stars_but_gain_only_equipped_delta
+5. test_minimum_roll_costs_and_conditional_outcomes_are_included
+6. test_worse_rolls_cannot_count_as_an_upgrade_or_rely_on_lucky_overshoot
+7. test_two_copies_alternate_and_original_inputs_are_unchanged
+8. test_standard_steps_stop_at_threshold_and_existing_spare_can_swap_for_free
+9. test_equipment_integration_and_invalid_configuration
+10. test_recorded_second_copy_uses_actual_lines_and_reacts_to_weights
+11. test_unrecorded_second_copy_starts_at_zero_and_ignores_legacy_minimums
+12. test_automatic_targets_choose_cheapest_attainable_pair_and_require_strict_gain
+13. test_unavailable_preparation_never_falls_back_to_risky_equipped_starforce
+
+==============================================================================
+FILE: backend/tests/test_gollux_transfer.py
+Tests: 13
+
+1. test_recovery_solves_are_shared_across_recipients_and_projection_steps
+2. test_both_transfer_options_have_recipient_specific_roll_costs
+3. test_spare_transfer_retains_flame_overwrites_potential_and_loses_one_star
+4. test_transfer_sequence_does_not_reuse_consumed_inventory
+5. test_spare_can_be_tapped_after_transfer_but_must_improve_equipped_stars
+6. test_post_transfer_recovery_costs_and_donor_consumption
+7. test_transfer_then_enhance_applies_across_star_levels
+8. test_cheap_fodder_cannot_transfer_below_equipped_stars
+9. test_guaranteed_transfer_beats_cheaper_sos_tapping
+10. test_no_sos_taps_below_22_even_with_ready_donor
+11. test_pending_transfer_defers_cubes_but_keeps_flames_and_other_items
+12. test_api_rejects_wrong_item_and_invalid_donor_range
+13. test_full_plan_prices_owned_26_star_donor_and_requires_tier_up_estimate
+
+Transfer coverage includes independent equipped/spare targets, separate flame and
+potential preparation costs, consumed-donor recovery, caps, missing-spare defaults,
+SoS/Gollux boom separation, no SoS taps below 22 stars, boom-first route selection,
+and request-local recovery-cache parity after score changes. Astra API rejection
+is covered in test_laddering.py. Tests model configured rules, not live game data.

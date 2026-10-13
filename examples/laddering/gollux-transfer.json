@@ -1,0 +1,36 @@
+{
+  "format": "maplestory-equipment",
+  "version": 1,
+  "equipment_class": "Hero",
+  "score_weights": {
+    "flame": {"all_stat_pct_value": 10, "secondary_stat_value": 0.1, "attack_value": 3, "boss_damage_pct_value": 10},
+    "potential": {"base_stat_pct_value": 10, "attack_pct_value": 10, "crit_damage_pct_value": 8}
+  },
+  "equipment": {
+    "pendant-1": {
+      "id": 1122430,
+      "current_star_force": 24,
+      "max_star_force": 25,
+      "replacement_cost_mesos": 10000000000,
+      "current_potential": [{"effect": "STR_PCT", "value": 13}],
+      "current_flames": [{"option": "STR", "stage": 5}],
+      "laddering": {
+        "start_star": 24,
+        "minimum_flame_score": 0,
+        "minimum_potential_score": 0,
+        "second_copy": {
+          "current_star_force": 0,
+          "current_potential": [],
+          "current_flames": [{"option": "STR", "stage": 5}]
+        },
+        "transfer": {
+          "donor_star": 26,
+          "donor_target": 26,
+          "donor_cost_mesos": 1000000000,
+          "tier_up_cost_mesos": 1000000000,
+          "restore_trace": false
+        }
+      }
+    }
+  }
+}

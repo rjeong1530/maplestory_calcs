@@ -31,7 +31,7 @@ export function PageGuide({ page, onNavigate }) {
       h('h2', null, 'Understand your next upgrade'),
       h('p', null, 'Practical examples, scoring assumptions, and how to read your results.')),
     h('div', { className: 'page-guide-sections' },
-      ...content.sections.map(([heading, text]) => h('section', { key: heading, className: 'page-guide-section' },
+      ...content.sections.map(([heading, text, id]) => h('section', { key: heading, id, className: 'page-guide-section' },
         h('h2', null, heading), h('p', null, text)))),
     h('aside', { className: 'page-guide-sources', 'aria-label': 'Model scope and data sources' },
     h('h2', null, 'Model scope and data sources'),

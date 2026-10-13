@@ -19,6 +19,18 @@ def ladder(**updates):
 
 
 class LadderingTests(unittest.TestCase):
+    def test_astra_secondary_rejects_laddering_but_allows_standard_upgrades(self):
+        fixture = equipment_tests.EquipmentUpgradeTests()
+        fixture.setUp()
+        request = fixture.plan_request(categories=['starforce'])
+        item = request['equipment'][0]
+        item.update(name='Astra Medallion', slot='secondary', equipment_level=200,
+                    potential_equipment_type='secondary weapon', laddering={'start_star': 17})
+        with self.assertRaisesRegex(ValueError, 'Astra secondaries cannot be laddered'):
+            EquipmentUpgradePlanRequest(**request)
+        del item['laddering']
+        EquipmentUpgradePlanRequest(**request)
+
     def test_automatic_preparation_matches_exhaustive_search(self):
         from random import Random
         random = Random(42)

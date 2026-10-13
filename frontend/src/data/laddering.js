@@ -1,7 +1,24 @@
 import { equipmentLinesForRequest, isObject, restoreEquipmentLines } from './equipmentLines.js'
 
+export const isAstraSecondary = (item, slot) => slot === 'secondary' && item?.name?.startsWith('Astra ')
+
 export const DEFAULT_LADDERING = {
-  start_star: 17, minimum_flame_score: 0, minimum_potential_score: 0, second_copy: null,
+  start_star: 17, minimum_flame_score: 0, minimum_potential_score: 0, second_copy: null, transfer: null,
+}
+
+export const DEFAULT_TRANSFER = {
+  donor_star: 0, donor_target: 26, donor_cost_mesos: 0, tier_up_cost_mesos: null, restore_trace: true,
+}
+
+function validTransfer(value) {
+  return value == null || (isObject(value)
+    && Object.keys(value).every(key => Object.hasOwn(DEFAULT_TRANSFER, key))
+    && Number.isInteger(value.donor_star) && value.donor_star >= 0 && value.donor_star <= value.donor_target
+    && Number.isInteger(value.donor_target) && value.donor_target >= 16 && value.donor_target <= 30
+    && typeof value.restore_trace === 'boolean'
+    && ['donor_cost_mesos', 'tier_up_cost_mesos'].every(key =>
+      (key === 'tier_up_cost_mesos' && value[key] === null)
+      || (typeof value[key] === 'number' && Number.isFinite(value[key]) && value[key] >= 0 && value[key] <= 1e15)))
 }
 
 export function validLaddering(value, cap = 30) {
@@ -9,6 +26,7 @@ export function validLaddering(value, cap = 30) {
     && Object.keys(value).every(key => Object.hasOwn(DEFAULT_LADDERING, key))
     && Object.keys(DEFAULT_LADDERING).every(key => {
       const number = value[key]
+      if (key === 'transfer') return validTransfer(number)
       if (key === 'second_copy') return number == null || (isObject(number)
         && Object.keys(number).every(field => ['current_star_force', 'current_flames', 'current_potential'].includes(field))
         && Number.isInteger(number.current_star_force) && number.current_star_force >= 0 && number.current_star_force <= cap

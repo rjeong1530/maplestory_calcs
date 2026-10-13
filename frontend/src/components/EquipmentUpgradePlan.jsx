@@ -71,7 +71,7 @@ export default function EquipmentUpgradePlan({
         Record current stars, potential and flames above; unrecorded bonuses count as zero.</p>
       <form onSubmit={submit}>
         <p><strong>Overall upgrade mode: {payload.laddering_enabled ? 'Laddering' : 'Standard'}</strong></p>
-        <p className="hint">Each item's laddering checkbox enforces its starting threshold in the Overall tab.
+        <p className="hint">Each item's laddering checkbox enforces its starting threshold in the Overall tab. SoS transfer mode shows equipped and spare transfer alternatives.
           Items without laddering settings use standard upgrades. Record second-copy stats in Current equipment stats; minimum scores are calculated automatically.</p>
         <fieldset className="upgrade-categories">
           <legend>Upgrade orders to calculate</legend>

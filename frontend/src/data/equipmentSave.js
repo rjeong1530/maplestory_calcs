@@ -2,7 +2,7 @@ import { equipInSlot, equipmentChoices, EQUIPMENT_SLOTS, CLASS_FAMILIES, FIXED_R
 import { maxStarForceForEquipment, replacementCostForEquipment } from './starforce.js'
 import { isObject, LINE_FIELDS, restoreEquipmentLines } from './equipmentLines.js'
 import { FLAME_WEIGHT_LABELS, POTENTIAL_WEIGHT_LABELS } from './equipmentUpgrade.js'
-import { validLaddering } from './laddering.js'
+import { validLaddering, isAstraSecondary } from './laddering.js'
 
 function validateScoreWeights(weights) {
   if (!isObject(weights)) throw new Error('Invalid equipment score weights.')
@@ -22,7 +22,7 @@ export function serializeEquipment(equipment) {
   return Object.fromEntries(Object.entries(equipment).filter(([slot]) => slot !== FIXED_RING_SLOT).map(([slot, item]) => [slot, {
     id: item.id,
     current_star_force: item.currentStarForce ?? 0,
-    ...(item.laddering ? { laddering: item.laddering } : {}),
+    ...(item.laddering && !isAstraSecondary(item, slot) ? { laddering: item.laddering } : {}),
     ...(slot === 'hat' && item.minimumCooldownSeconds > 0 ? { minimum_cooldown_seconds: item.minimumCooldownSeconds } : {}),
     replacement_cost_mesos: replacementCostForEquipment(item, slot),
     ...(item.maxStarForce != null ? { max_star_force: item.maxStarForce } : {}),
@@ -78,6 +78,7 @@ export function importEquipment(text) {
     const choice = equipmentChoices(slot, saved.equipment_class).find(choice => choice.id === item.id)
     if (!choice) throw new Error(`Equipment in ${slot} is unavailable for ${saved.equipment_class}.`)
     if (item.laddering !== undefined && !validLaddering(item.laddering, maxStarForceForEquipment(choice))) invalid()
+    if (item.laddering?.transfer && choice.name !== 'Source of Suffering') invalid()
     if (item.minimum_cooldown_seconds !== undefined && (slot !== 'hat'
       || !Number.isInteger(item.minimum_cooldown_seconds) || item.minimum_cooldown_seconds < 0
       || item.minimum_cooldown_seconds > 6)) invalid()
@@ -133,7 +134,7 @@ export function restoreEquipment(savedEquipment, mapleClass) {
     return equipInSlot(equipment, slot, {
       ...restoredItem,
       currentStarForce,
-      ...(validLaddering(savedItem.laddering, maxStarForce) ? { laddering: { ...savedItem.laddering } } : {}),
+      ...(validLaddering(savedItem.laddering, maxStarForce) && !isAstraSecondary(item, slot) ? { laddering: { ...savedItem.laddering } } : {}),
       ...(slot === 'hat' ? { minimumCooldownSeconds: Number.isInteger(savedItem.minimum_cooldown_seconds)
         ? Math.max(0, Math.min(6, savedItem.minimum_cooldown_seconds)) : 0 } : {}),
       replacementCostMesos: typeof savedItem.replacement_cost_mesos === 'number'

@@ -1,0 +1,219 @@
+{
+  "format": "maplestory-equipment",
+  "version": 1,
+  "equipment_class": "Demon Slayer",
+  "equipment": {
+    "badge": {
+      "id": 1182285,
+      "current_star_force": 0,
+      "replacement_cost_mesos": 0,
+      "current_potential": [],
+      "current_flames": [],
+      "current_flame_type": "black",
+      "current_boss_equipment": true
+    },
+    "secondary": {
+      "id": 1099023,
+      "current_star_force": 25,
+      "replacement_cost_mesos": 1000000000,
+      "current_potential": [
+        {
+          "effect": "ATT_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "ATT_PCT",
+          "value": "10"
+        },
+        {
+          "effect": "ATT_PCT",
+          "value": "10"
+        }
+      ],
+      "current_flames": [],
+      "current_flame_type": "black",
+      "current_boss_equipment": false
+    },
+    "pendant-1": {
+      "id": 1122430,
+      "current_star_force": 24,
+      "laddering": {
+        "start_star": 24,
+        "minimum_flame_score": 0,
+        "minimum_potential_score": 0,
+        "second_copy": null,
+        "transfer": {
+          "donor_star": 12,
+          "donor_target": 26,
+          "donor_cost_mesos": 0,
+          "tier_up_cost_mesos": 1500000000,
+          "restore_trace": false
+        }
+      },
+      "replacement_cost_mesos": 0,
+      "mode_by_star": {
+        "20": 1,
+        "21": 1
+      },
+      "safeguard_by_star": {
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "current_potential": [
+        {
+          "effect": "STR_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "STR_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "STR_PCT",
+          "value": "10"
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "STR+LUK",
+          "stage": 6
+        },
+        {
+          "option": "STR",
+          "stage": 5
+        },
+        {
+          "option": "STR+INT",
+          "stage": 4
+        },
+        {
+          "option": "ALL_STAT_PCT",
+          "stage": 6
+        }
+      ],
+      "current_flame_type": "black",
+      "current_boss_equipment": true
+    },
+    "weapon": {
+      "id": 1312226,
+      "current_star_force": 22,
+      "replacement_cost_mesos": 0,
+      "current_potential": [
+        {
+          "effect": "ATT_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "ATT_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "BOSS_DAMAGE_PCT",
+          "value": "40"
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "STR",
+          "stage": 6
+        },
+        {
+          "option": "STR+INT",
+          "stage": 6
+        },
+        {
+          "option": "BOSS_DAMAGE_PCT",
+          "stage": 5
+        },
+        {
+          "option": "ATT",
+          "stage": 7
+        }
+      ],
+      "current_flame_type": "black",
+      "current_boss_equipment": true
+    },
+    "emblem": {
+      "id": 1190555,
+      "current_star_force": 0,
+      "replacement_cost_mesos": 0,
+      "current_potential": [
+        {
+          "effect": "ATT_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "ATT_PCT",
+          "value": "13"
+        },
+        {
+          "effect": "ATT_PCT",
+          "value": "10"
+        }
+      ],
+      "current_flames": [],
+      "current_flame_type": "black",
+      "current_boss_equipment": true
+    },
+    "hat": {
+      "id": 1005980,
+      "current_star_force": 25,
+      "laddering": {
+        "start_star": 25,
+        "minimum_flame_score": 0,
+        "minimum_potential_score": 0,
+        "second_copy": null
+      },
+      "minimum_cooldown_seconds": 4,
+      "replacement_cost_mesos": 0,
+      "current_potential": [
+        {
+          "effect": "COOLDOWN_SEC",
+          "value": "-2"
+        },
+        {
+          "effect": "COOLDOWN_SEC",
+          "value": "-2"
+        },
+        {
+          "effect": "STR_PCT",
+          "value": "13"
+        }
+      ],
+      "current_flames": [
+        {
+          "option": "STR",
+          "stage": 6
+        },
+        {
+          "option": "STR+INT",
+          "stage": 5
+        },
+        {
+          "option": "STR+DEX",
+          "stage": 4
+        },
+        {
+          "option": "ALL_STAT_PCT",
+          "stage": 6
+        }
+      ],
+      "current_flame_type": "black",
+      "current_boss_equipment": true
+    }
+  },
+  "score_weights": {
+    "flame": {
+      "all_stat_pct_value": 12.79,
+      "secondary_stat_value": 0.104,
+      "attack_value": 2.51,
+      "boss_damage_pct_value": 10.9
+    },
+    "potential": {
+      "base_stat_pct_value": 11.17,
+      "attack_pct_value": 46.89,
+      "crit_damage_pct_value": 38.79
+    }
+  }
+}
