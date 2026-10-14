@@ -3,7 +3,6 @@ import { equipmentSetup, equipmentStats } from '../preloadPage'
 import DeferredPage from './DeferredPage'
 import { CLASS_STATS } from '../data/classStats'
 import { FIXED_RING_SLOT } from '../data/flameEquipment'
-import './EquipmentWindow.css'
 
 const EquipmentWindow = equipmentSetup.Component
 const EquipmentStats = equipmentStats.Component
@@ -20,8 +19,11 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
   })
 
   return (
-    <div className="equipment-page-layout">
-      <nav className="equipment-section-navigation" aria-label="Equipment sections">
+    <div className="equipment-page-layout grid grid-cols-1 items-start gap-5">
+      <nav className="equipment-section-navigation grid grid-cols-2 w-[min(100%,_420px)] gap-2 p-2 border border-solid border-rule
+        rounded-sm bg-surface [&_button]:text-left [&_button]:p-3 [&_button]:text-[13px] [&_button]:border-transparent
+        [&_button[aria-pressed='true']]:bg-[#373022] [&_button[aria-pressed='true']]:text-maple
+        [&_button[aria-pressed='true']]:border-[#826c44]" aria-label="Equipment sections">
         <button type="button" aria-pressed={view === 'setup'} aria-controls="equipment-setup-view"
           onClick={() => setView('setup')}>Equipment setup</button>
         <button type="button" aria-pressed={view === 'stats'} aria-controls="equipment-stats-view"

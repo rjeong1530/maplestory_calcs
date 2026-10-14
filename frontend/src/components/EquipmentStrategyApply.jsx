@@ -10,10 +10,10 @@ export default function EquipmentStrategyApply({ equipment, strategy, onApply })
   const targets = entries.filter(([slot, item]) => scope === 'all'
     || (scope === 'selected' ? selected.includes(slot) : equipmentGroup(item, slot) === scope))
 
-  return <details className="equipment-strategy-apply group">
+  return <details className="equipment-strategy-apply my-5 mx-0 p-4 border border-solid border-rule rounded-sm group">
     <summary className="cursor-pointer p-0 text-[13px] font-semibold group-open:mb-3">Apply approach to equipment</summary>
     {strategy.name && <p>Source: <strong>{strategy.name}</strong></p>}
-    <p className="hint">Copy these per-star modes and safeguards to your saved equipment. Current stars, stats,
+    <p className="hint text-[12px] text-muted mb-4.5">Copy these per-star modes and safeguards to your saved equipment. Current stars, stats,
       replacement costs, and upgrade limits stay as recorded. Upgrade costs are recalculated for each item
       using the event and MVP settings in Equipment.</p>
     <div className="flex flex-wrap gap-2" role="group" aria-label="Equipment to apply to">
@@ -34,7 +34,7 @@ export default function EquipmentStrategyApply({ equipment, strategy, onApply })
         </fieldset>
       })}
     </div>
-    {!targets.length && <p className="hint">{entries.length ? 'No eligible equipment selected in this group.' : 'Equip items with enhancement modes in Equipment setup first.'}</p>}
+    {!targets.length && <p className="hint text-[12px] text-muted mb-4.5">{entries.length ? 'No eligible equipment selected in this group.' : 'Equip items with enhancement modes in Equipment setup first.'}</p>}
     <button type="button" disabled={!targets.length} onClick={() => {
       onApply(targets.map(([slot]) => slot), strategy)
       setMessage(`Approach applied to ${targets.length} equipment item(s).`)

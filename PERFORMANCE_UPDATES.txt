@@ -1,70 +1,109 @@
-Transfer planning cleanup - 2026-10-12
+PERFORMANCE AND MAINTENANCE HISTORY
+===================================
+Documentation reviewed: 2026-10-14
 
-- Cache SoS recovery solves within each request, shared by equipped/spare options
-  and later overall-planner iterations. No cross-request cache or stale weights.
-- Build preparation options once per recipient evaluation and reuse each final
-  star's roll preparation across donor targets.
+Entries are ordered newest first. Measurements and validation counts describe
+the revision tested on the recorded date, not the current working tree.
+Keep local calculation timings separate from browser readiness, API latency,
+production throughput, and memory usage. Do not multiply speedups from separate
+baselines. Current test inventories are in BACKEND_TESTS.txt and FRONTEND_TESTS.txt.
+Current architecture and setup are in backend/README.md and frontend/README.md.
+
+========================================================================================
+Tailwind styling migration and documentation audit
+Recorded: 2026-10-14
+
+Changes:
+- Replaced component stylesheets and inline styles with Tailwind utility classes.
+- Consolidated theme tokens and Tailwind base defaults in frontend/src/index.css.
+- Updated prerendered navigation to use the same styling approach.
+- Reorganized the three primary READMEs and refreshed test inventories.
+
+Validation:
+- All 183 backend tests and 101 frontend helper/API-client tests passed.
+- Frontend lint, production build, and the prerender test passed.
+- Direct isolated Firefox checks covered desktop/mobile layouts; the standard regression
+  harness could not launch without geckodriver, and backend API access was unavailable
+  during those layout checks.
+
+Measurement limits: No new runtime or load-time speedup was measured for the styling
+migration. Earlier CSS splitting and bundle-size measurements below describe their dated
+builds; component CSS filenames and initial CSS sizes are not the current layout.
+
+========================================================================================
+Transfer planning cleanup
+Recorded: 2026-10-12
+
+- Cache SoS recovery solves within each request, shared by equipped/spare options and
+  later overall-planner iterations. No cross-request cache or stale weights.
+- Build preparation options once per recipient evaluation and reuse each final star's
+  roll preparation across donor targets.
 - Share route-priority comparison and exit early when Potential is unavailable.
 - Updated README, transfer example documentation, and test inventories to match
-  equipped/spare alternatives, separate boom counts, Astra restrictions, and
-  legacy checkbox compatibility.
+  equipped/spare alternatives, separate boom counts, Astra restrictions, and legacy
+  checkbox compatibility.
 
-Evidence: a regression with two donor targets requires three unique recovery
-solves across both recipients. Repeated evaluation and changed current scores
-perform no additional recovery solves; clearing the cache produces identical
-results. This verifies reduced work, not a measured Render latency speedup.
-Validation: 183 backend tests, 101 frontend tests, lint, build and prerender pass.
+Evidence: a regression with two donor targets requires three unique recovery solves
+across both recipients. Repeated evaluation and changed current scores perform no
+additional recovery solves; clearing the cache produces identical results. This verifies
+reduced work, not a measured Render latency speedup. Validation: 183 backend tests, 101
+frontend tests, lint, build and prerender pass.
 
-Code cleanup and formatting - 2026-10-11
+========================================================================================
+Code cleanup and formatting
+Recorded: 2026-10-11
 
 Changes:
 - Removed forwarding-only equipment callbacks and passed handlers directly.
 - Replaced the single-field laddering form loop with a direct star input.
 - Shared flame/potential request serialization between equipped and spare copies.
-- Reused the existing object validation helper and simplified ladder candidate
-  selection without changing free-upgrade priority or efficiency comparisons.
+- Reused the existing object validation helper and simplified ladder candidate selection
+  without changing free-upgrade priority or efficiency comparisons.
 - Corrected JSX indentation and removed excess blank lines.
 
 This is a maintainability cleanup; no additional runtime speedup was measured.
-Validation: 99 frontend tests, 20 relevant backend tests, browser regressions,
-lint, git diff --check, and production build all passed.
+Validation: 99 frontend tests, 20 relevant backend tests, browser regressions, lint, git
+diff --check, and production build all passed.
 
-Performance review - 2026-10-11
+========================================================================================
+Performance review
+Recorded: 2026-10-11
+
 Laddering, frontend rendering, and CSS
 
 Laddering optimizations (backend/calc/laddering.py):
-- Build sorted spare score/cost arrays once per candidate search and reuse them
-  across target stars instead of rebuilding them for every target.
-- Enumerate the smaller roll table and binary-search the other table for the
-  minimum qualifying score, avoiding an exhaustive flame/potential cross product.
-- Compare precomputed costs directly; construct full expected-roll estimates
-  only for the selected pair instead of every qualifying pair.
+- Build sorted spare score/cost arrays once per candidate search and reuse them across
+  target stars instead of rebuilding them for every target.
+- Enumerate the smaller roll table and binary-search the other table for the minimum
+  qualifying score, avoiding an exhaustive flame/potential cross product.
+- Compare precomputed costs directly; construct full expected-roll estimates only for
+  the selected pair instead of every qualifying pair.
 - Calculate the equipped total-score baseline once per candidate search.
-- Skip the target search when existing spare rolls already meet the required
-  combined score; sufficient rolls incur no preparation cost.
-- Preserve strict total-score improvement, free-swap priority, and expected
-  preparation costs. Randomized exhaustive-search tests verify cost parity.
-The measured before/after improvement below comes from reusing options and
-avoiding repeated estimate construction; binary search was already present.
+- Skip the target search when existing spare rolls already meet the required combined
+  score; sufficient rolls incur no preparation cost.
+- Preserve strict total-score improvement, free-swap priority, and expected preparation
+  costs. Randomized exhaustive-search tests verify cost parity. The measured
+  before/after improvement below comes from reusing options and avoiding repeated
+  estimate construction; binary search was already present.
 
 Frontend and CSS optimizations:
-- Memoize frontend upgrade request construction/serialization and Star Force
-  ordering when their inputs have not changed.
-- Remove an unused flame sorting operation from the generic ranking path;
-  the flame results component already receives its own sorted rows.
-- Share identical flame-settings/strategy-panel CSS declarations and remove
-  the unused .upgrade-results-controls > label selector. A source class-name
-  audit found no clearly orphaned class rules; dynamic selectors were retained.
+- Memoize frontend upgrade request construction/serialization and Star Force ordering
+  when their inputs have not changed.
+- Remove an unused flame sorting operation from the generic ranking path; the flame
+  results component already receives its own sorted rows.
+- Share identical flame-settings/strategy-panel CSS declarations and remove the unused
+  .upgrade-results-controls > label selector. A source class-name audit found no clearly
+  orphaned class rules; dynamic selectors were retained.
 - Replace the browser benchmark's hard-coded report date with its runtime date.
 
-Local CPU benchmark (synthetic 5,000 flame / 500 potential scores, 12-star
-spare, 24-star equipped item, 25-star cap; best of 3 batches of 10 calls):
+Local CPU benchmark (synthetic 5,000 flame / 500 potential scores, 12-star spare,
+24-star equipped item, 25-star cap; best of 3 batches of 10 calls):
 - Before: 19.372 ms per ladder candidate search.
 - After: 1.720 ms, approximately 11.3x faster.
 - Identical selected stars, minimum targets, and expected cost.
 - Reproduce: python -m backend.benchmark_laddering
-- This isolates preparation/search CPU, not distribution generation, network
-  requests, free Render cold starts, or full equipment-plan latency.
+- This isolates preparation/search CPU, not distribution generation, network requests,
+  free Render cold starts, or full equipment-plan latency.
 
 Production frontend benchmark (five fresh navigations per route, medians):
                       Before (ms)   After (ms)
@@ -79,394 +118,21 @@ were not benchmarked. Variation is too large to claim a frontend speedup.
 Raw latest runs: frontend/rendering-benchmark.json
 Reproduce: npm --prefix frontend run benchmark:render (Firefox/geckodriver).
 
-Validation: 169 backend tests, including randomized exhaustive-search parity
-for minimum preparation costs; 99 frontend tests; browser regression harness;
-lint; production build; production rendering benchmark all passed.
+Validation: 169 backend tests, including randomized exhaustive-search parity for minimum
+preparation costs; 99 frontend tests; browser regression harness; lint; production
+build; production rendering benchmark all passed.
 
-Performance update - 2026-10-02
-Single flame calculator
-
-Changed probability_at_least() to use the aggregated score-distribution
-algorithm instead of enumerating every possible flame outcome.
-No new caching was added. Threshold calculations use unrounded scores to
-preserve fractional-score comparisons; the bulk planner's default rounding
-behavior remains unchanged.
-
-Local benchmark:
-- Level 150 armor, boss equipment, Black Flame, STR main stat,
-  default score weights, target score 120.
-- Previous outcome enumeration: 5.3214 seconds.
-- New uncached score distribution: approximately 0.0030 seconds.
-- Measured speedup: approximately 1,745 times faster.
-- Probability difference: 0.
-- This is one local calculation benchmark, not end-to-end API latency;
-  timings will vary by configuration and environment.
-
-Validation:
-- Flame regression tests passed, including fractional thresholds and
-  weapon calculations.
-- Added comparisons against outcome enumeration for all three flame types,
-  boss and non-boss equipment, armor and weapons, and score boundaries.
-- The initial broader 40-test run without failures.
-
-Implementation: backend/calc/maplestory_flames.py
-Regression tests: backend/tests/test_flames.py
-
------------------------------------------------------------------------
-Cleanup and performance update - 2026-10-02
-Project redundancy and optimization audit
+========================================================================================
+Star Force budget calculation optimization
+Recorded: 2026-10-09
 
 Changes:
-1. Extracted potential calculator state, API requests, and results from
-   App.jsx into components/PotentialCalculator.jsx.
-2. Added lazy imports for PotentialCalculator, StarForceCalculator, and
-   EquipmentPlanner. Added DeferredPage to mount each tool on its first
-   visit and retain that mounted page afterward. The initial landing page
-   no longer mounts hidden tools or starts their calculator API requests.
-3. Replaced the potential calculator's duplicate success-chance checkboxes
-   and percentage list with SuccessChances and SUCCESS_CHANCES, shared
-   with the flame and Star Force calculators.
-4. Added data/numberFormat.js to share integer and small-percentage
-   formatting between potential and flame results. Star Force also uses
-   the shared integer formatter for mesos.
-5. Moved Star Force rate, flame improvement chance, and equipment upgrade
-   score formatters out of per-value calls. Tables now reuse Intl formatters
-   instead of constructing one for every formatted value.
-6. Removed obsolete App.css rules for .badge and .estimate-heading.
-7. Combined identical flame and Star Force field-grid rules, including
-   their mobile layout rules, and combined matching checkbox styles.
-8. Merged duplicate button/input/select selector blocks in index.css.
-9. Removed unused EquipmentWindow.css selectors for potential-line inputs
-   and removable current-stat rows. Combined the identical equipment
-   analysis layouts into one max-width: 720px media query.
-10. Removed the obsolete flame-confidence h3 rule and the overridden
-    inline-block declaration on flame-type-badge in EquipmentUpgradePlan.css.
-11. Removed the second, redundant NON_STARFORCE_SLOTS validation in
-    backend/calc/equipment_upgrade.py. The initial validation remains.
-
-Production build comparison:
-- Initial JavaScript: 421.86 kB -> 226.65 kB (about 46% smaller).
-- Initial JavaScript, gzip: 104.60 kB -> 71.11 kB.
-- Initial CSS: 19.38 kB -> 8.84 kB; equipment CSS loads with its tool.
-- Calculator code still downloads when needed. These are initial bundle
-  sizes, not measured browser load-time improvements.
-
-Validation:
-- All 49 frontend data tests passed.
-- All 86 backend tests passed.
-- Frontend lint and production build passed after final edits.
-- Flame confidence/formatting tests passed after formatter changes.
-- Server-render smoke checks passed for the landing page, potential
-  calculator, Star Force calculator, and deferred mounting.
-
------------------------------------------------------------------------
-Cleanup and performance update - 2026-10-05
-Equipment selection, navigation, CSS organization, and regression tests
-
-Changes:
-1. Indexed the static equipment catalog by slot and class families by job.
-   Equipment lookups now filter the relevant slot instead of scanning the
-   whole catalog and rebuilding class-family mappings on every call.
-2. Memoized equipment picker choices by selected slot and class so unrelated
-   component renders do not repeat filtering, configuration, and sorting.
-3. Extracted navigation actions into navigateToPage(), used by usePageRoute.
-   Clicking the current page with a trailing slash no longer adds a duplicate
-   history entry. Unknown page keys are ignored before preventing the click.
-   Modified clicks, download links, and links targeting another browsing
-   context retain normal browser handling.
-4. Moved navigation styles from App.css to components/Navigation.css and
-   equipment-editor styles from EquipmentWindow.css to EquipmentAnalysis.css.
-   Each component imports its stylesheet. Moved rules were kept unchanged.
-5. Removed the unused .equipment-class-selector CSS rule.
-6. Added regression tests for navigation history and scrolling, duplicate
-   routes, invalid routes, new-tab/download behavior, sorted equipment
-   choices, repeated lookup isolation, and unknown slots/classes.
-   Existing tests continue to cover equipment eligibility, import/export,
-   upgrade ordering, probability helpers, and backend calculations/API behavior.
-7. Added npm test for the frontend and updated README verification instructions.
-8. Updated Demon Avenger's class configuration to have no secondary stat.
-   Existing UI conditions hide Secondary stat per main stat in Flames and
-   Equipment, and calculation requests no longer include STR as a secondary.
-
-Local equipment lookup benchmark:
-- Compared the previous committed implementation with the indexed lookup.
-- Verified identical results for all 1,175 supported job/slot combinations,
-  including repeated equipment slots.
-- Timed 15 passes over these combinations after warming both implementations.
-- Previous implementation: 103 ms; indexed implementation: 29 ms.
-- Approximately 3.55 times faster, or 72% less time in this measured run.
-- This measures equipmentChoices() calls, not browser rendering or API latency.
-  Timings vary by environment; the memoized-render benefit was not benchmarked.
-
-Validation:
-- All 54 frontend tests passed (51 existing tests plus 3 new tests).
-- All 89 backend tests passed; backend calculation code was unchanged.
-- Frontend lint, production build, and git diff --check passed.
-- Verified CSS extraction against the previous files: moved rules unchanged,
-  with only .equipment-class-selector removed.
-- No browser visual checks were performed for this update.
-
-Primary implementation files:
-- frontend/src/data/flameEquipment.js
-- frontend/src/components/EquipmentWindow.jsx
-- frontend/src/data/routes.js and frontend/src/hooks/usePageRoute.js
-- frontend/src/components/Navigation.css
-- frontend/src/components/EquipmentAnalysis.css
-- frontend/src/data/classStats.js
-
-Regression tests:
-- frontend/tests/flameEquipment.test.js
-- frontend/tests/routes.test.js
-
------------------------------------------------------------------------
-Star Force replacement costs - 2026-10-05
-
-- Added replacement cost per boom to the standalone calculator and equipment
-  details. Default is 0; Astra secondaries default to 1,000,000,000 mesos.
-  Explicit zero/custom values override the default and survive saves/exports.
-- Older equipment saves without the field receive the appropriate default.
-- Expected total cost now includes expected booms times replacement cost,
-  including booms incurred during recovery. Attempts and their percentiles
-  are unchanged. The API also returns expected replacement spending separately.
-- Equipment upgrade rows display expected booms; grouped ranges sum booms,
-  replacement spending, and total costs. Efficiency uses the full total cost.
-- Added the optional --replacement-cost-mesos command-line argument.
-- Added regression coverage for defaults, overrides, import validation,
-  boom-free upgrades, recovery costs, grouped rows, and ranking behavior.
-- Validation: 56 frontend tests and 92 backend tests passed; frontend lint
-  and production build passed. No new performance benchmark was performed.
-
------------------------------------------------------------------------
-Heart and emblem catalog update - 2026-10-05
-
-- Fetch hearts without level restrictions and retain only Fairy Heart,
-  Titanium Heart, Plasma Heart, Outlaw Heart, and Total Control.
-- Added --refresh-hearts for the existing catalog version. Incomplete heart
-  responses are rejected before writing; duplicate names retain the lowest ID.
-- Recognize Mitra's Rage emblem IDs 1190555-1190559 despite the source's
-  Unknown category, preserving the five class restrictions.
-- Refreshed the bundled GMS 270 catalog: five hearts and five Mitra emblems
-  are now present; total catalog size is 759 items. Previous CRA exclusions remain.
-- Added importer and picker regressions; updated README and test inventories.
-- Validation: 57 frontend tests, 95 backend tests, and production build passed.
-  No new performance benchmark was performed.
-
-Catalog filter update - 2026-10-05
-- Exclude Red Beryl, Frontier, and Commerci name prefixes on every fetch/filter.
-- Pocket allowlist: Pink Holy Cup and all four colored Cursed Spellbooks.
-- Applied locally: removed 13 records; 746 catalog entries remain.
-- All 10 importer tests and 16 frontend equipment tests passed.
-
-Fixed ring slot and eye filter - 2026-10-05
-- Removed Bounty Legend's Sunglasses from bundled data and future fetches,
-  preserving Bounty Legend's Earrings. Catalog now contains 745 entries.
-- Ring 4 defaults to Ring of Restraint (source ID 1113098, level 110), with
-  replacement/removal/editing blocked. Legacy saves and imports normalize it.
-- Excluded the fixed skill ring from enhancement requests and rankings.
-- Validation: all 60 frontend tests and 10 importer tests passed, along with
-  frontend lint and production build. No browser visual check was performed.
-
-Equipment persistence fix - 2026-10-05
-- A representative full equipment set encoded to 6,036 bytes before settings,
-  exceeding a typical single-cookie capacity. Cookie writes could silently fail.
-- Moved equipment, classes, weights, and upgrade settings to local storage.
-  Recover existing cookie data and remove the old cookie only after a successful
-  write. Display a save error when storage is unavailable or full.
-- Added large-save round-trip, cookie migration, malformed-data fallback,
-  blocked storage, and quota failure regression coverage.
-- All 63 frontend tests and the production build passed. No browser reload
-  test was performed; storage behavior was verified with test doubles.
-
-Earring catalog filter - 2026-10-05
-- Keep only Commanding Force Earring, Estella Earrings, and Superior Gollux
-  Earrings on fetches and local filtering. Removed 9 records; 736 remain.
-- All 10 importer tests and 16 frontend equipment tests passed.
-
-Project review fixes and regression checks - 2026-10-06
-- Star Force budget percentiles allocate and process only states reachable from
-  the starting star. This avoids work on unreachable recovery states without
-  changing the 65,536-bin budget grid, rounding rules, costs, or probabilities.
-  Responses now expose rounding_unit_mesos and calculation_limit_mesos; the UI
-  explains precision and distinguishes a numerical limit from impossibility.
-- Star Force and flame requests share cancellation and input-keyed result logic.
-  Superseded requests are aborted and late responses cannot overwrite results
-  for newer inputs. Cost-table updates also respect cancellation.
-- Visited equipment and calculator pages remain mounted during navigation,
-  retaining inputs, results, selected subviews, and custom strategies.
-- Equipment persistence now depends on saved class and score weights instead
-  of the whole flame form. Transient edits no longer rewrite equipment storage;
-  actual saved settings still write immediately using the existing schema.
-- Bulk strategy controls use the shared equipment-group definitions, avoiding
-  duplicate labels and keeping group selection consistent.
-- API validation bounds equipment levels at 300 and replacement costs at 1e15
-  where applicable, and rejects nonfinite calculation results with HTTP 422.
-  Existing valid inputs retain their results; unavailable values remain null.
-- Added bounded, per-process calculation admission: default two concurrent
-  calculations and 300 requests per client per minute. Configure through
-  CALCULATION_CONCURRENCY and CALCULATIONS_PER_MINUTE. Busy/rate-limited requests
-  receive HTTP 503/429 with Retry-After; failed calculations release their slots.
-  Multiworker public deployments still need shared gateway limits.
-- Validation completed for these implementation changes: 123 backend tests,
-  79 frontend helper tests, one Firefox browser regression test, frontend lint,
-  production build, and git diff --check passed. Inventories describe coverage.
-- Compared four representative Star Force scenarios against committed code:
-  all existing output fields, including percentile budgets, matched exactly
-  after excluding the two new precision metadata fields. Catalog and example
-  files are unchanged. Equipment preservation is also covered by regressions.
-- Before/after runtime and memory measurements were subsequently completed;
-  see the benchmark below for measured gains and unchanged/control cases.
-
-Star Force before/after benchmark - 2026-10-06
-
-Method and reproducibility:
-- Baseline: commit dbc3c58ad9466efc83eeb2150d7651969a44f923; compare its
-  backend/calc/starforce_calculator.py with the current working-tree version.
-- Script: backend/benchmark_starforce.py. Raw timings, source hash, input
-  settings, and memory samples: backend/starforce_benchmark_results.json.
-- Windows 10 build 19045, Python 3.11.9 AMD64. One untimed warmup per version
-  per case, then five measured calls per version with alternating execution
-  order. Table reports medians; module loading and garbage collection before
-  each call are excluded. No calculator/API response cache is involved.
-- Peak traced Python allocations are measured in a separate call per version
-  using tracemalloc. These are not total process RAM or browser memory; tracing
-  overhead is excluded from every runtime sample.
-- Percentile targets: 50%, 75%, 90%, 95%, 99%, except the no-percentiles control.
-  Defaults are Mode 1, no events/MVP, and zero spare cost unless stated below.
-
-Scenario                         Before      After       Ratio   Peak MiB before -> after
-Level 200, 0-15                   0.4828 s    0.4812 s     1.00x   15.034 -> 15.036
-Level 200, 15-22                  1.3177 s    0.6901 s     1.91x   22.053 -> 10.052
-Level 200, 18-19, Mode 4 + SSF     1.1048 s    0.0546 s    20.22x   19.045 ->  1.042
-Level 250, 22-25, Gold, 1B spare   1.5648 s    0.8829 s     1.77x   25.063 -> 13.063
-Level 200, 15-22, no percentiles  0.9992 ms   1.1075 ms    0.90x    0.052 ->  0.052
-
-Interpretation:
-- Typical 15-22 runtime fell about 47.6%, with 54.4% lower peak traced memory.
-- The boom-free Mode 4 case has only one reachable state: runtime fell about
-  95.1%, with 94.5% lower peak traced memory. This is a favorable special case,
-  not the expected speedup for every equipment configuration.
-- The high-star case used 43.6% less time and 47.9% less peak traced memory.
-- All states are reachable in the 0-15 case, so there is no meaningful gain.
-  Peak allocation increased by 1,808 bytes for reachability bookkeeping.
-- Without percentiles, the optimized code path is skipped. The measured median
-  was 0.1083 ms slower; ranges overlap (before 0.956-1.108 ms, after 0.959-1.301
-  ms). Five individual calls at this scale do not establish a stable regression
-  or improvement. Memory was identical; no speedup is claimed for this path.
-- Every existing output field matched exactly in all warmup, timing, and memory
-  calls. Only the two added precision metadata fields were excluded from the
-  equality comparison. No probability tables, catalogs, or examples were changed.
-- These are local, sequential calculator benchmarks, not end-to-end API/browser
-  latency, load tests, or a benchmark of the unrelated flame/request/storage
-  changes. Normal machine scheduling can affect samples; raw runs are retained.
-
-Run again from the repository root (PowerShell):
-  .\.venv\Scripts\python.exe -m backend.benchmark_starforce --baseline dbc3c58ad9466efc83eeb2150d7651969a44f923 --repeats 5 --output backend/starforce_benchmark_results.json
-
-Frontend loading and rendering benchmark - 2026-10-07
-
-Measured bottlenecks and fixes:
-- Equipment setup and stats previously mounted together, including hidden
-  controls and effects. Mount each only on first use, then retain it so switching
-  sections preserves state. Shared equipment CSS loads with the equipment page.
-- Equipment UI and Flame UI were part of the shared planner bundle even for
-  other calculators. They now load as separate route chunks.
-- Local readiness remained around 350 ms even after reducing DOM work. Initial
-  route dependencies now preload together, and resolved components render
-  directly instead of suspending again through nested lazy loading boundaries.
-  Initial equipment loading preloads both section modules but mounts only the
-  selected section. Home renders immediately without route preloading.
-
-Method:
-- npm run benchmark:render builds production assets, starts an isolated Vite
-  preview and headless Firefox profile, and measures five fresh navigations per
-  scenario with disk/memory cache disabled. No personal browser data is used.
-- Ready time is navigation start to visible route controls plus two animation
-  frames. It includes browser/WebDriver scheduling, not isolated React CPU time.
-- API responses/calculation results and external icon image downloads are not
-  benchmarked. Images are disabled; preview has no calculator backend. These
-  numbers describe local form rendering, not production network or API latency.
-- Baseline is the working tree before this frontend optimization, including the
-  existing five-equipped-item default-view behavior, not the Git HEAD version.
-- Raw samples: frontend/rendering-before.json and frontend/rendering-after.json.
-
-Route                  Median ready before -> after     DOM nodes before -> after
-Home                     53 ms -> 56 ms                    55 -> 55
-Equipment setup         370 ms -> 97 ms                   308 -> 193
-Equipment stats         363 ms -> 95 ms                   426 -> 273
-Star Force              350 ms -> 78 ms                   200 -> 205
-Flames                  349 ms -> 71 ms                   129 -> 137
-
-Interpretation and remaining limits:
-- Equipment readiness improved about 74%; Star Force about 78%; Flames about
-  80%. Home showed no improvement (3 ms slower in these samples).
-- Initial equipment DOM size fell 37% for setup and 36% for stats. The small
-  Star Force/Flame DOM increases include extra chunk resource/style elements.
-- Decoded JavaScript loaded: equipment 415,644 -> 412,127 bytes; Star Force
-  446,372 -> 407,878 bytes (8.6% lower); Flames 415,644 -> 383,646 bytes (7.7%
-  lower). Home added 1,620 bytes of route-loading coordination code. These are
-  decoded script bytes, not compressed production transfer sizes.
-- Previously visited sections still retain their mounted state. This change
-  does not claim to eliminate all hidden-page updates or measure large result
-  tables, mobile hardware, in-app navigation latency, or server calculations.
-- Passed: 79 frontend helper tests, expanded browser regression test, production
-  rendering benchmark, lint, and production build. Browser assertions cover
-  deferred sections, saved-set default view, on-demand setup, and retained state.
-- Calculator formulas, catalogs, saved equipment format, and example data were
-  not modified by these rendering changes.
-
-Run again from frontend/ after setting GECKODRIVER_PATH and FIREFOX_BINARY if
-needed (same requirements as npm run test:browser):
-  npm run benchmark:render
-Optional BENCHMARK_OUTPUT sets the JSON path; default is rendering-benchmark.json.
-
-Flame/Potential interactive results and focus styling - 2026-10-07
-- Flames expose success chance and whole number of flames, with no cost inputs.
-  Default count is the average rounded up to a whole flame.
-- Potential exposes success chance and meso budget with editable cost per cube;
-  Black/Red defaults use existing project assumptions of 22M/12M. No prices or
-  probability tables were changed. Default budget uses the average roll cost.
-- Both directions use geometric formulas in the browser without further API
-  requests. Removed pre-calculation success-chance checkboxes on both tabs.
-- Replaced the overflowing inner focus outline with an inset container highlight
-  across these controls and Star Force, retaining visible keyboard focus.
-- Passed 84 frontend helper tests, browser regression, lint, and production build.
-  This update does not include a new timing benchmark.
-
-Bounded calculation queue - 2026-10-07
-- Added FIFO asynchronous admission: default eight waiting requests per worker,
-  with a 20-second wait deadline. Running concurrency stays configurable and
-  unchanged; set CALCULATION_CONCURRENCY=1 for a single active calculation.
-- CALCULATION_QUEUE_SIZE and CALCULATION_QUEUE_TIMEOUT_SECONDS configure the
-  queue. Overflow and wait timeout return 503; rate limiting still returns 429.
-- Waiting uses short asynchronous sleeps rather than occupying worker threads.
-  Cancellation/disconnection removes waiting tickets; execution failures release
-  active slots. The in-memory queue is not durable across restart/deploy.
-- Frontend POST timeouts are now 90 seconds including queue wait and execution;
-  reads remain 30 seconds. Removed redundant 30-second calculation deadlines.
-- Queue tests cover FIFO, capacity, timeout, cancellation, disconnect, and a real
-  HTTP request waiting while health remains responsive. Frontend tests check
-  timeout selection. No throughput or production load benchmark was performed.
-
-Independent score weights and equipment transfer - 2026-10-07
-- Equipment flame/Star Force weights are independent from Flame Calculator
-  weights. Legacy saved shared weights seed both independently on first load.
-- Equipment exports optionally include score_weights.flame and
-  score_weights.potential. Imports validate nonnegative finite numeric weights;
-  older exports without weights preserve current settings. Equipment changes
-  no longer clear unrelated Flame Calculator results.
-- Existing equipment records and calculator formulas are unchanged. Independent
-  weights persist in local storage. No performance benchmark was run.
-
------------------------------------------------------------------------
-Star Force budget calculation optimization - 2026-10-09
-
-Changes:
-- Resolve destination probability buffers before iterating over budget bins,
-  avoiding repeated dictionary lookups and absorbing-state checks per edge.
+- Resolve destination probability buffers before iterating over budget bins, avoiding
+  repeated dictionary lookups and absorbing-state checks per edge.
 - Replace the inner-loop min() call with a direct conditional clamp.
-- Preserve the 65,536-bin grid, rounding rules, probability tables, and outputs.
-  The absorbing-state buffer adds approximately 0.5 MiB of array storage;
-  total peak memory was not measured for this update.
+- Preserve the 65,536-bin grid, rounding rules, probability tables, and outputs. The
+  absorbing-state buffer adds approximately 0.5 MiB of array storage; total peak memory
+  was not measured for this update.
 
 Local before/after timings:
 Star range       Before       After       Time reduction
@@ -477,19 +143,19 @@ Star range       Before       After       Time reduction
 
 Method and limits:
 - Compared the committed calculator with the optimized working-tree version.
-- One timed call per version per case, before then after; these are individual
-  samples, not repeated-run medians. Module loading was outside the timings.
+- One timed call per version per case, before then after; these are individual samples,
+  not repeated-run medians. Module loading was outside the timings.
 - Level 200, default Mode 1, no event or MVP discount, zero replacement cost,
   percentiles 50/75/90/95/99%, and include_budget_distribution=True.
-- Compared complete dataclass outputs, including the full budget distribution:
-  every field matched exactly in all four cases.
-- Detailed budget distributions are substantially more expensive than the
-  averages used in equipment upgrade calculations. High-star calculations
-  can therefore take longer than evaluating averages for a full equipment set.
-- Measurements are local sequential calculator timings, not deployed Render
-  latency. Startup, network, queueing, and concurrent load were not measured.
-- This is a separate optimization from the 2026-10-06 benchmark above; its
-  measurements do not replace backend/starforce_benchmark_results.json.
+- Compared complete dataclass outputs, including the full budget distribution: every
+  field matched exactly in all four cases.
+- Detailed budget distributions are substantially more expensive than the averages used
+  in equipment upgrade calculations. High-star calculations can therefore take longer
+  than evaluating averages for a full equipment set.
+- Measurements are local sequential calculator timings, not deployed Render latency.
+  Startup, network, queueing, and concurrent load were not measured.
+- This is a separate optimization from the 2026-10-06 reachability benchmark; its measurements
+  do not replace backend/starforce_benchmark_results.json.
 
 Validation:
 - All 144 backend tests passed after the optimization.
@@ -497,19 +163,20 @@ Validation:
 
 Implementation: backend/calc/starforce_calculator.py (_meso_percentiles)
 
------------------------------------------------------------------------
-Native Star Force budget recurrence - 2026-10-09
+========================================================================================
+Native Star Force budget recurrence
+Recorded: 2026-10-09
 
 Problem:
-- Single-item calculations include a detailed 65,536-bin budget CDF; equipment
-  planning uses expected values only. The Python budget recurrence remained
-  expensive even after the previous loop cleanup.
+- Single-item calculations include a detailed 65,536-bin budget CDF; equipment planning
+  uses expected values only. The Python budget recurrence remained expensive even after
+  the previous loop cleanup.
 
 Changes:
-- Build a small Cython kernel during the existing Linux requirements install.
-  No request-time JIT, runtime Cython dependency, extra workers, or result cache.
-- Retain the same budget grid, horizon retries, transition order, double
-  precision, cost rounding, percentiles, and full interactive distribution.
+- Build a small Cython kernel during the existing Linux requirements install. No
+  request-time JIT, runtime Cython dependency, extra workers, or result cache.
+- Retain the same budget grid, horizon retries, transition order, double precision, cost
+  rounding, percentiles, and full interactive distribution.
 - Release the GIL during the recurrence; all buffers are request-local.
 - Keep the portable Python fallback for local environments without a compiler.
 - Linux installation fails if compilation fails. Render's existing build command
@@ -526,17 +193,17 @@ Case                         Before      After       Speedup
 No-percentile control        0.0009 s    0.0009 s     approximately unchanged
 
 Separate 0-25 tracemalloc pass:
-- Peak traced allocations: 26.074 -> 13.562 MiB. This is per-call allocation,
-  not total process RSS or a measurement of Render's memory usage.
-- Baseline retained previous horizon buffers while allocating the next; the
-  helper boundary now retains only the starting-state CDF between horizons.
+- Peak traced allocations: 26.074 -> 13.562 MiB. This is per-call allocation, not total
+  process RSS or a measurement of Render's memory usage.
+- Baseline retained previous horizon buffers while allocating the next; the helper
+  boundary now retains only the starting-state CDF between horizons.
 
 Validation and limits:
-- All 148 backend tests passed, including four new native parity/concurrency
-  tests. Full dataclass outputs matched exactly in every benchmark case.
-- Windows 10, CPython 3.11.9; native module compiled locally using Cython 3.3.0
-  and Zig 0.13.0 (-O3, -ffp-contract=off, Windows 64-bit Python ABI). Render
-  uses its GCC toolchain via setuptools; its deployed build was not run here.
+- All 148 backend tests passed, including four new native parity/concurrency tests. Full
+  dataclass outputs matched exactly in every benchmark case.
+- Windows 10, CPython 3.11.9; native module compiled locally using Cython 3.3.0 and Zig
+  0.13.0 (-O3, -ffp-contract=off, Windows 64-bit Python ABI). Render uses its GCC
+  toolchain via setuptools; its deployed build was not run here.
 - Package isolated build metadata and Windows requirements parsing checked.
 - These are local calculation timings, not deployed latency. Network, queuing,
   free-service wake-up, and Render CPU contention remain outside this benchmark.
@@ -551,16 +218,17 @@ Reproduce after installing the native package:
   python -m backend.benchmark_starforce --baseline 7d1106135d4023591f3bba7479a01c3be8ebf928 --repeats 5 --skip-memory
   python -m backend.benchmark_starforce --baseline 7d1106135d4023591f3bba7479a01c3be8ebf928 --repeats 1 --case "single calculator: 0-25"
 
------------------------------------------------------------------------
-Star Force strategy search reuse - 2026-10-09
+========================================================================================
+Star Force strategy search reuse
+Recorded: 2026-10-09
 
-- Reuse shared policy prefixes instead of recalculating every star for every
-  policy. Preserve recovery below the starting star, arithmetic order, candidate
-  ordering, and tie-breaking. Search still covers all 16,384 full-range policies.
-- Publish recurrence expectations directly instead of re-solving three dense
-  systems for every frontier row. The independent solver remains a test oracle.
-- No new dependencies, deployment settings, or caches. Existing API cache stays
-  bounded at 32 reports. Improvements apply to uncached requests.
+- Reuse shared policy prefixes instead of recalculating every star for every policy.
+  Preserve recovery below the starting star, arithmetic order, candidate ordering, and
+  tie-breaking. Search still covers all 16,384 full-range policies.
+- Publish recurrence expectations directly instead of re-solving three dense systems for
+  every frontier row. The independent solver remains a test oracle.
+- No new dependencies, deployment settings, or caches. Existing API cache stays bounded
+  at 32 reports. Improvements apply to uncached requests.
 
 Local uncached medians, five alternating before/after runs:
 Range / level                Before      After       Speedup
@@ -571,18 +239,427 @@ Range / level                Before      After       Speedup
 0-10 / 150                   0.0011 s    0.0002 s      4.8x
 
 Validation:
-- All 150 backend tests passed. Exhaustive prefix-search comparisons preserve
-  every candidate exactly; full report comparisons preserve policies, names,
-  recommendation order, and frontier order. Numerical outputs match within
-  1e-8 relative / 1e-6 absolute tolerance (different floating-point operation
-  order from the dense solver, not a new probability approximation).
-- Regression tests check published frontier estimates against the independent
-  solver, including recovery to lower stars and high replacement values.
-- Windows 10 / CPython 3.11.9. Timings exclude imports and bypass the API cache.
-  No production deployment or Render latency measurement was performed.
-- Backend redeploy required; network, queueing, and service wake-up remain
-  outside these local measurements. Memory usage was not benchmarked here.
+- All 150 backend tests passed. Exhaustive prefix-search comparisons preserve every
+  candidate exactly; full report comparisons preserve policies, names, recommendation
+  order, and frontier order. Numerical outputs match within 1e-8 relative / 1e-6
+  absolute tolerance (different floating-point operation order from the dense solver,
+  not a new probability approximation).
+- Regression tests check published frontier estimates against the independent solver,
+  including recovery to lower stars and high replacement values.
+- Windows 10 / CPython 3.11.9. Timings exclude imports and bypass the API cache. No
+  production deployment or Render latency measurement was performed.
+- Backend redeploy required; network, queueing, and service wake-up remain outside these
+  local measurements. Memory usage was not benchmarked here.
 
 Artifact: backend/strategies_benchmark.json
 Reproduce:
   python -m backend.benchmark_strategies --baseline 47f3ec1e51b123b2bd3406aa81380c621bd02ffd --output backend/strategies_benchmark.json
+
+========================================================================================
+Frontend loading and rendering benchmark
+Recorded: 2026-10-07
+
+Measured bottlenecks and fixes:
+- Equipment setup and stats previously mounted together, including hidden controls and
+  effects. Mount each only on first use, then retain it so switching sections preserves
+  state. Shared equipment CSS loads with the equipment page.
+- Equipment UI and Flame UI were part of the shared planner bundle even for other
+  calculators. They now load as separate route chunks.
+- Local readiness remained around 350 ms even after reducing DOM work. Initial route
+  dependencies now preload together, and resolved components render directly instead of
+  suspending again through nested lazy loading boundaries. Initial equipment loading
+  preloads both section modules but mounts only the selected section. Home renders
+  immediately without route preloading.
+
+Method:
+- npm run benchmark:render builds production assets, starts an isolated Vite preview and
+  headless Firefox profile, and measures five fresh navigations per scenario with
+  disk/memory cache disabled. No personal browser data is used.
+- Ready time is navigation start to visible route controls plus two animation frames. It
+  includes browser/WebDriver scheduling, not isolated React CPU time.
+- API responses/calculation results and external icon image downloads are not
+  benchmarked. Images are disabled; preview has no calculator backend. These numbers
+  describe local form rendering, not production network or API latency.
+- Baseline is the working tree before this frontend optimization, including the existing
+  five-equipped-item default-view behavior, not the Git HEAD version.
+- Raw samples: frontend/rendering-before.json and frontend/rendering-after.json.
+
+Route                  Median ready before -> after     DOM nodes before -> after
+Home                     53 ms -> 56 ms                    55 -> 55
+Equipment setup         370 ms -> 97 ms                   308 -> 193
+Equipment stats         363 ms -> 95 ms                   426 -> 273
+Star Force              350 ms -> 78 ms                   200 -> 205
+Flames                  349 ms -> 71 ms                   129 -> 137
+
+Interpretation and remaining limits:
+- Equipment readiness improved about 74%; Star Force about 78%; Flames about 80%. Home
+  showed no improvement (3 ms slower in these samples).
+- Initial equipment DOM size fell 37% for setup and 36% for stats. The small Star
+  Force/Flame DOM increases include extra chunk resource/style elements.
+- Decoded JavaScript loaded: equipment 415,644 -> 412,127 bytes; Star Force 446,372 ->
+  407,878 bytes (8.6% lower); Flames 415,644 -> 383,646 bytes (7.7% lower). Home added
+  1,620 bytes of route-loading coordination code. These are decoded script bytes, not
+  compressed production transfer sizes.
+- Previously visited sections still retain their mounted state. This change does not
+  claim to eliminate all hidden-page updates or measure large result tables, mobile
+  hardware, in-app navigation latency, or server calculations.
+- Passed: 79 frontend helper tests, expanded browser regression test, production
+  rendering benchmark, lint, and production build. Browser assertions cover deferred
+  sections, saved-set default view, on-demand setup, and retained state.
+- Calculator formulas, catalogs, saved equipment format, and example data were not
+  modified by these rendering changes.
+
+Run again from frontend/ after setting GECKODRIVER_PATH and FIREFOX_BINARY if
+needed (same requirements as npm run test:browser):
+  npm run benchmark:render
+Optional BENCHMARK_OUTPUT sets the JSON path; default is rendering-benchmark.json.
+
+========================================================================================
+Flame/Potential interactive results and focus styling
+Recorded: 2026-10-07
+
+- Flames expose success chance and whole number of flames, with no cost inputs. Default
+  count is the average rounded up to a whole flame.
+- Potential exposes success chance and meso budget with editable cost per cube;
+  Black/Red defaults use existing project assumptions of 22M/12M. No prices or
+  probability tables were changed. Default budget uses the average roll cost.
+- Both directions use geometric formulas in the browser without further API requests.
+  Removed pre-calculation success-chance checkboxes on both tabs.
+- Replaced the overflowing inner focus outline with an inset container highlight across
+  these controls and Star Force, retaining visible keyboard focus.
+- Passed 84 frontend helper tests, browser regression, lint, and production build. This
+  update does not include a new timing benchmark.
+
+========================================================================================
+Bounded calculation queue
+Recorded: 2026-10-07
+
+- Added FIFO asynchronous admission: default eight waiting requests per worker, with a
+  20-second wait deadline. Running concurrency stays configurable and unchanged; set
+  CALCULATION_CONCURRENCY=1 for a single active calculation.
+- CALCULATION_QUEUE_SIZE and CALCULATION_QUEUE_TIMEOUT_SECONDS configure the queue.
+  Overflow and wait timeout return 503; rate limiting still returns 429.
+- Waiting uses short asynchronous sleeps rather than occupying worker threads.
+  Cancellation/disconnection removes waiting tickets; execution failures release active
+  slots. The in-memory queue is not durable across restart/deploy.
+- Frontend POST timeouts are now 90 seconds including queue wait and execution; reads
+  remain 30 seconds. Removed redundant 30-second calculation deadlines.
+- Queue tests cover FIFO, capacity, timeout, cancellation, disconnect, and a real HTTP
+  request waiting while health remains responsive. Frontend tests check timeout
+  selection. No throughput or production load benchmark was performed.
+
+========================================================================================
+Independent score weights and equipment transfer
+Recorded: 2026-10-07
+
+- Equipment flame/Star Force weights are independent from Flame Calculator weights.
+  Legacy saved shared weights seed both independently on first load.
+- Equipment exports optionally include score_weights.flame and score_weights.potential.
+  Imports validate nonnegative finite numeric weights; older exports without weights
+  preserve current settings. Equipment changes no longer clear unrelated Flame
+  Calculator results.
+- Existing equipment records and calculator formulas are unchanged. Independent weights
+  persist in local storage. No performance benchmark was run.
+
+========================================================================================
+Project review fixes and regression checks
+Recorded: 2026-10-06
+
+- Star Force budget percentiles allocate and process only states reachable from the
+  starting star. This avoids work on unreachable recovery states without changing the
+  65,536-bin budget grid, rounding rules, costs, or probabilities. Responses now expose
+  rounding_unit_mesos and calculation_limit_mesos; the UI explains precision and
+  distinguishes a numerical limit from impossibility.
+- Star Force and flame requests share cancellation and input-keyed result logic.
+  Superseded requests are aborted and late responses cannot overwrite results for newer
+  inputs. Cost-table updates also respect cancellation.
+- Visited equipment and calculator pages remain mounted during navigation, retaining
+  inputs, results, selected subviews, and custom strategies.
+- Equipment persistence now depends on saved class and score weights instead of the
+  whole flame form. Transient edits no longer rewrite equipment storage; actual saved
+  settings still write immediately using the existing schema.
+- Bulk strategy controls use the shared equipment-group definitions, avoiding duplicate
+  labels and keeping group selection consistent.
+- API validation bounds equipment levels at 300 and replacement costs at 1e15 where
+  applicable, and rejects nonfinite calculation results with HTTP 422. Existing valid
+  inputs retain their results; unavailable values remain null.
+- Added bounded, per-process calculation admission: default two concurrent calculations
+  and 300 requests per client per minute. Configure through CALCULATION_CONCURRENCY and
+  CALCULATIONS_PER_MINUTE. Busy/rate-limited requests receive HTTP 503/429 with
+  Retry-After; failed calculations release their slots. Multiworker public deployments
+  still need shared gateway limits.
+- Validation completed for these implementation changes: 123 backend tests, 79 frontend
+  helper tests, one Firefox browser regression test, frontend lint, production build,
+  and git diff --check passed. Inventories describe coverage.
+- Compared four representative Star Force scenarios against committed code: all existing
+  output fields, including percentile budgets, matched exactly after excluding the two
+  new precision metadata fields. Catalog and example files are unchanged. Equipment
+  preservation is also covered by regressions.
+- Before/after runtime and memory measurements were subsequently completed; see the
+  benchmark below for measured gains and unchanged/control cases.
+
+========================================================================================
+Star Force before/after benchmark
+Recorded: 2026-10-06
+
+Method and reproducibility:
+- Baseline: commit dbc3c58ad9466efc83eeb2150d7651969a44f923; compare its
+  backend/calc/starforce_calculator.py with the current working-tree version.
+- Script: backend/benchmark_starforce.py. Raw timings, source hash, input settings, and
+  memory samples: backend/starforce_benchmark_results.json.
+- Windows 10 build 19045, Python 3.11.9 AMD64. One untimed warmup per version per case,
+  then five measured calls per version with alternating execution order. Table reports
+  medians; module loading and garbage collection before each call are excluded. No
+  calculator/API response cache is involved.
+- Peak traced Python allocations are measured in a separate call per version using
+  tracemalloc. These are not total process RAM or browser memory; tracing overhead is
+  excluded from every runtime sample.
+- Percentile targets: 50%, 75%, 90%, 95%, 99%, except the no-percentiles control.
+  Defaults are Mode 1, no events/MVP, and zero spare cost unless stated below.
+
+Scenario                         Before      After       Ratio   Peak MiB before -> after
+Level 200, 0-15                   0.4828 s    0.4812 s     1.00x   15.034 -> 15.036
+Level 200, 15-22                  1.3177 s    0.6901 s     1.91x   22.053 -> 10.052
+Level 200, 18-19, Mode 4 + SSF     1.1048 s    0.0546 s    20.22x   19.045 ->  1.042
+Level 250, 22-25, Gold, 1B spare   1.5648 s    0.8829 s     1.77x   25.063 -> 13.063
+Level 200, 15-22, no percentiles  0.9992 ms   1.1075 ms    0.90x    0.052 ->  0.052
+
+Interpretation:
+- Typical 15-22 runtime fell about 47.6%, with 54.4% lower peak traced memory.
+- The boom-free Mode 4 case has only one reachable state: runtime fell about 95.1%, with
+  94.5% lower peak traced memory. This is a favorable special case, not the expected
+  speedup for every equipment configuration.
+- The high-star case used 43.6% less time and 47.9% less peak traced memory.
+- All states are reachable in the 0-15 case, so there is no meaningful gain. Peak
+  allocation increased by 1,808 bytes for reachability bookkeeping.
+- Without percentiles, the optimized code path is skipped. The measured median was
+  0.1083 ms slower; ranges overlap (before 0.956-1.108 ms, after 0.959-1.301 ms). Five
+  individual calls at this scale do not establish a stable regression or improvement.
+  Memory was identical; no speedup is claimed for this path.
+- Every existing output field matched exactly in all warmup, timing, and memory calls.
+  Only the two added precision metadata fields were excluded from the equality
+  comparison. No probability tables, catalogs, or examples were changed.
+- These are local, sequential calculator benchmarks, not end-to-end API/browser latency,
+  load tests, or a benchmark of the unrelated flame/request/storage changes. Normal
+  machine scheduling can affect samples; raw runs are retained.
+
+Run again from the repository root (PowerShell):
+  .\.venv\Scripts\python.exe -m backend.benchmark_starforce --baseline dbc3c58ad9466efc83eeb2150d7651969a44f923 --repeats 5 --output backend/starforce_benchmark_results.json
+
+========================================================================================
+Cleanup and performance update
+Recorded: 2026-10-05
+
+Equipment selection, navigation, CSS organization, and regression tests
+
+Changes:
+1. Indexed the static equipment catalog by slot and class families by job. Equipment
+   lookups now filter the relevant slot instead of scanning the whole catalog and
+   rebuilding class-family mappings on every call.
+2. Memoized equipment picker choices by selected slot and class so unrelated component
+   renders do not repeat filtering, configuration, and sorting.
+3. Extracted navigation actions into navigateToPage(), used by usePageRoute. Clicking
+   the current page with a trailing slash no longer adds a duplicate history entry.
+   Unknown page keys are ignored before preventing the click. Modified clicks, download
+   links, and links targeting another browsing context retain normal browser handling.
+4. Moved navigation styles from App.css to components/Navigation.css and
+   equipment-editor styles from EquipmentWindow.css to EquipmentAnalysis.css. Each
+   component imports its stylesheet. Moved rules were kept unchanged.
+5. Removed the unused .equipment-class-selector CSS rule.
+6. Added regression tests for navigation history and scrolling, duplicate routes,
+   invalid routes, new-tab/download behavior, sorted equipment choices, repeated lookup
+   isolation, and unknown slots/classes. Existing tests continue to cover equipment
+   eligibility, import/export, upgrade ordering, probability helpers, and backend
+   calculations/API behavior.
+7. Added npm test for the frontend and updated README verification instructions.
+8. Updated Demon Avenger's class configuration to have no secondary stat. Existing UI
+   conditions hide Secondary stat per main stat in Flames and Equipment, and calculation
+   requests no longer include STR as a secondary.
+
+Local equipment lookup benchmark:
+- Compared the previous committed implementation with the indexed lookup.
+- Verified identical results for all 1,175 supported job/slot combinations, including
+  repeated equipment slots.
+- Timed 15 passes over these combinations after warming both implementations.
+- Previous implementation: 103 ms; indexed implementation: 29 ms.
+- Approximately 3.55 times faster, or 72% less time in this measured run.
+- This measures equipmentChoices() calls, not browser rendering or API latency. Timings
+  vary by environment; the memoized-render benefit was not benchmarked.
+
+Validation:
+- All 54 frontend tests passed (51 existing tests plus 3 new tests).
+- All 89 backend tests passed; backend calculation code was unchanged.
+- Frontend lint, production build, and git diff --check passed.
+- Verified CSS extraction against the previous files: moved rules unchanged, with only
+  .equipment-class-selector removed.
+- No browser visual checks were performed for this update.
+
+Primary implementation files:
+- frontend/src/data/flameEquipment.js
+- frontend/src/components/EquipmentWindow.jsx
+- frontend/src/data/routes.js and frontend/src/hooks/usePageRoute.js
+- frontend/src/components/Navigation.css
+- frontend/src/components/EquipmentAnalysis.css
+- frontend/src/data/classStats.js
+
+Regression tests:
+- frontend/tests/flameEquipment.test.js
+- frontend/tests/routes.test.js
+
+========================================================================================
+Star Force replacement costs
+Recorded: 2026-10-05
+
+- Added replacement cost per boom to the standalone calculator and equipment details.
+  Default is 0; Astra secondaries default to 1,000,000,000 mesos. Explicit zero/custom
+  values override the default and survive saves/exports.
+- Older equipment saves without the field receive the appropriate default.
+- Expected total cost now includes expected booms times replacement cost, including
+  booms incurred during recovery. Attempts and their percentiles are unchanged. The API
+  also returns expected replacement spending separately.
+- Equipment upgrade rows display expected booms; grouped ranges sum booms, replacement
+  spending, and total costs. Efficiency uses the full total cost.
+- Added the optional --replacement-cost-mesos command-line argument.
+- Added regression coverage for defaults, overrides, import validation, boom-free
+  upgrades, recovery costs, grouped rows, and ranking behavior.
+- Validation: 56 frontend tests and 92 backend tests passed; frontend lint and
+  production build passed. No new performance benchmark was performed.
+
+========================================================================================
+Heart and emblem catalog update
+Recorded: 2026-10-05
+
+- Fetch hearts without level restrictions and retain only Fairy Heart, Titanium Heart,
+  Plasma Heart, Outlaw Heart, and Total Control.
+- Added --refresh-hearts for the existing catalog version. Incomplete heart responses
+  are rejected before writing; duplicate names retain the lowest ID.
+- Recognize Mitra's Rage emblem IDs 1190555-1190559 despite the source's Unknown
+  category, preserving the five class restrictions.
+- Refreshed the bundled GMS 270 catalog: five hearts and five Mitra emblems are now
+  present; total catalog size is 759 items. Previous CRA exclusions remain.
+- Added importer and picker regressions; updated README and test inventories.
+- Validation: 57 frontend tests, 95 backend tests, and production build passed. No new
+  performance benchmark was performed.
+
+========================================================================================
+Catalog filter update
+Recorded: 2026-10-05
+
+- Exclude Red Beryl, Frontier, and Commerci name prefixes on every fetch/filter.
+- Pocket allowlist: Pink Holy Cup and all four colored Cursed Spellbooks.
+- Applied locally: removed 13 records; 746 catalog entries remain.
+- All 10 importer tests and 16 frontend equipment tests passed.
+
+========================================================================================
+Fixed ring slot and eye filter
+Recorded: 2026-10-05
+
+- Removed Bounty Legend's Sunglasses from bundled data and future fetches, preserving
+  Bounty Legend's Earrings. Catalog now contains 745 entries.
+- Ring 4 defaults to Ring of Restraint (source ID 1113098, level 110), with
+  replacement/removal/editing blocked. Legacy saves and imports normalize it.
+- Excluded the fixed skill ring from enhancement requests and rankings.
+- Validation: all 60 frontend tests and 10 importer tests passed, along with frontend
+  lint and production build. No browser visual check was performed.
+
+========================================================================================
+Equipment persistence fix
+Recorded: 2026-10-05
+
+- A representative full equipment set encoded to 6,036 bytes before settings, exceeding
+  a typical single-cookie capacity. Cookie writes could silently fail.
+- Moved equipment, classes, weights, and upgrade settings to local storage. Recover
+  existing cookie data and remove the old cookie only after a successful write. Display
+  a save error when storage is unavailable or full.
+- Added large-save round-trip, cookie migration, malformed-data fallback, blocked
+  storage, and quota failure regression coverage.
+- All 63 frontend tests and the production build passed. No browser reload test was
+  performed; storage behavior was verified with test doubles.
+
+========================================================================================
+Earring catalog filter
+Recorded: 2026-10-05
+
+- Keep only Commanding Force Earring, Estella Earrings, and Superior Gollux Earrings on
+  fetches and local filtering. Removed 9 records; 736 remain.
+- All 10 importer tests and 16 frontend equipment tests passed.
+
+========================================================================================
+Performance update
+Recorded: 2026-10-02
+
+Single flame calculator
+
+Changed probability_at_least() to use the aggregated score-distribution algorithm
+instead of enumerating every possible flame outcome. No new caching was added. Threshold
+calculations use unrounded scores to preserve fractional-score comparisons; the bulk
+planner's default rounding behavior remains unchanged.
+
+Local benchmark:
+- Level 150 armor, boss equipment, Black Flame, STR main stat, default score weights,
+  target score 120.
+- Previous outcome enumeration: 5.3214 seconds.
+- New uncached score distribution: approximately 0.0030 seconds.
+- Measured speedup: approximately 1,745 times faster.
+- Probability difference: 0.
+- This is one local calculation benchmark, not end-to-end API latency; timings will vary
+  by configuration and environment.
+
+Validation:
+- Flame regression tests passed, including fractional thresholds and weapon
+  calculations.
+- Added comparisons against outcome enumeration for all three flame types, boss and
+  non-boss equipment, armor and weapons, and score boundaries.
+- The initial broader 40-test run without failures.
+
+Implementation: backend/calc/maplestory_flames.py Regression tests:
+backend/tests/test_flames.py
+
+========================================================================================
+Cleanup and performance update
+Recorded: 2026-10-02
+
+Project redundancy and optimization audit
+
+Changes:
+1. Extracted potential calculator state, API requests, and results from App.jsx into
+   components/PotentialCalculator.jsx.
+2. Added lazy imports for PotentialCalculator, StarForceCalculator, and
+   EquipmentPlanner. Added DeferredPage to mount each tool on its first visit and retain
+   that mounted page afterward. The initial landing page no longer mounts hidden tools
+   or starts their calculator API requests.
+3. Replaced the potential calculator's duplicate success-chance checkboxes and
+   percentage list with SuccessChances and SUCCESS_CHANCES, shared with the flame and
+   Star Force calculators.
+4. Added data/numberFormat.js to share integer and small-percentage formatting between
+   potential and flame results. Star Force also uses the shared integer formatter for
+   mesos.
+5. Moved Star Force rate, flame improvement chance, and equipment upgrade score
+   formatters out of per-value calls. Tables now reuse Intl formatters instead of
+   constructing one for every formatted value.
+6. Removed obsolete App.css rules for .badge and .estimate-heading.
+7. Combined identical flame and Star Force field-grid rules, including their mobile
+   layout rules, and combined matching checkbox styles.
+8. Merged duplicate button/input/select selector blocks in index.css.
+9. Removed unused EquipmentWindow.css selectors for potential-line inputs and removable
+   current-stat rows. Combined the identical equipment analysis layouts into one
+   max-width: 720px media query.
+10. Removed the obsolete flame-confidence h3 rule and the overridden inline-block
+    declaration on flame-type-badge in EquipmentUpgradePlan.css.
+11. Removed the second, redundant NON_STARFORCE_SLOTS validation in
+    backend/calc/equipment_upgrade.py. The initial validation remains.
+
+Production build comparison:
+- Initial JavaScript: 421.86 kB -> 226.65 kB (about 46% smaller).
+- Initial JavaScript, gzip: 104.60 kB -> 71.11 kB.
+- Initial CSS: 19.38 kB -> 8.84 kB; equipment CSS loads with its tool.
+- Calculator code still downloads when needed. These are initial bundle sizes, not
+  measured browser load-time improvements.
+
+Validation:
+- All 49 frontend data tests passed.
+- All 86 backend tests passed.
+- Frontend lint and production build passed after final edits.
+- Flame confidence/formatting tests passed after formatter changes.
+- Server-render smoke checks passed for the landing page, potential calculator, Star
+  Force calculator, and deferred mounting.

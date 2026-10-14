@@ -27,9 +27,10 @@ export default function FlameCalculator({ form, setForm, calculation }) {
   }
 
   return (
-      <div className="calculator-grid">
-      <form className="panel flame-form" onSubmit={submit}>
-        <fieldset disabled={busy} className="flame-settings">
+      <div className="calculator-grid grid grid-cols-[1.2fr_1fr] gap-6 items-start [@media(max-width:850px)]:grid-cols-1">
+      <form className="panel bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5 flame-form" onSubmit={submit}>
+        <fieldset disabled={busy} className="flame-settings [&_>_label.flame-target]:my-7 [&_>_label.flame-target]:text-[20px]
+        [&_>_label.flame-target]:text-[#eeede6] [&_>_label.flame-target]:gap-3 [&_>_label]:mb-4">
         <legend>Flame settings</legend>
 
         <label>
@@ -42,7 +43,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
             ))}
           </select>
         </label>
-        <p className="hint">
+        <p className="hint text-[12px] text-muted mb-4.5">
           Stats: {[classStats.main].flat().join(' / ')} primary,
           {' '}{classStats.secondary.length ? `${classStats.secondary.join(' / ')} secondary` : 'no secondary stat'},
           {' '}{classStats.offense}
@@ -71,8 +72,8 @@ export default function FlameCalculator({ form, setForm, calculation }) {
         </label>
 
         {isWeapon && (
-          <div className="flame-weapon-settings">
-            <div className="flame-fields">
+          <div className="flame-weapon-settings my-5 mx-0 p-4 border border-solid border-rule rounded-sm [&_.hint]:mb-0">
+            <div className="flame-fields grid grid-cols-2 gap-y-4 gap-x-3 [@media(max-width:480px)]:grid-cols-1">
               <label>Weapon series
                 <select name="weapon_series" value={form.weapon_series} onChange={update}>
                   {Object.entries(WEAPON_SERIES).map(([value, series]) => (
@@ -92,7 +93,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
                 <input type="number" value={weaponConfig.base_weapon_offense} readOnly />
               </label>
             </div>
-            <p className="hint">Clean {classStats.offense} before flames, scrolling, or Star Force.
+            <p className="hint text-[12px] text-muted mb-4.5">Clean {classStats.offense} before flames, scrolling, or Star Force.
               {' '}Level and boss equipment are set automatically for this weapon series.</p>
           </div>
         )}
@@ -106,7 +107,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           </select>
         </label>
 
-        <label className="flame-checkbox">
+        <label className="flame-checkbox flex-row items-center gap-2 mt-4.5 [&_input]:w-4 [&_input]:h-4 [&_input]:accent-maple [&_input]:m-0">
           <input
             name="boss_equipment"
             type="checkbox"
@@ -169,7 +170,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
             />
         </label>
 
-        <label className="flame-target">
+        <label className="flame-target [&_input]:py-4.5 [&_input]:px-4 [&_input]:text-[24px] [&_input]:font-bold [&_input]:text-maple [&_input]:border-[#a0967c]">
           Target flame score
           <input
             name="target_score"
@@ -181,31 +182,32 @@ export default function FlameCalculator({ form, setForm, calculation }) {
           />
         </label>
 
-        <button type="submit" className="primary" disabled={busy}>
+        <button type="submit" className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={busy}>
           {busy ? 'Calculating…' : 'Calculate odds'}
         </button>
         </fieldset>
       </form>
 
-      <section className="panel results" aria-live="polite" aria-busy={busy}>
-        <span className="eyebrow">YOUR ODDS</span>
+      <section className="panel results bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5 [&_h2]:mt-3 [&_h2]:text-[22px]" aria-live="polite" aria-busy={busy}>
+        <span className="eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple">YOUR ODDS</span>
         <h2>Flame odds</h2>
         {busy ? <LoadingStatus>Calculating your flame score…</LoadingStatus>
-          : error ? <p className="error" role="alert">{error}</p>
+          : error ? <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{error}</p>
           : !result ? (
-            <div className="empty">
+            <div className="empty pt-8.5 px-0 pb-3 border-t border-solid border-t-rule mt-6 text-muted text-[14px] [&_h3]:text-[#eeede6] [&_h3]:mt-5">
               <span className="text-[56px] text-[#a0967c]" aria-hidden="true">◇</span>
               <h3>What are you flaming for?</h3>
               <p>Choose your flame setup and target score, then calculate to see your probability.</p>
             </div>
           ) : (
           <>
-            <div className="probability">{percentage(result.percentage)}<span>%</span></div>
+            <div className="probability font-mono text-[clamp(27px,_4vw,_42px)] font-bold tracking-[-0.04em] mt-7.5 text-maple
+        [overflow-wrap:anywhere] [&_span]:text-[24px] [&_span]:ml-1">{percentage(result.percentage)}<span>%</span></div>
             <p className="text-[#d0cec3] text-[14px] mt-2.25">{result.probability === 0 ? 'This flame score cannot occur.'
               : result.probability === 1 ? 'Guaranteed on every roll.'
                 : `Approximately 1 in ${count(result.one_in)} rolls`}</p>
-            {result.probability === 0 && <p className="hint">Try lowering your target score or changing the equipment.</p>}
-            <p className="hint mt-5.5 mb-0">The chance per roll of reaching at least your target flame score.</p>
+            {result.probability === 0 && <p className="hint text-[12px] text-muted mb-4.5">Try lowering your target score or changing the equipment.</p>}
+            <p className="hint text-[12px] text-muted mt-5.5 mb-0">The chance per roll of reaching at least your target flame score.</p>
             <RollBudget probability={result.probability} defaultCost={1} itemLabel="Flame" countOnly />
           </>
         )}

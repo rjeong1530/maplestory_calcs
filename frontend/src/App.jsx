@@ -1,4 +1,3 @@
-import './App.css'
 import { bugReportPage, plannerPage, potentialPage } from './preloadPage'
 import Navigation from './components/Navigation'
 import LandingPage from './components/LandingPage'
@@ -25,7 +24,7 @@ export default function App() {
         <BugReportPage />
       </DeferredPage>
 
-      {!calculator && <section className="panel">
+      {!calculator && <section className="panel bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5">
         <h2>Page not found</h2>
         <p>Choose a calculator or Equipment upgrade from the navigation.</p>
       </section>}

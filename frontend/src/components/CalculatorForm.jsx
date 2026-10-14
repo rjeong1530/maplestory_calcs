@@ -66,10 +66,11 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
   }
 
   return (
-    <form className="panel" onSubmit={submit}>
+    <form className="panel bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5" onSubmit={submit}>
       <fieldset disabled={busy}>
         <legend className="flex items-center gap-3"><span className="font-mono text-xs text-maple" aria-hidden="true">01 /</span> Equipment &amp; cube</legend>
-        <div className="equipment-grid">
+        <div className="equipment-grid grid grid-cols-[1.4fr_0.8fr_0.9fr] gap-3 [@media(max-width:480px)]:grid-cols-[1fr_1fr]
+        [@media(max-width:480px)]:[&_label:first-child]:col-span-full">
           <label>Equipment
             <select value={equipment} onChange={event => { setEquipment(event.target.value); onChange() }}>
               {options.equipment_types.map(value => <option key={value} value={value}>{title(value)}</option>)}
@@ -84,29 +85,31 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             <select value={cube} onChange={event => { setCube(event.target.value); onChange() }}>
               {options.cube_types.map(value => <option key={value} value={value}>{title(value)}</option>)}
             </select>
-            <span className="cube-price" aria-live="polite">{cubeCostLabel(cube, cubeSale)}</span>
+            <span className="cube-price text-muted text-[12px] font-normal leading-[1.5]" aria-live="polite">{cubeCostLabel(cube, cubeSale)}</span>
           </label>
         </div>
-        <label className="cube-sale-control">
+        <label className="cube-sale-control flex-row items-center gap-2.5 my-5 mx-0 leading-[1.5] cursor-pointer [&_input]:shrink-0
+        [&_input]:w-4 [&_input]:h-4 [&_input]:accent-maple [&_input]:m-0">
           <input type="checkbox" checked={cubeSale}
             onChange={event => { setCubeSale(event.target.checked); onChange() }} />
           <span>Cube sale (25% off black and red cubes)</span>
         </label>
-        <div className="section-heading border-t border-rule pt-5"><h2 className="flex items-center gap-3"><span className="font-mono text-xs text-maple" aria-hidden="true">02 /</span> Potential targets</h2><span>All must match</span></div>
-        <p className="hint">Minimum totals across three lines. All Stat counts toward each main stat.</p>
-        {availableTargets.some(row => row.effect === 'ALL_STAT_PCT') && <p className="hint">
+        <div className="section-heading flex items-center justify-between gap-2 mt-7.5 [&_span]:text-[10px] [&_span]:text-maple
+        [&_span]:tracking-[0] border-t border-rule pt-5"><h2 className="flex items-center gap-3"><span className="font-mono text-xs text-maple" aria-hidden="true">02 /</span> Potential targets</h2><span>All must match</span></div>
+        <p className="hint text-[12px] text-muted mb-4.5">Minimum totals across three lines. All Stat counts toward each main stat.</p>
+        {availableTargets.some(row => row.effect === 'ALL_STAT_PCT') && <p className="hint text-[12px] text-muted mb-4.5">
           All Stat adds its percentage to STR, DEX, INT, and LUK targets, including your main and secondary stats.
           These are combined stat totals; matching rolls do not need a specific All Stat line.
         </p>}
         {loadingOptions ? <LoadingStatus>Loading obtainable potential lines…</LoadingStatus>
           : currentOptions.error ? <div role="alert">
-            <p className="error">{currentOptions.error}</p>
+            <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]">{currentOptions.error}</p>
             <button type="button" onClick={() => {
               setItemOptions(null)
               setRetry(value => value + 1)
             }}>Retry loading lines</button>
           </div>
-            : !currentOptions.potential.available && <p className="hint">
+            : !currentOptions.potential.available && <p className="hint text-[12px] text-muted mb-4.5">
               No potential table is available for this equipment, level, and cube.
             </p>}
         <div className="target-list grid gap-4 mb-4.5">
@@ -117,14 +120,14 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
               onRemove={() => { setTargets(rows => rows.filter(item => item.id !== row.id)); onChange() }} />
           ))}
         </div>
-        <button type="button" className="secondary" disabled={!canCalculate || availableTargets.length >= effects.length}
+        <button type="button" className="secondary text-[12px] w-full bg-transparent" disabled={!canCalculate || availableTargets.length >= effects.length}
           onClick={() => {
             const effect = effects.find(value => !availableTargets.some(row => row.effect === value))
             setTargets(rows => [...rows, { id: nextId, effect, target: '1' }])
             setNextId(value => value + 1)
             onChange()
           }}>+ Add potential target</button>
-        <button type="submit" className="primary mt-6" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
+        <button type="submit" className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91] mt-6" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
       </fieldset>
     </form>
   )

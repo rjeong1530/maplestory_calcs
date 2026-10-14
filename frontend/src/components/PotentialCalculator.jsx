@@ -1,5 +1,3 @@
-import './Calculator.css'
-import './PotentialCalculator.css'
 import LoadingStatus from './LoadingStatus'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
@@ -45,8 +43,8 @@ export default function PotentialCalculator() {
   return (
     <>
       {optionsError ? (
-        <div className="panel" role="alert">
-          <p className="error">{optionsError}</p>
+        <div className="panel bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5" role="alert">
+          <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]">{optionsError}</p>
           <button onClick={() => {
             setOptionsError('')
             setRetry(value => value + 1)
@@ -58,7 +56,7 @@ export default function PotentialCalculator() {
         <LoadingStatus>Loading calculator options…</LoadingStatus>
       ) : (
         <>
-          <div className="calculator-grid">
+          <div className="calculator-grid grid grid-cols-[1.2fr_1fr] gap-6 items-start [@media(max-width:850px)]:grid-cols-1">
             <CalculatorForm
               options={options}
               busy={busy}

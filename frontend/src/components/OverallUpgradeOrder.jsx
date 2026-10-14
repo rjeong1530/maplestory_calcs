@@ -7,7 +7,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
   const steps = plan?.steps ?? []
   return <section aria-label="Overall upgrade order">
     <h3>Best next upgrades across your equipment</h3>
-    {plan?.laddering_enabled && <details className="upgrade-notes">
+    {plan?.laddering_enabled && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[#d0cec3] [&_summary]:cursor-pointer [&_li]:mb-2">
       <summary>How laddering costs and efficiency work</summary>
       <p>A laddering recommendation includes the <strong>full cost needed before swapping</strong>:</p>
       <ul>
@@ -19,30 +19,36 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
       <p>A spare needing substantial rerolling can rank lower or fall outside the recommended steps,
         even if its Star Force upgrade alone looks efficient. Already-sufficient rolls add no reroll cost.
         Only enabled roll categories can contribute preparation.</p>
-      <p className="hint"><strong>Laddering mode:</strong> configured items keep their equipped copy safe while the second copy is enhanced. Each step includes spare Star Force and any rolling needed to meet its minimum scores. Swap when total score improves; a better-rolled copy may win at equal or lower stars. The old equipped copy becomes the next spare. Minimum scores are calculated automatically. No recorded second-copy stats means 0 stars and zero roll scores, with preparation costs included. Costs assume both copies are owned and potential is Legendary. Per-category tabs still show standard upgrades.</p>
+      <p className="hint text-[12px] text-muted mb-4.5"><strong>Laddering mode:</strong> configured items keep their equipped copy safe while the second copy is enhanced. Each step includes spare Star Force and any rolling needed to meet its minimum scores. Swap when total score improves; a better-rolled copy may win at equal or lower stars. The old equipped copy becomes the next spare. Minimum scores are calculated automatically. No recorded second-copy stats means 0 stars and zero roll scores, with preparation costs included. Costs assume both copies are owned and potential is Legendary. Per-category tabs still show standard upgrades.</p>
     </details>}
-    <p className="hint">Cube sale: {settings.cube_sale ? 'On' : 'Off'} · Shining Star Force: {settings.shining_starforce_sunday ? 'On' : 'Off'} · MVP discount: {MVP_RANKS[settings.mvp_rank] ?? 'None'}</p>
-    <p className="hint">For flames, <strong>stop at ≥ target</strong> means keep rolling until you reach that
+    <p className="hint text-[12px] text-muted mb-4.5">Cube sale: {settings.cube_sale ? 'On' : 'Off'} · Shining Star Force: {settings.shining_starforce_sunday ? 'On' : 'Off'} · MVP discount: {MVP_RANKS[settings.mvp_rank] ?? 'None'}</p>
+    <p className="hint text-[12px] text-muted mb-4.5">For flames, <strong>stop at ≥ target</strong> means keep rolling until you reach that
       score or higher. At that point, another available upgrade is estimated to give at least as much
       gain per meso as further flaming. Continuing can still improve the item; it may simply be less
       efficient. With no competing upgrade, the target is the next obtainable improvement.</p>
-    <p className="hint"><strong>Average result</strong> is the average of all rolls that meet or exceed
+    <p className="hint text-[12px] text-muted mb-4.5"><strong>Average result</strong> is the average of all rolls that meet or exceed
       the stopping target, including lucky rolls far above it. For example, 186.446 → ≥186.806 with an
       average result of 195.410 means stop at any roll of at least 186.806—not keep rolling until 195.410.
       Your actual result could be below or above that average. The expected gain is 8.964; the minimum
       gain is only 0.360.</p>
-    <p className="hint">Choosing to continue until ≥195.410 would be a different, more expensive target:
+    <p className="hint text-[12px] text-muted mb-4.5">Choosing to continue until ≥195.410 would be a different, more expensive target:
       rolls between 186.806 and 195.410 would no longer qualify, so the displayed expected cost would
       not apply. Record your actual flame score and recalculate to decide what to upgrade next.
       Black Flames are priced at 3M each; Abyssal Flames are excluded because they have no meso price.</p>
     {steps.length ? <>
-      <p className="hint">Showing up to {plan.step_limit} projected steps. Later flame steps start from
+      <p className="hint text-[12px] text-muted mb-4.5">Showing up to {plan.step_limit} projected steps. Later flame steps start from
         the projected average result, which may differ from your actual roll. Costs are averages,
         not guaranteed budgets.</p>
       <div className="max-w-full overflow-x-auto" role="region" aria-label="Combined upgrade recommendations" tabIndex="0">
-        <table className="upgrade-table overall-upgrade-table">
+        <table className="upgrade-table overall-upgrade-table min-w-180 text-[13px] table-fixed [&_caption]:text-maple [&_caption]:py-3
+        [&_caption]:px-0 [&_th]:py-3 [&_th]:pr-2.5 [&_th]:pl-2.5 [&_td]:py-3 [&_td]:pr-2.5 [&_td]:pl-2.5
+        [&_td]:whitespace-nowrap [&_td]:tabular-nums [&_th[scope='row']]:min-w-50 [&_th[scope='row']]:text-left
+        [&_small]:block [&_small]:text-muted [&_small]:font-normal [&_small]:mt-1.25 [&_th]:min-w-0 [&_th]:px-1.5
+        [&_th]:whitespace-normal [&_th]:[overflow-wrap:anywhere] [&_th]:[vertical-align:top] [&_td]:min-w-0
+        [&_td]:px-1.5 [&_td]:whitespace-normal [&_td]:[overflow-wrap:anywhere] [&_td]:[vertical-align:top]
+        [&_th[scope='row']]:min-w-0 [&_+_.hint]:mt-4">
           <caption>Automatic targets and projected upgrade order</caption>
-          <colgroup>{[4, 19, 25, 10, 12, 10, 10, 10].map((width, index) => <col key={index} style={{ width: `${width}%` }} />)}</colgroup>
+          <colgroup>{['w-[4%]', 'w-[19%]', 'w-1/4', 'w-[10%]', 'w-[12%]', 'w-[10%]', 'w-[10%]', 'w-[10%]'].map((width, index) => <col key={index} className={width} />)}</colgroup>
           <thead><tr>
             <th scope="col">#</th><th scope="col">Equipment / upgrade</th>
             <th scope="col">Starting score / stop at</th><th scope="col">Expected score gain</th>
@@ -64,7 +70,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
             </th>
             <td>{entry.category === 'starforce'
               ? <>{entry.start_star} → {entry.next_star} stars
-                {entry.transfer_options && <div className="upgrade-step-details">
+                {entry.transfer_options && <div className="upgrade-step-details mt-2 text-[12px] leading-[1.6] [&_summary]:cursor-pointer [&_summary]:text-maple">
                   <small>Alternatives, not consecutive steps. Row totals use the indicated route.</small>
                   {['equipped_transfer', 'spare_transfer'].map(route => {
                     const option = entry.transfer_options.find(value => value.transfer_route === route)
@@ -84,7 +90,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
                     </details>
                   })}
                 </div>}
-                {entry.transfer_route && <details className="upgrade-step-details"><summary>Transfer and recovery details</summary>
+                {entry.transfer_route && <details className="upgrade-step-details mt-2 text-[12px] leading-[1.6] [&_summary]:cursor-pointer [&_summary]:text-maple"><summary>Transfer and recovery details</summary>
                   {entry.assumed_second_copy && <small>No spare stats recorded: assumes an owned spare with 0 stars and zero flame/potential scores. Required preparation is included; initial spare acquisition is excluded.</small>}
                   {entry.donor_target != null && <small>Gollux preparation: {entry.donor_start === entry.donor_target
                     ? `owned donor is already at ${entry.donor_target}★`
@@ -106,7 +112,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
                   </>}
                   <small>Recalculate after this sequence with actual stars, rolls, and remaining donors. Further upgrades for this SoS are not projected.</small>
                 </details>}
-                {entry.laddering && !entry.transfer_route && <details className="upgrade-step-details"><summary>Laddering details</summary>
+                {entry.laddering && !entry.transfer_route && <details className="upgrade-step-details mt-2 text-[12px] leading-[1.6] [&_summary]:cursor-pointer [&_summary]:text-maple"><summary>Laddering details</summary>
                   <small>Keep {entry.protected_copy_label || 'equipped copy'} at {entry.protected_star}★ until the swap.</small>
                   {entry.copy_label && <small>Equip {entry.copy_label} after this step; {entry.protected_copy_label} becomes the backup. Original and Spare labels stay with their copies throughout this plan.</small>}
                   {entry.assumed_second_copy && <small>No spare stats recorded: starting at 0 stars and zero roll scores; preparation costs are included.</small>}
@@ -132,7 +138,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
         </table>
       </div>
     </> : <p role="status">No eligible upgrades with positive score gain and a known meso cost.</p>}
-    {plan?.unavailable?.length > 0 && <details className="upgrade-notes">
+    {plan?.unavailable?.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[#d0cec3] [&_summary]:cursor-pointer [&_li]:mb-2">
       <summary>Unavailable estimates ({plan.unavailable.length})</summary>
       <ul>{plan.unavailable.map((entry, index) => <li key={`${entry.category}-${entry.slot}-${index}`}>
         {entry.name} ({entry.slot}) · {UPGRADE_CATEGORIES[entry.category]}: {entry.note}

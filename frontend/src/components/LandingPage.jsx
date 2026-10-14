@@ -31,7 +31,7 @@ export default function LandingPage({ onNavigate }) {
           <div>
             {items.map(({ page, title, category, description }) => (
               <article className="border-b border-rule py-5" key={page}>
-                <span className="eyebrow">{category}</span>
+                <span className="eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple">{category}</span>
                 <h3 className="mt-2.5 mb-2 text-[22px] font-semibold tracking-tight">
                   <a className="flex items-center justify-between gap-4 text-inherit no-underline hover:text-maple hover:underline underline-offset-[5px]"
                     href={PAGE_PATHS[page]} onClick={event => onNavigate(page, event)}>

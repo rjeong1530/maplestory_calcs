@@ -1,8 +1,49 @@
 # Frontend
 
-React 19 + Vite 8. See the [project README](../README.md#quick-start) for
-installation and the [deployment settings](../README.md#deployment) for Render.
-Run the commands below from `frontend/`.
+React 19, Vite 8, and Tailwind CSS 4. See the [project overview](../README.md)
+for the application and repository layout. Run the commands below from
+`frontend/` unless stated otherwise.
+
+## Setup
+
+Requires Node.js 20.19+ on the 20.x line or 22.12+ on newer supported lines.
+
+```text
+npm ci
+npm run dev
+```
+
+Open the URL printed by Vite. The development `/api` proxy currently targets
+`https://maplestory-calcs-1.onrender.com`. To use a local backend, start it
+using the [backend setup](../backend/README.md#setup), change the proxy target in
+[vite.config.js](vite.config.js) to `http://127.0.0.1:8000`, and restart Vite.
+
+## Deployment
+
+| Setting | Value |
+| --- | --- |
+| Repository-root build command | `npm --prefix frontend ci && npm --prefix frontend run build` |
+| Publish directory | `frontend/dist` |
+| Build-time API address | `VITE_API_BASE_URL` |
+
+Production and preview default to `https://maplestory-calcs-1.onrender.com`.
+Set `VITE_API_BASE_URL` before building to use another backend. An explicitly
+empty value uses same-origin `/api` requests and requires an API proxy on that
+host; Vite preview does not provide one. This variable is embedded in public
+JavaScript, so never place secrets in it. Configure the backend's
+`CORS_ALLOWED_ORIGINS` for the deployed frontend origin.
+
+Use the route rewrites in [routing and requests](#routing-and-requests) to serve
+each prerendered document before the SPA fallback.
+
+## Styling
+
+Use Tailwind utility classes for component styling, including responsive, focus,
+hover, and ARIA states. `src/index.css` is the sole stylesheet: it contains the
+Tailwind imports, theme tokens, and document defaults expressed with `@apply`.
+Keep dynamic choices as complete class names so Tailwind can discover them.
+Semantic class names retained on components are DOM/test hooks, not CSS rules.
+The prerendered navigation and shared public content use the same utilities.
 
 ## Commands
 
@@ -27,6 +68,21 @@ by default they contact the production Render services. They are not part of
 The rendering benchmark accepts `BENCHMARK_OUTPUT` for its output JSON path.
 For benchmarks that should use same-origin API URLs, build with
 `VITE_API_BASE_URL` set to an empty string.
+
+## Tests and verification
+
+The current inventory contains **101 helper/API-client tests in 18 files**,
+plus one prerender test and three separately invoked browser harnesses.
+On 2026-10-14, all 101 tests, lint, the production build, and the prerender test
+passed. The browser regression command could not start because geckodriver was
+not available on PATH; live smoke tests and the rendering benchmark were not
+rerun. Direct isolated Firefox layout checks during the Tailwind migration were
+limited to desktop/mobile page layout and equipment views; backend API access
+was unavailable. These checks do not replace the full browser regression suite.
+
+`scripts/.tmp-landing-review.mjs` is a tracked, standalone landing-page screenshot
+and mobile-layout check. It is not invoked by the package scripts or included in
+the 101 helper tests. See [the test inventory](../FRONTEND_TESTS.txt) for its scope.
 
 ## Routing and requests
 
@@ -73,7 +129,7 @@ automatically retried after failure.
 The development proxy in [vite.config.js](vite.config.js) currently targets the
 **deployed backend**. For local API work, change its `/api` target to
 `http://127.0.0.1:8000` and restart Vite. Production and preview use the API address
-embedded at build time; see the root README for `VITE_API_BASE_URL`.
+embedded at build time; see [deployment](#deployment) for `VITE_API_BASE_URL`.
 
 ## Code map
 
@@ -84,8 +140,10 @@ embedded at build time; see the root README for `VITE_API_BASE_URL`.
 - [useCalculationRequest.js](src/hooks/useCalculationRequest.js): cancellable
   requests whose results are associated with the submitted inputs.
 - `src/components/`: calculator forms, results, equipment editors, and upgrade views.
-- `src/data/`: bundled equipment, request builders, import/export helpers, and tests.
-- `src/App.css`, `src/index.css`, and component styles: presentation.
+- `src/data/`: bundled equipment, request builders, and import/export helpers.
+- `tests/`: helper and API-client unit tests.
+- `scripts/`: prerendering, browser regressions, live smoke checks, and benchmarks.
+- `src/index.css` and Tailwind classes in components: presentation.
 
 Equipment setup previews selections, removals, class changes, and imports until
 **Save equips** is clicked; **Discard changes** restores the saved set. Stats and
@@ -96,18 +154,58 @@ are handled by [equipmentStorage.js](src/data/equipmentStorage.js).
 
 ## Public files and data
 
-Files in `public/` are copied unchanged to the site root. Keep the sitemap's URLs
-in sync with the route list. The favicon, heading logo, `robots.txt`, and Google
+Files in `public/` are copied to the site root. The build then regenerates
+`sitemap.xml` from the route list; keep the development copy in sync as well. The favicon, heading logo, `robots.txt`, and Google
 verification file also live here.
 
 Equipment data is bundled, so ordinary development needs no refresh. See the
 [backend data tools](../backend/README.md#data-and-examples) for refresh commands,
 and [sample builds](../examples/equipment/README.md) for importable equipment.
-## Transfer recommendations
 
-SoS steps display equipped/spare alternatives with independent targets, separate
-potential/flame preparation costs, and SoS/Gollux boom counts. Only the labeled
-ranking option contributes to cumulative totals. Transfer settings link to the
-equipment page guide; the same text is included in prerendered HTML. Astra
-secondaries hide the copy editor and discard legacy laddering on save restoration.
-See [transfer assumptions](../examples/laddering/GOLLUX_TRANSFER.md).
+## Laddering equipment upgrades
+
+In **Equipment → Stats & upgrades**, enable laddering on each item and choose its
+starting star. The calculator determines minimum flame/potential scores for each
+target star by comparing total weighted scores. Use **Second copy** to
+record that item's spare stars, flame lines, and potential lines. Both copies are
+saved locally and included in equipment JSON exports. An unrecorded second copy
+defaults to 0 stars with zero flame/potential scores; an
+explicitly recorded copy uses its actual stats, including zero values.
+
+Enabling laddering on an item automatically enforces it in **Overall**; there is
+no separate global switch to enable. Calculate and open **Overall**.
+At the selected star, the projection enhances the spare while preserving the
+equipped copy. It includes catch-up Star Force costs and any rolls needed to reach
+the minimum scores, then swaps only when the combined weighted Star Force,
+flame, and potential score improves. The former equipped copy becomes the next
+spare. Better rolls can justify a swap at equal or lower stars.
+
+These are projected upgrades, not edits to saved equipment. Recalculate after
+actual rolls. Copies are assumed owned and potential is assumed Legendary;
+acquisition and tier-up costs are excluded. Required preparation is priced using
+enabled roll categories. The planner chooses the cheapest attainable pair of
+stopping scores that guarantees a total-score improvement for each target star;
+it then compares the resulting upgrades by expected gain per meso. Recorded copies
+and automatic targets are rescored when weights change. Older saved manual minimums
+are ignored. Astra secondaries and cooldown-minimum hats are not supported in laddering.
+Individual category tabs continue to show standard upgrade rankings.
+
+## Source of Suffering transfers
+
+SoS laddering offers a Gollux transfer mode with two alternatives in each step:
+transfer onto the equipped SoS (retain its flame; rebuild potential) or onto a
+spare (include needed flame and potential preparation). Each shows its own target,
+roll costs, total cost, and separate SoS/Gollux booms. Targets are optimized
+independently; only the option labeled **Used for ranking** contributes to totals.
+
+Transfer mode prioritizes fewer SoS booms, then meso efficiency. Transfers land
+at least at 22 stars and the equipped star level; subsequent SoS taps stay within
+its cap. Boom recovery restores the trace and transfers a rebuilt donor. Enter
+the expected Legendary tier-up cost explicitly. Initial donor/spare copies are
+assumed owned; missing spare stats count as zero. Recalculate after one SoS
+sequence with actual results and remaining inventory.
+
+The equipped option includes optional +2-donor tapping advice; that advice is
+not part of the cost model. Legacy `restore_trace` values are accepted but ignored.
+See the [transfer guide](../examples/laddering/GOLLUX_TRANSFER.md) and
+[importable example](../examples/laddering/gollux-transfer.json).

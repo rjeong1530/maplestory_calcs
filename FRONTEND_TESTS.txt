@@ -1,548 +1,594 @@
 FRONTEND TEST INVENTORY
-Reviewed: 2026-10-12
-Total: 101 helper/API-client tests in 18 files, plus 3 separate browser harnesses and 1 prerender test
-Harnesses: 1 regression test, 1 live deployment smoke test, 1 rendering benchmark
+=======================
+Reviewed: 2026-10-14
+Core suite: 101 helper/API-client tests in 18 files
+Separate checks: 1 prerender test and 3 browser harnesses
+Additional tracked utility: 1 temporary landing-page review script
 
-Laddering coverage includes independent second-copy editing, save/export/import,
-request serialization, missing versus recorded zero stats, and invalid data.
-The browser regression also checks the copy editor, persistence, and API payload.
+Scope
+-----
+The core suite covers request handling, data transformations, equipment storage,
+import/export, ranking, and probability/budget helpers. Browser harnesses cover
+rendered interactions or measure loading; they are not included in npm test.
+Each entry is a named test. Loops and scenarios do not add to the test count.
 
-Run from frontend/:
+Run from frontend/
+------------------
   npm test
+  npm run lint
+  npm run test:prerender
   npm run test:browser
-Optional live check (real requests to deployed services):
+
+Optional checks:
   npm run test:deployed
-Optional measurement harness:
   npm run benchmark:render
+
 Single helper file:
   node --test tests/routes.test.js
 
-Browser scripts require Firefox and geckodriver on PATH or GECKODRIVER_PATH.
-Regression/benchmark scripts also accept FIREFOX_BINARY. Live smoke tests accept
-SMOKE_SITE_URL and SMOKE_API_URL; default targets are the deployed Render services.
-The benchmark accepts BENCHMARK_OUTPUT. Build with an empty VITE_API_BASE_URL to
-keep benchmark API URLs local. Each browser harness runs separately from npm test.
+Dependencies and limits
+-----------------------
+- Browser scripts require Firefox and geckodriver on PATH or GECKODRIVER_PATH.
+- Regression and benchmark scripts accept FIREFOX_BINARY.
+- Live smoke tests accept SMOKE_SITE_URL and SMOKE_API_URL; defaults contact
+  production services and submit real calculations.
+- The rendering benchmark accepts BENCHMARK_OUTPUT. An empty build-time
+  VITE_API_BASE_URL keeps API requests local; preview has no backend proxy.
+- Benchmarks have no speed or size thresholds. Lint and builds are separate checks.
+- Actual browser Back/Forward events are not covered by the regression harness.
+- scripts/.tmp-landing-review.mjs is tracked but not invoked by package scripts.
 
-Scope: named Node tests and browser harnesses. Loops contain additional scenarios.
-Lint/build are separate checks. No performance thresholds are enforced. Actual
-browser Back/Forward events are not covered by the regression scenario.
+Verification on 2026-10-14
+--------------------------
+All 101 helper/API-client tests, lint, production build, and the prerender
+test passed. The standard browser regression could not launch because geckodriver
+was missing from PATH. Live smoke and rendering benchmarks were not rerun.
+Direct isolated Firefox checks during the Tailwind migration covered desktop/mobile
+page layouts and equipment setup/stats views; backend API access was unavailable.
+Those checks do not replace the integrated regression harness.
 
-Audit: retained all named tests. Browser storage, JSON imports, request builders,
-and rendered interactions protect different boundaries. Frontend Star Force order
-and backend combined planning run different implementations. Roll-count and budget
-helpers have distinct units and edge cases. Similar assertions alone do not make
-these tests redundant. Live smoke and benchmark were reviewed, not rerun in this audit.
-Latest local run: all 101 helper/API-client tests, the prerender test, and the isolated Firefox regression passed.
+Related documentation: frontend/README.md, BACKEND_TESTS.txt,
+PERFORMANCE_UPDATES.txt, and FIXED_WARNINGS.txt.
 
-Inventory policy: one entry per current named test, grouped by source file.
-Historical counts/change logs removed. Descriptions summarize assertions and do
-not claim exhaustive input coverage. Update the relevant entry after test changes.
-
-==============================================================================
+========================================================================================
 FILE: frontend/tests/api.test.js
 Tests: 7
 
 1. both form options and submissions allow time for backend cold starts
-  Both option reads and calculation POSTs receive a bounded 90-second timeout.
+   Both option reads and calculation POSTs receive a bounded 90-second timeout.
 
 2. HTML overload responses show a recoverable error without retrying calculations
-  Non-JSON HTTP 429/502/503 responses produce rate-limit or startup/busy messages; only one
-  request is sent, without automatic retries.
+   Non-JSON HTTP 429/502/503 responses produce rate-limit or startup/busy messages; only
+   one request is sent, without automatic retries.
 
 3. JSON queue rejection preserves the backend explanation
-  A JSON HTTP 503 queue-full error preserves the backend message.
+   A JSON HTTP 503 queue-full error preserves the backend message.
 
 4. caller cancellation does not disable the request timeout
-  Checks timeout still rejects a request with a supplied cancellation signal.
+   Checks timeout still rejects a request with a supplied cancellation signal.
 
 5. caller abort remains cancellation instead of a connection error
-  Checks explicit cancellation preserves AbortError for caller handling.
+   Checks explicit cancellation preserves AbortError for caller handling.
 
 6. timeouts while reading the response body report a timeout
-  Checks an abort during JSON loading produces the timeout message.
+   Checks an abort during JSON loading produces the timeout message.
 
 7. successful requests and server validation errors retain their behavior
-  Checks successful data and structured API validation messages are preserved.
+   Checks successful data and structured API validation messages are preserved.
 
-==============================================================================
+========================================================================================
+FILE: frontend/tests/bugReport.test.js
+Tests: 1
+
+1. report preview preserves multiline reports and special characters
+
+========================================================================================
 FILE: frontend/tests/cubeCosts.test.js
 Tests: 1
 
 1. cube prices and labels reflect sale pricing for both cubes
-  Checks default and explicit regular prices of 22M for black cubes and 12M for red cubes,
-  sale prices of 16.5M and 9M, and matching sale-price labels in mesos per cube.
+   Checks default and explicit regular prices of 22M for black cubes and 12M for red
+   cubes, sale prices of 16.5M and 9M, and matching sale-price labels in mesos per cube.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/equipmentGroups.test.js
 Tests: 3
 
 1. Brilliant catalog items are grouped separately from Pitched
-  Checks the four requested Brilliant items using actual catalog entries in their ring,
-  pendant, and face slots.
+   Checks the four requested Brilliant items using actual catalog entries in their ring,
+   pendant, and face slots.
 
 2. Eternal groups use the requested slots, not names of unrelated secondaries
-  Kalos includes hat/top/bottom/shoulder; Limbo includes cape/gloves/shoes. Eternal Magnum
-  remains other; representative Pitched items retain their group.
+   Kalos includes hat/top/bottom/shoulder; Limbo includes cape/gloves/shoes. Eternal
+   Magnum remains other; representative Pitched items retain their group.
 
 3. bulk copying preserves stats, resets missing modes, and excludes ineligible equipment
-  Copies modes/safeguards to selected eligible items while preserving stars, cooldown,
-  potential, replacement cost, and untouched items. Missing settings reset to defaults; the
-  original input remains unchanged.
+   Copies modes/safeguards to selected eligible items while preserving stars, cooldown,
+   potential, replacement cost, and untouched items. Missing settings reset to defaults;
+   the original input remains unchanged.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/equipmentSamples.test.js
 Tests: 4
 
 1. JSON samples cover every class and survive import, browser restoration and API serialization
-  Checks the 47 committed samples cover exactly the supported class list and match the
-  generator. Verifies JSON export/import and browser restoration round trips, eight-item
-  request serialization without lost values, and successful reimport after all 2,209
-  class-to-class compatibility transitions. Samples include negative cooldown, Xenon
-  multi-stat, and Demon Avenger HP rolls.
+   Checks the 47 committed samples cover exactly the supported class list and match the
+   generator. Verifies JSON export/import and browser restoration round trips,
+   eight-item request serialization without lost values, and successful reimport after
+   all 2,209 class-to-class compatibility transitions. Samples include negative
+   cooldown, Xenon multi-stat, and Demon Avenger HP rolls.
 
 2. shields, force shields, soul rings and ordinary secondaries share the secondary potential table
-  Checks seven real catalog secondaries across Bishop, Demon Slayer, Demon Avenger, Angelic
-  Buster, Mihile, and Dual Blade retain the generic secondary potential mapping.
+   Checks seven real catalog secondaries across Bishop, Demon Slayer, Demon Avenger,
+   Angelic Buster, Mihile, and Dual Blade retain the generic secondary potential
+   mapping.
 
 3. invalid imported rolls are rejected and malformed browser rolls are discarded without crashing
-  Rejects null, array, unknown-effect, negative non-cooldown, boolean, and infinite
-  potential lines on import; browser restoration discards them and still builds a request.
-  Rejects duplicate flame options on import, keeps the first during restoration, and
-  ignores invalid saved slot names.
+   Rejects null, array, unknown-effect, negative non-cooldown, boolean, and infinite
+   potential lines on import; browser restoration discards them and still builds a
+   request. Rejects duplicate flame options on import, keeps the first during
+   restoration, and ignores invalid saved slot names.
 
 4. restored score settings reject negative, boolean, whitespace and structured values
-  Checks malformed flame and potential weights fall back to defaults, zero attack weight
-  survives, a real false event flag is retained, and a string false event flag uses the
-  default.
+   Checks malformed flame and potential weights fall back to defaults, zero attack
+   weight survives, a real false event flag is retained, and a string false event flag
+   uses the default.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/equipmentSave.test.js
 Tests: 11
 
 1. equipment exports round-trip flame and potential weights including zero
-  Checks numeric JSON serialization, decimal/zero preservation, restored form strings, and
-  compatibility with old exports lacking score_weights.
+   Checks numeric JSON serialization, decimal/zero preservation, restored form strings,
+   and compatibility with old exports lacking score_weights.
 
 2. equipment imports reject malformed weights before applying any equipment
-  Rejects malformed groups, unknown keys, negative/non-numeric values, and invalid export
-  values instead of silently overwriting settings.
+   Rejects malformed groups, unknown keys, negative/non-numeric values, and invalid
+   export values instead of silently overwriting settings.
 
 3. hat cooldown minimum survives exports and rejects invalid imported values
-  Round-trips a four-second minimum, defaults older saves to zero, and rejects negative,
-  out-of-range, fractional, string, and boolean values.
+   Round-trips a four-second minimum, defaults older saves to zero, and rejects
+   negative, out-of-range, fractional, string, and boolean values.
 
 4. replacement costs persist and older Astra saves receive the default
-  Round-trips zero and custom costs. Older Astra saves default to 1B and ordinary gear to
-  zero; invalid imported costs are rejected.
+   Round-trips zero and custom costs. Older Astra saves default to 1B and ordinary gear
+   to zero; invalid imported costs are rejected.
 
 5. wrong-job secondaries are rejected on import and removed from saved equipment
-  Rejects a Xenon secondary imported for Phantom, drops it during saved-state restoration,
-  and accepts it for Xenon. Protects job eligibility when loading equipment.
+   Rejects a Xenon secondary imported for Phantom, drops it during saved-state
+   restoration, and accepts it for Xenon. Protects job eligibility when loading
+   equipment.
 
 6. equipment export/import preserves class, items and recorded rolls
-  Round-trips class, two separately equipped rings, stars and limits, modes, safeguards,
-  potentials, flames, flame type, and boss status. Restores the catalog item level.
+   Round-trips class, two separately equipped rings, stars and limits, modes,
+   safeguards, potentials, flames, flame type, and boss status. Restores the catalog
+   item level.
 
 7. empty equipment exports and UTF-8 BOM imports are supported
-  Accepts an export without editable gear and a UTF-8 BOM, restoring the class plus the
-  mandatory fixed Ring of Restraint.
+   Accepts an export without editable gear and a UTF-8 BOM, restoring the class plus the
+   mandatory fixed Ring of Restraint.
 
 8. malformed imports and invalid rolls are rejected before returning equipment
-  Rejects malformed JSON, wrong schema/version/class/slot/item, invalid stars and limits,
-  unsupported modes/safeguards, malformed potential values, invalid flame tiers/types, and
-  nonboolean boss status before returning equipment.
+   Rejects malformed JSON, wrong schema/version/class/slot/item, invalid stars and
+   limits, unsupported modes/safeguards, malformed potential values, invalid flame
+   tiers/types, and nonboolean boss status before returning equipment.
 
 9. imports rebuild catalog fields instead of trusting file metadata
-  Replaces imported names, configuration, and icon URLs with trusted bundled catalog
-  values. Imported metadata cannot redefine an item.
+   Replaces imported names, configuration, and icon URLs with trusted bundled catalog
+   values. Imported metadata cannot redefine an item.
 
 10. imports reject class-incompatible weapons and conflicting overall/bottom slots
-  Rejects a Hero weapon for Bishop and rejects simultaneous overall/bottom equipment
-  regardless of property order.
+   Rejects a Hero weapon for Bishop and rejects simultaneous overall/bottom equipment
+   regardless of property order.
 
 11. ring four is fixed across defaults, saved data, imports and class changes
-  Checks the fixed default and sole ring-4 choice, blocks replacement, preserves it across
-  class changes, and normalizes missing, old, or edited ring-4 saves/imports without
-  changing ring-1.
+   Checks the fixed default and sole ring-4 choice, blocks replacement, preserves it
+   across class changes, and normalizes missing, old, or edited ring-4 saves/imports
+   without changing ring-1.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/equipmentStorage.test.js
 Tests: 3
 
 1. full equipment sets larger than a cookie survive storage and restoration
-  Saves a real catalog equipment set exceeding 4 KB, reloads all classes/settings and
-  equipment, and verifies restored equipment matches the serialized save using a
-  local-storage test double.
+   Saves a real catalog equipment set exceeding 4 KB, reloads all classes/settings and
+   equipment, and verifies restored equipment matches the serialized save using a
+   local-storage test double.
 
 2. legacy cookies migrate after successful writes and local storage takes precedence
-  Recovers an old cookie, writes it to local storage, retires the cookie only after
-  success, and prefers local storage over stale cookie data on subsequent reads.
+   Recovers an old cookie, writes it to local storage, retires the cookie only after
+   success, and prefers local storage over stale cookie data on subsequent reads.
 
 3. malformed or blocked storage recovers cookies and failed writes preserve them
-  Falls back from malformed local data or blocked storage to the cookie. Failed writes
-  preserve the cookie and report failure; malformed cookies restore an empty selection.
-  Quota failures are also reported.
+   Falls back from malformed local data or blocked storage to the cookie. Failed writes
+   preserve the cookie and report failure; malformed cookies restore an empty selection.
+   Quota failures are also reported.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/equipmentUpgrade.test.js
 Tests: 22
 
 1. upgrade requests carry the hat cooldown minimum
-  Verifies the four-second hat minimum reaches the API payload.
+   Verifies the four-second hat minimum reaches the API payload.
 
 2. Eternal Knight Gloves use catalog boss flames despite an older saved non-boss flag
-  Checks requests and restored equipment use the catalog boss flag, preserve recorded flame
-  lines, and continue honoring overrides for items with a manual flame type.
+   Checks requests and restored equipment use the catalog boss flag, preserve recorded
+   flame lines, and continue honoring overrides for items with a manual flame type.
 
 3. secondary stat weights migrate saved divisors and send points per stat
-  Checks legacy divisors 10 and 4 become multipliers 0.1 and
+   Checks legacy divisors 10 and 4 become multipliers 0.1 and
 
 4. Xenon requests carry three primary stats and no secondary stats
-  Builds a Xenon request with STR, DEX, and LUK as primary stats, no secondary stats, and
-  ATT offense.
+   Builds a Xenon request with STR, DEX, and LUK as primary stats, no secondary stats,
+   and ATT offense.
 
 5. MVP rank is validated in restored settings and serialized in requests
-  Preserves Diamond+ MVP, falls back to none for an invalid rank, and includes the restored
-  rank in upgrade requests.
+   Preserves Diamond+ MVP, falls back to none for an invalid rank, and includes the
+   restored rank in upgrade requests.
 
 6. consecutive Astra steps combine into 0–10 with total costs, gains and efficiency
-  Merges ten consecutive steps into a 0-to-10 range, totaling gain 20, cost 5,500, and
-  attempts 55; recalculates gain/cost without mutating the input.
+   Merges ten consecutive steps into a 0-to-10 range, totaling gain 20, cost 5,500, and
+   attempts 55; recalculates gain/cost without mutating the input.
 
 7. grouping preserves interruptions, separate slots, gaps and reversed star order
-  Keeps rows separate across intervening items, different ring slots, missing stars,
-  reversed steps, and unavailable values; accepts empty input.
+   Keeps rows separate across intervening items, different ring slots, missing stars,
+   reversed steps, and unavailable values; accepts empty input.
 
 8. Astra 10–15 prerequisites precede higher-efficiency 15–17 upgrades
-  Reorders shuffled Astra steps so 10-to-15 prerequisites precede later stars, then groups
-  the continuous 10-to-17 range without changing the input.
+   Reorders shuffled Astra steps so 10-to-15 prerequisites precede later stars, then
+   groups the continuous 10-to-17 range without changing the input.
 
 9. equal-efficiency choices preserve ranking priority and separate equipped slots
-  Breaks efficiency ties using original ranking priority while treating ring-1 and ring-2
-  independently; accepts an empty queue.
+   Breaks efficiency ties using original ranking priority while treating ring-1 and
+   ring-2 independently; accepts an empty queue.
 
 10. six-star lookahead chooses a later payoff over another item and commits its prerequisites
-  Chooses a six-step range whose final gain beats another item, includes every
-  prerequisite, and leaves the seventh step until after that competitor; preserves input.
+   Chooses a six-step range whose final gain beats another item, includes every
+   prerequisite, and leaves the seventh step until after that competitor; preserves
+   input.
 
 11. lookahead stops at six stars and does not use a seventh-star payoff
-  Does not choose a low-star range solely for a payoff seven steps away. The better
-  immediate competitor stays first.
+   Does not choose a low-star range solely for a payoff seven steps away. The better
+   immediate competitor stays first.
 
 12. range efficiency includes expensive prerequisites instead of averaging per-star ratios
-  Ranks total gain divided by total cost; a cheap final upgrade cannot hide an expensive
-  prerequisite.
+   Ranks total gain divided by total cost; a cheap final upgrade cannot hide an
+   expensive prerequisite.
 
 13. Astra below 15 can win on post-15 gains beyond the normal six-star horizon
-  Allows a below-15 item to win through post-15 gains outside the usual six-step horizon,
-  including all 17 steps and their combined cost/gain.
+   Allows a below-15 item to win through post-15 gains outside the usual six-step
+   horizon, including all 17 steps and their combined cost/gain.
 
 14. post-15 gains do not win when the full prerequisite cost is too high
-  Keeps another item first when reaching the post-15 payoff is too expensive after counting
-  prerequisites.
+   Keeps another item first when reaching the post-15 payoff is too expensive after
+   counting prerequisites.
 
 15. lookahead can choose fewer than six stars and reassesses after the chosen range
-  Can commit a two-star range, then reconsider other items instead of forcing a six-star
-  block.
+   Can commit a two-star range, then reconsider other items instead of forcing a
+   six-star block.
 
 16. replacement costs reach requests and grouped boom totals affect ordering
-  Requests carry Astra defaults and zero overrides. Grouped ranges sum fractional booms and
-  replacement spending; efficiency and ordering use total cost.
+   Requests carry Astra defaults and zero overrides. Grouped ranges sum fractional booms
+   and replacement spending; efficiency and ordering use total cost.
 
 17. upgrade requests preserve duplicate slots and convert recorded rolls to API fields
-  Builds separate ring entries with their stars and limits, preserves modes/safeguards and
-  explicit false boss status, converts numeric strings, and omits empty potential rows.
+   Builds separate ring entries with their stars and limits, preserves modes/safeguards
+   and explicit false boss status, converts numeric strings, and omits empty potential
+   rows.
 
 18. upgrade requests map overall and weapon types, retain clean offense and default empty rolls
-  Maps overall potential to outfit and weapon potential to weapon, preserves base weapon
-  offense, and defaults missing stars/rolls to zero/empty arrays.
+   Maps overall potential to outfit and weapon potential to weapon, preserves base
+   weapon offense, and defaults missing stars/rolls to zero/empty arrays.
 
 19. saved upgrade settings accept zero weights and recover from invalid values
-  Preserves zero as a valid weight while replacing invalid cube type, negative weight, and
-  infinite weight with defaults.
+   Preserves zero as a valid weight while replacing invalid cube type, negative weight,
+   and infinite weight with defaults.
 
 20. upgrade selections survive restoration and reach the API
-  Restores valid upgrade categories and passes them to the API, removes obsolete flame
-  type/cost settings, and defaults when every saved category is invalid.
+   Restores valid upgrade categories and passes them to the API, removes obsolete flame
+   type/cost settings, and defaults when every saved category is invalid.
 
 21. fixed ring four is excluded from all upgrade requests
-  Ensures requests omit ring-4 while retaining another ring slot, so the fixed skill ring
-  cannot receive enhancement recommendations.
+   Ensures requests omit ring-4 while retaining another ring slot, so the fixed skill
+   ring cannot receive enhancement recommendations.
 
 22. cube sale persists and reaches upgrade calculations
-  Checks both true and false sale settings survive restoration and reach the upgrade API
-  request. A saved string 'true' is rejected as a sale flag and falls back to false.
+   Checks both true and false sale settings survive restoration and reach the upgrade
+   API request. A saved string 'true' is rejected as a sale flag and falls back to
+   false.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/flameEquipment.test.js
 Tests: 16
 
 1. catalog excludes unwanted series and limits pocket choices to cup and spellbooks
-  Verifies excluded series are absent, the pocket picker has exactly the cup and four
-  colored spellbooks, and Sweetwater Tattoo remains available. Also verifies the exact
-  three-earring allowlist: Commanding Force Earring, Estella Earrings, and Superior Gollux
-  Earrings.
+   Verifies excluded series are absent, the pocket picker has exactly the cup and four
+   colored spellbooks, and Sweetwater Tattoo remains available. Also verifies the exact
+   three-earring allowlist: Commanding Force Earring, Estella Earrings, and Superior
+   Gollux Earrings.
 
 2. heart choices include only the five selected hearts and Mitra emblems follow class families
-  Checks the exact five-heart picker allowlist and the appropriate Mitra emblem for each of
-  five class families.
+   Checks the exact five-heart picker allowlist and the appropriate Mitra emblem for
+   each of five class families.
 
 3. picker results stay sorted and independent across repeated lookups
-  Checks tops and overalls are sorted by level/name, independent lookups cannot mutate each
-  other, unknown jobs/slots are empty, and editable ring-1/ring-3 choices match.
+   Checks tops and overalls are sorted by level/name, independent lookups cannot mutate
+   each other, unknown jobs/slots are empty, and editable ring-1/ring-3 choices match.
 
 4. every catalog secondary has explicit job restrictions
-  Requires an explicit nonempty job mapping for every secondary in the bundled catalog,
-  preventing unclassified secondaries from silently appearing.
+   Requires an explicit nonempty job mapping for every secondary in the bundled catalog,
+   preventing unclassified secondaries from silently appearing.
 
 5. all supported jobs retain Astra and eligible level-100 secondaries
-  Checks every supported job has Astra secondary choices and all except Dual Blade have
-  level-100 options. Every returned secondary matches the job; verifies Xenon controllers
-  and Astra Katara.
+   Checks every supported job has Astra secondary choices and all except Dual Blade have
+   level-100 options. Every returned secondary matches the job; verifies Xenon
+   controllers and Astra Katara.
 
 6. catalog retains only requested katara and ordinary shield series
-  Limits kataras to Fafnir, AbsoLab, Sweetwater, Arcane Umbra, and Astra. Ordinary shield
-  records are limited to Astra, Deimos, and Terminus.
+   Limits kataras to Fafnir, AbsoLab, Sweetwater, Arcane Umbra, and Astra. Ordinary
+   shield records are limited to Astra, Deimos, and Terminus.
 
 7. secondaries distinguish jobs within the same family
-  Checks specific secondary IDs for jobs sharing a broad class family, including shared
-  Demon Slayer/Demon Avenger shields. Broad family compatibility cannot substitute for job
-  eligibility.
+   Checks specific secondary IDs for jobs sharing a broad class family, including shared
+   Demon Slayer/Demon Avenger shields. Broad family compatibility cannot substitute for
+   job eligibility.
 
 8. Cygnus jewel is limited to the five Cygnus jobs despite its All family
-  Allows the Cygnus jewel only for the five Cygnus jobs even though its catalog family is
-  All.
+   Allows the Cygnus jewel only for the five Cygnus jobs even though its catalog family
+   is All.
 
 9. class changes remove another jobs secondary but preserve shared secondaries
-  Removes a Xenon secondary after changing to Phantom while preserving a shield shared by
-  Bishop and Fire/Poison.
+   Removes a Xenon secondary after changing to Phantom while preserving a shield shared
+   by Bishop and Fire/Poison.
 
 10. weapon picker filters by class and supplies calculator settings
-  Filters Bishop weapons to staves/wands and verifies Arcane Umbra Staff supplies weapon
-  type, level 200, and base offense 353.
+   Filters Bishop weapons to staves/wands and verifies Arcane Umbra Staff supplies
+   weapon type, level 200, and base offense 353.
 
 11. real armor and accessories are filtered by slot and class
-  Filters armor and accessories by slot/job, verifies representative slot availability,
-  pendant equivalence, catalog names and boss flags, and medal flame configuration.
+   Filters armor and accessories by slot/job, verifies representative slot availability,
+   pendant equivalence, catalog names and boss flags, and medal flame configuration.
 
 12. all supported classes have families and matching catalog weapons
-  Requires every supported weapon job to have a class family and at least one eligible
-  catalog weapon.
+   Requires every supported weapon job to have a class family and at least one eligible
+   catalog weapon.
 
 13. weapon IDs disambiguate inaccurate source categories
-  Uses weapon ID families to recognize Khali chakrams and exclude miscategorized weapons
-  from Hero and Dark Knight choices.
+   Uses weapon ID families to recognize Khali chakrams and exclude miscategorized
+   weapons from Hero and Dark Knight choices.
 
 14. class changes clear incompatible armor and preserve shared equipment
-  On a Hero-to-Bishop change, removes Warrior armor and preserves a shared pendant; Xenon
-  can choose both Thief and Pirate hats.
+   On a Hero-to-Bishop change, removes Warrior armor and preserves a shared pendant;
+   Xenon can choose both Thief and Pirate hats.
 
 15. equipping an overall and bottom are mutually exclusive without changing other slots
-  Equipping an overall removes the bottom; equipping a bottom removes the overall. Other
-  slots and the original equipment object remain intact.
+   Equipping an overall removes the bottom; equipping a bottom removes the overall.
+   Other slots and the original equipment object remain intact.
 
 16. equipment slots map to their potential tables
-  Checks slot-to-potential mapping for weapons, rings, overalls, secondaries, and the
-  unsupported medal slot.
+   Checks slot-to-potential mapping for weapons, rings, overalls, secondaries, and the
+   unsupported medal slot.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/flameUpgrade.test.js
 Tests: 4
 
 1. flame counts reach each confidence with the minimum number of independent rolls
-  For normal and tiny success probabilities, verifies the returned roll count reaches each
-  confidence and one fewer roll does not. A 50% roll chance needs two rolls for 75%
-  confidence.
+   For normal and tiny success probabilities, verifies the returned roll count reaches
+   each confidence and one fewer roll does not. A 50% roll chance needs two rolls for
+   75% confidence.
 
 2. guaranteed and unavailable improvements are handled explicitly
-  Guaranteed improvement requires one roll. Zero, negative, missing, NaN, and above-one
-  probabilities return no estimate.
+   Guaranteed improvement requires one roll. Zero, negative, missing, NaN, and above-one
+   probabilities return no estimate.
 
 3. small nonzero probabilities stay visible
-  Formats representative chances correctly and prevents a tiny nonzero chance from
-  displaying as 0%.
+   Formats representative chances correctly and prevents a tiny nonzero chance from
+   displaying as 0%.
 
 4. confidence costs use the rounded whole-flame count
-  Calculates mesos from the rounded whole-flame count: 10% chance at 50% confidence costs
-  seven times 3M. Impossible chances and unknown costs return null.
+   Calculates mesos from the rounded whole-flame count: 10% chance at 50% confidence
+   costs seven times 3M. Impossible chances and unknown costs return null.
 
-==============================================================================
+========================================================================================
 FILE: frontend/tests/flameWeapons.test.js
 Tests: 3
 
 1. every class offered by the form has weapon data for all five series
-  Checks class-stat and weapon job lists match, all five supported series exist, and every
-  supported job/weapon/series has positive integer base offense and boss status.
+   Checks class-stat and weapon job lists match, all five supported series exist, and
+   every supported job/weapon/series has positive integer base offense and boss status.
 
 2. weapon series supply the correct clean offense and item level
-  Checks fixed level and base-offense fixtures across Fafnir, AbsoLab, Arcane, Genesis, and
-  Destiny, including Hero, NightLord, Bishop, Cannoneer, Aran, and Kanna.
+   Checks fixed level and base-offense fixtures across Fafnir, AbsoLab, Arcane, Genesis,
+   and Destiny, including Hero, NightLord, Bishop, Cannoneer, Aran, and Kanna.
 
 3. alternative weapons use their own base offense
-  Distinguishes alternative weapons (Arcane Hero sword 283, Bishop wand 347 versus staff
-  353) and rejects incompatible weapon kinds or unknown series.
+   Distinguishes alternative weapons (Arcane Hero sword 283, Bishop wand 347 versus
+   staff 353) and rejects incompatible weapon kinds or unknown series.
 
-==============================================================================
-FILE: frontend/tests/potentialTargets.test.js
-Tests: 3
-
-1. All Stat expands into four stat totals supported by the API
-  Expands an All Stat 7% input to four API targets: STR, DEX, INT, and LUK at 7.
-
-2. All Stat adds to main and secondary stat targets without affecting other effects
-  Adds All Stat to existing primary/secondary stat targets, leaves cooldown and HP
-  unchanged, and produces equivalent totals regardless of row order.
-
-3. ordinary targets retain their values without All Stat
-  Converts an ordinary ATT target string to a number without changing its fractional value.
-
-==============================================================================
-FILE: frontend/tests/rollBudget.test.js
-Tests: 2
-
-1. independent-roll chance and budget conversions use whole rolls
-  Checks geometric probabilities, whole-roll rounding, fractional confidence, cube costs,
-  and inverse conversion using only affordable whole rolls.
-
-2. roll budgets handle impossible, guaranteed, and invalid inputs
-  Checks 0/100% targets, impossible and guaranteed rolls, invalid prices, invalid
-  percentages/budgets, and counts outside safe integer precision.
-
-==============================================================================
-FILE: frontend/tests/routes.test.js
-Tests: 4
-
-1. root and calculator/equipment URLs resolve to their pages
-  Resolves every defined URL and trailing-slash variant to its page; unknown paths and
-  unknown nested calculator paths return null.
-
-2. only ordinary left clicks are handled by client navigation
-  Only unmodified, unhandled left clicks qualify for client navigation. Modifier keys,
-  middle/right clicks, and already-prevented events do not.
-
-3. navigation preserves browser handling for new tabs and downloads
-  Leaves downloads, _blank links, and named-window targets to the browser; _self remains
-  eligible for client navigation.
-
-4. navigation changes the URL and scrolls once, without duplicate history entries
-  Using a browser stub, verifies one history push and scroll for a new route, no duplicate
-  entry for the same trailing-slash route, no interception of invalid keys or Ctrl-clicks,
-  and support for navigation without a click event.
-
-==============================================================================
-FILE: frontend/tests/starforce.test.js
-Tests: 5
-
-1. medals,emblems, badges and unsupported secondaries or shields have no Star Force controls
-  Disables Star Force for medals, emblems, badges, and unsupported secondaries/shields
-  while enabling representative Astra shields and hats.
-
-2. all Deimos shields support Star Force up to their level-130 cap
-  Allows all three Deimos shields in secondary/shield slots with their level-130 maximum of
-  20 stars.
-
-3. all Kanna secondary talismans support Star Force with their level caps
-  Checks all eight bundled Kanna talismans support Star Force, capped at 8 for level 100
-  and 30 for the higher-level items.
-
-4. maximum Star Force follows equipment-level thresholds
-  Checks both sides of level boundaries producing caps of 5, 8, 10, 15, 20, and 30 stars.
-
-5. known item exceptions override the general level cap
-  Checks item-specific caps: Tyrant and Sweetwater Cape 15, selected badges 22, and
-  Superior Gollux/Sweetwater Earring 30. Cap lookup is separate from slot eligibility.
-
-==============================================================================
-FILE: frontend/tests/starforceBudget.test.js
-Tests: 3
-
-1. budget lookup handles arbitrary percentages and flat CDF regions conservatively
-  Checks zero, exact boundaries, decimal percentages, flat regions, and an unreachable 100%
-  chance using upward budget lookup.
-
-2. budget to chance floors the grid and rejects values beyond its horizon
-  Checks zero, between-bin budgets, exact limits, and out-of-range budgets.
-
-3. invalid chance and budget inputs never produce misleading estimates
-  Rejects NaN, infinity, negative values, strings, and percentages above 100.
-
-==============================================================================
-FILE: frontend/tests/starforceStrategies.test.js
-Tests: 4
-
-1. baseline differences use signed percentages and handle zero baselines
-  Checks increases, savings, zero cost, and zero/missing baselines without division-by-zero
-  results.
-
-2. custom strategy names follow the current list order after removals
-  Renumbers display names while preserving strategy IDs.
-
-3. strategy steps include recovery, group adjacent modes and stop at the target
-  Groups standard, safeguarded and Mode 4 transitions, includes recovery stars, truncates
-  below mode ranges, and uses standard rates above 22.
-
-4. tradeoff chart handles zero spares and uses enhancement costs instead of total costs
-  Checks zero-spare coordinates remain finite, chart scale ignores replacement spending,
-  and empty datasets produce no points. Custom strategies expand both axes when outside the
-  frontier, share its scale, and remain separate from the line connecting efficient
-  strategies.
-
-==============================================================================
-FILE: frontend/scripts/benchmark-rendering.test.mjs
-Tests: 1
-
-1. production frontend performance
-  Separate measurement harness: five cache-disabled navigations each for home, equipment
-  setup, equipment stats with gear, Star Force, and Flames. Asserts target UI appears;
-  records readiness, DOM count, script bytes, and API resource paths. Images are disabled.
-  No speed/size thresholds, calculation submissions, or Potential route coverage. Output
-  date is currently hard-coded to 2026-10-07.
-
-==============================================================================
-FILE: frontend/scripts/browser-regressions.test.mjs
-Tests: 1
-
-1. navigation, stale responses, persistence, sorting, and selected equipment application
-  One integrated Firefox scenario. Checks setup drafts across tab switches, explicit
-  save/removal persistence, discard, class filtering without deleting saved items,
-  and import preview before saving. Checks demand-loaded views, navigation/result
-  retention, stale responses, Star Force percentile/distribution payloads, bidirectional
-  budgets without recalculation, strategy sorting/application, debounced saves, flame/cube
-  budgets, focus styling, all upgrade tabs and Overall results, pricing invalidation, empty
-  plans, editor collapse, desktop/mobile containment, table scrolling, lazy-load
-  error/reload recovery, and independent equipment/calculator weights through
-  export/import/reload. Also checks invalid flame weights and levels cannot submit; a
-  non-JSON 503 leaves the form usable and manual retry succeeds; rapid Star Force level
-  edits send one cost request; invalid levels neither fetch nor stay loading after event
-  changes; targets at/below start cannot submit in either Star Force form. Calculations are
-  mocked; unmocked reads/health may reach the development proxy.
-
-==============================================================================
-FILE: frontend/scripts/deployed-smoke.test.mjs
-Tests: 1
-
-1. deployed routes, real form submissions, validation and CORS
-  Opt-in live Firefox smoke test: five direct routes return SPA HTML; cross-origin POST
-  preflight succeeds; empty potential targets return 422 with CORS. Submits Potential,
-  Flames, Star Force, strategy comparison, and a custom strategy; checks visible results
-  and added custom row. Checks captured POST statuses and browser errors before reloading
-  into equipment. Restores one Hero hat, submits upgrades, and checks rendered results
-  without upgrade errors. Sequential requests only; no cold-start or saturation testing.
-
-==============================================================================
+========================================================================================
 FILE: frontend/tests/laddering.test.js
 Tests: 5
 
 1. Astra secondaries discard legacy laddering and never send it to the API
+
 2. Gollux transfer settings survive save/import and API serialization only on SoS
+
 3. second copy is independently edited, persisted, exported and sent to the planner
+
 4. unrecorded copy stays distinct from recorded zero stats and old saves stay standard
+
 5. invalid laddering saves are rejected on import and ignored on browser restore
 
-==============================================================================
+========================================================================================
+FILE: frontend/tests/potentialTargets.test.js
+Tests: 3
+
+1. All Stat expands into four stat totals supported by the API
+   Expands an All Stat 7% input to four API targets: STR, DEX, INT, and LUK at 7.
+
+2. All Stat adds to main and secondary stat targets without affecting other effects
+   Adds All Stat to existing primary/secondary stat targets, leaves cooldown and HP
+   unchanged, and produces equivalent totals regardless of row order.
+
+3. ordinary targets retain their values without All Stat
+   Converts an ordinary ATT target string to a number without changing its fractional
+   value.
+
+========================================================================================
+FILE: frontend/tests/rollBudget.test.js
+Tests: 2
+
+1. independent-roll chance and budget conversions use whole rolls
+   Checks geometric probabilities, whole-roll rounding, fractional confidence, cube
+   costs, and inverse conversion using only affordable whole rolls.
+
+2. roll budgets handle impossible, guaranteed, and invalid inputs
+   Checks 0/100% targets, impossible and guaranteed rolls, invalid prices, invalid
+   percentages/budgets, and counts outside safe integer precision.
+
+========================================================================================
+FILE: frontend/tests/routes.test.js
+Tests: 4
+
+1. root and calculator/equipment URLs resolve to their pages
+   Resolves every defined URL and trailing-slash variant to its page; unknown paths and
+   unknown nested calculator paths return null.
+
+2. only ordinary left clicks are handled by client navigation
+   Only unmodified, unhandled left clicks qualify for client navigation. Modifier keys,
+   middle/right clicks, and already-prevented events do not.
+
+3. navigation preserves browser handling for new tabs and downloads
+   Leaves downloads, _blank links, and named-window targets to the browser; _self
+   remains eligible for client navigation.
+
+4. navigation changes the URL and scrolls once, without duplicate history entries
+   Using a browser stub, verifies one history push and scroll for a new route, no
+   duplicate entry for the same trailing-slash route, no interception of invalid keys or
+   Ctrl-clicks, and support for navigation without a click event.
+
+========================================================================================
+FILE: frontend/tests/starforce.test.js
+Tests: 5
+
+1. medals,emblems, badges and unsupported secondaries or shields have no Star Force controls
+   Disables Star Force for medals, emblems, badges, and unsupported secondaries/shields
+   while enabling representative Astra shields and hats.
+
+2. all Deimos shields support Star Force up to their level-130 cap
+   Allows all three Deimos shields in secondary/shield slots with their level-130
+   maximum of 20 stars.
+
+3. all Kanna secondary talismans support Star Force with their level caps
+   Checks all eight bundled Kanna talismans support Star Force, capped at 8 for level
+   100 and 30 for the higher-level items.
+
+4. maximum Star Force follows equipment-level thresholds
+   Checks both sides of level boundaries producing caps of 5, 8, 10, 15, 20, and 30
+   stars.
+
+5. known item exceptions override the general level cap
+   Checks item-specific caps: Tyrant and Sweetwater Cape 15, selected badges 22, and
+   Superior Gollux/Sweetwater Earring 30. Cap lookup is separate from slot eligibility.
+
+========================================================================================
+FILE: frontend/tests/starforceBudget.test.js
+Tests: 3
+
+1. budget lookup handles arbitrary percentages and flat CDF regions conservatively
+   Checks zero, exact boundaries, decimal percentages, flat regions, and an unreachable
+   100% chance using upward budget lookup.
+
+2. budget to chance floors the grid and rejects values beyond its horizon
+   Checks zero, between-bin budgets, exact limits, and out-of-range budgets.
+
+3. invalid chance and budget inputs never produce misleading estimates
+   Rejects NaN, infinity, negative values, strings, and percentages above 100.
+
+========================================================================================
+FILE: frontend/tests/starforceStrategies.test.js
+Tests: 4
+
+1. baseline differences use signed percentages and handle zero baselines
+   Checks increases, savings, zero cost, and zero/missing baselines without
+   division-by-zero results.
+
+2. custom strategy names follow the current list order after removals
+   Renumbers display names while preserving strategy IDs.
+
+3. strategy steps include recovery, group adjacent modes and stop at the target
+   Groups standard, safeguarded and Mode 4 transitions, includes recovery stars,
+   truncates below mode ranges, and uses standard rates above 22.
+
+4. tradeoff chart handles zero spares and uses enhancement costs instead of total costs
+   Checks zero-spare coordinates remain finite, chart scale ignores replacement
+   spending, and empty datasets produce no points. Custom strategies expand both axes
+   when outside the frontier, share its scale, and remain separate from the line
+   connecting efficient strategies.
+
+========================================================================================
+FILE: frontend/scripts/benchmark-rendering.test.mjs
+Tests: 1
+
+1. production frontend performance
+   Separate measurement harness: five cache-disabled navigations each for Home,
+   equipment setup, equipment stats, Star Force, and Flames. Records readiness, DOM
+   nodes, decoded script bytes, API resource paths, and runtime date. Images are
+   disabled. No speed/size thresholds or calculation submissions; Potential is not
+   covered.
+
+========================================================================================
+FILE: frontend/scripts/browser-regressions.test.mjs
+Tests: 1
+
+1. navigation, stale responses, persistence, sorting, and selected equipment application
+   One integrated Firefox scenario. Checks setup drafts across tab switches, explicit
+   save/removal persistence, discard, class filtering without deleting saved items, and
+   import preview before saving. Checks demand-loaded views, navigation/result
+   retention, stale responses, Star Force percentile/distribution payloads,
+   bidirectional budgets without recalculation, strategy sorting/application, debounced
+   saves, flame/cube budgets, focus styling, all upgrade tabs and Overall results,
+   pricing invalidation, empty plans, editor collapse, desktop/mobile containment, table
+   scrolling, lazy-load error/reload recovery, and independent equipment/calculator
+   weights through export/import/reload. Also checks invalid flame weights and levels
+   cannot submit; a non-JSON 503 leaves the form usable and manual retry succeeds; rapid
+   Star Force level edits send one cost request; invalid levels neither fetch nor stay
+   loading after event changes; targets at/below start cannot submit in either Star
+   Force form. Calculations are mocked; unmocked reads/health may reach the development
+   proxy.
+
+========================================================================================
+FILE: frontend/scripts/deployed-smoke.test.mjs
+Tests: 1
+
+1. deployed routes, real form submissions, validation and CORS
+   Opt-in live Firefox smoke test: five direct routes return SPA HTML; cross-origin POST
+   preflight succeeds; empty potential targets return 422 with CORS. Submits Potential,
+   Flames, Star Force, strategy comparison, and a custom strategy; checks visible
+   results and added custom row. Checks captured POST statuses and browser errors before
+   reloading into equipment. Restores one Hero hat, submits upgrades, and checks
+   rendered results without upgrade errors. Sequential requests only; no cold-start or
+   saturation testing.
+
+========================================================================================
 FILE: frontend/scripts/prerender.test.mjs
 Tests: 1
-Run: npm run test:prerender
-Checks all six public documents for unique metadata, headings, guides, navigation,
-canonical links, HTML aliases, and sitemap entries. Build uses the shared page
-guide, including the Source of Suffering transfer sections.
+
+1. built public pages expose unique metadata, guides and navigation without JavaScript
+   Checks all six built public documents for unique titles, descriptions, headings,
+   guides, canonical links, navigation, HTML aliases, and sitemap entries. Includes
+   shared Source of Suffering guide content. Run npm run test:prerender to build before
+   checking.
+
+========================================================================================
+FILE: frontend/scripts/.tmp-landing-review.mjs
+Tests: 1
+
+Standalone utility; excluded from the core suite and package-script harnesses.
+
+1. navigation, stale responses, persistence, sorting, and selected equipment application
+   Starts an isolated Vite/Firefox session, saves .landing-review.png, checks the
+   Calculators heading, and verifies one-column layouts without horizontal overflow at
+   390px and 320px. The copied test title overstates its scope: it does not test
+   persistence, sorting, or equipment application. Requires geckodriver; not rerun.

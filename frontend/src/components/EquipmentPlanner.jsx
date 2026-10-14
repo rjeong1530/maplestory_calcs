@@ -1,4 +1,3 @@
-import './Calculator.css'
 import useEquipmentPlanner from '../hooks/useEquipmentPlanner'
 import useFlameCalculation from '../hooks/useFlameCalculation'
 import { useState } from 'react'
@@ -16,7 +15,7 @@ export default function EquipmentPlanner({ activeTab, onNavigate }) {
   const calculation = useFlameCalculation(planner.form)
 
   return <>
-    {planner.saveError && <p className="error" role="alert">{planner.saveError}</p>}
+    {planner.saveError && <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{planner.saveError}</p>}
     <DeferredPage active={activeTab === 'equipment'}>
       <EquipmentPage planner={planner} busy={calculation.busy}
         onOpenApproaches={() => {

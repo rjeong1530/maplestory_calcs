@@ -4,12 +4,44 @@ FastAPI HTTP endpoints over Python probability and equipment-planning engines.
 Calculators use bundled data without a database or user accounts. Bug reports
 are stored separately in MongoDB.
 
-See the [project README](../README.md#quick-start) for setup and
-[deployment settings](../README.md#deployment) for hosting and CORS.
+See the [project overview](../README.md) for the application and repository layout.
 Run Python commands from the **repository root**, using the virtual environment.
-Runtime dependencies are in [requirements.txt](../requirements.txt).
 
-### Star Force performance on Render
+## Setup
+
+Requires Python 3.10+. In PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn backend.api.main:app --reload
+```
+
+On macOS/Linux, use `python3 -m venv .venv` and `.venv/bin/python` instead.
+The examples below use `python`; activate the environment or substitute its
+interpreter path. Runtime dependencies are in [requirements.txt](../requirements.txt).
+Bundled data is ready to use; MongoDB is optional unless submitting bug reports.
+
+## Deployment
+
+Run these commands from the repository root:
+
+| Setting | Value |
+| --- | --- |
+| Build | `pip install -r requirements.txt` |
+| Start | `uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT` |
+| Health check | `/api/health` |
+| API documentation | `/docs` |
+
+Set `CORS_ALLOWED_ORIGINS` to a comma-separated list of frontend origins. Its
+default is `https://maplestory-calculator.onrender.com`. For local browser
+requests made directly to port 8000, include the frontend origin, such as
+`http://localhost:5173`. The Vite same-origin proxy avoids that cross-origin hop.
+Keep database credentials on the backend; see [MongoDB bug reports](#mongodb-bug-reports).
+Use [request limits](#request-limits) to size concurrency and queue capacity.
+Native compilation is part of the Linux installation described below.
+
+## Star Force performance on Render
 
 The single Star Force calculator solves a 65,536-bin budget distribution, while
 equipment planning only needs expected values. The budget recurrence uses a small
@@ -39,17 +71,18 @@ Run the server with `python -m uvicorn backend.api.main:app --reload`.
 Open `http://127.0.0.1:8000/docs` for current request schemas and interactive
 examples, or `/openapi.json` for the schema. The backend root `/` has no page.
 
-| Method | Endpoint                      | Purpose                                                         |
-| ------ | ----------------------------- | --------------------------------------------------------------- |
-| GET    | `/api/health`                 | Availability check.                                             |
-| GET    | `/api/options`                | Potential equipment, levels, cube types, and effect keys.       |
-| GET    | `/api/item-options`           | Obtainable potential and flame values for an item.              |
-| GET    | `/api/starforce-costs`        | Per-star costs and transition rates.                            |
-| POST   | `/api/probability`            | Probability of meeting all potential targets on one roll.       |
-| POST   | `/api/flame-probability`      | Probability of reaching a weighted flame score.                 |
-| POST   | `/api/starforce-estimate`     | Expected costs, attempts, booms, and optional budget estimates. |
-| POST   | `/api/starforce-strategies`   | Compare per-star policies and cost/spare tradeoffs.             |
-| POST   | `/api/equipment-upgrade-plan` | Rank upgrades for the supplied equipment and weights.           |
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| POST | `/api/bug-reports` | Store a private bug report when MongoDB is configured. |
+| GET | `/api/health` | Availability check. |
+| GET | `/api/options` | Potential equipment, levels, cube types, and effect keys. |
+| GET | `/api/item-options` | Obtainable potential and flame values for an item. |
+| GET | `/api/starforce-costs` | Per-star costs and transition rates. |
+| POST | `/api/probability` | Probability of meeting all potential targets on one roll. |
+| POST | `/api/flame-probability` | Probability of reaching a weighted flame score. |
+| POST | `/api/starforce-estimate` | Expected costs, attempts, booms, and optional budget estimates. |
+| POST | `/api/starforce-strategies` | Compare per-star policies and cost/spare tradeoffs. |
+| POST | `/api/equipment-upgrade-plan` | Rank upgrades for the supplied equipment and weights. |
 
 Requests and validation live in [api/main.py](api/main.py). The equipment endpoint
 receives browser-saved gear with each request; the backend does not store it.
@@ -60,7 +93,7 @@ frontier row. The independent matrix solver remains the regression reference;
 the two methods can differ in their last floating-point digits.
 Run `python -m backend.benchmark_strategies --baseline <commit>` to compare
 uncached reports and timings against an earlier revision.
-See the [calculation assumptions](../README.md#calculation-assumptions) before
+See the [calculation assumptions](#calculation-assumptions) before
 interpreting results.
 
 ## MongoDB bug reports
@@ -101,12 +134,18 @@ passed on 2026-10-09; an initial connection timeout succeeded on retry.
 
 [api/limits.py](api/limits.py) controls admission to calculation endpoints:
 
-| Environment variable                | Default                |
-| ----------------------------------- | ---------------------- |
-| `CALCULATION_CONCURRENCY`           | 2 running calculations |
-| `CALCULATION_QUEUE_SIZE`            | 8 waiting requests     |
-| `CALCULATION_QUEUE_TIMEOUT_SECONDS` | 20 seconds             |
-| `CALCULATIONS_PER_MINUTE`           | 300 per client         |
+| Environment variable | Default |
+| --- | --- |
+| `CALCULATION_CONCURRENCY` | 2 running calculations |
+| `CALCULATION_QUEUE_SIZE` | 8 waiting requests |
+| `CALCULATION_QUEUE_TIMEOUT_SECONDS` | 20 seconds |
+| `CALCULATIONS_PER_MINUTE` | 300 per client |
+
+Concurrency is configured explicitly for the deployment's CPU and memory
+budget; the code does not automatically detect CPU capacity. The default allows
+two active calculations and queues up to eight additional requests in FIFO order
+instead of rejecting every request while both slots are busy. Admission uses an
+active counter protected by a lock, with asynchronous waiting.
 
 These limits apply **per worker process**. Use one worker to retain a service-wide
 limit of two running calculations. Waiting is asynchronous; option and health
@@ -123,12 +162,19 @@ already running on the server stops.
 
 ## Tests
 
-Use the [root test commands](../README.md#testing) to install the HTTP test client
-and run all backend suites. To run only API tests with the environment activated:
+Install test dependencies and run discovery from the repository root:
 
 ```text
-python -m unittest backend.tests.test_api -v
+python -m pip install -r backend/requirements-dev.txt
+python -m unittest discover -s backend/tests -t . -v
 ```
+
+To run only API tests: `python -m unittest backend.tests.test_api -v`.
+The current inventory contains **183 test methods across 16 files**. On
+2026-10-14, all 183 passed, including native parity checks. The run emitted a
+Starlette/httpx deprecation warning; it did not fail the suite. Native tests skip
+when the optional local extension is unavailable. MongoDB tests use mocks and
+do not submit reports to the deployed database.
 
 Tests use FastAPI's test client and the bundled tables. Equipment sample integration
 also uses Node to build frontend payloads and skips that coverage if Node is absent.
@@ -164,12 +210,6 @@ python -m backend.examples.starforce_strategies --level 200 --start 15 --target 
 Use that command's `--help` for JSON and CSV export options. Importable class builds
 and usage instructions are in [examples/equipment](../examples/equipment/README.md).
 
-TODO:
-
-- [x] Laddering equipment upgrades (two-copy Overall projection)
-- [ ] Destiny Lib Pt2
-- [ ] KMS Inner Ability
-- [ ] KMS Soul Enhancement
 ## SoS transfer planner
 
 `calc/gollux_transfer.py` evaluates equipped and spare transfer alternatives.
@@ -184,3 +224,26 @@ recipient evaluation; score changes rebuild preparation without repeating the
 Star Force solves. One SoS sequence is projected before requiring actual results.
 See [transfer assumptions](../examples/laddering/GOLLUX_TRANSFER.md) and
 [test inventory](../BACKEND_TESTS.txt).
+
+## Calculation assumptions
+
+- Potential covers Legendary main potential, using bundled KMS probabilities
+  with GMS line-value adjustments. It does not model tier-ups or bonus potential;
+  the probabilities are estimates, not independently verified GMS rates.
+- Roll counts assume independent rolls. Expected costs are averages, and budget
+  percentiles are approximations rather than guarantees.
+- Star Force strategy comparison uses Shining Star Force, no MVP discount, and
+  standard equipment. The custom estimator has its own event and mode settings.
+- Equipment scores are weighted stat points, not damage percentages. Upgrade
+  ordering preserves prerequisites but is not a globally optimal spending plan.
+  Unsupported equipment or missing tables produce unavailable results.
+
+The bundled potential data comes from [Nexon's probability disclosures](https://maplestory.nexon.com/Guide/OtherProbability/cube/black);
+GMS equipment data comes from [MapleStory.io](https://maplestory.io/).
+
+## Roadmap
+
+- [x] Laddering equipment upgrades (two-copy Overall projection)
+- [ ] Destiny Lib Pt2
+- [ ] KMS Inner Ability
+- [ ] KMS Soul Enhancement
