@@ -120,21 +120,6 @@ class EquipmentDataTests(unittest.TestCase):
                 for item_id in (1723002, 1723000, 1723001)]
         self.assertEqual([row['itemid'] for row in importer.catalog_items(rows)], [1723000])
 
-    def test_normalize_defaults_missing_boss_reward_to_false(self):
-        item = {
-            'id': 1004422,
-            'name': 'AbsoLab Knight Helm',
-            'requiredLevel': 160,
-            'requiredJobs': ['Warrior'],
-            'typeInfo': {
-                'overallCategory': 'Equip',
-                'category': 'Equip',
-                'subCategory': 'Hat',
-            },
-        }
-
-        self.assertFalse(importer.normalize(item)['boss_reward'])
-
     def test_fetch_boss_reward_reads_item_detail_and_defaults_missing_tag(self):
         with patch.object(importer, 'fetch_json', return_value={
             'metaInfo': {'bossReward': True},

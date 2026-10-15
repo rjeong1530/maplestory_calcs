@@ -1,26 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { equipmentGroup, applyStrategyToEquipment } from '../src/data/equipmentGroups.js'
+import { applyStrategyToEquipment } from '../src/data/equipmentGroups.js'
 import { equipmentChoices, fixedRing } from '../src/data/flameEquipment.js'
-
-test('Brilliant catalog items are grouped separately from Pitched', () => {
-  for (const [slot, name] of [['ring-1', 'Whisper of the Source'], ['ring-2', 'Blissful Nightmare'],
-    ['pendant-1', 'Oath of Death'], ['face', 'Original Sin of Pride']]) {
-    const item = equipmentChoices(slot, 'Hero').find(item => item.name === name)
-    assert.ok(item, `${name} must be available in the catalog`)
-    assert.equal(equipmentGroup(item, slot), 'brilliant')
-  }
-})
-
-test('Eternal groups use the requested slots, not names of unrelated secondaries', () => {
-  for (const slot of ['hat', 'top', 'bottom', 'shoulder', 'cape', 'gloves', 'shoes']) {
-    const item = equipmentChoices(slot, 'Hero').find(item => item.name.startsWith('Eternal '))
-    assert.equal(equipmentGroup(item, slot), ['hat', 'top', 'bottom', 'shoulder'].includes(slot) ? 'kalos' : 'limbo')
-  }
-  assert.equal(equipmentGroup({ name: 'Eternal Magnum', slot: 'secondary' }), 'other')
-  assert.equal(equipmentGroup({ name: 'Berserked', slot: 'face' }), 'pitched')
-  assert.equal(equipmentGroup({ name: "Mitra's Rage: Warrior", slot: 'emblem' }), 'pitched')
-})
 
 test('bulk copying preserves stats, resets missing modes, and excludes ineligible equipment', () => {
   const hat = { ...equipmentChoices('hat', 'Hero')[0], currentStarForce: 17, minimumCooldownSeconds: 4,

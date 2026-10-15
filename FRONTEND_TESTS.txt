@@ -1,12 +1,16 @@
 FRONTEND TEST INVENTORY
 =======================
 Reviewed: 2026-10-14
-Core suite: 101 helper/API-client tests in 18 files
+Core suite: 92 helper/API-client tests in 17 files
 Separate checks: 1 prerender test and 3 browser harnesses
 Additional tracked utility: 1 temporary landing-page review script
 
 Scope
 -----
+Removed repeated catalog snapshots, simple presentation checks, and helper
+checks covered by request/integration tests. Each class still round-trips its
+sample; focused class-compatibility tests replace the all-pairs class-switch loop.
+
 The core suite covers request handling, data transformations, equipment storage,
 import/export, ranking, and probability/budget helpers. Browser harnesses cover
 rendered interactions or measure loading; they are not included in npm test.
@@ -40,8 +44,9 @@ Dependencies and limits
 
 Verification on 2026-10-14
 --------------------------
-All 101 helper/API-client tests, lint, production build, and the prerender
-test passed. The standard browser regression could not launch because geckodriver
+After trimming, all 92 helper/API-client tests and lint passed. The production
+build and prerender test passed earlier that day and were not rerun for this
+test-only change. The standard browser regression could not launch because geckodriver
 was missing from PATH. Live smoke and rendering benchmarks were not rerun.
 Direct isolated Firefox checks during the Tailwind migration covered desktop/mobile
 page layouts and equipment setup/stats views; backend API access was unavailable.
@@ -77,12 +82,6 @@ Tests: 7
    Checks successful data and structured API validation messages are preserved.
 
 ========================================================================================
-FILE: frontend/tests/bugReport.test.js
-Tests: 1
-
-1. report preview preserves multiline reports and special characters
-
-========================================================================================
 FILE: frontend/tests/cubeCosts.test.js
 Tests: 1
 
@@ -92,44 +91,30 @@ Tests: 1
 
 ========================================================================================
 FILE: frontend/tests/equipmentGroups.test.js
-Tests: 3
+Tests: 1
 
-1. Brilliant catalog items are grouped separately from Pitched
-   Checks the four requested Brilliant items using actual catalog entries in their ring,
-   pendant, and face slots.
-
-2. Eternal groups use the requested slots, not names of unrelated secondaries
-   Kalos includes hat/top/bottom/shoulder; Limbo includes cape/gloves/shoes. Eternal
-   Magnum remains other; representative Pitched items retain their group.
-
-3. bulk copying preserves stats, resets missing modes, and excludes ineligible equipment
+1. bulk copying preserves stats, resets missing modes, and excludes ineligible equipment
    Copies modes/safeguards to selected eligible items while preserving stars, cooldown,
    potential, replacement cost, and untouched items. Missing settings reset to defaults;
    the original input remains unchanged.
 
 ========================================================================================
 FILE: frontend/tests/equipmentSamples.test.js
-Tests: 4
+Tests: 3
 
 1. JSON samples cover every class and survive import, browser restoration and API serialization
    Checks the 47 committed samples cover exactly the supported class list and match the
    generator. Verifies JSON export/import and browser restoration round trips,
-   eight-item request serialization without lost values, and successful reimport after
-   all 2,209 class-to-class compatibility transitions. Samples include negative
+   eight-item request serialization without lost values, and JSON-safe API payloads. Samples include negative
    cooldown, Xenon multi-stat, and Demon Avenger HP rolls.
 
-2. shields, force shields, soul rings and ordinary secondaries share the secondary potential table
-   Checks seven real catalog secondaries across Bishop, Demon Slayer, Demon Avenger,
-   Angelic Buster, Mihile, and Dual Blade retain the generic secondary potential
-   mapping.
-
-3. invalid imported rolls are rejected and malformed browser rolls are discarded without crashing
+2. invalid imported rolls are rejected and malformed browser rolls are discarded without crashing
    Rejects null, array, unknown-effect, negative non-cooldown, boolean, and infinite
    potential lines on import; browser restoration discards them and still builds a
    request. Rejects duplicate flame options on import, keeps the first during
    restoration, and ignores invalid saved slot names.
 
-4. restored score settings reject negative, boolean, whitespace and structured values
+3. restored score settings reject negative, boolean, whitespace and structured values
    Checks malformed flame and potential weights fall back to defaults, zero attack
    weight survives, a real false event flag is retained, and a string false event flag
    uses the default.
@@ -299,75 +284,57 @@ Tests: 22
 
 ========================================================================================
 FILE: frontend/tests/flameEquipment.test.js
-Tests: 16
+Tests: 12
 
-1. catalog excludes unwanted series and limits pocket choices to cup and spellbooks
-   Verifies excluded series are absent, the pocket picker has exactly the cup and four
-   colored spellbooks, and Sweetwater Tattoo remains available. Also verifies the exact
-   three-earring allowlist: Commanding Force Earring, Estella Earrings, and Superior
-   Gollux Earrings.
-
-2. heart choices include only the five selected hearts and Mitra emblems follow class families
+1. heart choices include only the five selected hearts and Mitra emblems follow class families
    Checks the exact five-heart picker allowlist and the appropriate Mitra emblem for
    each of five class families.
 
-3. picker results stay sorted and independent across repeated lookups
+2. picker results stay sorted and independent across repeated lookups
    Checks tops and overalls are sorted by level/name, independent lookups cannot mutate
    each other, unknown jobs/slots are empty, and editable ring-1/ring-3 choices match.
 
-4. every catalog secondary has explicit job restrictions
+3. every catalog secondary has explicit job restrictions
    Requires an explicit nonempty job mapping for every secondary in the bundled catalog,
    preventing unclassified secondaries from silently appearing.
 
-5. all supported jobs retain Astra and eligible level-100 secondaries
+4. all supported jobs retain Astra and eligible level-100 secondaries
    Checks every supported job has Astra secondary choices and all except Dual Blade have
    level-100 options. Every returned secondary matches the job; verifies Xenon
    controllers and Astra Katara.
 
-6. catalog retains only requested katara and ordinary shield series
-   Limits kataras to Fafnir, AbsoLab, Sweetwater, Arcane Umbra, and Astra. Ordinary
-   shield records are limited to Astra, Deimos, and Terminus.
-
-7. secondaries distinguish jobs within the same family
+5. secondaries distinguish jobs within the same family
    Checks specific secondary IDs for jobs sharing a broad class family, including shared
    Demon Slayer/Demon Avenger shields. Broad family compatibility cannot substitute for
    job eligibility.
 
-8. Cygnus jewel is limited to the five Cygnus jobs despite its All family
+6. Cygnus jewel is limited to the five Cygnus jobs despite its All family
    Allows the Cygnus jewel only for the five Cygnus jobs even though its catalog family
    is All.
 
-9. class changes remove another jobs secondary but preserve shared secondaries
+7. class changes remove another jobs secondary but preserve shared secondaries
    Removes a Xenon secondary after changing to Phantom while preserving a shield shared
    by Bishop and Fire/Poison.
 
-10. weapon picker filters by class and supplies calculator settings
+8. weapon picker filters by class and supplies calculator settings
    Filters Bishop weapons to staves/wands and verifies Arcane Umbra Staff supplies
    weapon type, level 200, and base offense 353.
 
-11. real armor and accessories are filtered by slot and class
+9. real armor and accessories are filtered by slot and class
    Filters armor and accessories by slot/job, verifies representative slot availability,
    pendant equivalence, catalog names and boss flags, and medal flame configuration.
 
-12. all supported classes have families and matching catalog weapons
-   Requires every supported weapon job to have a class family and at least one eligible
-   catalog weapon.
-
-13. weapon IDs disambiguate inaccurate source categories
+10. weapon IDs disambiguate inaccurate source categories
    Uses weapon ID families to recognize Khali chakrams and exclude miscategorized
    weapons from Hero and Dark Knight choices.
 
-14. class changes clear incompatible armor and preserve shared equipment
+11. class changes clear incompatible armor and preserve shared equipment
    On a Hero-to-Bishop change, removes Warrior armor and preserves a shared pendant;
    Xenon can choose both Thief and Pirate hats.
 
-15. equipping an overall and bottom are mutually exclusive without changing other slots
+12. equipping an overall and bottom are mutually exclusive without changing other slots
    Equipping an overall removes the bottom; equipping a bottom removes the overall.
    Other slots and the original equipment object remain intact.
-
-16. equipment slots map to their potential tables
-   Checks slot-to-potential mapping for weapons, rings, overalls, secondaries, and the
-   unsupported medal slot.
 
 ========================================================================================
 FILE: frontend/tests/flameUpgrade.test.js
@@ -508,20 +475,17 @@ Tests: 3
 
 ========================================================================================
 FILE: frontend/tests/starforceStrategies.test.js
-Tests: 4
+Tests: 3
 
 1. baseline differences use signed percentages and handle zero baselines
    Checks increases, savings, zero cost, and zero/missing baselines without
    division-by-zero results.
 
-2. custom strategy names follow the current list order after removals
-   Renumbers display names while preserving strategy IDs.
-
-3. strategy steps include recovery, group adjacent modes and stop at the target
+2. strategy steps include recovery, group adjacent modes and stop at the target
    Groups standard, safeguarded and Mode 4 transitions, includes recovery stars,
    truncates below mode ranges, and uses standard rates above 22.
 
-4. tradeoff chart handles zero spares and uses enhancement costs instead of total costs
+3. tradeoff chart handles zero spares and uses enhancement costs instead of total costs
    Checks zero-spare coordinates remain finite, chart scale ignores replacement
    spending, and empty datasets produce no points. Custom strategies expand both axes
    when outside the frontier, share its scale, and remain separate from the line

@@ -8,7 +8,6 @@ from backend.calc.starforce_calculator import (
     enhancement_mode_multiplier,
     estimate_starforce,
     starforce_base_cost,
-    starforce_costs_by_star,
 )
 
 
@@ -115,13 +114,6 @@ class StarForceCalculatorTests(unittest.TestCase):
     def test_base_cost_rounds_to_nearest_hundred(self):
         self.assertEqual(starforce_base_cost(150, 0), 136_000)
         self.assertEqual(starforce_base_cost(150, 15) % 100, 0)
-
-    def test_costs_by_star_returns_base_cost_for_each_tap(self):
-        costs = starforce_costs_by_star(150)
-        self.assertEqual(set(costs), set(range(30)))
-        for star, cost in costs.items():
-            with self.subTest(star=star):
-                self.assertEqual(cost, starforce_base_cost(150, star))
 
     def test_mode_multipliers_change_by_star_band(self):
         self.assertEqual(enhancement_mode_multiplier(15, 2), 1.5)

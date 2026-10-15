@@ -13,10 +13,10 @@ npm ci
 npm run dev
 ```
 
-Open the URL printed by Vite. The development `/api` proxy currently targets
-`https://maplestory-calcs-1.onrender.com`. To use a local backend, start it
-using the [backend setup](../backend/README.md#setup), change the proxy target in
-[vite.config.js](vite.config.js) to `http://127.0.0.1:8000`, and restart Vite.
+Open the URL printed by Vite. The development `/api` proxy forwards requests to
+`http://127.0.0.1:8000`. Start the local backend using the
+[backend setup](../backend/README.md#setup). Production builds default to the
+deployed API; see [deployment](#deployment) for overrides.
 
 ## Deployment
 
@@ -71,10 +71,11 @@ For benchmarks that should use same-origin API URLs, build with
 
 ## Tests and verification
 
-The current inventory contains **101 helper/API-client tests in 18 files**,
+The current inventory contains **92 helper/API-client tests in 17 files**,
 plus one prerender test and three separately invoked browser harnesses.
-On 2026-10-14, all 101 tests, lint, the production build, and the prerender test
-passed. The browser regression command could not start because geckodriver was
+After trimming redundant and presentation-only checks on 2026-10-14, all 92
+helper tests and lint passed. The production build and prerender test passed
+earlier that day; they were not rerun for this test-only change. The browser regression command could not start because geckodriver was
 not available on PATH; live smoke tests and the rendering benchmark were not
 rerun. Direct isolated Firefox layout checks during the Tailwind migration were
 limited to desktop/mobile page layout and equipment views; backend API access
@@ -82,7 +83,7 @@ was unavailable. These checks do not replace the full browser regression suite.
 
 `scripts/.tmp-landing-review.mjs` is a tracked, standalone landing-page screenshot
 and mobile-layout check. It is not invoked by the package scripts or included in
-the 101 helper tests. See [the test inventory](../FRONTEND_TESTS.txt) for its scope.
+the 92 helper tests. See [the test inventory](../FRONTEND_TESTS.txt) for its scope.
 
 ## Routing and requests
 
@@ -126,10 +127,10 @@ and the 90-second request timeout. [main.jsx](src/main.jsx) sends one background
 health request on page load to start waking the backend. Calculations are not
 automatically retried after failure.
 
-The development proxy in [vite.config.js](vite.config.js) currently targets the
-**deployed backend**. For local API work, change its `/api` target to
-`http://127.0.0.1:8000` and restart Vite. Production and preview use the API address
-embedded at build time; see [deployment](#deployment) for `VITE_API_BASE_URL`.
+The development proxy in [vite.config.js](vite.config.js) targets the local
+backend at `http://127.0.0.1:8000`. Production and preview default to
+`https://maplestory-calcs-1.onrender.com`. An explicit `VITE_API_BASE_URL`
+overrides API routing; see [deployment](#deployment).
 
 ## Code map
 

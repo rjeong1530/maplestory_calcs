@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { frontierPoints, nameCustomStrategies, strategySteps, percentDifference } from '../src/data/starforceStrategies.js'
+import { frontierPoints, strategySteps, percentDifference } from '../src/data/starforceStrategies.js'
 
 test('baseline differences use signed percentages and handle zero baselines', () => {
   assert.equal(percentDifference(150, 100), 50)
@@ -9,13 +9,6 @@ test('baseline differences use signed percentages and handle zero baselines', ()
   assert.equal(percentDifference(0, 0), 0)
   assert.equal(percentDifference(10, 0), null)
   assert.equal(percentDifference(10, undefined), null)
-})
-
-test('custom strategy names follow the current list order after removals', () => {
-  const remaining = nameCustomStrategies([{ id: 1 }, { id: 3 }])
-  assert.deepEqual(remaining.map(({ id, name }) => ({ id, name })), [
-    { id: 1, name: 'Your strategy 1' }, { id: 3, name: 'Your strategy 2' },
-  ])
 })
 
 test('strategy steps include recovery, group adjacent modes and stop at the target', () => {

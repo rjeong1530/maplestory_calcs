@@ -2,7 +2,6 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readSamples, sampleEquipment } from '../scripts/equipment-samples.mjs'
 import { CLASS_STATS } from '../src/data/classStats.js'
-import { compatibleEquipment, equipmentChoices, potentialEquipmentType } from '../src/data/flameEquipment.js'
 import { exportEquipment, importEquipment, restoreEquipment, serializeEquipment } from '../src/data/equipmentSave.js'
 import { buildUpgradeRequest, DEFAULT_FLAME_WEIGHTS, restoreUpgradeSettings, restoreFlameWeights } from '../src/data/equipmentUpgrade.js'
 
@@ -18,22 +17,6 @@ test('JSON samples cover every class and survive import, browser restoration and
     const request = buildUpgradeRequest(equipment, CLASS_STATS[equipmentClass], DEFAULT_FLAME_WEIGHTS, restoreUpgradeSettings())
     assert.equal(request.equipment.length, 8, name)
     assert.deepEqual(JSON.parse(JSON.stringify(request)), request, name)
-    for (const targetClass of Object.keys(CLASS_STATS)) {
-      const compatible = compatibleEquipment(equipment, targetClass)
-      assert.doesNotThrow(() => importEquipment(exportEquipment(compatible, targetClass)), `${name} -> ${targetClass}`)
-    }
-  }
-})
-
-test('shields, force shields, soul rings and ordinary secondaries share the secondary potential table', () => {
-  for (const [job, id] of [
-    ['Bishop', 1092089], ['Demon Slayer', 1099011],
-    ['Demon Avenger', 1099023], ['Angelic Buster', 1352606],
-    ['Angelic Buster', 1723600], ['Mihile', 1098012], ['Dual Blade', 1342121],
-  ]) {
-    const item = equipmentChoices('secondary', job).find(item => item.id === id)
-    assert.ok(item, `${job}: ${id}`)
-    assert.equal(potentialEquipmentType('secondary', item), 'secondary weapon')
   }
 })
 

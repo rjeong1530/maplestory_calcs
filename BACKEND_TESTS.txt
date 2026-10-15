@@ -1,10 +1,13 @@
 BACKEND TEST INVENTORY
 ======================
 Reviewed: 2026-10-14
-Total: 183 test methods in 16 files
+Total: 181 test methods in 16 files
 
 Scope
 -----
+Redundant per-star wrapper and default-field checks were removed on 2026-10-14.
+API cost coverage and importer behavior checks remain.
+
 Calculator mathematics, API contracts, input/admission limits, bundled data,
 equipment integration, two-copy planning, and Source of Suffering transfers.
 One entry below represents one named test method; loops and subtests add cases
@@ -31,7 +34,7 @@ Dependencies and limits
 
 Verification on 2026-10-14
 --------------------------
-All 183 tests passed in the existing virtual environment, with no skips.
+All 181 tests passed in the existing virtual environment, with no skips.
 The run emitted a Starlette/httpx deprecation warning; it did not fail the suite.
 
 Related documentation: backend/README.md, FRONTEND_TESTS.txt,
@@ -175,7 +178,7 @@ Tests: 7
 
 ========================================================================================
 FILE: backend/tests/test_equipment_data.py
-Tests: 10
+Tests: 9
 
 1. test_excluded_series_and_pocket_allowlist
    Rejects excluded prefixes across accessory and secondary slots, enforces exact pocket
@@ -211,11 +214,7 @@ Tests: 10
    Deduplicates three same-name Astra secondary records to the expected existing item ID
    1723000.
 
-9. test_normalize_defaults_missing_boss_reward_to_false
-   Normalizing a catalog item without boss-reward metadata defaults boss_reward to
-   false.
-
-10. test_fetch_boss_reward_reads_item_detail_and_defaults_missing_tag
+9. test_fetch_boss_reward_reads_item_detail_and_defaults_missing_tag
    With HTTP fetching mocked, reads metaInfo.bossReward from the correct GMS item-detail
    URL and returns false for missing metadata or a missing response.
 
@@ -640,7 +639,7 @@ Tests: 5
 
 ========================================================================================
 FILE: backend/tests/test_starforce.py
-Tests: 26
+Tests: 25
 
 1. test_interactive_distribution_reuses_cdf_and_preserves_quantiles
    Checks unchanged percentile rows, bounded 4,097-point output, grid step, exact known
@@ -680,72 +679,68 @@ Tests: 26
    Checks a fixed level-150 zero-star cost of 136,000 and rounding to a multiple of 100
    at 15 stars.
 
-10. test_costs_by_star_returns_base_cost_for_each_tap
-   Cost lookup includes every starting star 0-29 and agrees with the per-tap base-cost
-   function.
-
-11. test_mode_multipliers_change_by_star_band
+10. test_mode_multipliers_change_by_star_band
    Checks mode cost multipliers across star bands and outside them. This tests the
    multiplier helper; valid mode selection is tested separately.
 
-12. test_mode_probabilities_match_supplied_table
+11. test_mode_probabilities_match_supplied_table
    Checks fixed success/boom/maintain probabilities for star-19 Mode 2 and star-21 Mode
    4, including zero downgrade/boom where expected.
 
-13. test_shining_starforce_sunday_reduces_booms_and_discount_costs
+12. test_shining_starforce_sunday_reduces_booms_and_discount_costs
    Checks event boom reduction at star 18, unchanged booms at star 22, normalized
    maintain rates, and cost multipliers for standard modes and safeguards.
 
-14. test_mvp_rank_discounts_apply_through_17_stars_except_superior
+13. test_mvp_rank_discounts_apply_through_17_stars_except_superior
    Checks every MVP rank at start stars 16 and 17, Superior exclusion, combined event
    discounts, safeguard surcharges and integer cost rounding; rejects unknown ranks and
    nonboolean Superior flags.
 
-15. test_all_available_probability_rows_sum_to_one
+14. test_all_available_probability_rows_sum_to_one
    For all tested star/mode combinations, success, maintain, downgrade, and boom
    probabilities sum to one.
 
-16. test_mode_four_is_not_available_from_15_through_17
+15. test_mode_four_is_not_available_from_15_through_17
    Mode 4 attempt rates are rejected at stars 15, 16, and 17.
 
-17. test_non_destructive_failures_always_maintain_stars
+16. test_non_destructive_failures_always_maintain_stars
    All standard non-destructive failures maintain stars: downgrade probability is zero
    and maintain is the remaining probability.
 
-18. test_standard_estimates_match_lostara_reference
+17. test_standard_estimates_match_lostara_reference
    Compares expected mesos and booms against stored Lostara fixtures for 0-to-15,
    15-to-22, and 22-to-23. Fixtures were recorded 2026-10-01 for level 200, Mode 1, Star
    Catch on, no events/MVP; this test does not contact Lostara.
 
-19. test_expected_cost_for_one_transition_includes_retries
+18. test_expected_cost_for_one_transition_includes_retries
    A level-100 0-to-1 transition includes retries: expected cost is base cost / 0.9975,
    expected attempts are 1 / 0.9975, and expected booms are zero.
 
-20. test_mode_four_can_be_selected_for_18_to_21_band
+19. test_mode_four_can_be_selected_for_18_to_21_band
    For a level-200 18-to-19 Mode 4 upgrade, expected cost is base cost times 6.5 /
    0.084, with zero expected booms.
 
-21. test_boom_recovery_star_matches_supplied_ranges
+20. test_boom_recovery_star_matches_supplied_ranges
    Checks representative boom-recovery boundaries, including 15 and 19 stars resetting
    to 12, 20 to 15, 21 and 22 to 17, 23 and 25 to 19, and 26 and 30 to 20.
 
-22. test_boom_reset_star_can_override_recovery_table
+21. test_boom_reset_star_can_override_recovery_table
    An explicit boom reset of 12 changes the 21-to-22 estimate relative to the default
    recovery table.
 
-23. test_individual_star_mode_overrides_band_mode
+22. test_individual_star_mode_overrides_band_mode
    A per-star Mode 4 override takes precedence over band Mode 1 and equals the
    corresponding band Mode 4 estimate.
 
-24. test_safeguard_disables_boom_and_costs_three_times_at_15_to_17
+23. test_safeguard_disables_boom_and_costs_three_times_at_15_to_17
    Safeguard at 15 uses 31.5% success, 68.5% maintain, zero booms, and triple cost even
    if Mode 3 is selected; expected cost follows the resulting geometric retry model.
 
-25. test_safeguard_can_be_selected_per_star
+24. test_safeguard_can_be_selected_per_star
    Per-star safeguard true produces the protected expected cost and zero booms; false
    allows positive expected booms.
 
-26. test_invalid_requests_are_rejected
+25. test_invalid_requests_are_rejected
    Rejects level zero, target 31, unsupported band/per-star modes, safeguard outside
    15-17, and nonboolean safeguard values.
 

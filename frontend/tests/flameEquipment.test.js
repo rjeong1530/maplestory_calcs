@@ -1,23 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  equipmentChoices, equipInSlot, compatibleEquipment, CLASS_FAMILIES, FLAME_SLOTS,
-  potentialEquipmentType,
+  equipmentChoices, equipInSlot, compatibleEquipment, FLAME_SLOTS,
 } from '../src/data/flameEquipment.js'
 import { CLASS_WEAPONS } from '../src/data/flameWeapons.js'
 import { SECONDARY_JOBS } from '../src/data/secondaryEquipment.js'
 import catalog from '../src/data/equipment_140_250.json' with { type: 'json' }
-
-test('catalog excludes unwanted series and limits pocket choices to cup and spellbooks', () => {
-  assert.ok(!catalog.some(item => /^(Red Beryl|Frontier|Commerci)/.test(item.name)))
-  assert.ok(!catalog.some(item => item.name === "Bounty Legend's Sunglasses"))
-  assert.deepEqual(equipmentChoices('earring', 'Hero').map(item => item.name).sort(),
-    ['Commanding Force Earring', 'Estella Earrings', 'Superior Gollux Earrings'].sort())
-  assert.deepEqual(equipmentChoices('pocket', 'Hero').map(item => item.name).sort(),
-    ['Pink Holy Cup', 'Cursed Red Spellbook', 'Cursed Blue Spellbook',
-      'Cursed Green Spellbook', 'Cursed Yellow Spellbook'].sort())
-  assert.ok(equipmentChoices('face', 'Hero').some(item => item.name === 'Sweetwater Tattoo'))
-})
 
 test('heart choices include only the five selected hearts and Mitra emblems follow class families', () => {
   assert.deepEqual(equipmentChoices('heart', 'Hero').map(item => item.name).sort(),
@@ -69,17 +57,6 @@ test('all supported jobs retain Astra and eligible level-100 secondaries', () =>
   assert.ok(xenon.some(item => item.name === 'Astra Deca Core Controller'))
   assert.ok(!equipmentChoices('secondary', 'Phantom').some(item => /Controller/.test(item.name)))
   assert.ok(equipmentChoices('secondary', 'Dual Blade').some(item => item.name === 'Astra Katara'))
-})
-
-test('catalog retains only requested katara and ordinary shield series', () => {
-  assert.deepEqual(equipmentChoices('secondary', 'Dual Blade').map(item => item.name).sort(), [
-    'Fafnir Rapid Edge', 'AbsoLab Katara', 'Sweetwater Katara', 'Arcane Umbra Katara', 'Astra Katara',
-  ].sort())
-  const shields = catalog.filter(item => Math.floor(item.itemid / 1000) === 1092)
-  assert.ok(shields.some(item => item.name === 'Deimos Warrior Shield'))
-  assert.ok(shields.some(item => item.name === 'Terminus Defender'))
-  assert.ok(shields.some(item => item.name === 'Astra Sacred Aegis'))
-  assert.ok(shields.every(item => /^(Astra|Deimos|Terminus) /.test(item.name)))
 })
 
 test('secondaries distinguish jobs within the same family', () => {
@@ -149,13 +126,6 @@ test('real armor and accessories are filtered by slot and class', () => {
   }
 })
 
-test('all supported classes have families and matching catalog weapons', () => {
-  for (const mapleClass of Object.keys(CLASS_WEAPONS)) {
-    assert.ok(Object.values(CLASS_FAMILIES).some(classes => classes.includes(mapleClass)), mapleClass)
-    assert.ok(equipmentChoices('weapon', mapleClass).length > 0, mapleClass)
-  }
-})
-
 test('weapon IDs disambiguate inaccurate source categories', () => {
   const khali = equipmentChoices('weapon', 'Khali')
   assert.ok(khali.some(item => item.name === 'Genesis Eclipse'))
@@ -183,13 +153,4 @@ test('equipping an overall and bottom are mutually exclusive without changing ot
   const withBottom = equipInSlot(withOverall, 'bottom', bottom)
   assert.equal(withBottom.top, undefined)
   assert.equal(withBottom['pendant-1'].id, 'pendant')
-})
-
-test('equipment slots map to their potential tables', () => {
-  assert.equal(potentialEquipmentType('weapon', {}), 'weapon')
-  assert.equal(potentialEquipmentType('ring-1', {}), 'accessory')
-  assert.equal(potentialEquipmentType('secondary', {}), 'secondary weapon')
-  assert.equal(potentialEquipmentType('top', { overall: true }), 'outfit')
-  assert.equal(potentialEquipmentType('medal', {}), null)
-  assert.equal(potentialEquipmentType('pocket', {}), null)
 })

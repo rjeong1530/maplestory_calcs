@@ -170,8 +170,8 @@ python -m unittest discover -s backend/tests -t . -v
 ```
 
 To run only API tests: `python -m unittest backend.tests.test_api -v`.
-The current inventory contains **183 test methods across 16 files**. On
-2026-10-14, all 183 passed, including native parity checks. The run emitted a
+The current inventory contains **181 test methods across 16 files**. On
+2026-10-14, all 181 passed, including native parity checks. The run emitted a
 Starlette/httpx deprecation warning; it did not fail the suite. Native tests skip
 when the optional local extension is unavailable. MongoDB tests use mocks and
 do not submit reports to the deployed database.

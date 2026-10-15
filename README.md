@@ -42,8 +42,8 @@ Clone or download the repository, then use two terminals for local development:
 1. Follow [backend setup](backend/README.md#setup) to install dependencies and
    start FastAPI.
 2. Follow [frontend setup](frontend/README.md#setup) to install dependencies and
-   start Vite. Its development proxy targets the deployed backend by default;
-   change that target when working against your local API.
+   start Vite. Its development proxy forwards API requests to your local backend
+   at `http://127.0.0.1:8000`.
 3. Run the [backend tests](backend/README.md#tests) and
    [frontend checks](frontend/README.md#commands) for changes to the respective service.
 
