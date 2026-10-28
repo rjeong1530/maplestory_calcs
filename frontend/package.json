@@ -10,11 +10,15 @@
     "test:deployed": "node --test scripts/deployed-smoke.test.mjs",
     "benchmark:render": "npm run build && node --test scripts/benchmark-rendering.test.mjs",
     "dev": "vite",
+    "dev:design-system": "vite --host 127.0.0.1",
+    "build:design-system": "vite build --config vite.design-system.config.js",
+    "test:design-system": "node --test scripts/design-system.test.mjs",
     "build": "vite build && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^14.7.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

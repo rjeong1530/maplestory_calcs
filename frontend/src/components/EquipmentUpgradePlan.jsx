@@ -1,4 +1,5 @@
 import LoadingStatus from './LoadingStatus'
+import { LoadingButtonContent } from '../ui/loading'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { SLOT_LABELS } from '../data/flameEquipment'
@@ -136,13 +137,13 @@ export default function EquipmentUpgradePlan({
           ))}
         </fieldset>
         <button type="submit" className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={busy || !payload.equipment.length || !settings.categories.length}>
-          {busy ? 'Calculating upgrade order…' : 'Calculate upgrade order'}
+          <LoadingButtonContent busy={busy} label="Calculating upgrade order…">Calculate upgrade order</LoadingButtonContent>
         </button>
       </form>
       {!settings.categories.length && <p className="hint text-[12px] text-muted mb-4.5">Select at least one upgrade order.</p>}
       {!payload.equipment.length && <p className="hint text-[12px] text-muted mb-4.5">Equip an item above to compare upgrades.</p>}
       <div aria-live="polite">
-        {busy && <LoadingStatus>Calculating expected gains for {payload.equipment.length} items…</LoadingStatus>}
+        {busy && <LoadingStatus variant="table">Calculating expected gains for {payload.equipment.length} items…</LoadingStatus>}
         {request && !current && <p className="hint text-[12px] text-muted mb-4.5">Inputs changed. Calculate again to refresh the rankings.</p>}
       </div>
       {current?.error && <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{current.error}</p>}

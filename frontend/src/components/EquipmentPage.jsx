@@ -31,7 +31,7 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
       </nav>
       <div className="min-w-0">
         <div id="equipment-setup-view" hidden={view !== 'setup'}>
-          <DeferredPage active={view === 'setup'}>
+          <DeferredPage active={view === 'setup'} loadingVariant="equipment">
             <EquipmentWindow equipmentClass={setupClass}
               mapleClasses={Object.keys(CLASS_STATS).sort()}
               onMapleClassChange={updateEquipmentClass} equipment={setupEquipment}
@@ -45,7 +45,7 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
           </DeferredPage>
         </div>
         <div id="equipment-stats-view" hidden={view !== 'stats'}>
-          <DeferredPage active={view === 'stats'}>
+          <DeferredPage active={view === 'stats'} loadingVariant="equipment">
             <EquipmentStats planner={planner} busy={busy}
               onOpenApproaches={onOpenApproaches}
               onOpenSetup={() => setView('setup')} />

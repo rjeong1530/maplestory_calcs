@@ -1,4 +1,5 @@
 import LoadingStatus from './LoadingStatus'
+import { LoadingButtonContent } from '../ui/loading'
 import { CLASS_WEAPONS, WEAPON_KINDS, WEAPON_SERIES, getWeaponConfig } from '../data/flameWeapons'
 import { CLASS_STATS } from '../data/classStats'
 import RollBudget from './RollBudget'
@@ -183,7 +184,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
         </label>
 
         <button type="submit" className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={busy}>
-          {busy ? 'Calculating…' : 'Calculate odds'}
+          <LoadingButtonContent busy={busy}>Calculate odds</LoadingButtonContent>
         </button>
         </fieldset>
       </form>
@@ -191,7 +192,7 @@ export default function FlameCalculator({ form, setForm, calculation }) {
       <section className="panel results bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5 [&_h2]:mt-3 [&_h2]:text-[22px]" aria-live="polite" aria-busy={busy}>
         <span className="eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple">YOUR ODDS</span>
         <h2>Flame odds</h2>
-        {busy ? <LoadingStatus>Calculating your flame score…</LoadingStatus>
+        {busy ? <LoadingStatus variant="result">Calculating your flame score…</LoadingStatus>
           : error ? <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{error}</p>
           : !result ? (
             <div className="empty pt-8.5 px-0 pb-3 border-t border-solid border-t-rule mt-6 text-muted text-[14px] [&_h3]:text-[#eeede6] [&_h3]:mt-5">

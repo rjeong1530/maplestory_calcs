@@ -8,7 +8,7 @@ export default function Results({ result, busy, error }) {
     <section className="panel results bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5 [&_h2]:mt-3 [&_h2]:text-[22px]" aria-live="polite" aria-busy={busy}>
       <span className="eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple">YOUR ODDS</span>
       <h2>Roll outcome</h2>
-      {busy ? <LoadingStatus>Calculating your potential combination…</LoadingStatus>
+      {busy ? <LoadingStatus variant="result">Calculating your potential combination…</LoadingStatus>
         : error ? <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{error}</p>
         : !result ? (
           <div className="empty pt-8.5 px-0 pb-3 border-t border-solid border-t-rule mt-6 text-muted text-[14px] [&_h3]:text-[#eeede6] [&_h3]:mt-5">

@@ -1,4 +1,5 @@
 import LoadingStatus from './LoadingStatus'
+import { LoadingButtonContent } from '../ui/loading'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { apiRequest } from '../api'
 import { frontierPoints, nameCustomStrategies, strategySteps, percentDifference } from '../data/starforceStrategies'
@@ -139,10 +140,10 @@ export default function StarForceStrategies({ form, onChange, planner }) {
         </label>)}
       </div>
       <p className="hint text-[12px] text-muted mb-4.5">Total mesos include the replacement cost of each expected boom. Set it to zero to compare enhancement spending only. Choose a target your item supports.</p>
-      <button className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={busy}>{busy ? 'Comparing…' : 'Compare strategies'}</button>
+      <button className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={busy}><LoadingButtonContent busy={busy} label="Comparing…">Compare strategies</LoadingButtonContent></button>
     </form>
     <div aria-live="polite">
-      {busy && <LoadingStatus>Searching per-star mode and safeguard combinations…</LoadingStatus>}
+      {busy && <LoadingStatus variant="table">Searching per-star mode and safeguard combinations…</LoadingStatus>}
       {current?.error && <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{current.error}</p>}
       {request && !current && <p>Inputs changed. Compare again to refresh the comparison.</p>}
     </div>
@@ -162,9 +163,9 @@ export default function StarForceStrategies({ form, onChange, planner }) {
           </div>
           <p className="hint text-[12px] text-muted mb-4.5">These choices also apply during boom recovery below your starting stars. Outside 15&ndash;21, standard rates apply.</p>
           <p className="hint text-[12px] text-muted mb-4.5">Add multiple strategies to compare them together. Changing these choices keeps your plotted strategies.</p>
-          <button className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={customCurrent?.loading}>{customCurrent?.loading ? 'Calculating...' : 'Add strategy to comparison'}</button>
+          <button className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" disabled={customCurrent?.loading}><LoadingButtonContent busy={customCurrent?.loading}>Add strategy to comparison</LoadingButtonContent></button>
           <div aria-live="polite">
-            {customCurrent?.loading && <LoadingStatus>Calculating your strategy&hellip;</LoadingStatus>}
+            {customCurrent?.loading && <LoadingStatus variant="result">Calculating your strategy&hellip;</LoadingStatus>}
             {customCurrent?.error && <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{customCurrent.error}</p>}
           </div>
         </form>

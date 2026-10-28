@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { CalculatorLoadingOverlay, LoadingButtonContent } from '../ui/loading'
 import { CLASS_FAMILIES, EQUIPMENT_SLOTS, SLOT_LABELS, equipmentChoices, FIXED_RING_SLOT } from '../data/flameEquipment'
 import EquipmentGrid, { EquipmentIcon } from './EquipmentGrid'
 import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
@@ -103,7 +104,7 @@ export default function EquipmentWindow({
             <button type="button" disabled={busy} onClick={downloadEquipment}>Export JSON</button>
             <button type="button" disabled={busy} aria-describedby="equipment-import-help"
               onClick={() => fileInput.current?.click()}>
-              {importing ? 'Importing…' : 'Import JSON'}
+              <LoadingButtonContent busy={importing} label="Importing…">Import JSON</LoadingButtonContent>
             </button>
             <input ref={fileInput} type="file" accept=".json,application/json" hidden
               aria-label="Import equipment JSON file" onChange={uploadEquipment} />
@@ -148,10 +149,12 @@ export default function EquipmentWindow({
           {selected && pickerSlot !== FIXED_RING_SLOT && <button type="button" className="secondary text-[12px] w-full bg-transparent" disabled={busy}
             onClick={() => { onRemove(pickerSlot); onActivate(pickerSlot) }}>Remove equipment</button>}
         </section>
-        <div className="equipment-setup-preview min-w-0 text-center [@media(max-width:720px)]:row-[1] [&_>_.equipment-slots]:p-2.5
-        [&_>_.equipment-slots]:border [&_>_.equipment-slots]:border-solid [&_>_.equipment-slots]:border-[#646258]
-        [&_>_.equipment-slots]:rounded-sm [&_>_.equipment-slots]:bg-[#302f29]">
-          <EquipmentGrid equipment={equipment} activeSlot={pickerSlot} onActivate={onActivate} busy={busy} />
+        <div className="equipment-setup-preview min-w-0 text-center [@media(max-width:720px)]:row-[1] [&_.equipment-slots]:p-2.5
+        [&_.equipment-slots]:border [&_.equipment-slots]:border-solid [&_.equipment-slots]:border-[#646258]
+        [&_.equipment-slots]:rounded-sm [&_.equipment-slots]:bg-[#302f29]">
+          <CalculatorLoadingOverlay loading={importing} variant="equipment" label="Reading equipment file…">
+            <EquipmentGrid equipment={equipment} activeSlot={pickerSlot} onActivate={onActivate} busy={busy} />
+          </CalculatorLoadingOverlay>
           <p className="equipment-summary text-[12px] text-muted leading-[1.7] mt-4 mx-0 mb-0 [&_strong]:text-[#eeede6]" aria-live="polite">
             {selected ? <><strong>{selected.name}</strong><br />Level {selected.config.equipment_level} · {selected.currentStarForce ?? 0}★ Star Force</>
               : 'Select an item from the list to preview it.'}

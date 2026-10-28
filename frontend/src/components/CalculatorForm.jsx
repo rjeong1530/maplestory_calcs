@@ -1,4 +1,5 @@
 import LoadingStatus from './LoadingStatus'
+import { LoadingButtonContent } from '../ui/loading'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { buildPotentialTargets } from '../data/potentialTargets'
@@ -127,7 +128,7 @@ export default function CalculatorForm({ options, busy, onCalculate, onChange })
             setNextId(value => value + 1)
             onChange()
           }}>+ Add potential target</button>
-        <button type="submit" className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91] mt-6" disabled={!canCalculate}>{busy ? 'Calculating…' : 'Calculate probability →'}</button>
+        <button type="submit" className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91] mt-6" disabled={busy || !canCalculate}><LoadingButtonContent busy={busy}>Calculate probability →</LoadingButtonContent></button>
       </fieldset>
     </form>
   )

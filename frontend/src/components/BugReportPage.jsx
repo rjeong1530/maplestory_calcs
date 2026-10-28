@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { LoadingButtonContent } from '../ui/loading'
 import { formatBugReport } from '../data/bugReport'
 import { apiRequest } from '../api'
 
@@ -100,7 +101,7 @@ export default function BugReportPage() {
       <label>Report text<textarea readOnly value={report} rows={12} /></label>
       <div className="mt-4.5 flex flex-wrap gap-3">
         <button className="primary w-full font-bold bg-maple text-[#201b12] border-maple p-3.5 [&:hover:not(:disabled)]:bg-[#f2ce91]" type="button" disabled={submission.loading || !!submission.saved} onClick={submitReport}>
-          {submission.loading ? 'Submitting…' : submission.saved ? 'Report submitted' : 'Submit report'}
+          <LoadingButtonContent busy={submission.loading} label="Submitting…">{submission.saved ? 'Report submitted' : 'Submit report'}</LoadingButtonContent>
         </button>
         <button type="button" onClick={copyReport}>Copy report</button>
         <button type="button" onClick={downloadReport}>Download report</button>

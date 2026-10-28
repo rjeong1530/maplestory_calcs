@@ -16,7 +16,7 @@ export default function EquipmentPlanner({ activeTab, onNavigate }) {
 
   return <>
     {planner.saveError && <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{planner.saveError}</p>}
-    <DeferredPage active={activeTab === 'equipment'}>
+    <DeferredPage active={activeTab === 'equipment'} loadingVariant="equipment">
       <EquipmentPage planner={planner} busy={calculation.busy}
         onOpenApproaches={() => {
           setStarforceView('strategies')
