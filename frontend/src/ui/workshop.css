@@ -765,3 +765,12 @@
     opacity: 1;
   }
 }
+.mw-theme .mw-requirement-row { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-secondary); }
+.mw-theme .mw-requirement-row input { font-size: 22px; font-weight: 650; color: var(--primary); }
+.mw-theme .mw-budget-surface .budget-chance-picker { border-top: 1px solid var(--border); padding-top: 20px; }
+.mw-theme .mw-budget-surface .budget-chance-picker label { display: grid; gap: 8px; font-size: 12px; color: var(--text-primary); }
+.mw-theme .mw-budget-surface .budget-inputs { grid-template-columns: minmax(0, 1fr); }
+.mw-theme .mw-budget-surface .budget-input-arrow { display: none; }
+.mw-theme .mw-budget-surface .budget-input-field { background: var(--surface-secondary); border-color: var(--border); border-radius: 8px; }
+.mw-theme .mw-budget-surface .budget-input-field input { width: 100%; min-width: 0; color: var(--text-primary); }
+.mw-theme .mw-budget-surface .hint, .mw-theme .mw-budget-surface .budget-input-field > span { color: var(--text-secondary); }

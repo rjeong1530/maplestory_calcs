@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { cx, useWorkshopMotion } from './motion'
 
 function Button({ children, variant, className, type = 'button', disabled, ...props }) {
-  const { press, transition } = useWorkshopMotion()
-  return <motion.button {...props} type={type} disabled={disabled} whileTap={disabled ? undefined : press}
+  const { press, hover, transition } = useWorkshopMotion()
+  return <motion.button {...props} type={type} disabled={disabled} whileHover={disabled ? undefined : hover} whileTap={disabled ? undefined : press}
     transition={transition} className={cx('mw-button', `mw-button-${variant}`, className)}>{children}</motion.button>
 }
 export function PrimaryButton(props) { return <Button {...props} variant="primary" /> }

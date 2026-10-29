@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import UpgradeRankTable from './UpgradeRankTable'
 import { FLAME_CONFIDENCES, flamesForConfidence, formatFlameChance, costForConfidence } from '../data/flameUpgrade'
 
 const count = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 })
@@ -25,6 +26,7 @@ export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerF
         of beating that item's current score.</p>
       {costPerFlame != null && <p className="hint text-[12px] text-muted mb-4.5">{count.format(costPerFlame)} mesos per flame.</p>}
     </div>
+    {rows.length > 0 && <UpgradeRankTable rows={rows} category="flames" equipment={equipment} orderLabel="Highest chance of improvement first" />}
     <ol className="flame-order-strip flex flex-wrap gap-y-4.5 gap-x-0 list-none py-2 px-0 mt-5 mx-0 mb-10 [&_li]:flex
         [&_li]:items-center [&_li:not(:last-child)::after]:[content:'›'] [&_li:not(:last-child)::after]:text-[#d0cec3]
         [&_li:not(:last-child)::after]:text-[26px] [&_li:not(:last-child)::after]:my-0

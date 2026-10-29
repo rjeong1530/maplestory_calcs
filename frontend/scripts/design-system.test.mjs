@@ -161,6 +161,24 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and redu
       if (!String(url).includes('/api/')) return originalFetch(url, init);
       const path = String(url);
       (window.workshopRequests ??= []).push({ path, payload: init?.body ? JSON.parse(init.body) : null });
+      if (path.endsWith('/api/bug-reports')) return new Promise((resolve, reject) => {
+        window.finishBugReport = () => resolve(new Response(JSON.stringify({report_id:'workshop-test-123'}), {headers:{'Content-Type':'application/json'}}));
+        window.failBugReport = () => reject(new Error('Example report submission failure'));
+      });
+      if (path.endsWith('/api/equipment-upgrade-plan')) return new Promise(resolve => {
+        window.finishUpgradePlan = () => {
+          const base = {slot:'hat',name:'Eternal Knight Helm',current_star_force:17,current_score:100,expected_attempts:2,expected_booms:.1};
+          const sf = [{...base,start_star:17,next_star:18,expected_score_gain:10,action_cost_mesos:1000000,gain_per_meso:.00001},
+            {...base,start_star:18,next_star:19,expected_score_gain:5,action_cost_mesos:2000000,gain_per_meso:.0000025}];
+          const roll = {...base,expected_score_gain:8,action_cost_mesos:30000000,gain_per_meso:8/30000000,improvement_probability:.1};
+          const flame = {largest_gain_first:[roll], unavailable:[]};
+          resolve(new Response(JSON.stringify({rankings:{starforce:{gain_per_meso_first:sf,unavailable:[]},potential:{gain_per_meso_first:[roll],unavailable:[]}},flame_rankings:{black:flame,abyssal:flame},cost_assumptions_mesos:{black_flame:3000000,abyssal_flame:null},excluded_superior_equipment:[],overall_upgrade_order:{step_limit:20,steps:[{...sf[0],step:1,category:'starforce',cumulative_cost_mesos:1000000}],unavailable:[]}}), {headers:{'Content-Type':'application/json'}}));
+        };
+      });
+      if (path.endsWith('/api/probability')) return new Promise((resolve, reject) => {
+        window.finishPotential = (probability = .1) => resolve(new Response(JSON.stringify({probability, percentage: probability * 100, one_in: probability ? 1 / probability : null, cube_estimates: []}), {headers: {'Content-Type':'application/json'}}));
+        window.failPotential = () => reject(new Error('Example potential failure'));
+      });
       if (path.includes('/api/starforce-estimate')) return new Promise((resolve, reject) => {
         window.finishStarforce = (overrides = {}) => resolve(new Response(JSON.stringify({ expected_cost: 300000, expected_replacement_cost: 100000,
           expected_attempts: 96.5, expected_booms: 2.5, budget_distribution: { step_mesos: 100000, probabilities: [0,.2,.5,.75,.9,.99],
@@ -169,12 +187,14 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and redu
       });
       if (window.holdCalculation && path.includes('/api/flame-probability')) {
         return new Promise((resolve, reject) => {
-          window.finishCalculation = () => resolve(new Response(JSON.stringify({ target_score: 135, probability: .1, percentage: 10, one_in: 10 }), { headers: { 'Content-Type': 'application/json' } }));
+          window.finishCalculation = () => resolve(new Response(JSON.stringify({ target_score: 135, probability: .1, percentage: 10, one_in: 10,
+            score_distribution: [{ lower: 0, upper: 45, probability: .2 }, { lower: 45, upper: 90, probability: .4 }, { lower: 90, upper: 135, probability: .3 }, { lower: 135, upper: 180, probability: .1 }]
+          }), { headers: { 'Content-Type': 'application/json' } }));
           window.failCalculation = () => reject(new Error('Example connection failure'));
         });
       }
-      const data = path.includes('/api/options') ? { equipment_types: ['hat'], levels: [250], cube_types: ['black'], effects: ['STR_PCT'] }
-        : path.includes('/api/item-options') ? { potential: { available: true, effects: ['STR_PCT'], values_by_line: [] }, flame_values: [] }
+      const data = path.includes('/api/options') ? { equipment_types: ['hat'], levels: [250], cube_types: ['black', 'red'], effects: ['STR_PCT', 'COOLDOWN_SEC'] }
+        : path.includes('/api/item-options') ? { potential: { available: true, effects: ['STR_PCT', 'COOLDOWN_SEC', 'ALL_STAT_PCT'], values_by_line: [{line:1, values:{STR_PCT:[13], COOLDOWN_SEC:[1,2], ALL_STAT_PCT:[10]}}] }, flame_values: [], flame_tier_ranges: {}, flame_stages: [], flame_options: [] }
         : path.includes('/api/starforce-costs') ? { costs_by_star: [0,15,18,22].map(star => ({star, base_cost: 100000,
           mode_costs: {1:100000,2:200000,3:300000,4:400000},
           mode_rates: Object.fromEntries([1,2,3,4].map(mode => [mode, star < 18 && mode === 4 ? null : {success:.3,maintain:.5,downgrade:.1,boom:.1}])),
@@ -323,7 +343,80 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and redu
   await until(() => evaluate(`!!document.querySelector('.flame-form + section [role="alert"]')`), 'failed calculation')
   assert.equal(await evaluate(`!!document.querySelector('.flame-form + section .mw-result-skeleton')`), false, 'errors replace loading')
 
+  // The visual migration preserves native validation and the exact API configuration.
+  const armorRequest = await evaluate(`window.workshopRequests.filter(r => r.path.includes('/api/flame-probability')).at(-1).payload`)
+  assert.deepEqual(armorRequest, { config: {
+    equipment_level: 150, equipment_type: 'armor', boss_equipment: true, flame_type: 'black',
+    main_stat: 'STR', secondary_stats: ['DEX'], offense_stat: 'ATT',
+    weights: { all_stat_pct_value: 10, secondary_stat_value: .1, attack_value: 3, boss_damage_pct_value: 10 },
+  }, target_score: 135 })
+  async function changeFlame(name, value) {
+    await evaluate(`(() => { const el = document.querySelector('.flame-form [name="${name}"]');
+      Object.getOwnPropertyDescriptor(el.tagName === 'SELECT' ? HTMLSelectElement.prototype : HTMLInputElement.prototype, 'value').set.call(el, ${JSON.stringify(value)});
+      el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true })); })()`)
+  }
+  await changeFlame('equipment_level', '301')
+  assert.equal(await evaluate(`document.querySelector('.flame-form').checkValidity()`), false)
+  await changeFlame('equipment_level', '150')
+  await changeFlame('maple_class', 'Bishop')
+  await changeFlame('equipment_type', 'weapon')
+  await changeFlame('weapon_series', 'arcane')
+  await changeFlame('target_score', '-1.5')
+  assert.equal(await evaluate(`document.querySelector('.flame-form').checkValidity()`), true, 'score retains its unrestricted fractional range')
+  assert.equal(await evaluate(`document.querySelector('[name="equipment_level"]').readOnly && document.querySelector('[name="boss_equipment"]').disabled && document.querySelector('[name="boss_equipment"]').checked`), true)
+  await evaluate(`document.querySelector('.flame-form').requestSubmit()`)
+  await until(() => evaluate(`!!document.querySelector('.flame-result .mw-result-skeleton')`), 'weapon request')
+  assert.deepEqual(await evaluate(`window.workshopRequests.filter(r => r.path.includes('/api/flame-probability')).at(-1).payload`), {
+    config: { ...armorRequest.config, equipment_level: 200, equipment_type: 'weapon', main_stat: 'INT', secondary_stats: ['LUK'], offense_stat: 'MATT', base_weapon_offense: 353 }, target_score: -1.5,
+  })
+  await evaluate(`window.finishCalculation()`)
+  await until(() => evaluate(`!document.querySelector('.flame-form button[type="submit"]').disabled`), 'weapon result')
+  assert.equal(await evaluate(`document.querySelector('.flame-result .budget-chance-picker').querySelectorAll('input').length`), 2, 'existing count-only budget remains intact')
+  await until(() => evaluate(`getComputedStyle(document.querySelector('.flame-result-content > div')).opacity === '1'`), 'result entrance completes')
+  assert.equal(await evaluate(`document.querySelectorAll('.flame-form .mw-card').length`), 1, 'setup shares one flat card')
+  assert.equal(await evaluate(`document.querySelectorAll('.flame-chart-bar').length`), 4, 'renders server score ranges')
+  await evaluate(`document.querySelectorAll('.flame-chart-bar')[1].focus()`)
+  assert.equal(await evaluate(`document.querySelector('.flame-chart-detail').textContent.includes('40%')`), true, 'keyboard focus exposes the actual range probability')
+  await evaluate(`document.activeElement.blur()`)
+  for (const width of [1440, 900, 390, 320]) {
+    await command('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: false })
+    await evaluate(`window.scrollTo(0,0)`)
+    assert.equal(await evaluate(`document.documentElement.scrollWidth <= innerWidth`), true, `Flame page fits ${width}px`)
+    const shot = await command('Page.captureScreenshot', { format: 'png' })
+    await writeFile(join(captures, `flame-${width}.png`), Buffer.from(shot.data, 'base64'))
+  }
+
   // Hold an actual code request to observe startup and lazy equipment fallbacks.
+  await go('/calculators/potential', 'potential')
+  await until(() => evaluate(`document.querySelectorAll('.potential-form .target-row').length === 2`), 'potential targets')
+  await evaluate(`Array.from(document.querySelectorAll('.potential-form button')).find(b => b.textContent === '+ Add Stat').click()`)
+  await until(() => evaluate(`document.querySelectorAll('.potential-form .target-row').length === 3`), 'added All Stat')
+  await evaluate(`document.querySelector('.potential-form [role="switch"]').click(); document.querySelector('.potential-form').requestSubmit()`)
+  await until(() => evaluate(`!!document.querySelector('.potential-results .mw-result-skeleton')`), 'potential request')
+  assert.equal(await evaluate(`document.querySelector('.potential-form button[type="submit"]').disabled`), true)
+  assert.deepEqual(await evaluate(`window.workshopRequests.filter(r => r.path.endsWith('/api/probability')).at(-1).payload`), {
+    equipment_type: 'hat', level: 250, cube_type: 'black', percentiles: [], targets: [
+      {effect:'STR_PCT',target:14}, {effect:'COOLDOWN_SEC',target:4}, {effect:'DEX_PCT',target:1}, {effect:'INT_PCT',target:1}, {effect:'LUK_PCT',target:1},
+    ],
+  })
+  await evaluate(`window.finishPotential()`)
+  await until(() => evaluate(`!!document.querySelector('.potential-results .budget-chance-picker')`), 'potential result')
+  assert.equal(await evaluate(`document.querySelector('.potential-results').textContent.includes('165,000,000')`), true, 'sale cost uses existing cube price')
+  assert.equal(await evaluate(`!!document.querySelector('.potential-results input')?.closest('form')`), false, 'budget fields do not submit calculator')
+  for (const width of [1440, 900, 390, 320]) {
+    await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
+    await evaluate(`window.scrollTo(0,0)`)
+    assert.equal(await evaluate(`document.documentElement.scrollWidth <= innerWidth`), true, `Potential fits ${width}px`)
+    const shot = await command('Page.captureScreenshot', {format:'png'})
+    await writeFile(join(captures, `potential-${width}.png`), Buffer.from(shot.data,'base64'))
+  }
+  await evaluate(`document.querySelector('.potential-form button[aria-label="Remove potential 3"]').click()`)
+  await until(() => evaluate(`document.querySelectorAll('.potential-form .target-row').length === 2`), 'removed target')
+  await evaluate(`document.querySelector('.potential-form').requestSubmit()`)
+  await until(() => evaluate(`!!document.querySelector('.potential-results .mw-result-skeleton')`), 'potential retry')
+  await evaluate(`window.failPotential()`)
+  await until(() => evaluate(`!!document.querySelector('.potential-results [role="alert"]')`), 'potential error')
+
   await command('Network.setCacheDisabled', { cacheDisabled: true })
   await command('Fetch.enable', { patterns: [{ urlPattern: '*EquipmentPage.jsx*', requestStage: 'Request' }] })
   await command('Page.navigate', { url: `http://127.0.0.1:${webPort}/equipment` })
@@ -344,5 +437,113 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and redu
   await command('Fetch.disable')
   await until(() => evaluate(`!!document.querySelector('.equipment-window')`), 'equipment replaces skeleton')
   assert.equal(await evaluate(`!!document.querySelector('.mw-equipment-skeleton')`), false)
+  const equipmentButton = async text => evaluate(`Array.from(document.querySelectorAll('.equipment-setup button')).find(b => b.textContent.trim() === ${JSON.stringify(text)}).click()`)
+  await until(() => evaluate(`!!document.querySelector('.workshop-equipment-slots')`), 'workshop equipment grid')
+  const originalSave = await evaluate(`localStorage.getItem('maplestory-flame-equipment')`)
+  assert.equal(await evaluate(`document.querySelectorAll('.workshop-equipment-slots button').length`), 24, 'exact supported selectable slots')
+  await evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').click()`)
+  await until(() => evaluate(`!!document.querySelector('.equipment-catalog-item')`), 'hat catalog')
+  await evaluate(`document.querySelector('.equipment-catalog-item').click()`)
+  assert.equal(await evaluate(`localStorage.getItem('maplestory-flame-equipment')`), originalSave, 'selection only changes preview')
+  await equipmentButton('Discard changes')
+  assert.equal(await evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').getAttribute('aria-label')`), 'Hat: empty')
+  await evaluate(`document.querySelector('.equipment-catalog-item').click()`)
+  await equipmentButton('Save equips')
+  await until(() => evaluate(`!!JSON.parse(localStorage.getItem('maplestory-flame-equipment')).equipment.hat`), 'explicit save commits preview')
+  const savedBuild = await evaluate(`localStorage.getItem('maplestory-flame-equipment')`)
+  await equipmentButton('Remove equipment')
+  assert.equal(await evaluate(`localStorage.getItem('maplestory-flame-equipment')`), savedBuild, 'removal waits for save')
+  await equipmentButton('Discard changes')
+  await until(() => evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').getAttribute('aria-label') !== 'Hat: empty'`), 'discard restores item')
+  await evaluate(`document.querySelector('.equipment-setup [aria-label^="Ring 4:"]').click()`)
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.equipment-catalog-item')).every(b => b.disabled)`), true, 'fixed ring stays fixed')
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('.equipment-setup button')).some(b => b.textContent.trim() === 'Remove equipment')`), false)
+  await evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').click()`)
+  for (const width of [1440, 900, 390, 320]) {
+    await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
+    await evaluate(`window.scrollTo(0,0)`)
+    assert.equal(await evaluate(`document.documentElement.scrollWidth <= innerWidth`), true, `Equipment fits ${width}px`)
+    const shot = await command('Page.captureScreenshot', {format:'png'})
+    await writeFile(join(captures, `equipment-${width}.png`), Buffer.from(shot.data,'base64'))
+  }
+  await command('Page.navigate', {url:`http://127.0.0.1:${webPort}/equipment`})
+  await until(() => evaluate(`!!document.querySelector('.workshop-equipment-slots')`), 'saved build reload')
+  assert.equal(await evaluate(`localStorage.getItem('maplestory-flame-equipment')`), savedBuild, 'reload keeps saved schema and values')
+  await evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').click()`)
+  await evaluate(`(() => {
+    const saved = JSON.parse(localStorage.getItem('maplestory-flame-equipment'));
+    saved.equipment.hat.current_star_force = 17;
+    const data = new DataTransfer();
+    data.items.add(new File([JSON.stringify({format:'maplestory-equipment',version:1,equipment_class:saved.equipment_class,equipment:saved.equipment})], 'build.json', {type:'application/json'}));
+    const input = document.querySelector('input[aria-label="Import equipment JSON file"]'); input.files = data.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+  })()`)
+  await until(() => evaluate(`document.querySelector('.equipment-transfer-panel').textContent.includes('Equipment loaded into the preview')`), 'file import completes')
+  await evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').click()`)
+  await until(() => evaluate(`document.querySelector('.equipment-summary').textContent.includes('17')`), 'imported preview retains recorded stars')
+  assert.equal(await evaluate(`localStorage.getItem('maplestory-flame-equipment')`), savedBuild, 'import does not save implicitly')
+  await equipmentButton('Save equips')
+  await until(() => evaluate(`JSON.parse(localStorage.getItem('maplestory-flame-equipment')).equipment.hat.current_star_force === 17`), 'import applies through existing save')
+  await evaluate(`Array.from(document.querySelectorAll('.equipment-section-navigation button')).find(b => b.textContent === 'Stats & upgrades').click()`)
+  await until(() => evaluate(`!!document.querySelector('#equipment-stats-view .equipment-editor-panel')`), 'existing enhancement editor')
+  assert.equal(await evaluate(`document.querySelector('#equipment-stats-view .equipment-editor-panel').textContent.includes('Eternal Knight Helm')`), true)
+  await evaluate(`document.querySelector('.upgrade-plan form').requestSubmit()`)
+  await until(() => evaluate(`!!document.querySelector('.upgrade-recommendations .mw-skeleton-table')`), 'upgrade loading')
+  await evaluate(`window.finishUpgradePlan()`)
+  await until(() => evaluate(`!!document.querySelector('.workshop-rank-table tbody tr')`), 'upgrade recommendations')
+  assert.equal(await evaluate(`document.querySelectorAll('.workshop-rank-table tbody tr').length`), 1, 'existing consecutive-star grouping preserved')
+  assert.equal(await evaluate(`document.querySelector('.workshop-rank-table').textContent.includes('3,000,000')`), true, 'range costs unchanged')
+  assert.equal(await evaluate(`document.querySelector('.workshop-rank-table').textContent.includes('17 → 19')`), true)
+  await evaluate(`document.querySelector('.upgrade-row-details summary').click()`)
+  assert.equal(await evaluate(`document.querySelector('.upgrade-row-details').open`), true)
+  assert.equal(await evaluate(`document.querySelector('.upgrade-row-details').textContent.includes('0.2')`), true, 'existing boom totals preserved')
+  for (const width of [1440, 900, 390, 320]) {
+    await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
+    await evaluate(`document.querySelector('.upgrade-plan').scrollIntoView()`)
+    assert.equal(await evaluate(`document.documentElement.scrollWidth <= innerWidth`), true, `Upgrade order fits ${width}px`)
+    if (width < 700) assert.equal(await evaluate(`getComputedStyle(document.querySelector('.workshop-rank-table tbody tr')).display`), 'block')
+    const shot = await command('Page.captureScreenshot', {format:'png'})
+    await writeFile(join(captures, `upgrade-order-${width}.png`), Buffer.from(shot.data,'base64'))
+  }
+  await evaluate(`Array.from(document.querySelectorAll('.upgrade-category-tabs button')).find(b => b.textContent === 'Overall').click()`)
+  await until(() => evaluate(`!!document.querySelector('.overall-upgrade-table')`), 'overall recommendations')
+  assert.equal(await evaluate(`document.querySelector('.overall-upgrade-table').textContent.includes('1M')`), true)
+  await evaluate(`Array.from(document.querySelectorAll('.upgrade-category-tabs button')).find(b => b.textContent === 'Flames').click()`)
+  await until(() => evaluate(`!!document.querySelector('.flame-upgrade-order .workshop-rank-table')`), 'flame recommendations')
+  assert.equal(await evaluate(`document.querySelector('.flame-upgrade-order .workshop-rank-table caption').textContent.includes('Highest chance of improvement first')`), true)
+  assert.equal(await evaluate(`document.querySelectorAll('.flame-confidence-table').length`), 2, 'existing flame confidence tables retained')
+  await evaluate(`Array.from(document.querySelectorAll('.upgrade-category-tabs button')).find(b => b.textContent === 'Potential').click()`)
+  await until(() => evaluate(`document.querySelector('.workshop-rank-table')?.textContent.includes('Better roll')`), 'potential recommendations')
+  await go('/bug-report', 'bugs')
+  await until(() => evaluate(`!!document.querySelector('.bug-form')`), 'workshop bug form')
+  assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('.bug-category-chips input')).map(i => i.value)`), ['Star Force','Star Force strategies','Potential','Flames','Equipment upgrade','Navigation / display','Other'])
+  await evaluate(`(() => { for (const [name,value] of Object.entries({summary:'Example issue',steps:'Open calculator',expected:'Expected result',actual:'Different result',environment:'Test browser',contact:'Discord: example'})) {
+    const el=document.querySelector('.bug-form [name="'+name+'"]'); Object.getOwnPropertyDescriptor(el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,'value').set.call(el,value); el.dispatchEvent(new Event('input',{bubbles:true}));
+  } })()`)
+  await evaluate(`document.querySelector('.bug-category-chips input[value="Navigation / display"]').click(); document.querySelector('.bug-form').requestSubmit()`)
+  await until(() => evaluate(`!!document.querySelector('.bug-preview')`), 'report review')
+  await evaluate(`document.querySelector('.bug-report-actions button').click()`)
+  await until(() => evaluate(`!!document.querySelector('.bug-report-actions .mw-spinner')`), 'report submitting')
+  assert.equal(await evaluate(`document.querySelector('.bug-fields').disabled`), true)
+  const reportPayload = await evaluate(`window.workshopRequests.filter(r => r.path.endsWith('/api/bug-reports')).at(-1).payload`)
+  assert.deepEqual({...reportPayload, request_id:undefined}, {area:'Navigation / display',summary:'Example issue',steps:'Open calculator',expected:'Expected result',actual:'Different result',environment:'Test browser',contact:'Discord: example',request_id:undefined})
+  assert.match(reportPayload.request_id, /^[a-f0-9-]{36}$/)
+  await evaluate(`window.failBugReport()`)
+  await until(() => evaluate(`!!document.querySelector('.bug-error[role="alert"]')`), 'report failure')
+  assert.equal(await evaluate(`document.querySelector('.bug-form [name="actual"]').value`), 'Different result')
+  await evaluate(`document.querySelector('.bug-report-actions button').click()`)
+  await until(() => evaluate(`!!document.querySelector('.bug-report-actions .mw-spinner')`), 'report retry')
+  assert.deepEqual(await evaluate(`window.workshopRequests.filter(r => r.path.endsWith('/api/bug-reports')).at(-1).payload`), reportPayload, 'retry preserves payload and request ID')
+  await evaluate(`window.finishBugReport()`)
+  await until(() => evaluate(`!!document.querySelector('.bug-success[role="status"]')`), 'report success')
+  assert.equal(await evaluate(`document.querySelector('.bug-form [name="summary"]').value`), 'Example issue', 'successful submission retains original form behavior')
+  assert.equal(await evaluate(`document.querySelector('.bug-report-actions button').disabled`), true)
+  assert.equal(await evaluate(`document.querySelector('.bug-success').textContent.includes('workshop-test-123')`), true)
+  for (const width of [1440, 390, 320]) {
+    await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
+    await evaluate(`window.scrollTo(0,0)`)
+    assert.equal(await evaluate(`document.documentElement.scrollWidth <= innerWidth`), true, `Bug report fits ${width}px`)
+    const shot = await command('Page.captureScreenshot', {format:'png'})
+    await writeFile(join(captures, `bug-report-${width}.png`), Buffer.from(shot.data,'base64'))
+  }
   assert.deepEqual(exceptions, [], 'real shell has no runtime errors')
 })

@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import CalculatorForm from './CalculatorForm'
 import Results from './Results'
+import './potential-workshop.css'
+import { ContentCard } from '../ui/layout'
+import { SecondaryButton } from '../ui/controls'
 
 export default function PotentialCalculator() {
   const [options, setOptions] = useState(null)
@@ -43,27 +46,27 @@ export default function PotentialCalculator() {
   return (
     <>
       {optionsError ? (
-        <div className="panel bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5" role="alert">
-          <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]">{optionsError}</p>
-          <button onClick={() => {
+        <ContentCard role="alert">
+          <p className="potential-error">{optionsError}</p>
+          <SecondaryButton onClick={() => {
             setOptionsError('')
             setRetry(value => value + 1)
           }}>
             Retry connection
-          </button>
-        </div>
+          </SecondaryButton>
+        </ContentCard>
       ) : !options ? (
         <LoadingStatus>Loading calculator options…</LoadingStatus>
       ) : (
         <>
-          <div className="calculator-grid grid grid-cols-[1.2fr_1fr] gap-6 items-start [@media(max-width:850px)]:grid-cols-1">
+          <div className="potential-calculator">
             <CalculatorForm
               options={options}
               busy={busy}
               onCalculate={calculate}
               onChange={() => { setResult(null); setError('') }}
+              results={<Results result={result} busy={busy} error={error} />}
             />
-            <Results result={result} busy={busy} error={error} />
           </div>
           <footer>
             Independent-roll estimates. Meso budgets use your cost per cube; tier-ups and keep/replace decisions are not included.

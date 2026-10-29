@@ -3,6 +3,7 @@ import { equipmentSetup, equipmentStats } from '../preloadPage'
 import DeferredPage from './DeferredPage'
 import { CLASS_STATS } from '../data/classStats'
 import { FIXED_RING_SLOT } from '../data/flameEquipment'
+import './equipment-workshop.css'
 
 const EquipmentWindow = equipmentSetup.Component
 const EquipmentStats = equipmentStats.Component

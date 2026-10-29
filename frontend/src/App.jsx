@@ -31,10 +31,10 @@ export default function App() {
 function PageContent({ calculator, navigate }) {
   const metadata = pageMetadata(calculator)
   return <>
-      <PageHeader title={calculator === 'starforce' ? 'Star Force Calculator' : metadata.heading}
-        description={calculator === 'starforce' ? 'Calculate enhancement costs, success rates, and risk of destruction.' : metadata.description}
-        icon={calculator === 'starforce' ? '🌟' : undefined} eyebrow="Maple Workshop · Upgrade planning" />
-      <div className={calculator === 'starforce' ? 'mw-starforce-page' : 'mw-legacy-page'}>
+      <PageHeader title={calculator === 'starforce' ? 'Star Force Calculator' : calculator === 'flame' ? 'Flame Calculator' : calculator === 'potential' ? 'Potential Calculator' : calculator === 'equipment' ? 'Equipment Workshop' : metadata.heading}
+        description={calculator === 'starforce' ? 'Calculate enhancement costs, success rates, and risk of destruction.' : calculator === 'flame' ? 'Find the probability of your target flame score and plan your flame count.' : metadata.description}
+        icon={calculator === 'starforce' ? '🌟' : calculator === 'flame' ? '🔥' : calculator === 'potential' ? '\u{1F9CA}' : undefined} eyebrow="Maple Workshop · Upgrade planning" />
+      <div className={['starforce', 'flame', 'potential', 'equipment', 'bugs'].includes(calculator) ? 'mw-calculator-page' : 'mw-legacy-page'}>
 
       {calculator === 'home' && <LandingPage onNavigate={navigate} />}
       <DeferredPage active={calculator === 'bugs'}>
@@ -51,7 +51,7 @@ function PageContent({ calculator, navigate }) {
       <DeferredPage active={calculator === 'potential'}>
         <PotentialCalculator />
       </DeferredPage>
-      <div id="workshop-guides" className={calculator === 'starforce' ? 'mw-legacy-page mt-8' : undefined} tabIndex={-1}><PageGuide page={calculator === 'bugs' || !calculator ? 'home' : calculator} onNavigate={navigate} /></div>
+      <div id="workshop-guides" className={['starforce', 'flame', 'potential', 'equipment', 'bugs'].includes(calculator) ? 'mw-legacy-page mt-8' : undefined} tabIndex={-1}><PageGuide page={calculator === 'bugs' || !calculator ? 'home' : calculator} onNavigate={navigate} /></div>
       </div>
     </>
 }

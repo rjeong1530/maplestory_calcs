@@ -1,0 +1,79 @@
+.mw-theme .equipment-section-navigation { background: var(--surface); border-color: var(--border); border-radius: 10px; }
+.mw-theme .equipment-section-navigation button { color: var(--text-secondary); border-radius: 6px; background: var(--surface); }
+.mw-theme .equipment-section-navigation button[aria-pressed='true'] { background: var(--surface-secondary); color: var(--primary-ink); border-color: var(--border); }
+.mw-theme .workshop-equipment { min-width: 0; }
+.mw-theme .workshop-equipment h2 { font-size: 18px; margin: 0 0 12px; }
+.mw-theme .workshop-equipment h3 { font-size: 15px; margin: 0; }
+.mw-theme .equipment-build-toolbar { display: flex; justify-content: space-between; align-items: start; gap: 24px; margin-bottom: 20px; }
+.mw-theme .equipment-build-actions { max-width: 580px; }
+.mw-theme .equipment-build-actions > div { padding: 0; margin: 0; border: 0; text-align: right; }
+.mw-theme .equipment-build-actions .equipment-transfer-actions { justify-content: flex-end; margin: 8px 0; }
+.mw-theme .workshop-equipment button:not(.equipment-slot) { border: 1px solid var(--border); border-radius: 8px; background: var(--surface-secondary); color: var(--text-primary); padding: 9px 12px; font-size: 12px; cursor: pointer; }
+.mw-theme .workshop-equipment button:not(.equipment-slot):hover:not(:disabled) { background: #eaf2ff; border-color: var(--primary); }
+.mw-theme .workshop-equipment button.primary { background: var(--primary); border-color: var(--primary); color: white; width: auto; }
+.mw-theme .workshop-equipment button:disabled { opacity: .5; cursor: not-allowed; }
+.mw-theme .workshop-equipment .hint, .mw-theme .workshop-equipment small { color: var(--text-secondary); }
+.mw-theme .workshop-equipment .error { color: var(--danger-ink); background: #fff0f0; }
+.mw-theme .equipment-workshop-columns { display: grid; grid-template-columns: minmax(300px, .8fr) minmax(0, 1.4fr); gap: 20px; align-items: start; }
+.mw-theme .equipment-character-panel { text-align: center; }
+.mw-theme .equipment-job-selection { border: 0; padding: 0; margin: 0 0 20px; text-align: left; }
+.mw-theme .equipment-job-controls { max-width: none; grid-template-columns: 1fr; }
+.mw-theme .equipment-job-controls label { display: grid; gap: 6px; color: var(--text-primary); font-size: 12px; }
+.mw-theme .equipment-job-controls select { width: 100%; min-width: 0; padding: 10px; border-radius: 8px; background: white; border: 1px solid var(--border); color: var(--text-primary); }
+.mw-theme .equipment-summary strong { color: var(--text-primary); }
+.mw-theme .equipment-picker-panel .equipment-catalog { background: none; border: 0; padding: 20px 0 0; margin-top: 20px; border-top: 1px solid var(--border); }
+.mw-theme .workshop-equipment .equipment-catalog-item { background: white; }
+.mw-theme .workshop-equipment .equipment-catalog-item[aria-pressed='true'] { background: #eaf2ff; border-color: var(--primary); }
+.mw-theme .workshop-equipment .equipment-catalog-item > span:last-child { color: var(--primary-ink); }
+.mw-theme .workshop-equipment .equipment-catalog-group h4 { color: var(--text-secondary); }
+.mw-theme .equipment-selected-name { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+.mw-theme .equipment-selected-name img { object-fit: contain; image-rendering: pixelated; }
+.mw-theme .equipment-recorded-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; font-size: 12px; }
+.mw-theme .equipment-recorded-stats > div { padding: 12px; background: var(--surface-secondary); border-radius: 8px; }
+.mw-theme .equipment-recorded-stats dt { color: var(--text-secondary); margin-bottom: 8px; }
+.mw-theme .equipment-recorded-stats dd { margin: 0; }
+.mw-theme .equipment-recorded-stats dd span { display: block; margin: 4px 0; }
+.mw-theme .equipment-avatar-window { position: relative; border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: #e1f2ff url("/images/workshop/maple_character_day_large.png") center center / cover no-repeat; }
+.mw-theme .workshop-equipment-slots { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin: auto; max-width: 360px; }
+.mw-theme .equipment-slot-tooltip-wrap { position: relative; min-width: 0; }
+.mw-theme .workshop-equipment-slots .equipment-slot { position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; width: 100%; aspect-ratio: 1; min-width: 0; padding: 3px; border: 1px solid var(--border); border-radius: 9px; background: #ffffffa6; color: var(--text-secondary); }
+.mw-theme .workshop-equipment-slots .equipment-slot.equipped { border-color: var(--item-accent); background: #fff; }
+.mw-theme .workshop-equipment-slots .equipment-slot[aria-pressed='true'] { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary), 0 3px 12px #3b82f626; }
+.mw-theme .equipment-empty-icon { font-size: 24px; opacity: .35; line-height: 1; }
+.mw-theme .equipment-slot-name { font-size: 8px; line-height: 1.1; margin-top: 3px; }
+.mw-theme .equipment-slot-item { position: absolute; inset: 3px; display: grid; place-items: center; border-radius: 6px; background: #fff; animation: equipment-slot-glow .3s ease-out; }
+.mw-theme .equipment-slot-item img { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
+.mw-theme .equipment-slot-item small { position: absolute; top: 0; right: 0; font-size: 8px; background: #ffffffe6; border-radius: 3px; }
+.mw-theme .equipment-slot-tooltip { visibility: hidden; opacity: 0; transition: opacity 120ms ease-out, visibility 120ms; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 180px; z-index: 5; background: var(--text-primary); color: white; font-size: 11px; border-radius: 6px; padding: 8px; pointer-events: none; }
+.mw-theme .equipment-slot-tooltip-wrap:hover .equipment-slot-tooltip, .mw-theme .equipment-slot-tooltip-wrap:focus-within .equipment-slot-tooltip { visibility: visible; opacity: 1; }
+.mw-theme .equipment-slot-unavailable { opacity: .4; }
+@keyframes equipment-slot-glow { from { box-shadow: 0 0 12px var(--item-accent); } to { box-shadow: none; } }
+@media (max-width: 850px) { .mw-theme .equipment-workshop-columns { grid-template-columns: minmax(0, 1fr); } .mw-theme .equipment-build-toolbar { flex-direction: column; } .mw-theme .equipment-build-actions { max-width: none; width: 100%; } .mw-theme .equipment-job-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .mw-theme .workshop-equipment .mw-card { padding: 16px; } .mw-theme .equipment-recorded-stats, .mw-theme .equipment-job-controls { grid-template-columns: minmax(0, 1fr); } .mw-theme .equipment-build-actions button { flex: 1; } .mw-theme .workshop-equipment-slots { gap: 5px; } .mw-theme .equipment-avatar-window { padding: 8px; } }
+@media (prefers-reduced-motion: reduce) { .mw-theme .equipment-slot-item { animation: none; } }
+.mw-theme .workshop-equipment-stats { background: var(--surface); border-color: var(--border); border-radius: 16px; color: var(--text-primary); }
+.mw-theme .workshop-equipment-stats .equipment-stats-layout { grid-template-columns: minmax(260px, .7fr) minmax(0, 1.6fr); }
+.mw-theme .workshop-equipment-stats .equipment-editor-panel { border-color: var(--border); background: var(--surface-secondary); border-radius: 12px; }
+.mw-theme .workshop-equipment-stats :is(h2,h3,h4,label,legend) { color: var(--text-primary); }
+.mw-theme .workshop-equipment-stats :is(.hint,small) { color: var(--text-secondary); }
+.mw-theme .workshop-equipment-stats :is(input,select,button) { color: var(--text-primary); background: white; border-color: var(--border); border-radius: 7px; }
+.mw-theme .workshop-equipment-stats button[aria-pressed='true'] { color: var(--primary-ink); border-color: var(--primary); background: #eaf2ff; }
+.mw-theme .workshop-equipment-stats button:hover:not(:disabled) { border-color: var(--primary); background: #eaf2ff; }
+.mw-theme .workshop-equipment-stats .flame-values-table :is(th,td) { color: var(--text-primary); border-color: var(--border); }
+.mw-theme .workshop-equipment-stats .flame-values-table thead th { background: #eaf2ff; color: var(--primary-ink); }
+.mw-theme .workshop-equipment-stats .flame-values-table tbody th { text-transform: none; letter-spacing: normal; font-weight: 600; }
+.mw-theme .workshop-equipment-stats .flame-value-cell { color: var(--text-primary); background: white; }
+.mw-theme .workshop-equipment-stats .flame-value-cell:disabled { opacity: 1; color: var(--text-secondary); background: #edf2f7; border-color: var(--border); cursor: not-allowed; }
+.mw-theme .workshop-equipment-stats .flame-value-cell[aria-pressed='true'] { color: var(--primary-ink); background: #dbeafe; border-color: var(--primary); font-weight: 700; }
+.mw-theme .workshop-equipment-stats .flame-tier-ranges span { color: var(--text-secondary); background: white; border-color: var(--border); }
+.mw-theme .workshop-equipment-stats .current-flame-totals { background: #eaf2ff; color: var(--text-primary); border-color: var(--border); border-radius: 10px; }
+.mw-theme .workshop-equipment-stats .current-flame-totals h5 { color: var(--text-primary); text-transform: none; letter-spacing: normal; }
+.mw-theme .workshop-equipment-stats .current-flame-totals li { color: var(--text-primary); background: white; border-color: var(--border); }
+.mw-theme .workshop-equipment-stats .current-flame-totals li strong { color: var(--primary-ink); }
+.mw-theme .workshop-equipment-stats :is(.upgrade-notes,.equipment-mode-details) { color: var(--text-primary); border-color: var(--border); }
+.mw-theme .workshop-equipment-stats :is(.upgrade-notes,.equipment-mode-details) > summary { color: var(--primary-ink); font-weight: 600; }
+.mw-theme .workshop-equipment-stats :is(.upgrade-notes,.equipment-mode-details) > summary::marker { color: var(--primary-ink); }
+.mw-theme .workshop-equipment-stats :is(.equipment-laddering,.equipment-analysis,.current-flame-section) { border-color: var(--border); }
+.mw-theme .workshop-equipment-stats .equipment-laddering a { color: var(--primary-ink); }
+.mw-theme .workshop-equipment-stats .equipment-analysis-sections > section { border-color: var(--border); }
+@media (max-width: 850px) { .mw-theme .workshop-equipment-stats .equipment-stats-layout { grid-template-columns: minmax(0, 1fr); } }

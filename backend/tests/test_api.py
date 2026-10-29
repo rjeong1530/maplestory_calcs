@@ -276,7 +276,11 @@ class ApiTests(unittest.TestCase):
                 # The HTTP contract defaults omitted boss damage weight to zero.
                 config['weights'] = flames.ScoreWeights(boss_damage_pct_value=0, **config['weights'])
                 expected = flames.FlameProbabilityEngine(flames.FlameConfig(**config)).probability_at_least(500)
-                self.assertAlmostEqual(response.json()['probability'], expected)
+                self.assertEqual(response.json()['probability'], min(1, max(0, expected)))
+                bins = response.json()['score_distribution']
+                self.assertLessEqual(len(bins), 40)
+                self.assertAlmostEqual(sum(row['probability'] for row in bins), 1)
+                self.assertTrue(all(row['lower'] <= row['upper'] and row['probability'] >= 0 for row in bins))
 
     def test_boss_damage_flame_weight(self):
         payload = self.flame_payload(base_weapon_offense=295, weights={

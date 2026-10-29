@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { EQUIPMENT_SLOTS, SLOT_LABELS } from '../data/flameEquipment'
+import WorkshopEquipmentGrid from './WorkshopEquipmentGrid'
 
 export function EquipmentIcon({ item }) {
   const [failedUrls, setFailedUrls] = useState([])
@@ -10,7 +11,8 @@ export function EquipmentIcon({ item }) {
   )
 }
 
-export default function EquipmentGrid({ equipment, activeSlot, onActivate, busy }) {
+export default function EquipmentGrid({ equipment, activeSlot, onActivate, busy, workshop = false }) {
+  if (workshop) return <WorkshopEquipmentGrid {...{ equipment, activeSlot, onActivate, busy }} />
   return (
     <div className="equipment-slots grid grid-cols-5 gap-1.5 max-w-66 m-auto [@media(max-width:480px)]:gap-1">
       {EQUIPMENT_SLOTS.map((slot, index) => {

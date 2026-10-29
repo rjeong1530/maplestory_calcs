@@ -5,12 +5,14 @@ Run from the repository root: python -m uvicorn backend.api.main:app --reload
 from typing import Annotated, Literal
 from dataclasses import asdict
 from functools import lru_cache
+from math import fsum
 import os
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.limits import calculation_slot, require_finite, RequestBodyLimit
+from backend.api.flame_histogram import flame_histogram
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from backend.calc import maplestory_potential as calculator
@@ -312,11 +314,18 @@ class FlameProbabilityRequest(RequestModel):
     target_score: float = Field(allow_inf_nan=False)
 
 
+class FlameScoreBin(BaseModel):
+    lower: float
+    upper: float
+    probability: float
+
+
 class FlameProbabilityResult(BaseModel):
     target_score: float
     probability: float
     percentage: float
     one_in: float | None
+    score_distribution: list[FlameScoreBin]
 
 
 class StarForceEstimateRequest(RequestModel):
@@ -541,9 +550,11 @@ def flame_probability(request: FlameProbabilityRequest):
             base_weapon_offense=data.base_weapon_offense,
             weapon_offense_by_stage=data.weapon_offense_by_stage,
         )
-        chance = flames.FlameProbabilityEngine(config).probability_at_least(
-            request.target_score
-        )
+        # Same unrounded distribution and fsum threshold as probability_at_least;
+        # reuse it for the chart instead of running the engine a second time.
+        distribution = flames.FlameProbabilityEngine(config).score_distribution(decimals=None)
+        chance = fsum(probability for score, probability in distribution.items()
+                      if score >= request.target_score)
     except ValueError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
 
@@ -553,6 +564,7 @@ def flame_probability(request: FlameProbabilityRequest):
         probability=chance,
         percentage=chance * 100,
         one_in=1 / chance if chance else None,
+        score_distribution=flame_histogram(distribution),
     )
 
 

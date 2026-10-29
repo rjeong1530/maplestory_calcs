@@ -77,8 +77,9 @@ export function Modal({ open, onClose, title, description, children, actions, cl
     if (!open && reduced && dialog.open) dialog.close()
   }, [open, reduced])
   return <motion.dialog ref={ref} className={cx('mw-dialog', className)} aria-labelledby={`${id}-title`}
+    data-open={open}
     aria-describedby={description ? `${id}-description` : undefined}
-    initial={false} animate={{ opacity: open ? 1 : 0, y: reduced || open ? 0 : 8 }} transition={transition}
+    initial={false} animate={{ opacity: open ? 1 : 0, scale: reduced || open ? 1 : .97 }} transition={transition}
     onAnimationComplete={() => { if (!open && ref.current?.open) ref.current.close() }}
     onCancel={event => { event.preventDefault(); onClose() }}
     onKeyDown={event => {
@@ -105,8 +106,8 @@ export function Modal({ open, onClose, title, description, children, actions, cl
 }
 
 export function Toast({ open, onDismiss, children, tone = 'success' }) {
-  const { entrance, transition } = useWorkshopMotion()
-  return <AnimatePresence>{open && <motion.div {...entrance} exit={{ opacity: 0 }} transition={transition}
+  const { reduced, transition } = useWorkshopMotion()
+  return <AnimatePresence>{open && <motion.div initial={reduced ? false : {opacity:0,x:12}} animate={{opacity:1,x:0}} exit={{ opacity: 0 }} transition={transition}
     className={cx('mw-card mw-toast', tone === 'error' && 'mw-error')}>
     <div className="min-w-0 flex-1" role={tone === 'error' ? 'alert' : 'status'}>{children}</div>
     <SecondaryButton onClick={onDismiss} aria-label="Dismiss notification">×</SecondaryButton>

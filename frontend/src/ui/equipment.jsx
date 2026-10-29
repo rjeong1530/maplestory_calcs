@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { ContentCard } from './layout'
-import { cx } from './motion'
+import { cx, useWorkshopMotion } from './motion'
 
 function ItemImage({ src, fallback = '◇' }) {
   const [failed, setFailed] = useState(null)
@@ -12,8 +13,10 @@ export function RarityBadge({ rarity, className, ...props }) {
 }
 
 export function EquipmentSlot({ label, image, rarity, selected = false, disabled, className, ...props }) {
+  const { reduced, transition } = useWorkshopMotion()
   return <button {...props} type="button" disabled={disabled} aria-label={label} aria-pressed={selected}
-    data-rarity={rarity?.toLowerCase()} className={cx('mw-slot', className)}><ItemImage src={image} /></button>
+    data-rarity={rarity?.toLowerCase()} className={cx('mw-slot', className)}><motion.span key={image || 'empty'} className="mw-slot-image"
+      initial={reduced || !image ? false : {opacity:0,scale:.95}} animate={{opacity:1,scale:1}} transition={transition}><ItemImage src={image} /></motion.span></button>
 }
 
 export function ItemCard({ name, image, rarity, detail, children, className, ...props }) {

@@ -159,3 +159,28 @@ Framer Motion supplies brief entrance, hover/press, selected-tab, dialog, toolti
 and result-text transitions. `useReducedMotion` disables positional animation and
 sets duration to zero; CSS's reduced-motion query disables spinner/shimmer and
 transitions. See the official [reduced-motion guide](https://motion.dev/docs/react-use-reduced-motion).
+# Flame page integration
+
+`FlameCalculatorView` uses the shared panels, fields, requirement row, stat cards and loading overlay. The original controller, request hook, scoring data and RollBudget calculations remain unchanged. Item selection, equipment summary and targets share one flat setup card. Desktop places results beside setup; narrow screens stack the two cards.
+
+The API supports one weighted score threshold and returns probability and average attempts. Its additive `score_distribution` response contains up to 40 histogram bins (`lower`, `upper`, `probability`) aggregated from the engine's existing unrounded distribution. Bins exclude their upper bound except the final bin. Target probability still uses exact scores, not bins. The chart supports keyboard focus, reduced motion and servers without the new field; there are no fabricated ranked rolls or meso costs. Equipment is a configuration rather than a selected inventory item, so it uses a generic icon and factual weapon labels without assigning a rarity. Native field constraints and class-dependent weapon restrictions are retained.
+
+## Potential page integration
+
+PotentialFormView separates presentation from the unchanged form state, item-option effects and submit handlers. It uses supported cube choices, the existing All Stat target conversion, and unchanged RollBudget pricing. Legendary main potential is fixed; no tier selector, tier distribution or generated successful example is fabricated. The right panel shows actual values_by_line data from the existing item-options response. Results animate only their displayed numbers and respect reduced motion. Budget inputs remain outside the calculation form.
+
+## Equipment window integration
+
+EquipmentSetupView renders the original EquipmentWindow controller without changing import/export, draft selection or save/discard handlers. WorkshopEquipmentGrid retains all EQUIPMENT_SLOTS positions, the unavailable Android placeholder and fixed Ring of Restraint. Existing catalog accent colors are used for borders; there is no stored rarity field to invent. Imported and selected equipment remain drafts until Save equips. The existing Stats & upgrades editor edits saved gear; its controls and EquipmentAnalysis remain unchanged. No presets, cloud saves, tier selectors or persistence keys were added.
+
+## Upgrade order integration
+
+EquipmentUpgradePlan retains its original request, state, filtering, grouping and sorting; UpgradePlanView owns presentation. The settings sidebar uses only the existing categories, discounts, cube selection and weights. No budget, build selector or priority thresholds are invented. UpgradeRankTable displays existing metrics with expandable details and responsive recommendation cards. Presentation-only rank history supports brief movement and highlights when a recommendation moves upward. Flame ordering remains chance-of-improvement first, with confidence tables retained. Overall transfer/laddering details remain intact.
+
+## Bug report integration
+
+BugReportView preserves the original fields, validation, category values and prepare/review/submit flow. The BugReportPage controller, request IDs, endpoint, JSON payload, clipboard and download handlers are unchanged. Radio chips remain native keyboard-accessible controls. Submission errors retain inputs; success displays the server report reference without clearing the form. The existing service has no attachments or upload-progress contract, so no upload controls or unsupported categories are added.
+
+## Micro-interaction timing
+
+Shared Motion controls use 180ms ease-out transitions, hover scale 1.015 and press scale .98. Native Workshop buttons use matching 160ms feedback; only interactive cards elevate. Native navigation details use discrete CSS transitions where supported without changing their keyboard or dismissal behavior. Dialogs retain native focus handling with scale/fade and backdrop transitions; toasts slide 12px and fade out. Equipment selection pulses once, and tooltips fade in 120ms. Number interpolation is display-only and starts from the currently displayed value when interrupted. Global reduced-motion CSS also covers dialog backdrops and details pseudo-elements; AppShell retains MotionConfig reducedMotion="user". Existing loops are confined to real loading indicators.

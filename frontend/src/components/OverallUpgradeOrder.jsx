@@ -1,9 +1,12 @@
+import { motion } from 'framer-motion'
+import { useWorkshopMotion } from '../ui/motion'
 import { MVP_RANKS, UPGRADE_CATEGORIES } from '../data/equipmentUpgrade'
 
 const score = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 })
 const mesos = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
 
 export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
+  const { reduced, transition, entrance } = useWorkshopMotion()
   const steps = plan?.steps ?? []
   return <section aria-label="Overall upgrade order">
     <h3>Best next upgrades across your equipment</h3>
@@ -56,9 +59,9 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
             <th scope="col">Expected mesos</th><th scope="col">Score gain / 100M</th>
             <th scope="col">Total mesos so far</th>
           </tr></thead>
-          <tbody>{steps.map(entry => <tr key={entry.step}>
+          <tbody>{steps.map(entry => <motion.tr layout={reduced ? false : 'position'} {...entrance} transition={transition} key={entry.step}>
             <td>{entry.step}</td>
-            <th scope="row">{entry.name}{entry.copy_label && ` — ${entry.copy_label}`}
+            <th scope="row"><span aria-hidden="true" className="upgrade-type-icon">{entry.category === 'starforce' ? '★' : entry.category === 'flames' ? '🔥' : '◇'}</span> {entry.name}{entry.copy_label && ` — ${entry.copy_label}`}
               {entry.copy_label && <small>{entry.laddering ? 'Backup copy → equipped after this step' : 'Equipped copy'}</small>}
               <small>{entry.slot}{entry.equipment_level != null && ` · Lv. ${entry.equipment_level}`}</small>
               <small>{entry.category === 'flames' ? 'Black Flames'
@@ -134,7 +137,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
             <td title={score.format(entry.action_cost_mesos)}>{mesos.format(entry.action_cost_mesos)}</td>
             <td>{entry.action_cost_mesos === 0 ? 'No spending needed' : score.format(entry.gain_per_meso * 100_000_000)}</td>
             <td title={score.format(entry.cumulative_cost_mesos)}>{mesos.format(entry.cumulative_cost_mesos)}</td>
-          </tr>)}</tbody>
+          </motion.tr>)}</tbody>
         </table>
       </div>
     </> : <p role="status">No eligible upgrades with positive score gain and a known meso cost.</p>}
