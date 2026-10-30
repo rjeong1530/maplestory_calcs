@@ -13,8 +13,8 @@ export default function EquipmentDetails({ item, slot, onOpenStats }) {
         {potentialEquipmentType(slot, item) && <div><dt>Potential Lines</dt><dd>{item.currentPotential?.some(line => line.effect) ? item.currentPotential.filter(line => line.effect).map((line, index) => <span key={index}>{POTENTIAL_LABELS[line.effect] ?? line.effect}: {line.value}</span>) : 'Not recorded'}</dd></div>}
         {FLAME_SLOTS.has(item.slot) && <div><dt>Flame Options</dt><dd>{item.currentFlames?.length ? item.currentFlames.map((line, index) => <span key={index}>{FLAME_LABELS[line.option] ?? line.option} · Tier {line.stage}</span>) : 'Not recorded'}</dd></div>}
       </dl>
-      <button type="button" className="mw-button mw-button-secondary" onClick={onOpenStats}>Edit saved stats & upgrades →</button>
-      <p className="mw-help">Save equipment changes first to edit this item’s enhancements.</p>
+      <button type="button" className="mw-button mw-button-secondary" onClick={onOpenStats}>Save equips & edit stats →</button>
+      <p className="mw-help">Saves your current equipment, then opens stats & upgrades.</p>
     </>}
   </div>
 }

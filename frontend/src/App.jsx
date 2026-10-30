@@ -18,9 +18,9 @@ export default function App() {
   usePageMetadata(calculator)
 
   return (
-    <AppShell navbar={<Navigation activePage={calculator} onNavigate={navigate} />}>
+    <AppShell backgroundImage={calculator === 'home' ? '/images/workshop/floating-islands.webp' : undefined} navbar={<Navigation activePage={calculator} onNavigate={navigate} />}>
       <PageTransition page={calculator}>{visiblePage => <PageContent calculator={visiblePage} navigate={navigate} />}</PageTransition>
-      <ContentCard id="about-workshop" className="mt-8" aria-labelledby="about-workshop-title">
+      <ContentCard id="about-workshop" className="workshop-about" aria-labelledby="about-workshop-title">
         <h2 id="about-workshop-title" className="mw-heading mw-section-title">About Maple Workshop</h2>
         <p className="mw-muted mt-3 mb-0">Plan MapleStory upgrades with Star Force, flame and potential estimates, and compare upgrades across your equipment. Equipment is saved in this browser and can be exported as JSON. Results use the app’s bundled rules and tables, not live game data.</p>
       </ContentCard>
@@ -31,10 +31,10 @@ export default function App() {
 function PageContent({ calculator, navigate }) {
   const metadata = pageMetadata(calculator)
   return <>
-      <PageHeader title={calculator === 'starforce' ? 'Star Force Calculator' : calculator === 'flame' ? 'Flame Calculator' : calculator === 'potential' ? 'Potential Calculator' : calculator === 'equipment' ? 'Equipment Workshop' : metadata.heading}
+      {calculator !== 'home' && <PageHeader title={calculator === 'starforce' ? 'Star Force Calculator' : calculator === 'flame' ? 'Flame Calculator' : calculator === 'potential' ? 'Potential Calculator' : calculator === 'equipment' ? 'Equipment Workshop' : metadata.heading}
         description={calculator === 'starforce' ? 'Calculate enhancement costs, success rates, and risk of destruction.' : calculator === 'flame' ? 'Find the probability of your target flame score and plan your flame count.' : metadata.description}
-        icon={calculator === 'starforce' ? '🌟' : calculator === 'flame' ? '🔥' : calculator === 'potential' ? '\u{1F9CA}' : undefined} eyebrow="Maple Workshop · Upgrade planning" />
-      <div className={['starforce', 'flame', 'potential', 'equipment', 'bugs'].includes(calculator) ? 'mw-calculator-page' : 'mw-legacy-page'}>
+        icon={calculator === 'starforce' ? <img src="/images/workshop/star.webp" width="48" height="48" alt="" className="shrink-0 object-contain" /> : calculator === 'flame' ? '🔥' : calculator === 'potential' ? <img src="/images/workshop/bright-cube.png" width="48" height="48" alt="" className="shrink-0 object-contain [image-rendering:pixelated]" /> : undefined} eyebrow="Maple Workshop · Upgrade planning" />}
+      <div className={calculator === 'home' ? 'home-page' : ['starforce', 'flame', 'potential', 'equipment', 'bugs'].includes(calculator) ? 'mw-calculator-page' : 'mw-legacy-page'}>
 
       {calculator === 'home' && <LandingPage onNavigate={navigate} />}
       <DeferredPage active={calculator === 'bugs'}>
@@ -51,7 +51,7 @@ function PageContent({ calculator, navigate }) {
       <DeferredPage active={calculator === 'potential'}>
         <PotentialCalculator />
       </DeferredPage>
-      <div id="workshop-guides" className={['starforce', 'flame', 'potential', 'equipment', 'bugs'].includes(calculator) ? 'mw-legacy-page mt-8' : undefined} tabIndex={-1}><PageGuide page={calculator === 'bugs' || !calculator ? 'home' : calculator} onNavigate={navigate} /></div>
+      <div id="workshop-guides" className="workshop-guides" tabIndex={-1}><PageGuide page={calculator === 'bugs' || !calculator ? 'home' : calculator} onNavigate={navigate} /></div>
       </div>
     </>
 }

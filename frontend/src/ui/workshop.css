@@ -117,7 +117,7 @@
     display: grid;
     min-width: 240px;
     padding: 0.5rem;
-    background: #fff;
+    background: var(--surface-input);
     border: 1px solid var(--border);
     border-radius: 12px;
     box-shadow: var(--shadow-raised);
@@ -222,10 +222,15 @@
   }
   .mw-navlinks {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: 0.25rem;
   }
   .mw-navlink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    line-height: 1.5;
     padding: 0.65rem 0.85rem;
     border-radius: var(--radius-sm);
     color: var(--text-primary);
@@ -243,7 +248,7 @@
     top: -100px;
     z-index: 100;
     padding: 0.75rem;
-    background: white;
+    background: var(--surface-input);
     color: var(--primary-ink);
   }
   .mw-skip:focus {
@@ -323,7 +328,7 @@
   }
   .mw-button-secondary {
     color: var(--primary-ink);
-    background: white;
+    background: var(--surface-input);
     border-color: var(--border);
   }
   .mw-button-secondary:hover:not(:disabled) {
@@ -331,11 +336,11 @@
   }
   .mw-button-danger {
     color: var(--danger-ink);
-    background: #fff0f1;
-    border-color: #f9c9ce;
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
   }
   .mw-button-danger:hover:not(:disabled) {
-    background: #ffe1e5;
+    background: var(--danger-hover);
   }
   .mw-button:disabled {
     opacity: 0.5;
@@ -360,7 +365,7 @@
     padding: 0.65rem 0.8rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    background: #fff;
+    background: var(--surface-input);
     color: var(--text-primary);
     font: inherit;
   }
@@ -417,7 +422,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: white;
+    background: var(--surface-input);
     box-shadow: 0 1px 3px #22304726;
     transition: transform var(--motion-fast);
   }
@@ -437,7 +442,7 @@
     flex-wrap: wrap;
     gap: 0.3rem;
     padding: 0.3rem;
-    background: #eaf2fb;
+    background: var(--surface-secondary);
     border: 1px solid var(--border);
     border-radius: 12px;
   }
@@ -464,7 +469,7 @@
   .mw-tab-active {
     position: absolute;
     inset: 0;
-    background: white;
+    background: var(--surface-input);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-card);
   }
@@ -512,7 +517,7 @@
     background: var(--rarity-bg, var(--surface-secondary));
   }
   button.mw-slot:hover:not(:disabled) {
-    background: var(--rarity-bg, #eaf2ff);
+    background: var(--rarity-bg, var(--surface-hover));
     box-shadow: var(--shadow-raised);
   }
   .mw-slot[aria-pressed="true"] {
@@ -572,8 +577,8 @@
     border-left: 4px solid var(--success);
   }
   .mw-error {
-    border-color: #f9c9ce;
-    background: #fff7f8;
+    border-color: var(--danger-border);
+    background: var(--danger-bg);
   }
   .mw-spinner {
     display: inline-block;

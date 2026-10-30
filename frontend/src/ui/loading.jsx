@@ -1,6 +1,7 @@
 import { LoadingSpinner, SkeletonCard } from './feedback'
 import { cx } from './motion'
 import './workshop.css'
+import PageBackground from './PageBackground'
 
 const coldStart = 'The calculator service may need to wake up after inactivity. The first request can take longer; please keep this page open.'
 
@@ -14,6 +15,7 @@ function SkeletonStatus({ label, children, className, service = false }) {
 
 export function FullPageLoadingScreen({ label = 'Preparing your workshop...' }) {
   return <div className="mw-theme mw-fullpage-loading">
+    <PageBackground />
     <div className="mw-loading-particles" aria-hidden="true">
       {['✦', '☁', '✧', '✦', '☁', '✧'].map((particle, index) => <span key={index} style={{ '--particle-index': index }}>{particle}</span>)}
     </div>

@@ -2,6 +2,7 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 @source "./";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-maple: #e5b567;

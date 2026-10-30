@@ -1,6 +1,7 @@
 import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import '../index.css'
+import { ThemeProvider } from './theme'
 import {
   AppShell, Navbar, PageHeader, ContentCard, CalculatorPanel, CalculatorGrid,
   ResultCard, StatCard, SectionHeader, Tabs, SegmentedControl, Toggle,
@@ -90,4 +91,4 @@ export default function Preview() {
   </AppShell>
 }
 
-createRoot(document.getElementById('root')).render(<StrictMode><Preview /></StrictMode>)
+createRoot(document.getElementById('root')).render(<StrictMode><ThemeProvider><Preview /></ThemeProvider></StrictMode>)

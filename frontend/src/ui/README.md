@@ -28,21 +28,39 @@ this check after a production build when reviewing screenshots.
 
 ## Tokens and styling
 
-`workshop.css` scopes colors, typography, spacing, radii, shadows and motion tokens
-to `.mw-theme`. The old dark tokens are intentionally unchanged. The supplied
-`examples/bg.png` is copied to `public/images/workshop/floating-islands.png` and is
-the shell's default decorative background. Pass `backgroundImage={null}` to omit
-it or a URL to override it. No new art was generated.
+`workshop.css` scopes typography, spacing, radii, shadows and light colors to
+`.mw-theme`. `theme.css` defines semantic surface/ink tokens and their dark
+variants. Both modes use the same components and layout. `ThemeProvider` follows
+the OS/browser media query via `useSyncExternalStore`; `useTheme()` exposes
+`theme`, `systemTheme`, `isDarkMode`, and `preference: 'system'`. The provider
+cleans up its listener and never writes a preference to storage. Wrap new entry
+points with the provider, rather than detecting the theme in individual pages.
+
+`public/theme-init.js` sets the HTML `dark` class before React starts. Tailwind 4's
+`@custom-variant dark` in `index.css` uses that class (the equivalent of the older
+`darkMode: 'class'` configuration). Browser theme-color metadata follows the
+same system preference. Static prerender content uses the same palette.
+
+`PageBackground` keeps optimized daytime and nighttime WebP layers mounted so
+both assets load without a request on theme change. Opacity crossfades in 300ms;
+reduced motion is immediate. Mobile uses smaller backgrounds. The equipment
+scenery also uses day/night WebP variants. Run
+`node scripts/optimize-workshop-background.mjs` to reproduce assets using an
+isolated Chrome instance. Source PNGs remain untouched. Pass
+`backgroundImage={null}` to AppShell to omit scenery, or a URL to override the
+daytime layer. No new art was generated.
 
 The fixed decorative background has no pointer events and is outside the page
 transition. It stays static (no scroll listener or parallax work). `PageTransition`
 fades outgoing content for 100 ms, then enters from opacity 0/y 8 over 250 ms.
 Reduced motion is immediate. The page tree has no route key: shared planner and
 visited DeferredPage children stay mounted. Navbar stays interactive throughout.
-Guides and About are in-page anchors, not new routes. There are no search,
+About is an in-page anchor, not a new route. There are no search,
 settings or account controls because the app does not support those features.
-Legacy calculator content retains its dark colors inside `.mw-legacy-page` until
-the individual page migration. The existing static prerender fallback is retained.
+The existing static prerender fallback is retained. Theme browser checks emulate
+initial light/dark preferences and live changes, confirm retained input nodes,
+values, route, storage and API request counts, and capture all pages at desktop
+and mobile widths in both themes under `dist/ui-preview/theme-*`.
 
 ## Star Force page migration
 

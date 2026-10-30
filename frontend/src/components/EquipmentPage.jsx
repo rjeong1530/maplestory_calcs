@@ -19,6 +19,27 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
     return selectedCount >= 5 ? 'stats' : 'setup'
   })
 
+  const [openStatsAfterSave, setOpenStatsAfterSave] = useState(false)
+  // Wait for the existing persistence flow to report the storage write outcome.
+  if (openStatsAfterSave && !setupDirty) {
+    if (planner.saveConfirmed && !planner.saveError) {
+      setView('stats')
+      setOpenStatsAfterSave(false)
+    } else if (planner.saveError) {
+      setOpenStatsAfterSave(false)
+    }
+  }
+
+  function saveAndOpenStats() {
+    if (busy) return
+    if (!setupDirty) {
+      if (!planner.saveError) setView('stats')
+      return
+    }
+    setOpenStatsAfterSave(true)
+    saveEquipmentSetup()
+  }
+
   return (
     <div className="equipment-page-layout grid grid-cols-1 items-start gap-5">
       <nav className="equipment-section-navigation grid grid-cols-2 w-[min(100%,_420px)] gap-2 p-2 border border-solid border-rule
@@ -42,7 +63,7 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
               onImport={importEquipmentJson}
               dirty={setupDirty} onSave={saveEquipmentSetup} onDiscard={discardEquipmentSetup}
               saveError={planner.saveError} saveConfirmed={planner.saveConfirmed}
-              onOpenStats={() => setView('stats')} />
+              onOpenStats={saveAndOpenStats} />
           </DeferredPage>
         </div>
         <div id="equipment-stats-view" hidden={view !== 'stats'}>

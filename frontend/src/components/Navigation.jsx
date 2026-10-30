@@ -8,7 +8,6 @@ export default function Navigation({ activePage, onNavigate }) {
     link('home', 'Home'),
     { label: 'Calculators', children: [link('starforce', 'Star Force Calculator'), link('flame', 'Flame Calculator'), link('potential', 'Potential Calculator')] },
     link('equipment', 'Upgrade Planner'),
-    { label: 'Guides', href: '#workshop-guides' },
     { label: 'About', href: '#about-workshop' },
     link('bugs', 'Report a bug'),
   ]} />

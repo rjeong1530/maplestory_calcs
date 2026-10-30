@@ -1,5 +1,9 @@
 import './workshop.css'
 import './micro-interactions.css'
+import './page-footer.css'
+import './responsive.css'
+export { ThemeProvider } from './theme'
+export { useTheme } from './useTheme'
 
 export { AppShell, Navbar, PageHeader, SectionHeader, ContentCard, CalculatorPanel, ResultCard, StatCard, CalculatorGrid } from './layout'
 export { PrimaryButton, SecondaryButton, DangerButton, InputField, SelectField, Toggle, NumberStepper, Tabs, SegmentedControl } from './controls'

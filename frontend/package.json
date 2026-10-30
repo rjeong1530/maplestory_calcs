@@ -13,6 +13,7 @@
     "dev:design-system": "vite --host 127.0.0.1",
     "build:design-system": "vite build --config vite.design-system.config.js",
     "test:design-system": "node --test scripts/design-system.test.mjs",
+    "test:regression": "node --test tests/*.test.js scripts/design-system.test.mjs",
     "build": "vite build && node scripts/prerender.mjs",
     "lint": "oxlint",
     "preview": "vite preview"

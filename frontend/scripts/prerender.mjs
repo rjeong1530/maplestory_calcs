@@ -19,7 +19,7 @@ for (const page of Object.keys(PAGE_CONTENT)) {
     + renderToStaticMarkup(h('meta', { property: 'og:title', content: title }))
     + renderToStaticMarkup(h('meta', { property: 'og:description', content: description }))
     + renderToStaticMarkup(h('meta', { property: 'og:url', content: canonical }))
-  const body = renderToStaticMarkup(h('main', null,
+  const body = renderToStaticMarkup(h('main', { className: 'mw-theme mw-prerender' },
     h('nav', { className: `main-navigation flex flex-wrap items-center gap-y-1 gap-x-4 mb-6 pb-4 border-b border-solid border-b-rule
       [&_>_a]:py-2 [&_>_a]:px-3 [&_>_a]:border [&_>_a]:border-solid [&_>_a]:border-transparent [&_>_a]:rounded-none
       [&_>_a]:bg-transparent [&_>_a]:text-[#d0cec3] [&_>_a]:text-[13px] [&_>_a]:cursor-pointer [&_a]:no-underline

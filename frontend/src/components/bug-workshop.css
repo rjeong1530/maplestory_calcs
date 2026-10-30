@@ -7,7 +7,7 @@
 .mw-theme .bug-category-chip { position: relative; margin: 0; cursor: pointer; }
 .mw-theme .bug-category-chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .mw-theme .bug-category-chip span { display: block; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-secondary); color: var(--text-secondary); font-size: 12px; }
-.mw-theme .bug-category-chip input:checked + span { color: var(--primary-ink); border-color: var(--primary); background: #eaf2ff; font-weight: 600; }
+.mw-theme .bug-category-chip input:checked + span { color: var(--primary-ink); border-color: var(--primary); background: var(--surface-hover); font-weight: 600; }
 .mw-theme .bug-category-chip input:focus-visible + span { outline: 2px solid var(--primary); outline-offset: 3px; }
 .mw-theme .bug-category-chip input:disabled + span { opacity: .65; cursor: not-allowed; }
 .mw-theme .bug-description { border-top: 1px solid var(--border); padding-top: 18px; display: grid; gap: 14px; }
@@ -15,7 +15,7 @@
 .mw-theme .bug-description > p { margin: 0; }
 .mw-theme .bug-preview { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); }
 .mw-theme .bug-report-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-.mw-theme .bug-error { color: var(--danger-ink); background: #fff0f0; padding: 16px; border: 1px solid #fecaca; border-radius: 10px; overflow-wrap: anywhere; }
+.mw-theme .bug-error { color: var(--danger-ink); background: var(--danger-bg); padding: 16px; border: 1px solid var(--danger-border); border-radius: 10px; overflow-wrap: anywhere; }
 .mw-theme .bug-success { display: flex; align-items: start; gap: 14px; padding: 18px; margin-top: 18px; background: var(--rarity-legendary-bg); border: 1px solid #b6e8c7; border-radius: 12px; color: var(--success-ink); overflow-wrap: anywhere; }
 .mw-theme .bug-success svg { flex-shrink: 0; }
 .mw-theme .bug-success h3 { color: var(--success-ink); }

@@ -1,10 +1,10 @@
-import { useId } from 'react'
+import { memo, useId } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { count } from '../data/numberFormat'
 
 // Plot the backend's sampled CDF as steps. No interpolation, fitted curve,
 // independent-roll formula, or new probability computation is introduced.
-export default function StarForceProbabilityChart({ distribution }) {
+export default memo(function StarForceProbabilityChart({ distribution }) {
   const id = useId()
   const reduced = useReducedMotion()
   const values = distribution?.probabilities
@@ -34,4 +34,4 @@ export default function StarForceProbabilityChart({ distribution }) {
     </svg>
     <p className="mw-help">Sampled estimates, including boom recovery. Use the budget controls below for exact grid lookups.</p>
   </motion.figure>
-}
+})

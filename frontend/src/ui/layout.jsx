@@ -1,13 +1,14 @@
 import { useId } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
 import { cx, useWorkshopMotion } from './motion'
+import PageBackground from './PageBackground'
 export { Navbar } from './navigation'
 
-export function AppShell({ children, navbar, backgroundImage = '/images/workshop/floating-islands.png', className, style, ...props }) {
+export function AppShell({ children, navbar, backgroundImage = '/images/workshop/floating-islands.webp', className, style, ...props }) {
   const id = useId()
   return <MotionConfig reducedMotion="user">
     <div {...props} className={cx('mw-theme mw-shell', className)} style={{ '--workshop-background': backgroundImage ? `url("${backgroundImage}")` : 'none', ...style }}>
-      <div className="mw-background" aria-hidden="true" />
+      <PageBackground backgroundImage={backgroundImage} />
       <a className="mw-skip" href={`#${id}`}>Skip to content</a>
       {navbar}
       <main id={id} tabIndex={-1} className="mw-content">{children}</main>
