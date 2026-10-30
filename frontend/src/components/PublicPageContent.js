@@ -13,9 +13,9 @@ const RELATED_LABELS = {
 // Shared by the static build and interactive app so searchable content stays identical.
 export function PageHeader({ page }) {
   const content = pageMetadata(page)
-  return h('header', { className: "page-header mt-9 mx-0 mb-8 pb-7 border-b border-solid border-b-rule [&_p]:max-w-190 [&_p]:mb-0 [&_p]:text-[14px] [&_p]:text-muted" },
-    h('span', { className: "eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple" }, 'MAPLESTORY CALCULATOR · EQUIPMENT UPGRADE LAB'),
-    h('div', { className: "page-title flex items-center gap-3.5 mt-3.5 mx-0 mb-2.5 [&_h1]:min-w-0 [&_h1]:m-0" },
+  return h('header', { className: "page-header mw-page-header" },
+    h('span', { className: "eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-accent" }, 'MAPLE WORKSHOP ? UPGRADE PLANNING'),
+    h('div', { className: "page-title mw-page-title" },
       h('img', { className: "size-12 shrink-0", src: '/maplecalculator48.png',
         alt: 'MapleStory Calculator logo', width: 48, height: 48 }),
       h('h1', null, content.heading)),
@@ -27,7 +27,7 @@ export function PageGuide({ page, onNavigate }) {
   if (!content?.sections.length) return null
   return h('section', { className: 'page-guide', 'aria-label': 'Calculator guide' },
     h('header', { className: 'page-guide-heading' },
-      h('span', { className: "eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple" }, 'CALCULATOR GUIDE'),
+      h('span', { className: "eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-accent" }, 'CALCULATOR GUIDE'),
       h('h2', null, 'Understand your next upgrade'),
       h('p', null, 'Practical examples, scoring assumptions, and how to read your results.')),
     h('div', { className: 'page-guide-sections' },
@@ -44,7 +44,7 @@ export function PageGuide({ page, onNavigate }) {
       h('a', { href: 'https://maplestory.io/' }, 'MapleStory.io equipment data'),
       h('a', { href: PAGE_PATHS.bugs, onClick: event => onNavigate?.('bugs', event) }, 'Report an incorrect result'))),
     h('footer', { className: 'page-guide-footer' },
-    h('span', { className: "eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-maple" }, 'EXPLORE OTHER TOOLS'),
+    h('span', { className: "eyebrow font-mono text-[11px] font-bold tracking-[0.08em] text-accent" }, 'EXPLORE OTHER TOOLS'),
     h('nav', { className: 'page-guide-related', 'aria-label': 'Related calculators' },
       ...Object.keys(RELATED_LABELS).filter(key => key !== page).map(key =>
         h('a', { key, href: PAGE_PATHS[key], onClick: event => onNavigate?.(key, event) },

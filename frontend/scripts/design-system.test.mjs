@@ -94,6 +94,11 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
   await command('Page.navigate', { url: `http://127.0.0.1:${webPort}/design-system.html` })
   await until(() => evaluate(`!!document.querySelector('.mw-shell')`), 'component mount')
   await until(() => evaluate(`[...document.images].every(image => image.complete)`), 'images')
+  await t.test('Strategies: keyboard selection, memoized preparation and cancelled request recovery', async () => {
+    const result = await evaluate(`import('/scripts/fixtures/strategies-probe.jsx').then(module => module.verifyStrategies())`)
+    assert.deepEqual(result, { keyboardSelects: true, stableReads: 0, aborted: true, canResubmit: true, staleChart: false })
+  })
+
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('.mw-theme')).colorScheme`), 'light')
   assert.ok(await evaluate(`getComputedStyle(document.querySelector('.mw-background-day')).backgroundImage.includes('floating-islands.webp')`))
   assert.equal(await evaluate(`document.documentElement.classList.contains('dark')`), false)
@@ -123,6 +128,8 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
   await click('Open dialog')
   await until(() => evaluate(`document.querySelector('dialog').open`), 'dialog open')
   assert.equal(await evaluate(`document.querySelector('dialog').contains(document.activeElement)`), true)
+  const modalTree = await command('Accessibility.getFullAXTree')
+  assert.ok(modalTree.nodes.some(node=>!node.ignored && node.role?.value==='dialog' && node.name?.value && node.properties.some(property=>property.name==='modal' && property.value.value===true)), 'dialog exposes its title and modal semantics')
   for (const width of [1440,1200,1024,768,480,375]) {
     await command('Emulation.setDeviceMetricsOverride', {width,height:700,deviceScaleFactor:1,mobile:false})
     assert.equal(await evaluate(`(() => { const d=document.querySelector('dialog'); const r=d.getBoundingClientRect(); return r.left>=0 && r.right<=innerWidth && r.top>=0 && r.bottom<=innerHeight && d.scrollWidth<=d.clientWidth; })()`), true, `dialog fits ${width}px`)
@@ -138,6 +145,7 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
 
   await evaluate(`document.querySelector('span[tabindex="0"]').focus()`)
   await until(() => evaluate(`!!document.querySelector('[role="tooltip"]')`), 'tooltip focus')
+  assert.equal(await evaluate(`document.activeElement.getAttribute('aria-describedby')===document.querySelector('[role="tooltip"]').id`),true,'tooltip description is associated with its keyboard trigger')
   await key('Escape')
   await until(() => evaluate(`!document.querySelector('[role="tooltip"]')`), 'tooltip dismissal')
   await click('Preview notification')
@@ -601,6 +609,16 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
     assert.equal(await evaluate(`document.querySelector('.upgrade-plan button[type="submit"]').disabled`), true)
     // Restore the settings for subsequent retained-page/theme checks.
     for (const index of [0,1,2]) await evaluate(`document.querySelectorAll('.upgrade-categories input')[${index}].click()`)
+    // Cancelling and restoring the same inputs must not resurrect a pending request.
+    await evaluate(`document.querySelector('.upgrade-plan form').requestSubmit()`)
+    await until(() => evaluate(`!!document.querySelector('.upgrade-recommendations .mw-skeleton-table')`), 'cancellable upgrade request')
+    await evaluate(`window.cancelledUpgradeResponse = window.finishUpgradePlan; document.querySelectorAll('.upgrade-categories input')[2].click()`)
+    await evaluate(`document.querySelectorAll('.upgrade-categories input')[2].click()`)
+    await until(() => evaluate(`!document.querySelector('.upgrade-plan button[type="submit"]').disabled`), 'restored settings allow recalculation')
+    await evaluate(`window.cancelledUpgradeResponse()`)
+    assert.equal(await evaluate(`!!document.querySelector('.upgrade-recommendations .mw-skeleton-table')`), false, 'cancelled request cannot leave loading stuck')
+    assert.equal(await evaluate(`!!document.querySelector('.workshop-rank-table')`), false, 'late cancelled response cannot restore stale recommendations')
+
   })
   await go('/bug-report', 'bugs')
   await until(() => evaluate(`!!document.querySelector('.bug-form')`), 'workshop bug form')
@@ -648,6 +666,8 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
   await go('/', 'home')
   await until(() => evaluate(`!!document.querySelector('.home-equipment-preview')`), 'homepage restores saved build')
   assert.equal(await evaluate(`document.querySelector('.home-equipment-preview [aria-label^="Hat:"]').getAttribute('aria-label').includes('Eternal Knight Helm')`), true)
+  assert.equal(await evaluate(`document.querySelector('.home-equipment-preview [aria-label^="Hat:"]').getAttribute('href')`), '/equipment', 'homepage preview navigation is a native link')
+  assert.equal(await evaluate(`(()=>{const slot=document.querySelector('.home-equipment-preview [aria-label^="Hat:"]');return slot.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,ctrlKey:true}))})()`),true,'modified preview clicks retain browser link behavior')
   const savedBeforePreview = await evaluate(`localStorage.getItem('maplestory-flame-equipment')`)
   for (const width of [1440, 900, 390, 320]) {
     await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
@@ -684,6 +704,15 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
       assert.deepEqual(await evaluate(`({route:location.href,storage:JSON.stringify(localStorage),values:window.themeInputNodes.map(n=>[n.value,n.checked]),requests:window.workshopRequests?.length})`), before, `${name} preserves state, storage and requests`)
       assert.equal(apiCalls.length, requestCount, `${name} theme makes no API request`)
       assert.equal(await evaluate(`getComputedStyle(document.querySelector('.mw-theme')).colorScheme`), theme)
+      const accessibility = await command('Accessibility.getFullAXTree')
+      const unnamed = accessibility.nodes.filter(node => !node.ignored && ['button','link','textbox','combobox','spinbutton','switch','checkbox','radio'].includes(node.role?.value) && !node.name?.value?.trim()).map(node=>({role:node.role.value,node:node.backendDOMNodeId}))
+      assert.deepEqual(unnamed, [], `${name} ${theme}: interactive controls have accessible names`)
+      for (const node of accessibility.nodes.filter(node=>!node.ignored && node.role?.value==='switch')) {
+        assert.ok(node.properties.some(property=>property.name==='checked'), 'native switches expose checked state')
+      }
+      const contrast = await evaluate(`(async()=>{const audit=await import('/scripts/fixtures/accessibility-probe.js');return audit.contrastPairs()})()`)
+      assert.deepEqual(contrast.filter(pair=>pair.ratio<4.5),[],`${theme}: shared text pairs meet 4.5:1 contrast`)
+      assert.equal(await evaluate(`Array.from(document.querySelectorAll('[aria-describedby],[aria-labelledby]')).filter(el=>el.getClientRects().length && !el.closest('[hidden]')).every(el=>['aria-describedby','aria-labelledby'].every(attr=>(el.getAttribute(attr)||'').split(/\\s+/).filter(Boolean).every(id=>!!document.getElementById(id))))`),true,`${name}: label and description references resolve`)
       assert.equal(await evaluate(`getComputedStyle(document.querySelector('.mw-background-${theme === 'dark' ? 'night' : 'day'}')).opacity`), '1')
       for (const width of [1440,1200,1024,768,480,375]) {
         await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
@@ -709,6 +738,13 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
     }
   }
   await evaluate(`document.querySelector('.equipment-section-navigation button').click()`)
+  await t.test('Accessibility: equipment tooltips describe the focused slot and dismiss with Escape', async () => {
+    await evaluate(`document.querySelector('.equipment-setup [aria-label^="Hat:"]').focus()`)
+    assert.equal(await evaluate(`(()=>{const button=document.activeElement;const tip=document.getElementById(button.getAttribute('aria-describedby'));return !!tip && tip.getAttribute('role')==='tooltip' && tip.textContent.includes('Lv.') && getComputedStyle(tip).visibility==='visible'})()`),true)
+    await key('Escape')
+    await until(()=>evaluate(`getComputedStyle(document.getElementById(document.activeElement.getAttribute('aria-describedby'))).visibility==='hidden'`),'equipment tooltip dismissed')
+    await evaluate(`document.activeElement.blur()`)
+  })
   await auditTheme('equipment')
   await evaluate(`document.querySelectorAll('.equipment-section-navigation button')[1].click()`)
   await evaluate(`window.finishUpgradePlan=undefined; document.querySelector('.upgrade-plan form').requestSubmit()`)
@@ -721,6 +757,13 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
     for (const width of [1440,1200,1024,768,480,375]) {
       await command('Emulation.setDeviceMetricsOverride', {width,height:1100,deviceScaleFactor:1,mobile:false})
       await evaluate(`document.querySelector('.upgrade-recommendations').scrollIntoView()`)
+      assert.equal(await evaluate(`document.querySelector('.upgrade-settings-top').getBoundingClientRect().bottom <= document.querySelector('.upgrade-recommendations').getBoundingClientRect().top`),true,`settings stay above recommendations at ${width}`)
+      if(category==='Star Force') {
+        await evaluate(`document.querySelector('.upgrade-settings-top').scrollIntoView()`)
+        const settingsShot=await command('Page.captureScreenshot',{format:'png'})
+        await writeFile(join(captures,`upgrade-settings-${width}.png`),Buffer.from(settingsShot.data,'base64'))
+        await evaluate(`document.querySelector('.upgrade-recommendations').scrollIntoView()`)
+      }
       const table = category === 'Overall' ? '.overall-upgrade-table' : '.workshop-rank-table'
       assert.equal(await evaluate(`getComputedStyle(document.querySelector('${table} tbody tr')).display`), width<=700?'block':'table-row', `${category} uses ${width<=700?'cards':'table'} at ${width}`)
       assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`), true, `${category} recommendations fit ${width}`)

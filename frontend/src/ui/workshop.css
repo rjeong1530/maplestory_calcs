@@ -1,4 +1,4 @@
-/* Opt-in theme: never overrides the existing calculator theme. */
+/* Shared Maple Workshop design tokens and component styles. */
 @layer components {
   .mw-theme {
     --background: #eaf7ff;
@@ -125,14 +125,7 @@
   .mw-dropdown-links .mw-navlink {
     white-space: nowrap;
   }
-  .mw-legacy-page {
-    color: #eeede6;
-    color-scheme: dark;
-    background: #191918f5;
-    padding: 1.5rem;
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
-  }
+
   #workshop-guides,
   #about-workshop {
     scroll-margin-top: 1rem;
@@ -169,9 +162,7 @@
     .mw-navbar-inner {
       gap: 0.5rem;
     }
-    .mw-legacy-page {
-      padding: 0.75rem;
-    }
+
   }
   @media (max-width: 399px) {
     .mw-navbar .mw-brand {
@@ -770,12 +761,44 @@
     opacity: 1;
   }
 }
-.mw-theme .mw-requirement-row { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-secondary); }
-.mw-theme .mw-requirement-row input { font-size: 22px; font-weight: 650; color: var(--primary); }
-.mw-theme .mw-budget-surface .budget-chance-picker { border-top: 1px solid var(--border); padding-top: 20px; }
-.mw-theme .mw-budget-surface .budget-chance-picker label { display: grid; gap: 8px; font-size: 12px; color: var(--text-primary); }
-.mw-theme .mw-budget-surface .budget-inputs { grid-template-columns: minmax(0, 1fr); }
-.mw-theme .mw-budget-surface .budget-input-arrow { display: none; }
-.mw-theme .mw-budget-surface .budget-input-field { background: var(--surface-secondary); border-color: var(--border); border-radius: 8px; }
-.mw-theme .mw-budget-surface .budget-input-field input { width: 100%; min-width: 0; color: var(--text-primary); }
-.mw-theme .mw-budget-surface .hint, .mw-theme .mw-budget-surface .budget-input-field > span { color: var(--text-secondary); }
+.mw-theme .mw-requirement-row {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-secondary);
+}
+.mw-theme .mw-requirement-row input {
+  font-size: 22px;
+  font-weight: 650;
+  color: var(--primary);
+}
+.mw-theme .mw-budget-surface .budget-chance-picker {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.mw-theme .mw-budget-surface .budget-chance-picker label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.mw-theme .mw-budget-surface .budget-inputs {
+  grid-template-columns: minmax(0, 1fr);
+}
+.mw-theme .mw-budget-surface .budget-input-arrow {
+  display: none;
+}
+.mw-theme .mw-budget-surface .budget-input-field {
+  background: var(--surface-secondary);
+  border-color: var(--border);
+  border-radius: 8px;
+}
+.mw-theme .mw-budget-surface .budget-input-field input {
+  width: 100%;
+  min-width: 0;
+  color: var(--text-primary);
+}
+.mw-theme .mw-budget-surface .hint,
+.mw-theme .mw-budget-surface .budget-input-field > span {
+  color: var(--text-secondary);
+}

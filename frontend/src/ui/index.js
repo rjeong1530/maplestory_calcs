@@ -2,6 +2,7 @@ import './workshop.css'
 import './micro-interactions.css'
 import './page-footer.css'
 import './responsive.css'
+import './accessibility.css'
 export { ThemeProvider } from './theme'
 export { useTheme } from './useTheme'
 

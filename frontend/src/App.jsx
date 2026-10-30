@@ -34,14 +34,14 @@ function PageContent({ calculator, navigate }) {
       {calculator !== 'home' && <PageHeader title={calculator === 'starforce' ? 'Star Force Calculator' : calculator === 'flame' ? 'Flame Calculator' : calculator === 'potential' ? 'Potential Calculator' : calculator === 'equipment' ? 'Equipment Workshop' : metadata.heading}
         description={calculator === 'starforce' ? 'Calculate enhancement costs, success rates, and risk of destruction.' : calculator === 'flame' ? 'Find the probability of your target flame score and plan your flame count.' : metadata.description}
         icon={calculator === 'starforce' ? <img src="/images/workshop/star.webp" width="48" height="48" alt="" className="shrink-0 object-contain" /> : calculator === 'flame' ? '🔥' : calculator === 'potential' ? <img src="/images/workshop/bright-cube.png" width="48" height="48" alt="" className="shrink-0 object-contain [image-rendering:pixelated]" /> : undefined} eyebrow="Maple Workshop · Upgrade planning" />}
-      <div className={calculator === 'home' ? 'home-page' : ['starforce', 'flame', 'potential', 'equipment', 'bugs'].includes(calculator) ? 'mw-calculator-page' : 'mw-legacy-page'}>
+      <div className={calculator === 'home' ? 'home-page' : 'mw-calculator-page'}>
 
       {calculator === 'home' && <LandingPage onNavigate={navigate} />}
       <DeferredPage active={calculator === 'bugs'}>
         <BugReportPage />
       </DeferredPage>
 
-      {!calculator && <section className="panel bg-surface border border-solid border-rule rounded-sm p-6 [@media(max-width:480px)]:p-5">
+      {!calculator && <section className="panel bg-surface border border-solid border-outline rounded-sm p-6 [@media(max-width:480px)]:p-5">
         <h2>Page not found</h2>
         <p>Choose a calculator or Equipment upgrade from the navigation.</p>
       </section>}

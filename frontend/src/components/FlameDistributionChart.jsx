@@ -21,7 +21,8 @@ export default memo(function FlameDistributionChart({ bins, target }) {
   const label = (_bin, index) => labels[index]
   return <motion.figure {...entrance} transition={transition} className="flame-distribution" aria-labelledby={id}>
     <h3 id={id}>Probability Distribution</h3>
-    <svg viewBox="0 0 520 265" aria-label="Probability per flame score range">
+    <p id={`${id}-summary`} className="sr-only">Distribution of flame scores in {bins.length} ranges, from {scoreLabel(minimum)} to {scoreLabel(maximum)}. Target score: {scoreLabel(target)}. Focus each bar to hear its score range and probability. The exact target success probability is shown above.</p>
+    <svg viewBox="0 0 520 265" role="group" aria-label="Probability per flame score range" aria-describedby={`${id}-summary`}>
       <text x="52" y="17" className="flame-chart-label">Probability per range</text>
       {[0, .25, .5, .75, 1].map(fraction => <g key={fraction}>
         <line x1="52" x2="492" y1={y(peak * fraction)} y2={y(peak * fraction)} className="flame-chart-grid" />

@@ -22,7 +22,7 @@ export default function TargetRow({ row, index, effects, usedEffects, onUpdate, 
         <input disabled={!present} type="number" min="0" step="any" required value={row.target}
           onChange={event => onUpdate({ target: event.target.value })} />
       </label>
-      <button type="button" className="p-0 h-[43px] text-[23px] bg-transparent enabled:hover:bg-[#3c3a32]" disabled={!present || !canRemove}
+      <button type="button" className="p-0 h-[43px] text-[23px] bg-transparent enabled:hover:bg-[var(--surface-hover)]" disabled={!present || !canRemove}
         aria-label={`Remove potential ${index + 1}`} onClick={onRemove}>×</button>
     </div>
   )

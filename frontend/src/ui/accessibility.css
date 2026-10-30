@@ -1,0 +1,21 @@
+/* Stronger ink and focus treatment retain the existing sky/pastel identity. */
+.mw-theme { --text-secondary: #5d6d84; --text-muted: #5d6d84; }
+.dark .mw-theme { --text-secondary: #afc1d8; --text-muted: #91a6bf; }
+.mw-theme.mw-shell :is(.flame-priorities span, .flame-outcome strong, .mw-requirement-row input) { color: var(--primary-ink); }
+.mw-theme.mw-shell .flame-error { color: var(--danger-ink); }
+.mw-theme.mw-shell .potential-and { color: var(--rarity-epic); }
+.mw-theme .mw-slot-rarity { position: absolute; bottom: 2px; inset-inline: 2px; font-size: 8px; line-height: 1.2; color: var(--text-primary); background: var(--surface-input); border-radius: 3px; }
+.mw-theme .equipment-slot { box-sizing: border-box; text-decoration: none; }
+.mw-theme.mw-shell .flame-chart-bar:focus-visible { outline: 2px solid var(--primary-ink); outline-offset: 2px; }
+.mw-theme :is(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--primary-ink);
+  outline-offset: 3px;
+}
+.mw-theme .equipment-slot-tooltip-wrap[data-tooltip-dismissed='true'] .equipment-slot-tooltip { visibility: hidden; opacity: 0; }
+.mw-theme :is(.mw-tooltip, .equipment-slot-tooltip) { pointer-events: auto; }
+/* Bridge the small visual gap so hover text remains reachable with a pointer. */
+.mw-theme :is(.mw-tooltip, .equipment-slot-tooltip)::before { content: ''; position: absolute; inset: -8px; z-index: -1; }
+@media (forced-colors: active) {
+  .mw-theme :is(button, a, input, select, textarea, summary, [tabindex]):focus-visible { outline-color: Highlight; }
+  .mw-theme :is([aria-pressed='true'],[aria-selected='true']) { outline: 2px solid Highlight; }
+}

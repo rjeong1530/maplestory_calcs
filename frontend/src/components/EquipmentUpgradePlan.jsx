@@ -26,7 +26,11 @@ export default function EquipmentUpgradePlan({
   }, [category, rankings])
   const rows = category === 'starforce' ? groupedRows.slice(0, 20) : groupedRows
 
-  useEffect(() => () => controllerRef.current?.abort(), [requestKey])
+  useEffect(() => () => {
+    controllerRef.current?.abort()
+    // An aborted pending request must not become loading again if inputs revert.
+    setRequest(previous => previous?.status === 'loading' ? null : previous)
+  }, [requestKey])
 
   async function submit(event) {
     event.preventDefault()

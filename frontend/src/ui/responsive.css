@@ -1,57 +1,132 @@
 /* Shared hit areas and containment; no control values or handlers change. */
-.mw-theme.mw-shell .mw-content :is(button, select, input:not([type='checkbox']):not([type='radio']):not([type='hidden']), summary) {
+.mw-theme.mw-shell
+  .mw-content
+  :is(
+    button,
+    select,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+    summary
+  ) {
   min-height: 44px;
   min-width: 44px;
 }
-.mw-theme.mw-shell :is(.mw-content, .mw-dialog) label:has(> input:is([type='checkbox'], [type='radio'])) {
+.mw-theme.mw-shell
+  :is(.mw-content, .mw-dialog)
+  label:has(> input:is([type="checkbox"], [type="radio"])) {
   min-height: 44px;
   min-width: 44px;
   align-content: center;
 }
-.mw-theme.mw-shell .mw-content button { white-space: normal; overflow-wrap: anywhere; }
-.mw-theme.mw-shell .mw-content :is(.mw-card, fieldset, .mw-field) { min-width: 0; }
-.mw-theme.mw-shell .mw-content :is(h1,h2,h3,dd) { overflow-wrap: anywhere; }
+.mw-theme.mw-shell .mw-content button {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.mw-theme.mw-shell .mw-content :is(.mw-card, fieldset, .mw-field) {
+  min-width: 0;
+}
+.mw-theme.mw-shell .mw-content :is(h1, h2, h3, dd) {
+  overflow-wrap: anywhere;
+}
 .mw-theme.mw-shell .potential-workspace .target-row {
-  grid-template-columns: minmax(0, 1fr) minmax(70px, .65fr) 44px;
+  grid-template-columns: minmax(0, 1fr) minmax(70px, 0.65fr) 44px;
 }
 .mw-theme.mw-shell .workshop-equipment-stats .equipment-stats-layout {
-  grid-template-columns: minmax(280px, .7fr) minmax(0, 1.6fr);
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.6fr);
 }
-.mw-theme.mw-shell .home-build { grid-template-columns: minmax(0, 1fr) minmax(260px, 1.1fr); }
-.mw-theme.mw-shell .mw-dropdown-links { max-width: calc(100vw - 32px); }
-.mw-theme.mw-shell .mw-dropdown-links .mw-navlink { white-space: normal; }
-.mw-theme .mw-dialog { overscroll-behavior: contain; overflow-wrap: anywhere; }
-.mw-theme .mw-dialog :is(input,select,textarea) { max-width: 100%; min-width: 0; }
-.mw-theme .mw-dialog button { min-height: 44px; min-width: 44px; white-space: normal; }
-.mw-theme .mw-dialog .mw-card { min-width: 0; }
+.mw-theme.mw-shell .home-build {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 1.1fr);
+}
+.mw-theme.mw-shell .mw-dropdown-links {
+  max-width: calc(100vw - 32px);
+}
+.mw-theme.mw-shell .mw-dropdown-links .mw-navlink {
+  white-space: normal;
+}
+.mw-theme .mw-dialog {
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+.mw-theme .mw-dialog :is(input, select, textarea) {
+  max-width: 100%;
+  min-width: 0;
+}
+.mw-theme .mw-dialog button {
+  min-height: 44px;
+  min-width: 44px;
+  white-space: normal;
+}
+.mw-theme .mw-dialog .mw-card {
+  min-width: 0;
+}
 
 /* Keep chart axes proportional and SVG overflow inside the result card. */
-.mw-theme.mw-shell :is(.sf-chart,.flame-distribution) { min-width: 0; max-width: 100%; }
-.mw-theme.mw-shell :is(.sf-chart,.flame-distribution) svg { max-width: 100%; height: auto; }
-.mw-theme.mw-shell .flame-distribution { container-type: inline-size; }
+.mw-theme.mw-shell :is(.sf-chart, .flame-distribution) {
+  min-width: 0;
+  max-width: 100%;
+}
+.mw-theme.mw-shell :is(.sf-chart, .flame-distribution) svg {
+  max-width: 100%;
+  height: auto;
+}
+.mw-theme.mw-shell .flame-distribution {
+  container-type: inline-size;
+}
 @container (max-width: 360px) {
-  .flame-distribution .flame-chart-label { font-size: 17px; }
+  .flame-distribution .flame-chart-label {
+    font-size: 17px;
+  }
 }
 
 @media (max-width: 1199px) {
-  .mw-theme.mw-shell .home-build { grid-template-columns: minmax(0, 1fr); }
+  .mw-theme.mw-shell .home-build {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 @media (min-width: 700px) and (max-width: 899px) {
-  .mw-theme.mw-shell .flame-workspace { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mw-theme.mw-shell .flame-workspace {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .mw-theme.mw-shell .flame-selection-fields,
   .mw-theme.mw-shell .flame-selection-fields > .flame-weapon-settings,
   .mw-theme.mw-shell .flame-weights,
-  .mw-theme.mw-shell .flame-metrics { grid-template-columns: minmax(0, 1fr); }
+  .mw-theme.mw-shell .flame-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 @media (max-width: 850px) {
-  .mw-theme.mw-shell .workshop-equipment-stats .equipment-stats-layout { grid-template-columns: minmax(0, 1fr); }
+  .mw-theme.mw-shell .workshop-equipment-stats .equipment-stats-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 @media (max-width: 699px) {
-  .mw-theme.mw-shell .workshop-upgrade-plan .upgrade-table caption { display: block; width: 100%; box-sizing: border-box; }
-  .mw-theme.mw-shell .flame-workspace { grid-template-columns: minmax(0, 1fr); }
-  .mw-theme.mw-shell .upgrade-settings-sidebar .upgrade-weights { grid-template-columns: minmax(0, 1fr); }
-  .mw-theme.mw-shell .equipment-transfer-actions { flex-wrap: wrap; }
-  .mw-theme.mw-shell .equipment-transfer-actions button { flex: 1 1 120px; }
-  .mw-theme.mw-shell .equipment-slot-tooltip-wrap:nth-child(5n + 1) .equipment-slot-tooltip { left: 0; transform: none; }
-  .mw-theme.mw-shell .equipment-slot-tooltip-wrap:nth-child(5n) .equipment-slot-tooltip { left: auto; right: 0; transform: none; }
+  .mw-theme.mw-shell .workshop-upgrade-plan .upgrade-table caption {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .mw-theme.mw-shell .flame-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mw-theme.mw-shell .upgrade-settings-sidebar .upgrade-weights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mw-theme.mw-shell .equipment-transfer-actions {
+    flex-wrap: wrap;
+  }
+  .mw-theme.mw-shell .equipment-transfer-actions button {
+    flex: 1 1 120px;
+  }
+  .mw-theme.mw-shell
+    .equipment-slot-tooltip-wrap:nth-child(5n + 1)
+    .equipment-slot-tooltip {
+    left: 0;
+    transform: none;
+  }
+  .mw-theme.mw-shell
+    .equipment-slot-tooltip-wrap:nth-child(5n)
+    .equipment-slot-tooltip {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
 }

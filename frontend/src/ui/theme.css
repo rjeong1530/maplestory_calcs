@@ -1,6 +1,12 @@
 /* System theme tokens. No preferences are written to browser storage. */
-:root { color-scheme: light; background: #eaf7ff; }
-:root.dark { color-scheme: dark; background: #07111f; }
+:root {
+  color-scheme: light;
+  background: #eaf7ff;
+}
+:root.dark {
+  color-scheme: dark;
+  background: #07111f;
+}
 .mw-theme {
   --surface-input: #fff;
   --surface-hover: #eaf2ff;
@@ -27,12 +33,16 @@
   --hero-glow: #eaf7fff0;
   --hero-glow-soft: #eaf7ffba;
   --hero-fade: #eaf7ff85;
-  --tool-gold: #fff1d5; --tool-gold-ink: #79520a;
-  --tool-orange: #ffead7; --tool-orange-ink: #984009;
-  --tool-purple: #f0e6ff; --tool-purple-ink: #6d28b1;
-  --tool-green: #d9f8e9; --tool-green-ink: #186340;
+  --tool-gold: #fff1d5;
+  --tool-gold-ink: #79520a;
+  --tool-orange: #ffead7;
+  --tool-orange-ink: #984009;
+  --tool-purple: #f0e6ff;
+  --tool-purple-ink: #6d28b1;
+  --tool-green: #d9f8e9;
+  --tool-green-ink: #186340;
   --tool-base: #ffffff85;
-  --equipment-scenery: url('/images/workshop/maple-character-day.webp');
+  --equipment-scenery: url("/images/workshop/maple-character-day.webp");
   --equipment-wash: rgb(255 255 255 / 40%);
   color-scheme: light;
 }
@@ -47,90 +57,268 @@
   --surface-glass: #0d1b2eeb;
   --surface-slot: #11243ace;
   --surface-table-header: #152943;
-  --primary: #60a5fa; --primary-hover: #93c5fd; --primary-ink: #93c5fd;
+  --primary: #60a5fa;
+  --primary-hover: #93c5fd;
+  --primary-ink: #93c5fd;
   --secondary: #ffb454;
-  --success: #5ed68a; --success-ink: #81e6a6;
-  --warning: #f6c453; --warning-ink: #f6d584;
-  --danger: #f87171; --danger-ink: #fda4af;
+  --success: #5ed68a;
+  --success-ink: #81e6a6;
+  --warning: #f6c453;
+  --warning-ink: #f6d584;
+  --danger: #f87171;
+  --danger-ink: #fda4af;
   --purple: #a78bfa;
-  --text-primary: #f3f8ff; --text-secondary: #afc1d8; --text-muted: #91a6bf;
-  --border: #29415e; --border-soft: rgb(119 156 194 / 18%);
-  --button-fill: #60a5fa; --button-hover: #93c5fd; --button-text: #07111f;
-  --danger-bg: #35202e; --danger-hover: #472637; --danger-border: #784050;
-  --tooltip-bg: #101e31; --tooltip-text: #f3f8ff;
-  --rarity-rare: #93c5fd; --rarity-rare-bg: #18314e;
-  --rarity-epic: #c4b5fd; --rarity-epic-bg: #2a2347;
-  --rarity-unique: #f6d584; --rarity-unique-bg: #352d20;
-  --rarity-legendary: #81e6a6; --rarity-legendary-bg: #153a30;
-  --shimmer-base: #182c44; --shimmer-highlight: #29415e;
+  --text-primary: #f3f8ff;
+  --text-secondary: #afc1d8;
+  --text-muted: #91a6bf;
+  --border: #29415e;
+  --border-soft: rgb(119 156 194 / 18%);
+  --button-fill: #60a5fa;
+  --button-hover: #93c5fd;
+  --button-text: #07111f;
+  --danger-bg: #35202e;
+  --danger-hover: #472637;
+  --danger-border: #784050;
+  --tooltip-bg: #101e31;
+  --tooltip-text: #f3f8ff;
+  --rarity-rare: #93c5fd;
+  --rarity-rare-bg: #18314e;
+  --rarity-epic: #c4b5fd;
+  --rarity-epic-bg: #2a2347;
+  --rarity-unique: #f6d584;
+  --rarity-unique-bg: #352d20;
+  --rarity-legendary: #81e6a6;
+  --rarity-legendary-bg: #153a30;
+  --shimmer-base: #182c44;
+  --shimmer-highlight: #29415e;
   --loading-overlay: #07111fb3;
   --chart-bar: #60a5fa;
   --shadow-card: 0 4px 20px #03091428, inset 0 1px #afd4ff09;
   --shadow-raised: 0 10px 28px #03091455;
   --shadow-overlay: 0 24px 80px #03091499;
-  --hero-ink: #f3f8ff; --hero-glow: #07111ff0; --hero-glow-soft: #07111f9c; --hero-fade: #07111f85;
-  --tool-gold: #3b3220; --tool-gold-ink: #f6d584;
-  --tool-orange: #3d2926; --tool-orange-ink: #ffc38c;
-  --tool-purple: #2e254a; --tool-purple-ink: #d2b9ff;
-  --tool-green: #183b33; --tool-green-ink: #92e7bb;
+  --hero-ink: #f3f8ff;
+  --hero-glow: #07111ff0;
+  --hero-glow-soft: #07111f9c;
+  --hero-fade: #07111f85;
+  --tool-gold: #3b3220;
+  --tool-gold-ink: #f6d584;
+  --tool-orange: #3d2926;
+  --tool-orange-ink: #ffc38c;
+  --tool-purple: #2e254a;
+  --tool-purple-ink: #d2b9ff;
+  --tool-green: #183b33;
+  --tool-green-ink: #92e7bb;
   --tool-base: #0d1b2ec9;
-  --equipment-scenery: url('/images/workshop/maple-character-night.webp');
+  --equipment-scenery: url("/images/workshop/maple-character-night.webp");
   --equipment-wash: rgb(7 17 31 / 35%);
   /* Legacy utilities used inside existing calculator controls inherit the palette. */
-  --color-maple: var(--primary-ink); --color-muted: var(--text-secondary);
-  --color-ink: var(--surface-input); --color-surface: var(--surface-secondary); --color-rule: var(--border);
+  --color-accent: var(--primary-ink);
+  --color-subtle: var(--text-secondary);
+  --color-input: var(--surface-input);
+  --color-surface: var(--surface-secondary);
+  --color-outline: var(--border);
   color-scheme: dark;
 }
 
 /* Two static layers crossfade; no route-driven animation or layout changes. */
-.mw-theme .mw-background { background: none; }
-.mw-background > div { position: absolute; inset: 0; background-position: center top; background-size: cover; background-repeat: no-repeat; transition: opacity 300ms ease-out; }
-.mw-background-day { background-image: linear-gradient(#eaf7ff35, #eaf7ffb3), var(--workshop-background); opacity: 1; }
-.mw-background-night { background-image: linear-gradient(#07111f80, #07111fb3), url('/images/workshop/floating-islands-night.webp'); opacity: 0; }
-.dark .mw-background-day { opacity: 0; }
-.dark .mw-background-night { opacity: 1; }
-.mw-theme .mw-fullpage-loading { isolation: isolate; background: var(--background); }
+.mw-theme .mw-background {
+  background: none;
+}
+.mw-background > div {
+  position: absolute;
+  inset: 0;
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: opacity 300ms ease-out;
+}
+.mw-background-day {
+  background-image:
+    linear-gradient(#eaf7ff35, #eaf7ffb3), var(--workshop-background);
+  opacity: 1;
+}
+.mw-background-night {
+  background-image:
+    linear-gradient(#07111f80, #07111fb3),
+    url("/images/workshop/floating-islands-night.webp");
+  opacity: 0;
+}
+.dark .mw-background-day {
+  opacity: 0;
+}
+.dark .mw-background-night {
+  opacity: 1;
+}
+.mw-theme .mw-fullpage-loading {
+  isolation: isolate;
+  background: var(--background);
+}
 @media (max-width: 800px) {
-  .mw-background-day { background-image: linear-gradient(#eaf7ff35, #eaf7ffb3), url('/images/workshop/floating-islands-mobile.webp'); }
-  .mw-background-night { background-image: linear-gradient(#07111f80, #07111fb3), url('/images/workshop/floating-islands-night-mobile.webp'); }
+  .mw-background-day {
+    background-image:
+      linear-gradient(#eaf7ff35, #eaf7ffb3),
+      url("/images/workshop/floating-islands-mobile.webp");
+  }
+  .mw-background-night {
+    background-image:
+      linear-gradient(#07111f80, #07111fb3),
+      url("/images/workshop/floating-islands-night-mobile.webp");
+  }
 }
 
-.mw-theme .mw-navbar, .mw-theme .workshop-about { background: var(--surface-glass); }
-.mw-theme .mw-button-primary { background: var(--button-fill); color: var(--button-text); }
-.mw-theme .mw-button-primary:hover:not(:disabled) { background: var(--button-hover); }
-.mw-theme .mw-tooltip, .mw-theme .equipment-slot-tooltip { background: var(--tooltip-bg); color: var(--tooltip-text); border: 1px solid var(--border); }
-.dark .mw-theme .equipment-slot-tooltip { background: var(--tooltip-bg); color: var(--tooltip-text); }
-.mw-theme .mw-switch::before { background: #fff; }
-.mw-theme .mw-skeleton-line { background-image: linear-gradient(100deg, var(--shimmer-base) 20%, var(--shimmer-highlight) 45%, var(--shimmer-base) 70%); }
-.mw-theme .mw-calculator-loading-overlay { background: var(--loading-overlay); }
-.mw-theme .mw-calculator-loading-overlay > .mw-loading-surface { background: var(--surface); }
-.mw-theme :is(input, textarea)::placeholder { color: var(--text-muted); opacity: 1; }
-.mw-theme .sf-workshop { color-scheme: inherit; }
-.dark .mw-theme .mw-switch { background: #3a506b; border-color: #617a99; }
-.dark .mw-theme .mw-switch:checked { background: var(--primary); border-color: var(--primary); }
-.dark .mw-theme .mw-tab:hover:not(:disabled) { background: var(--surface-hover); }
-.dark .mw-theme .mw-tab-active { background: var(--surface-selected); box-shadow: inset 0 0 0 1px var(--border); }
-.dark .mw-theme .mw-control:disabled { opacity: 1; color: var(--text-muted); }
-.dark .mw-theme .mw-dialog::backdrop { background: #030c1baa; }
-.dark .mw-theme .sf-item-emblem { background: var(--rarity-unique-bg); color: var(--warning); border-color: var(--rarity-unique); }
-.dark .mw-theme .sf-star-trail { color: var(--warning); }
-.dark .mw-theme .flame-chart-bar { fill: var(--chart-bar); }
-.dark .mw-theme .flame-chart-bar.is-active, .dark .mw-theme .flame-chart-bar:focus { fill: var(--purple); }
-.dark .mw-theme .bug-success { border-color: var(--success-ink); }
-.dark .mw-theme .workshop-upgrade-plan .flame-type-badge { background: var(--tool-orange); border-color: var(--border); }
-.dark .mw-theme :is(.workshop-upgrade-plan,.workshop-equipment) button.primary { background: var(--button-fill); color: var(--button-text); }
-.dark .mw-theme .workshop-equipment-slots .equipment-slot-unavailable { opacity: .7; }
-.dark .mw-theme :is(.sf-table, .workshop-upgrade-plan table) tbody tr { background: var(--surface-input); }
-.dark .mw-theme :is(.sf-table, .workshop-upgrade-plan table) tbody tr:nth-child(even) { background: #12233a; }
-.dark .mw-theme :is(.sf-table, .workshop-upgrade-plan table) tbody tr:hover { background: #19304b; }
-.dark .mw-theme .sf-table thead { background: var(--surface-table-header); }
-.dark .mw-theme .workshop-upgrade-plan thead th { background: var(--surface-table-header); }
-.dark .mw-theme .mw-legacy-page { background: var(--surface); color: var(--text-primary); }
-.mw-prerender { min-height: 100svh; background: var(--background); }
-.mw-prerender :is(.page-header p,.main-navigation a) { color: var(--text-secondary); }
-.mw-prerender .page-header h1 { color: var(--text-primary); }
-.mw-prerender .main-navigation a[aria-current='page'] { color: var(--primary-ink); }
-@media (prefers-reduced-motion: no-preference) {
-  .mw-theme, .mw-theme :is(.mw-navbar,.mw-card,.mw-stat,.mw-control,.page-guide,.equipment-slot,.mw-dialog,.mw-tabs) { transition: background-color 250ms ease-out, color 250ms ease-out, border-color 250ms ease-out; }
+.mw-theme .mw-navbar,
+.mw-theme .workshop-about {
+  background: var(--surface-glass);
 }
-@media (prefers-reduced-motion: reduce) { .mw-background > div { transition: none; } }
+.mw-theme .mw-button-primary {
+  background: var(--button-fill);
+  color: var(--button-text);
+}
+.mw-theme .mw-button-primary:hover:not(:disabled) {
+  background: var(--button-hover);
+}
+.mw-theme .mw-tooltip,
+.mw-theme .equipment-slot-tooltip {
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  border: 1px solid var(--border);
+}
+.dark .mw-theme .equipment-slot-tooltip {
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+}
+.mw-theme .mw-switch::before {
+  background: #fff;
+}
+.mw-theme .mw-skeleton-line {
+  background-image: linear-gradient(
+    100deg,
+    var(--shimmer-base) 20%,
+    var(--shimmer-highlight) 45%,
+    var(--shimmer-base) 70%
+  );
+}
+.mw-theme .mw-calculator-loading-overlay {
+  background: var(--loading-overlay);
+}
+.mw-theme .mw-calculator-loading-overlay > .mw-loading-surface {
+  background: var(--surface);
+}
+.mw-theme :is(input, textarea)::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+.mw-theme .sf-workshop {
+  color-scheme: inherit;
+}
+.dark .mw-theme .mw-switch {
+  background: #3a506b;
+  border-color: #617a99;
+}
+.dark .mw-theme .mw-switch:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.dark .mw-theme .mw-tab:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.dark .mw-theme .mw-tab-active {
+  background: var(--surface-selected);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.dark .mw-theme .mw-control:disabled {
+  opacity: 1;
+  color: var(--text-muted);
+}
+.dark .mw-theme .mw-dialog::backdrop {
+  background: #030c1baa;
+}
+.dark .mw-theme .sf-item-emblem {
+  background: var(--rarity-unique-bg);
+  color: var(--warning);
+  border-color: var(--rarity-unique);
+}
+.dark .mw-theme .sf-star-trail {
+  color: var(--warning);
+}
+.dark .mw-theme .flame-chart-bar {
+  fill: var(--chart-bar);
+}
+.dark .mw-theme .flame-chart-bar.is-active,
+.dark .mw-theme .flame-chart-bar:focus {
+  fill: var(--purple);
+}
+.dark .mw-theme .bug-success {
+  border-color: var(--success-ink);
+}
+.dark .mw-theme .workshop-upgrade-plan .flame-type-badge {
+  background: var(--tool-orange);
+  border-color: var(--border);
+}
+.dark
+  .mw-theme
+  :is(.workshop-upgrade-plan, .workshop-equipment)
+  button.primary {
+  background: var(--button-fill);
+  color: var(--button-text);
+}
+.dark .mw-theme .workshop-equipment-slots .equipment-slot-unavailable {
+  opacity: 0.7;
+}
+.dark .mw-theme :is(.sf-table, .workshop-upgrade-plan table) tbody tr {
+  background: var(--surface-input);
+}
+.dark
+  .mw-theme
+  :is(.sf-table, .workshop-upgrade-plan table)
+  tbody
+  tr:nth-child(even) {
+  background: #12233a;
+}
+.dark .mw-theme :is(.sf-table, .workshop-upgrade-plan table) tbody tr:hover {
+  background: #19304b;
+}
+.dark .mw-theme .sf-table thead {
+  background: var(--surface-table-header);
+}
+.dark .mw-theme .workshop-upgrade-plan thead th {
+  background: var(--surface-table-header);
+}
+
+.mw-prerender {
+  min-height: 100svh;
+  background: var(--background);
+}
+.mw-prerender :is(.page-header p, .main-navigation a) {
+  color: var(--text-secondary);
+}
+.mw-prerender .page-header h1 {
+  color: var(--text-primary);
+}
+.mw-prerender .main-navigation a[aria-current="page"] {
+  color: var(--primary-ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mw-theme,
+  .mw-theme
+    :is(
+      .mw-navbar,
+      .mw-card,
+      .mw-stat,
+      .mw-control,
+      .page-guide,
+      .equipment-slot,
+      .mw-dialog,
+      .mw-tabs
+    ) {
+    transition:
+      background-color 250ms ease-out,
+      color 250ms ease-out,
+      border-color 250ms ease-out;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mw-background > div {
+    transition: none;
+  }
+}

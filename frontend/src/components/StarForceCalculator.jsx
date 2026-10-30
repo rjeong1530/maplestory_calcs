@@ -110,7 +110,7 @@ export default function StarForceCalculator({ planner, view, setView }) {
     <div className="sf-workshop">
       <SegmentedControl className="starforce-view-switch mb-6" label="Star Force view" value={view} onChange={setView}
         options={[{ value: 'estimate', label: 'Custom estimate' }, { value: 'strategies', label: 'Compare strategies' }]} />
-      <div className="mw-legacy-page" hidden={view !== 'strategies'}><StarForceStrategies form={form} onChange={update} planner={planner} /></div>
+      <div hidden={view !== 'strategies'}><StarForceStrategies form={form} onChange={update} planner={planner} /></div>
       <div hidden={view !== 'estimate'}>
         <StarForceEstimateView form={form} update={update} updateStarSetting={updateStarSetting} submit={submit}
           busy={busy} error={error} result={result} costRows={costRows} costsBusy={costsBusy} costsError={costsError} />

@@ -14,9 +14,9 @@ export function RarityBadge({ rarity, className, ...props }) {
 
 export function EquipmentSlot({ label, image, rarity, selected = false, disabled, className, ...props }) {
   const { reduced, transition } = useWorkshopMotion()
-  return <button {...props} type="button" disabled={disabled} aria-label={label} aria-pressed={selected}
+  return <button {...props} type="button" disabled={disabled} aria-label={rarity && !label?.toLowerCase().includes(rarity.toLowerCase()) ? `${label}, ${rarity}` : label} aria-pressed={selected}
     data-rarity={rarity?.toLowerCase()} className={cx('mw-slot', className)}><motion.span key={image || 'empty'} className="mw-slot-image"
-      initial={reduced || !image ? false : {opacity:0,scale:.95}} animate={{opacity:1,scale:1}} transition={transition}><ItemImage src={image} /></motion.span></button>
+      initial={reduced || !image ? false : {opacity:0,scale:.95}} animate={{opacity:1,scale:1}} transition={transition}><ItemImage src={image} /></motion.span>{rarity && <span className="mw-slot-rarity" aria-hidden="true">{rarity}</span>}</button>
 }
 
 export function ItemCard({ name, image, rarity, detail, children, className, ...props }) {

@@ -59,7 +59,7 @@ export function Tooltip({ content, children, className }) {
   return <span ref={trigger} className={cx('relative inline-flex', className)} tabIndex={0} aria-describedby={open ? id : undefined}
     onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)} onFocus={() => setOpen(true)}
     onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}
-    onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); setOpen(false) } }}>
+    onKeyDown={event => { if (event.key === 'Escape' && open) { event.preventDefault(); event.stopPropagation(); setOpen(false) } }}>
     {children}<AnimatePresence>{open && <motion.span ref={popup} id={id} role="tooltip" className="mw-tooltip" style={position}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={transition}>{content}</motion.span>}</AnimatePresence>
   </span>

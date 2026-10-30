@@ -1,45 +1,224 @@
-.mw-theme .flame-workspace { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.mw-theme .flame-form { min-width: 0; }
-.mw-theme .flame-form-panels { border: 0; padding: 0; margin: 0; min-width: 0; }
-.mw-theme .flame-setup, .mw-theme .flame-result { border-radius: 10px; box-shadow: none; padding: 20px; }
-.mw-theme .flame-subheading { margin: 20px 0 12px; font-size: 14px; }
-.mw-theme .flame-selection-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.mw-theme .flame-selection-fields > .mw-help { grid-column: 1 / -1; margin: 0; order: 1; }
-.mw-theme .flame-selection-fields > .flame-weapon-settings { grid-column: 1 / -1; margin: 0; padding: 12px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.mw-theme .flame-selection-fields > .flame-weapon-settings .mw-field { margin: 0; }
-.mw-theme .flame-weapon-settings > .mw-help { grid-column: 1 / -1; margin: 0; }
-.mw-theme .flame-workspace .mw-control { min-height: 38px; padding: 8px 10px; border-radius: 6px; }
-.mw-theme .flame-workspace .mw-requirement-row { border: 0; border-radius: 0; background: none; padding: 0; }
-.mw-theme .flame-workspace .mw-requirement-row input { font-size: 18px; }
-.mw-theme .flame-workspace .mw-section-title { font-size: 15px; }
-.mw-theme .flame-workspace .flame-section > div:first-child { margin-bottom: 12px; }
-.mw-theme .flame-selection > .mw-field, .mw-theme .flame-weapon-settings > .mw-field { margin-bottom: 16px; }
-.mw-theme .flame-weapon-settings, .mw-theme .flame-section { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px; }
-.mw-theme .flame-section { margin-bottom: 20px; }
-.mw-theme .flame-item-summary { display: flex; align-items: center; gap: 12px; }
-.mw-theme .flame-item-summary h3 { margin: 0 0 8px; font-size: 15px; color: var(--text-primary); }
-.mw-theme .flame-item-icon { display: grid; place-items: center; flex-shrink: 0; width: 52px; height: 52px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-secondary); color: var(--primary); font-size: 30px; }
-.mw-theme .flame-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.mw-theme .flame-tags span { padding: 4px 8px; border-radius: 6px; background: var(--surface-secondary); color: var(--text-secondary); font-size: 11px; }
-.mw-theme .flame-priorities { margin-bottom: 16px; }
-.mw-theme .flame-priorities span { color: var(--primary); border: 1px solid var(--border); }
-.mw-theme .flame-type-summary { display: flex; align-items: center; gap: 8px; text-transform: capitalize; font-size: 12px; color: var(--text-secondary); margin: 16px 0 0; }
-.mw-theme .flame-type-summary img { object-fit: contain; image-rendering: pixelated; }
-.mw-theme .flame-weights, .mw-theme .flame-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.mw-theme .flame-result-content { min-height: 300px; }
-.mw-theme .flame-outcome { padding: 16px 0 0; margin-top: 20px; border-top: 1px solid var(--border); }
-.mw-theme .flame-outcome h3 { margin: 0 0 12px; font-size: 13px; }
-.mw-theme .flame-outcome strong { color: var(--primary); }
-.mw-theme .flame-error { color: var(--danger); background: var(--surface-secondary); padding: 16px; border-radius: 12px; overflow-wrap: anywhere; }
-@media (max-width: 899px) { .mw-theme .flame-workspace { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 479px) { .mw-theme .flame-selection-fields, .mw-theme .flame-selection-fields > .flame-weapon-settings { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 379px) { .mw-theme .flame-weights, .mw-theme .flame-metrics { grid-template-columns: minmax(0, 1fr); } }
-.mw-theme .flame-distribution { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--border); }
-.mw-theme .flame-distribution h3 { font-size: 14px; margin: 0 0 12px; }
-.mw-theme .flame-distribution svg { display: block; width: 100%; overflow: visible; }
-.mw-theme .flame-chart-label { fill: var(--text-secondary); font-size: 11px; }
-.mw-theme .flame-chart-grid { stroke: var(--border); stroke-dasharray: 3 3; }
-.mw-theme .flame-chart-bar { fill: #93c5fd; }
-.mw-theme .flame-chart-bar.is-active, .mw-theme .flame-chart-bar:focus { fill: var(--primary); stroke: var(--primary-ink); outline: none; }
-.mw-theme .flame-chart-target { stroke: var(--purple); stroke-width: 2; stroke-dasharray: 4 3; pointer-events: none; }
-.mw-theme .flame-chart-detail { min-height: 3em; font-size: 12px; color: var(--primary-ink); }
+.mw-theme .flame-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.mw-theme .flame-form {
+  min-width: 0;
+}
+.mw-theme .flame-form-panels {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.mw-theme .flame-setup,
+.mw-theme .flame-result {
+  border-radius: 10px;
+  box-shadow: none;
+  padding: 20px;
+}
+.mw-theme .flame-subheading {
+  margin: 20px 0 12px;
+  font-size: 14px;
+}
+.mw-theme .flame-selection-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.mw-theme .flame-selection-fields > .mw-help {
+  grid-column: 1 / -1;
+  margin: 0;
+  order: 1;
+}
+.mw-theme .flame-selection-fields > .flame-weapon-settings {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 12px 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.mw-theme .flame-selection-fields > .flame-weapon-settings .mw-field {
+  margin: 0;
+}
+.mw-theme .flame-weapon-settings > .mw-help {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.mw-theme .flame-workspace .mw-control {
+  min-height: 38px;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+.mw-theme .flame-workspace .mw-requirement-row {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+.mw-theme .flame-workspace .mw-requirement-row input {
+  font-size: 18px;
+}
+.mw-theme .flame-workspace .mw-section-title {
+  font-size: 15px;
+}
+.mw-theme .flame-workspace .flame-section > div:first-child {
+  margin-bottom: 12px;
+}
+.mw-theme .flame-selection > .mw-field,
+.mw-theme .flame-weapon-settings > .mw-field {
+  margin-bottom: 16px;
+}
+.mw-theme .flame-weapon-settings,
+.mw-theme .flame-section {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+.mw-theme .flame-section {
+  margin-bottom: 20px;
+}
+.mw-theme .flame-item-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mw-theme .flame-item-summary h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+.mw-theme .flame-item-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-secondary);
+  color: var(--primary);
+  font-size: 30px;
+}
+.mw-theme .flame-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mw-theme .flame-tags span {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.mw-theme .flame-priorities {
+  margin-bottom: 16px;
+}
+.mw-theme .flame-priorities span {
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+.mw-theme .flame-type-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: capitalize;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 16px 0 0;
+}
+.mw-theme .flame-type-summary img {
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.mw-theme .flame-weights,
+.mw-theme .flame-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.mw-theme .flame-result-content {
+  min-height: 300px;
+}
+.mw-theme .flame-outcome {
+  padding: 16px 0 0;
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.mw-theme .flame-outcome h3 {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+.mw-theme .flame-outcome strong {
+  color: var(--primary);
+}
+.mw-theme .flame-error {
+  color: var(--danger);
+  background: var(--surface-secondary);
+  padding: 16px;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 899px) {
+  .mw-theme .flame-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 479px) {
+  .mw-theme .flame-selection-fields,
+  .mw-theme .flame-selection-fields > .flame-weapon-settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 379px) {
+  .mw-theme .flame-weights,
+  .mw-theme .flame-metrics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.mw-theme .flame-distribution {
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.mw-theme .flame-distribution h3 {
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+.mw-theme .flame-distribution svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.mw-theme .flame-chart-label {
+  fill: var(--text-secondary);
+  font-size: 11px;
+}
+.mw-theme .flame-chart-grid {
+  stroke: var(--border);
+  stroke-dasharray: 3 3;
+}
+.mw-theme .flame-chart-bar {
+  fill: #93c5fd;
+}
+.mw-theme .flame-chart-bar.is-active,
+.mw-theme .flame-chart-bar:focus {
+  fill: var(--primary);
+  stroke: var(--primary-ink);
+  outline: none;
+}
+.mw-theme .flame-chart-target {
+  stroke: var(--purple);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+  pointer-events: none;
+}
+.mw-theme .flame-chart-detail {
+  min-height: 3em;
+  font-size: 12px;
+  color: var(--primary-ink);
+}

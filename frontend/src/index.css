@@ -5,11 +5,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-maple: #e5b567;
-  --color-ink: #191918;
-  --color-surface: #222220;
-  --color-rule: #41413a;
-  --color-muted: #b3b1a6;
+  --color-accent: var(--primary-ink, #1d4ed8);
+  --color-input: var(--surface-input, #fff);
+  --color-surface: var(--surface-secondary, #f5faff);
+  --color-outline: var(--border, #d6e6f5);
+  --color-subtle: var(--text-secondary, #66758c);
   --font-sans: "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: Consolas, "Liberation Mono", monospace;
 }
@@ -18,9 +18,11 @@
 /* Keep native heading/list/form defaults instead of introducing a Preflight reset. */
 @layer base {
   :root {
-    @apply font-sans text-[#eeede6] bg-ink [font-synthesis:none] [text-rendering:optimizeLegibility] antialiased scheme-dark;
+    @apply font-sans text-[var(--text-primary)] bg-input [font-synthesis:none] [text-rendering:optimizeLegibility] antialiased;
   }
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     @apply box-border border-0 border-solid;
   }
   body {
@@ -29,23 +31,33 @@
   main {
     @apply max-w-290 m-auto px-7 pt-6 pb-12;
   }
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     @apply [font:inherit] rounded-sm;
   }
   button {
-    @apply cursor-pointer border border-solid border-rule py-2.75 px-3.5 text-[#eeede6] bg-[#302f29];
+    @apply cursor-pointer border border-solid border-outline py-2.75 px-3.5 text-[var(--text-primary)] bg-[var(--surface-secondary)];
   }
   button:hover:not(:disabled) {
-    @apply bg-[#3c3a32];
+    @apply bg-[var(--surface-hover)];
   }
   button:disabled {
     @apply cursor-not-allowed opacity-50;
   }
-  button:focus-visible, input:focus-visible, select:focus-visible,
-  textarea:focus-visible, a:focus-visible, summary:focus-visible {
-    @apply outline-2 outline-solid outline-maple outline-offset-3;
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  a:focus-visible,
+  summary:focus-visible {
+    @apply outline-2 outline-solid outline-accent outline-offset-3;
   }
-  h1, h2, h3, p {
+  h1,
+  h2,
+  h3,
+  p {
     @apply mt-0;
   }
   h1 {
@@ -64,10 +76,12 @@
     @apply text-[18px] font-[650] p-0 mb-6;
   }
   label {
-    @apply flex flex-col gap-2.25 text-[12px] font-semibold text-[#d0cec3] min-w-0;
+    @apply flex flex-col gap-2.25 text-[12px] font-semibold text-[var(--text-secondary)] min-w-0;
   }
-  input, select, textarea {
-    @apply w-full min-w-0 py-3 px-2.5 border border-solid border-rule bg-ink text-[#eeede6];
+  input,
+  select,
+  textarea {
+    @apply w-full min-w-0 py-3 px-2.5 border border-solid border-outline bg-input text-[var(--text-primary)];
   }
   textarea {
     @apply p-3 rounded-md leading-[1.6] resize-y;
@@ -79,19 +93,21 @@
     @apply w-full border-collapse text-[14px] mt-7;
   }
   caption {
-    @apply text-left text-muted text-[12px] mb-3.75;
+    @apply text-left text-subtle text-[12px] mb-3.75;
   }
   th {
-    @apply text-[11px] uppercase tracking-[0.06em] text-muted;
+    @apply text-[11px] uppercase tracking-[0.06em] text-subtle;
   }
-  td, th {
-    @apply text-left py-3.25 px-0 border-b border-solid border-rule;
+  td,
+  th {
+    @apply text-left py-3.25 px-0 border-b border-solid border-outline;
   }
-  td:last-child, th:last-child {
+  td:last-child,
+  th:last-child {
     @apply text-right tabular-nums;
   }
   footer {
-    @apply mt-7 text-muted text-[12px] leading-[1.6];
+    @apply mt-7 text-subtle text-[12px] leading-[1.6];
   }
   @media (max-width: 480px) {
     main {

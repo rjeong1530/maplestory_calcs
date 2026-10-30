@@ -112,20 +112,20 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
   }
 
   return (
-    <div className="equipment-analysis border-t border-solid border-t-rule py-3 px-0 @container
+    <div className="equipment-analysis border-t border-solid border-t-outline py-3 px-0 @container
         @min-[640px]:[&_.equipment-analysis-sections]:grid-cols-2 @min-[640px]:[&_.equipment-analysis-sections]:gap-6
         [&_.equipment-approach-link]:inline-flex [&_.equipment-approach-link]:items-center
         [&_.equipment-approach-link]:justify-between [&_.equipment-approach-link]:gap-5
         [&_.equipment-approach-link]:max-w-full [&_.equipment-approach-link]:mb-3 [&_.equipment-approach-link]:py-2.75
         [&_.equipment-approach-link]:px-3.5 [&_.equipment-approach-link]:border
-        [&_.equipment-approach-link]:border-solid [&_.equipment-approach-link]:border-[#38685f]
-        [&_.equipment-approach-link]:rounded-sm [&_.equipment-approach-link]:bg-[#172d2c]
-        [&_.equipment-approach-link]:text-[#a8eadb] [&_.equipment-approach-link]:text-[13px]
+        [&_.equipment-approach-link]:border-solid [&_.equipment-approach-link]:border-[var(--border)]
+        [&_.equipment-approach-link]:rounded-sm [&_.equipment-approach-link]:bg-[var(--surface-secondary)]
+        [&_.equipment-approach-link]:text-[var(--success-ink)] [&_.equipment-approach-link]:text-[13px]
         [&_.equipment-approach-link]:font-semibold [&_.equipment-approach-link]:leading-[1.5]
         [&_.equipment-approach-link]:text-left
         [&_.equipment-approach-link]:[transition:background-color_150ms_ease,_border-color_150ms_ease]
-        [&_.equipment-approach-link:hover:not(:disabled)]:bg-[#203d38]
-        [&_.equipment-approach-link:hover:not(:disabled)]:border-[#67b5a2] [&_.equipment-mode-table]:min-w-0
+        [&_.equipment-approach-link:hover:not(:disabled)]:bg-[var(--surface-selected)]
+        [&_.equipment-approach-link:hover:not(:disabled)]:border-[var(--success-ink)] [&_.equipment-mode-table]:min-w-0
         [&_.equipment-mode-table]:table-fixed [&_.equipment-mode-table]:text-[12px]
         [&_.equipment-mode-table_th]:w-[50%] [&_.equipment-mode-table_th]:py-1.5 [&_.equipment-mode-table_th]:px-1
         [&_.equipment-mode-table_td]:w-[50%] [&_.equipment-mode-table_td]:py-1.5 [&_.equipment-mode-table_td]:px-1
@@ -148,17 +148,17 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                 </option>)}
               </select>
             </label>
-            {item.minimumCooldownSeconds > 0 && <p className="hint text-[12px] text-muted mb-4.5">
+            {item.minimumCooldownSeconds > 0 && <p className="hint text-[12px] text-subtle mb-4.5">
               Upgrade rankings require at least {item.minimumCooldownSeconds}s cooldown reduction,
               reserving at least {Math.ceil(item.minimumCooldownSeconds / 2)} potential line(s) for cooldown.
               Rolls below this minimum never count as upgrades. This does not change your recorded current lines.
               Use Black cubes to keep your existing hat potential while searching; individual lines are not physically locked during cubing.
             </p>}
           </>}
-          {optionsError ? <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{optionsError}</p>
+          {optionsError ? <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{optionsError}</p>
             : !availableOptions ? <LoadingStatus>Loading potential options…</LoadingStatus>
               : !availableOptions.potential.available ? (
-                <p className="hint text-[12px] text-muted mb-4.5">No potential chart is available for this equipment and level.</p>
+                <p className="hint text-[12px] text-subtle mb-4.5">No potential chart is available for this equipment and level.</p>
               ) : (
                 <div className="current-potential-lines [&_.current-stat-row]:grid-cols-[minmax(0,_1fr)_68px] [&_.current-stat-row]:gap-1.5
         [&_.current-stat-row]:my-1.75 [&_.current-stat-row]:mx-0 [&_.current-stat-row_label]:gap-1.25
@@ -198,8 +198,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                   })}
                 </div>
               )}
-          {canStarForce && !secondCopy && <details className="equipment-mode-details mt-4 border border-solid border-rule rounded-sm py-2.5 px-3 [&_>_summary]:cursor-pointer
-        [&_>_summary]:text-[#d0cec3] [&_>_summary]:text-[13px] [&_>_summary]:font-semibold [&[open]_>_summary]:mb-3
+          {canStarForce && !secondCopy && <details className="equipment-mode-details mt-4 border border-solid border-outline rounded-sm py-2.5 px-3 [&_>_summary]:cursor-pointer
+        [&_>_summary]:text-[var(--text-secondary)] [&_>_summary]:text-[13px] [&_>_summary]:font-semibold [&[open]_>_summary]:mb-3
         [&_>_summary:focus-visible]:outline-offset-[4px]">
           <summary>Star Force modes & safeguards</summary>
           <button type="button" className="equipment-approach-link [&_svg]:shrink-0" onClick={onOpenApproaches}>
@@ -208,7 +208,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
               <path d="M4 10h12m-5-5 5 5-5 5" className="stroke-current stroke-[1.6] [stroke-linecap:round] [stroke-linejoin:round]" />
             </svg>
           </button>
-          <p className="hint text-[12px] text-muted mb-4.5">Choose the mode for each star upgrade. These choices apply to upgrade order costs,
+          <p className="hint text-[12px] text-subtle mb-4.5">Choose the mode for each star upgrade. These choices apply to upgrade order costs,
             including recovery. Safeguard at 15–17 stars uses Mode 1 and prevents booms.</p>
           <div className="overflow-x-auto">
             <table className="starforce-mode-table min-w-110 m-0 [@media(max-width:480px)]:w-full [@media(max-width:480px)]:min-w-0
@@ -256,11 +256,11 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
         [&_>_div:first-child]:basis-[100%] [&_.hint]:m-0 [&_.hint]:text-[11px]" aria-label="Current Star Force">
         <div>
           <h4>Current Star Force</h4>
-          <p className="hint text-[12px] text-muted mb-4.5">Maximum for level {item.config.equipment_level}: {maximumStarForce}★</p>
+          <p className="hint text-[12px] text-subtle mb-4.5">Maximum for level {item.config.equipment_level}: {maximumStarForce}★</p>
         </div>
         <label className="current-starforce-control min-w-32.5 m-0">Current stars
           <span className="current-starforce-input flex items-center gap-2 [&_input]:w-20 [&_input]:py-1.75 [&_input]:px-2
-        [&_>_span]:text-muted [&_>_span]:text-[12px] [&_>_span]:whitespace-nowrap">
+        [&_>_span]:text-subtle [&_>_span]:text-[12px] [&_>_span]:whitespace-nowrap">
             <input type="number" min="0" max={maximumStarForce} step="1"
               aria-label="Current Star Force"
               value={currentStarForce} onChange={event => updateStarForce(event.target.value)} />
@@ -288,30 +288,30 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
           <small>Astra secondaries default to 1 billion mesos. You can override this.</small>
         </label>
         {isAstraSecondary(item, slot)
-          ? <p className="hint text-[12px] text-muted mb-4.5">Astra secondaries cannot be laddered.</p>
+          ? <p className="hint text-[12px] text-subtle mb-4.5">Astra secondaries cannot be laddered.</p>
           : <EquipmentLaddering item={item} cap={maximumStarForce} onChange={onChange} />}
         </>}
-      </section> : <p className="hint text-[12px] text-muted mb-4.5">Starforce is not supported for this equipment.</p>}
+      </section> : <p className="hint text-[12px] text-subtle mb-4.5">Starforce is not supported for this equipment.</p>}
 
-        <section className="col-span-full border-t border-rule pt-4">
+        <section className="col-span-full border-t border-outline pt-4">
           <h4>Current flames</h4>
-          {!supportsFlames ? <p className="hint text-[12px] text-muted mb-4.5">Flames are not supported for this slot.</p>
-            : optionsError ? <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{optionsError}</p>
+          {!supportsFlames ? <p className="hint text-[12px] text-subtle mb-4.5">Flames are not supported for this slot.</p>
+            : optionsError ? <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{optionsError}</p>
               : !availableOptions ? <LoadingStatus>Loading flame options…</LoadingStatus>
                 : (
                   <>
-                    {item.needsFlameType && !secondCopy && <label className="flame-checkbox flex-row items-center gap-2 mt-4.5 [&_input]:w-4 [&_input]:h-4 [&_input]:accent-maple [&_input]:m-0">
+                    {item.needsFlameType && !secondCopy && <label className="flame-checkbox flex-row items-center gap-2 mt-4.5 [&_input]:w-4 [&_input]:h-4 [&_input]:accent-accent [&_input]:m-0">
                         <input type="checkbox" checked={bossEquipment}
                           onChange={event => updateBossEquipment(event.target.checked)} />
                         Boss / special equipment
                       </label>}
-                    <div className="flame-tier-ranges flex flex-wrap gap-1.5 my-3 mx-0 [&_span]:border [&_span]:border-solid [&_span]:border-rule
-        [&_span]:rounded-[999px] [&_span]:py-1 [&_span]:px-2 [&_span]:text-[#d0cec3] [&_span]:text-[10px]">
+                    <div className="flame-tier-ranges flex flex-wrap gap-1.5 my-3 mx-0 [&_span]:border [&_span]:border-solid [&_span]:border-outline
+        [&_span]:rounded-[999px] [&_span]:py-1 [&_span]:px-2 [&_span]:text-[var(--text-secondary)] [&_span]:text-[10px]">
                       {Object.entries(availableOptions.flame_tier_ranges).map(([type, [min, max]]) => (
                         <span key={type}>{type}: Tiers {min}–{max}</span>
                       ))}
                     </div>
-                    <p className="hint text-[12px] text-muted mb-4.5">Select up to four cells to record this item's current flame lines.</p>
+                    <p className="hint text-[12px] text-subtle mb-4.5">Select up to four cells to record this item's current flame lines.</p>
                     <div className="max-w-full">
                       <table className="flame-values-table table-fixed mt-3 mx-0 mb-0 text-[11px] [&_th]:py-1.25 [&_th]:px-0.5 [&_th]:whitespace-normal
         [&_th]:[overflow-wrap:anywhere] [&_th]:text-center [&_td]:py-1.25 [&_td]:px-0.5 [&_td]:whitespace-normal
@@ -336,8 +336,8 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                                     <td key={stage}>
                                       {stageValue ? <button type="button"
                                         className="flame-value-cell w-full min-w-0 py-1.75 px-0.5 whitespace-normal [overflow-wrap:anywhere] border-transparent
-        bg-transparent text-[11px] tabular-nums [&[aria-pressed='true']]:text-[#201b12]
-        [&[aria-pressed='true']]:border-maple [&[aria-pressed='true']]:bg-maple [&:disabled]:opacity-40"
+        bg-transparent text-[11px] tabular-nums [&[aria-pressed='true']]:text-[var(--surface-secondary)]
+        [&[aria-pressed='true']]:border-accent [&[aria-pressed='true']]:bg-accent [&:disabled]:opacity-40"
                                         aria-pressed={isSelected}
                                         aria-label={`${FLAME_LABELS[row.option] || row.option}, tier ${stage}: ${flameValueText(stageValue.values, row.option)}`}
                                         disabled={!isSelected && flameLines.length >= 4
@@ -353,11 +353,11 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                         </tbody>
                       </table>
                     </div>
-                    <div className="current-flame-totals mt-3.5 py-2.5 px-3 border border-solid border-rule rounded-sm bg-ink [&_h5]:mt-0
-        [&_h5]:mx-0 [&_h5]:mb-2 [&_h5]:text-muted [&_h5]:text-[11px] [&_h5]:uppercase [&_h5]:tracking-[0.04em]
+                    <div className="current-flame-totals mt-3.5 py-2.5 px-3 border border-solid border-outline rounded-sm bg-input [&_h5]:mt-0
+        [&_h5]:mx-0 [&_h5]:mb-2 [&_h5]:text-subtle [&_h5]:text-[11px] [&_h5]:uppercase [&_h5]:tracking-[0.04em]
         [&_ul]:flex [&_ul]:flex-wrap [&_ul]:gap-1.5 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0 [&_li]:flex [&_li]:gap-1.5
-        [&_li]:items-center [&_li]:border [&_li]:border-solid [&_li]:border-rule [&_li]:rounded-[999px] [&_li]:py-1
-        [&_li]:px-2 [&_li]:text-[#d0cec3] [&_li]:text-[11px] [&_li_strong]:text-maple [&_li_strong]:tabular-nums
+        [&_li]:items-center [&_li]:border [&_li]:border-solid [&_li]:border-outline [&_li]:rounded-[999px] [&_li]:py-1
+        [&_li]:px-2 [&_li]:text-[var(--text-secondary)] [&_li]:text-[11px] [&_li_strong]:text-accent [&_li_strong]:tabular-nums
         [&_.hint]:m-0 [&_.hint]:text-[11px]" aria-live="polite">
                       <h5>Selected flame totals</h5>
                       {Object.keys(flameTotals).length
@@ -371,7 +371,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                               </li>
                             ))}
                           </ul>
-                        : <p className="hint text-[12px] text-muted mb-4.5">Select flame values to see their combined totals.</p>}
+                        : <p className="hint text-[12px] text-subtle mb-4.5">Select flame values to see their combined totals.</p>}
                     </div>
                   </>
                 )}

@@ -55,3 +55,6 @@ coverage/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Personal UI migration and audit notes
+/local-ui-notes/

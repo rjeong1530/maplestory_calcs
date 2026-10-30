@@ -1,79 +1,413 @@
-.mw-theme .workshop-upgrade-plan { margin-top: 24px; color: var(--text-primary); min-width: 0; }
-.mw-theme .workshop-upgrade-plan > h2 { font-size: clamp(22px, 3vw, 30px); color: var(--text-primary); margin: 8px 0; }
-.mw-theme .workshop-upgrade-plan > .eyebrow { color: var(--primary-ink); }
-.mw-theme .upgrade-subtitle { color: var(--text-secondary); margin: 8px 0 16px; }
-.mw-theme .upgrade-workshop-layout { display: grid; grid-template-columns: minmax(240px, 290px) minmax(0, 1fr); gap: 20px; align-items: start; }
-.mw-theme .workshop-upgrade-plan .mw-card { padding: 20px; min-width: 0; }
-.mw-theme .workshop-upgrade-plan :is(h3,h4,label,legend,strong) { color: var(--text-primary); }
-.mw-theme .workshop-upgrade-plan h3 { font-size: 17px; margin: 0 0 16px; }
-.mw-theme .workshop-upgrade-plan :is(.hint,small,.cube-price) { color: var(--text-secondary); }
-.mw-theme .workshop-upgrade-plan .hint { line-height: 1.6; }
-.mw-theme .upgrade-settings-sidebar > p { font-size: 12px; line-height: 1.6; }
-.mw-theme .upgrade-settings-sidebar fieldset { border: 0; padding: 0; min-width: 0; }
-.mw-theme .upgrade-settings-sidebar .upgrade-categories { display: grid; gap: 10px; }
-.mw-theme .upgrade-settings-sidebar .upgrade-categories label { display: flex; flex-direction: row; justify-content: flex-start; align-items: center; gap: 8px; }
-.mw-theme .upgrade-settings-sidebar .upgrade-categories input { margin: 0; width: 16px; height: 16px; }
-.mw-theme .upgrade-settings-sidebar label { font-size: 12px; }
-.mw-theme .upgrade-settings-sidebar :is(input:not([type='checkbox']),select) { background: var(--surface-input); color: var(--text-primary); border: 1px solid var(--border); border-radius: 7px; width: 100%; padding: 10px; }
-.mw-theme .upgrade-settings-sidebar input[type='checkbox'] { accent-color: var(--primary); }
-.mw-theme .upgrade-settings-sidebar .upgrade-controls { display: grid; gap: 10px; }
-.mw-theme .upgrade-settings-sidebar .upgrade-controls label { min-width: 0; }
-.mw-theme .upgrade-settings-sidebar .upgrade-weights { grid-template-columns: minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
-.mw-theme .upgrade-settings-sidebar .starforce-safeguard-control { justify-content: flex-start; }
-.mw-theme .workshop-upgrade-plan button { background: var(--surface-secondary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 7px; }
-.mw-theme .workshop-upgrade-plan button.primary { background: var(--primary); color: white; border-color: var(--primary); }
-.mw-theme .workshop-upgrade-plan button:hover:not(:disabled) { background: var(--surface-hover); color: var(--primary-ink); }
-.mw-theme .workshop-upgrade-plan button:disabled { opacity: .5; }
-.mw-theme .workshop-upgrade-plan .upgrade-category-tabs { background: var(--surface-secondary); border-color: var(--border); }
-.mw-theme .workshop-upgrade-plan .upgrade-category-tabs button { color: var(--text-secondary); padding: 10px 12px; }
-.mw-theme .workshop-upgrade-plan button[aria-pressed='true'] { background: var(--surface-hover); color: var(--primary-ink); border-color: var(--primary); }
-.mw-theme .workshop-upgrade-plan .upgrade-notes { color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 16px; }
-.mw-theme .workshop-upgrade-plan .error { background: var(--danger-bg); color: var(--danger-ink); }
-.mw-theme .upgrade-table-region { max-width: 100%; overflow-x: auto; }
-.mw-theme .workshop-upgrade-plan table { color: var(--text-primary); border-collapse: collapse; width: 100%; }
-.mw-theme .workshop-upgrade-plan :is(th,td) { border-color: var(--border); }
-.mw-theme .workshop-upgrade-plan thead th { color: var(--text-secondary); background: var(--surface-secondary); font-size: 11px; }
-.mw-theme .workshop-upgrade-plan tbody tr:nth-child(odd) { background: var(--surface-secondary); }
-.mw-theme .workshop-upgrade-plan caption { color: var(--primary-ink); text-align: left; padding: 12px 0; font-size: 12px; }
-.mw-theme .workshop-rank-table { font-size: 12px; }
-.mw-theme .workshop-rank-table :is(th,td) { padding: 12px 8px; vertical-align: top; text-align: left; }
-.mw-theme .workshop-rank-table small { display: block; margin-top: 6px; font-weight: 400; }
-.mw-theme .workshop-upgrade-plan tbody th { color: var(--text-primary); text-transform: none; letter-spacing: normal; }
-.mw-theme .upgrade-ranking-context { margin: 12px 0; font-size: 12px; color: var(--text-secondary); }
-.mw-theme .upgrade-ranking-context summary { cursor: pointer; color: var(--primary-ink); }
-.mw-theme .upgrade-item-name { display: flex; align-items: center; gap: 8px; }
-.mw-theme .upgrade-item-name img { object-fit: contain; image-rendering: pixelated; flex-shrink: 0; }
-.mw-theme .upgrade-row-details { font-weight: 400; margin-top: 8px; min-width: 130px; }
-.mw-theme .upgrade-row-details summary { cursor: pointer; color: var(--primary-ink); }
-.mw-theme .upgrade-row-details p { font-size: 12px; }
-.mw-theme .upgrade-kind { display: inline-flex; align-items: center; gap: 4px; padding: 4px 6px; background: var(--surface-hover); color: var(--primary-ink); border-radius: 5px; font-size: 11px; }
-.mw-theme .upgrade-kind-potential { background: var(--rarity-epic-bg); color: var(--rarity-epic); }
-.mw-theme .upgrade-gain { color: var(--success-ink); }
-.mw-theme .workshop-upgrade-plan .upgrade-loss { color: var(--danger-ink); }
-.mw-theme .upgrade-improved { animation: upgrade-improvement .5s ease-out; }
-.mw-theme .workshop-upgrade-plan .flame-type-badge { background: #fff3e5; border-color: #ffd6a8; color: var(--text-primary); }
-.mw-theme .workshop-upgrade-plan .flame-order-item { color: var(--text-primary); }
-.mw-theme .workshop-upgrade-plan .flame-order-item:hover { background: var(--surface-secondary); outline-color: var(--primary); }
-.mw-theme .workshop-upgrade-plan .upgrade-step-details summary { color: var(--primary-ink); }
-@keyframes upgrade-improvement { from { box-shadow: inset 4px 0 var(--success); background: var(--rarity-legendary-bg); } to { box-shadow: inset 0 0 transparent; } }
-@media (max-width: 1100px) { .mw-theme .upgrade-workshop-layout { grid-template-columns: minmax(0, 1fr); } .mw-theme .upgrade-settings-sidebar .upgrade-weights { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 700px) {
-  .mw-theme .workshop-upgrade-plan .mw-card { padding: 16px; }
-  .mw-theme .workshop-upgrade-plan .upgrade-table { display: block; min-width: 0; table-layout: auto; }
-  .mw-theme .workshop-upgrade-plan .upgrade-table colgroup { display: none; }
-  .mw-theme .workshop-upgrade-plan .upgrade-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  .mw-theme .workshop-upgrade-plan .upgrade-table tbody { display: grid; gap: 12px; }
-  .mw-theme .workshop-upgrade-plan .upgrade-table tbody tr { display: block; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-  .mw-theme .workshop-upgrade-plan .upgrade-table tbody :is(td,th) { display: block; min-width: 0; white-space: normal; padding: 7px 0; border: 0; overflow-wrap: anywhere; }
-  .mw-theme .workshop-rank-table [data-label]::before { content: attr(data-label); display: block; font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
-  .mw-theme .overall-upgrade-table tbody td::before { display: block; color: var(--text-secondary); font-size: 11px; margin-bottom: 4px; }
-  .mw-theme .overall-upgrade-table td:nth-child(1)::before { content: 'Rank'; }
-  .mw-theme .overall-upgrade-table td:nth-child(3)::before { content: 'Starting score / stop at'; }
-  .mw-theme .overall-upgrade-table td:nth-child(4)::before { content: 'Expected score gain'; }
-  .mw-theme .overall-upgrade-table td:nth-child(5)::before { content: 'Expected booms'; }
-  .mw-theme .overall-upgrade-table td:nth-child(6)::before { content: 'Expected mesos'; }
-  .mw-theme .overall-upgrade-table td:nth-child(7)::before { content: 'Score gain / 100M'; }
-  .mw-theme .overall-upgrade-table td:nth-child(8)::before { content: 'Total mesos so far'; }
+.mw-theme .workshop-upgrade-plan {
+  margin-top: 24px;
+  color: var(--text-primary);
+  min-width: 0;
 }
-@media (max-width: 400px) { .mw-theme .upgrade-settings-sidebar .upgrade-weights { grid-template-columns: minmax(0, 1fr); } }
-@media (prefers-reduced-motion: reduce) { .mw-theme .upgrade-improved { animation: none; } }
+
+/* One flat workspace: compact settings above full-width recommendations. */
+.mw-theme .upgrade-workshop-layout {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: none;
+}
+.mw-theme .upgrade-settings-top {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px 20px;
+  align-items: start;
+  min-width: 0;
+}
+.mw-theme .upgrade-settings-heading { grid-column: span 2; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+.mw-theme .upgrade-settings-top .upgrade-settings-heading :is(h3,p) { margin: 0; }
+.mw-theme .upgrade-settings-help { grid-column: span 2; font-size: 12px; color: var(--text-secondary); }
+.mw-theme .upgrade-settings-help summary { cursor: pointer; color: var(--primary-ink); }
+.mw-theme .upgrade-settings-sidebar.upgrade-settings-top .upgrade-categories { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; }
+.mw-theme .upgrade-settings-top .upgrade-categories legend { font-size: 13px; margin-bottom: 0; }
+.mw-theme .upgrade-settings-top :is(.starforce-safeguard-control,.cube-sale-control,.upgrade-controls) { margin: 0; }
+.mw-theme .upgrade-settings-top > label:has(input[type='checkbox']) { align-self: center; }
+.mw-theme .upgrade-settings-top label { min-width: 0; }
+.mw-theme .upgrade-settings-top .upgrade-controls .hint { margin: 0; font-size: 11px; }
+.mw-theme .upgrade-weight-groups { grid-column: 1 / -1; display: grid; grid-template-columns: 3fr 4fr; gap: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.mw-theme.mw-shell .upgrade-settings-top .upgrade-weight-groups .upgrade-weights { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; border: 0; margin: 0; padding: 0; gap: 12px; }
+.mw-theme.mw-shell .upgrade-settings-top .upgrade-weight-groups .upgrade-weights:last-child { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.mw-theme .upgrade-settings-top .upgrade-weights legend { font-size: 13px; margin-bottom: 10px; }
+.mw-theme .upgrade-settings-top > button[type='submit'] { grid-column: 1 / -1; justify-self: end; width: auto; min-width: 220px; margin: 0; background: var(--button-fill); color: var(--button-text); }
+.mw-theme .upgrade-recommendations { min-width: 0; border-top: 1px solid var(--border); padding-top: 20px; }
+@media (max-width: 1024px) {
+  .mw-theme .upgrade-settings-top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mw-theme .upgrade-settings-heading, .mw-theme .upgrade-settings-help { grid-column: auto; }
+  .mw-theme .upgrade-weight-groups { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+@media (max-width: 599px) {
+  .mw-theme .upgrade-workshop-layout { padding: 16px; }
+  .mw-theme .upgrade-settings-top { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .mw-theme.mw-shell .upgrade-settings-top .upgrade-weight-groups .upgrade-weights,
+  .mw-theme.mw-shell .upgrade-settings-top .upgrade-weight-groups .upgrade-weights:last-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mw-theme .upgrade-settings-top > button[type='submit'] { width: 100%; min-width: 0; }
+}
+.mw-theme .workshop-upgrade-plan > h2 {
+  font-size: clamp(22px, 3vw, 30px);
+  color: var(--text-primary);
+  margin: 8px 0;
+}
+.mw-theme .workshop-upgrade-plan > .eyebrow {
+  color: var(--primary-ink);
+}
+.mw-theme .upgrade-subtitle {
+  color: var(--text-secondary);
+  margin: 8px 0 16px;
+}
+.mw-theme .upgrade-workshop-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.mw-theme .workshop-upgrade-plan .mw-card {
+  padding: 20px;
+  min-width: 0;
+}
+.mw-theme .workshop-upgrade-plan :is(h3, h4, label, legend, strong) {
+  color: var(--text-primary);
+}
+.mw-theme .workshop-upgrade-plan h3 {
+  font-size: 17px;
+  margin: 0 0 16px;
+}
+.mw-theme .workshop-upgrade-plan :is(.hint, small, .cube-price) {
+  color: var(--text-secondary);
+}
+.mw-theme .workshop-upgrade-plan .hint {
+  line-height: 1.6;
+}
+.mw-theme .upgrade-settings-sidebar > p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.mw-theme .upgrade-settings-sidebar fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.mw-theme .upgrade-settings-sidebar .upgrade-categories {
+  display: grid;
+  gap: 10px;
+}
+.mw-theme .upgrade-settings-sidebar .upgrade-categories label {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+.mw-theme .upgrade-settings-sidebar .upgrade-categories input {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+.mw-theme .upgrade-settings-sidebar label {
+  font-size: 12px;
+}
+.mw-theme .upgrade-settings-sidebar :is(input:not([type="checkbox"]), select) {
+  background: var(--surface-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  width: 100%;
+  padding: 10px;
+}
+.mw-theme .upgrade-settings-sidebar input[type="checkbox"] {
+  accent-color: var(--primary);
+}
+.mw-theme .upgrade-settings-sidebar .upgrade-controls {
+  display: grid;
+  gap: 10px;
+}
+.mw-theme .upgrade-settings-sidebar .upgrade-controls label {
+  min-width: 0;
+}
+.mw-theme .upgrade-settings-sidebar .upgrade-weights {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.mw-theme .upgrade-settings-sidebar .starforce-safeguard-control {
+  justify-content: flex-start;
+}
+.mw-theme .workshop-upgrade-plan button {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+.mw-theme .workshop-upgrade-plan button.primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.mw-theme .workshop-upgrade-plan button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--primary-ink);
+}
+.mw-theme .workshop-upgrade-plan button:disabled {
+  opacity: 0.5;
+}
+.mw-theme .workshop-upgrade-plan .upgrade-category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  width: 100%;
+}
+.mw-theme .workshop-upgrade-plan .upgrade-category-tabs button {
+  color: var(--text-secondary);
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.mw-theme .workshop-upgrade-plan .upgrade-category-tabs button[aria-pressed='true'] {
+  color: var(--primary-ink);
+  border-bottom-color: var(--primary-ink);
+  background: transparent;
+}
+.mw-theme .workshop-upgrade-plan .upgrade-category-tabs button:hover:not(:disabled) {
+  color: var(--primary-ink);
+  background: transparent;
+}
+.mw-theme .upgrade-results-controls { margin: 0 0 16px; }
+.mw-theme .workshop-upgrade-plan button[aria-pressed="true"] {
+  background: var(--surface-hover);
+  color: var(--primary-ink);
+  border-color: var(--primary);
+}
+.mw-theme .workshop-upgrade-plan .upgrade-notes {
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.mw-theme .workshop-upgrade-plan .error {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+}
+.mw-theme .upgrade-table-region {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.mw-theme .workshop-upgrade-plan table {
+  color: var(--text-primary);
+  border-collapse: collapse;
+  width: 100%;
+}
+.mw-theme .workshop-upgrade-plan :is(th, td) {
+  border-color: var(--border);
+}
+.mw-theme .workshop-upgrade-plan thead th {
+  color: var(--text-secondary);
+  background: var(--surface-secondary);
+  font-size: 11px;
+}
+.mw-theme .workshop-upgrade-plan tbody tr:nth-child(odd) {
+  background: var(--surface-secondary);
+}
+.mw-theme .workshop-upgrade-plan caption {
+  color: var(--primary-ink);
+  text-align: left;
+  padding: 12px 0;
+  font-size: 12px;
+}
+.mw-theme .workshop-rank-table {
+  font-size: 12px;
+}
+.mw-theme .workshop-rank-table :is(th, td) {
+  padding: 12px 8px;
+  vertical-align: top;
+  text-align: left;
+}
+.mw-theme .workshop-rank-table small {
+  display: block;
+  margin-top: 6px;
+  font-weight: 400;
+}
+.mw-theme .workshop-upgrade-plan tbody th {
+  color: var(--text-primary);
+  text-transform: none;
+  letter-spacing: normal;
+}
+.mw-theme .upgrade-ranking-context {
+  margin: 12px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.mw-theme .upgrade-ranking-context summary {
+  cursor: pointer;
+  color: var(--primary-ink);
+}
+.mw-theme .upgrade-item-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mw-theme .upgrade-item-name img {
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.mw-theme .upgrade-row-details {
+  font-weight: 400;
+  margin-top: 8px;
+  min-width: 130px;
+}
+.mw-theme .upgrade-row-details summary {
+  cursor: pointer;
+  color: var(--primary-ink);
+}
+.mw-theme .upgrade-row-details p {
+  font-size: 12px;
+}
+.mw-theme .upgrade-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--surface-hover);
+  color: var(--primary-ink);
+  border-radius: 5px;
+  font-size: 11px;
+}
+.mw-theme .upgrade-kind-potential {
+  background: var(--rarity-epic-bg);
+  color: var(--rarity-epic);
+}
+.mw-theme .upgrade-gain {
+  color: var(--success-ink);
+}
+.mw-theme .workshop-upgrade-plan .upgrade-loss {
+  color: var(--danger-ink);
+}
+.mw-theme .upgrade-improved {
+  animation: upgrade-improvement 0.5s ease-out;
+}
+.mw-theme .workshop-upgrade-plan .flame-type-badge {
+  background: #fff3e5;
+  border-color: #ffd6a8;
+  color: var(--text-primary);
+}
+.mw-theme .workshop-upgrade-plan .flame-order-item {
+  color: var(--text-primary);
+}
+.mw-theme .workshop-upgrade-plan .flame-order-item:hover {
+  background: var(--surface-secondary);
+  outline-color: var(--primary);
+}
+.mw-theme .workshop-upgrade-plan .upgrade-step-details summary {
+  color: var(--primary-ink);
+}
+@keyframes upgrade-improvement {
+  from {
+    box-shadow: inset 4px 0 var(--success);
+    background: var(--rarity-legendary-bg);
+  }
+  to {
+    box-shadow: inset 0 0 transparent;
+  }
+}
+@media (max-width: 1100px) {
+  .mw-theme .upgrade-workshop-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mw-theme .upgrade-settings-sidebar .upgrade-weights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .mw-theme .workshop-upgrade-plan .mw-card {
+    padding: 16px;
+  }
+  .mw-theme .workshop-upgrade-plan .upgrade-table {
+    display: block;
+    min-width: 0;
+    table-layout: auto;
+  }
+  .mw-theme .workshop-upgrade-plan .upgrade-table colgroup {
+    display: none;
+  }
+  .mw-theme .workshop-upgrade-plan .upgrade-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .mw-theme .workshop-upgrade-plan .upgrade-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+  .mw-theme .workshop-upgrade-plan .upgrade-table tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .mw-theme .workshop-upgrade-plan .upgrade-table tbody :is(td, th) {
+    display: block;
+    min-width: 0;
+    white-space: normal;
+    padding: 7px 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+  .mw-theme .workshop-rank-table [data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .mw-theme .overall-upgrade-table tbody td::before {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(1)::before {
+    content: "Rank";
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(3)::before {
+    content: "Starting score / stop at";
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(4)::before {
+    content: "Expected score gain";
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(5)::before {
+    content: "Expected booms";
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(6)::before {
+    content: "Expected mesos";
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(7)::before {
+    content: "Score gain / 100M";
+  }
+  .mw-theme .overall-upgrade-table td:nth-child(8)::before {
+    content: "Total mesos so far";
+  }
+}
+@media (max-width: 400px) {
+  .mw-theme .upgrade-settings-sidebar .upgrade-weights {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mw-theme .upgrade-improved {
+    animation: none;
+  }
+}

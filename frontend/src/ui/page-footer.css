@@ -1,23 +1,147 @@
-.mw-theme .workshop-guides { margin-top: 32px; }
-.mw-theme .page-guide { padding: 28px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow-card); color: var(--text-primary); }
-.mw-theme .page-guide-heading { margin-bottom: 24px; }
-.mw-theme .page-guide .eyebrow { color: var(--primary-ink); font-size: 11px; font-weight: 800; letter-spacing: .1em; }
-.mw-theme .page-guide h2 { color: var(--text-primary); font-size: 16px; line-height: 1.4; margin: 0 0 10px; }
-.mw-theme .page-guide-heading h2 { font-size: clamp(22px, 3vw, 28px); margin-top: 10px; }
-.mw-theme .page-guide p { margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.8; }
-.mw-theme .page-guide-sections { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; }
-.mw-theme .page-guide-sections > section { min-width: 0; padding-top: 20px; border-top: 1px solid var(--border); }
-.mw-theme .page-guide-sources { margin-top: 28px; padding: 20px; border: 1px solid var(--border); border-left: 3px solid var(--primary); border-radius: 12px; background: var(--surface-secondary); }
-.mw-theme .page-guide-source-links { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-top: 12px; }
-.mw-theme .page-guide a { color: var(--primary-ink); font-size: 13px; text-underline-offset: 4px; overflow-wrap: anywhere; }
-.mw-theme .page-guide-source-links a { display: inline-flex; align-items: center; min-height: 44px; }
-.mw-theme .page-guide a:hover { color: var(--primary-hover); }
-.mw-theme .page-guide-footer { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 24px; }
-.mw-theme .page-guide-related { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
-.mw-theme .page-guide-related a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 12px 16px; background: var(--surface-secondary); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; font-weight: 600; transition: background-color 160ms, border-color 160ms; }
-.mw-theme .page-guide-related a:hover { background: var(--surface-hover); border-color: var(--primary); }
-.mw-theme .page-guide-related a > span { color: var(--primary); }
-.mw-theme .workshop-about { margin-top: 24px; background: #f5faffd9; border-top: 3px solid var(--border); }
-.mw-theme .workshop-about h2 { font-size: 16px; }
-.mw-theme .workshop-about p { max-width: 900px; font-size: 13px; line-height: 1.8; }
-@media (max-width: 640px) { .mw-theme .page-guide { padding: 20px; } .mw-theme .page-guide-sections, .mw-theme .page-guide-related { grid-template-columns: 1fr; } .mw-theme .page-guide-sources { padding: 16px; } }
+.mw-theme .workshop-guides {
+  margin-top: 32px;
+}
+.mw-theme .page-guide {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  color: var(--text-primary);
+}
+.mw-theme .page-guide-heading {
+  margin-bottom: 24px;
+}
+.mw-theme .page-guide .eyebrow {
+  color: var(--primary-ink);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.mw-theme .page-guide h2 {
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0 0 10px;
+}
+.mw-theme .page-guide-heading h2 {
+  font-size: clamp(22px, 3vw, 28px);
+  margin-top: 10px;
+}
+.mw-theme .page-guide p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.mw-theme .page-guide-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 32px;
+}
+.mw-theme .page-guide-sections > section {
+  min-width: 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.mw-theme .page-guide-sources {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 12px;
+  background: var(--surface-secondary);
+}
+.mw-theme .page-guide-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin-top: 12px;
+}
+.mw-theme .page-guide a {
+  color: var(--primary-ink);
+  font-size: 13px;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.mw-theme .page-guide-source-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.mw-theme .page-guide a:hover {
+  color: var(--primary-hover);
+}
+.mw-theme .page-guide-footer {
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+.mw-theme .page-guide-related {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.mw-theme .page-guide-related a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px 16px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition:
+    background-color 160ms,
+    border-color 160ms;
+}
+.mw-theme .page-guide-related a:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+}
+.mw-theme .page-guide-related a > span {
+  color: var(--primary);
+}
+.mw-theme .workshop-about {
+  margin-top: 24px;
+  background: #f5faffd9;
+  border-top: 3px solid var(--border);
+}
+.mw-theme .workshop-about h2 {
+  font-size: 16px;
+}
+.mw-theme .workshop-about p {
+  max-width: 900px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+@media (max-width: 640px) {
+  .mw-theme .page-guide {
+    padding: 20px;
+  }
+  .mw-theme .page-guide-sections,
+  .mw-theme .page-guide-related {
+    grid-template-columns: 1fr;
+  }
+  .mw-theme .page-guide-sources {
+    padding: 16px;
+  }
+}
+
+.mw-prerender .page-header {
+  margin: 2rem 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.mw-prerender .page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+.mw-prerender .page-title h1 { margin: 0; }
+.mw-prerender .main-navigation { flex-wrap: wrap; }
