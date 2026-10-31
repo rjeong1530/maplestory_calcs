@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import EquipmentIcon from './EquipmentIcon'
 import { useMemo } from 'react'
 import { overallDisplayRows } from '../data/overallDisplayRows'
 import { useWorkshopMotion } from '../ui/motion'
@@ -7,7 +8,7 @@ import { MVP_RANKS, UPGRADE_CATEGORIES } from '../data/equipmentUpgrade'
 const score = new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 })
 const mesos = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 })
 
-export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
+export default function OverallUpgradeOrder({ plan, settings, cubeType, equipment }) {
   const { reduced, transition, entrance } = useWorkshopMotion()
   const steps = useMemo(() => overallDisplayRows(plan?.steps ?? []), [plan?.steps])
   return <section aria-label="Overall upgrade order">
@@ -63,7 +64,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
           </tr></thead>
           <tbody>{steps.map(entry => <motion.tr layout={reduced ? false : 'position'} {...entrance} transition={transition} key={entry.step}>
             <td>{entry.last_step != null ? `${entry.step}–${entry.last_step}` : entry.step}</td>
-            <th scope="row"><span aria-hidden="true" className="upgrade-type-icon">{entry.category === 'starforce' ? '★' : entry.category === 'flames' ? '🔥' : '◇'}</span> {entry.name}{entry.copy_label && ` — ${entry.copy_label}`}
+            <th scope="row"><div className="upgrade-item-name"><EquipmentIcon item={equipment?.[entry.slot]} /><span><span aria-hidden="true" className="upgrade-type-icon">{entry.category === 'starforce' ? '★' : entry.category === 'flames' ? '🔥' : '◇'}</span> {entry.name}{entry.copy_label && ` — ${entry.copy_label}`}</span></div>
               {entry.copy_label && <small>{entry.laddering ? 'Backup copy → equipped after this step' : 'Equipped copy'}</small>}
               <small>{entry.slot}{entry.equipment_level != null && ` · Lv. ${entry.equipment_level}`}</small>
               <small>{entry.category === 'flames' ? 'Black Flames'

@@ -140,7 +140,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
         </p>}
         </details>
         {category === 'overall' ? <OverallUpgradeOrder plan={result.overall_upgrade_order}
-          settings={settings} cubeType={settings.cube_type} />
+          settings={settings} cubeType={settings.cube_type} equipment={equipment} />
           : category === 'flames' ? <div className="grid gap-7">
           <div className="flame-type-toggle flex justify-center justify-self-center flex-wrap gap-2 [&_button]:justify-center
         [&_button]:w-13 [&_button]:h-13 [&_button]:p-2 [&_button]:inline-flex [&_button]:items-center [&_button]:gap-2
