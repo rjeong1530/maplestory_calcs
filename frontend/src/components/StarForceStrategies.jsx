@@ -1,4 +1,4 @@
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 import { LoadingButtonContent } from '../ui/loading'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { apiRequest } from '../api'
@@ -23,7 +23,7 @@ function Difference({ value, baseline }) {
 }
 
 function Metrics({ row, baseline }) {
-  return <dl className="strategy-metrics grid gap-2.5 [&_div]:flex [&_div]:justify-between [&_div]:gap-3 [&_dt]:text-subtle [&_dd]:m-0 [&_dd]:tabular-nums">
+  return <dl className="strategy-metrics grid [&_div]:flex [&_div]:justify-between [&_div]:gap-3 [&_dt]:text-subtle [&_dd]:m-0 [&_dd]:tabular-nums">
     {[
       ['enhancement_cost_mesos', 'Enhancement mesos', mesos],
       ['expected_replacement_cost_mesos', 'Replacement mesos', mesos],
@@ -136,7 +136,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
     <h2 id="strategy-heading">Compare Star Force strategies</h2>
     <p>Shining Star Force: <strong>on</strong> · MVP: <strong>none</strong> · Standard equipment</p>
     <form onSubmit={submit}>
-      <div className="starforce-fields grid grid-cols-2 gap-y-4 gap-x-3 [@media(max-width:480px)]:grid-cols-1">
+      <div className="starforce-fields grid gap-y-4 gap-x-3">
         {[
           ['item_level', 'Equipment level', 1, 300], ['start_star', 'Starting stars', 0, 29],
           ['target_star', 'Target stars', Number(form.start_star) + 1, 30],
@@ -150,7 +150,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
       <button className="mw-button mw-button-primary strategy-submit" disabled={busy}><LoadingButtonContent busy={busy} label="Comparing…">Compare strategies</LoadingButtonContent></button>
     </form>
     <div aria-live="polite">
-      {busy && <LoadingStatus variant="table">Searching per-star mode and safeguard combinations…</LoadingStatus>}
+      {busy && <LoadingPlaceholder variant="table" label={<>Searching per-star mode and safeguard combinations…</>} />}
       {current?.error && <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{current.error}</p>}
       {request && !current && <p>Inputs changed. Compare again to refresh the comparison.</p>}
     </div>
@@ -159,7 +159,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
       <details className="custom-strategy-editor mt-5" open>
         <summary>Add your own strategy</summary>
         <form onSubmit={submitCustom}>
-          <div className="starforce-fields grid grid-cols-2 gap-y-4 gap-x-3 [@media(max-width:480px)]:grid-cols-1">
+          <div className="starforce-fields grid gap-y-4 gap-x-3">
             {Object.keys(actions).filter(star => Number(star) < report.assumptions.target_star).map(star => <label key={star}>
               {star} &rarr; {Number(star) + 1} stars
               <select value={actions[star]} onChange={event => setActions(current => ({ ...current, [star]: event.target.value }))}>
@@ -172,7 +172,7 @@ export default function StarForceStrategies({ form, onChange, planner }) {
           <p className="hint text-[12px] text-subtle mb-4.5">Add multiple strategies to compare them together. Changing these choices keeps your plotted strategies.</p>
           <button className="mw-button mw-button-primary strategy-submit" disabled={customCurrent?.loading}><LoadingButtonContent busy={customCurrent?.loading}>Add strategy to comparison</LoadingButtonContent></button>
           <div aria-live="polite">
-            {customCurrent?.loading && <LoadingStatus variant="result">Calculating your strategy&hellip;</LoadingStatus>}
+            {customCurrent?.loading && <LoadingPlaceholder variant="result" label={<>Calculating your strategy&hellip;</>} />}
             {customCurrent?.error && <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{customCurrent.error}</p>}
           </div>
         </form>

@@ -1,9 +1,9 @@
 # Maple Workshop UI
 
-Presentational React components. The live app now uses AppShell and Navbar;
-calculator interiors, route paths, business hooks, API requests and persistence
-remain unchanged. Import from `src/ui/index.js` under an `AppShell` (or a
-`.mw-theme` ancestor) when migrating individual pages in a later change.
+Shared presentation components for the current Maple Workshop application.
+AppShell, Navbar and the semantic theme tokens are the presentation source of truth.
+Import from `src/ui/index.js` under an `AppShell` (or a `.mw-theme` ancestor).
+Calculator controllers own business state, API requests and persistence.
 Keep the existing `src/index.css` import: it supplies Tailwind's utility output.
 
 ## Review the components
@@ -94,7 +94,7 @@ and viewport overflow. Star Force screenshots use mocked results, not live odds.
 
 `loading.jsx` provides presentation only; mount it from an existing async flag or
 Suspense fallback. It owns no requests, timeouts, minimum durations or result state.
-The existing `LoadingStatus` now delegates to this system, retaining service
+Pages use `LoadingPlaceholder` directly, retaining service
 cold-start guidance for API work and omitting it for local code/file loading.
 
 | Component | Integration |

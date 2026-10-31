@@ -9,7 +9,7 @@ import { ContentCard, SectionHeader } from '../ui/layout'
 import { PrimaryButton } from '../ui/controls'
 import { EmptyState } from '../ui/feedback'
 import { useWorkshopMotion } from '../ui/motion'
-import EquipmentGrid from './EquipmentGrid'
+import WorkshopEquipmentGrid from './WorkshopEquipmentGrid'
 import './equipment-workshop.css'
 import './home-workshop.css'
 
@@ -69,7 +69,7 @@ export default function LandingPage({ onNavigate }) {
             <motion.a {...link('equipment')} className="mw-button mw-button-primary" whileHover={hover} whileTap={press} transition={transition}>Continue Build <span aria-hidden="true">→</span></motion.a>
           </div>
           <div className="home-equipment-preview" aria-label="Saved equipment preview">
-            <EquipmentGrid equipment={equipment} activeSlot={null} href={PAGE_PATHS.equipment} onActivate={(_slot, event) => onNavigate('equipment', event)} />
+            <WorkshopEquipmentGrid equipment={equipment} activeSlot={null} href={PAGE_PATHS.equipment} onActivate={(_slot, event) => onNavigate('equipment', event)} />
           </div>
         </div> : <EmptyState title="No equipment build yet." description="Create a build to compare upgrades across your entire character."
           action={<motion.a {...link('equipment')} className="mw-button mw-button-primary" whileHover={hover} whileTap={press} transition={transition}>Create Equipment Build</motion.a>} />}

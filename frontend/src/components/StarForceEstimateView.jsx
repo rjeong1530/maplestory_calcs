@@ -4,7 +4,7 @@ import { InputField, SelectField, NumberStepper, Toggle, SegmentedControl, Prima
 import { EmptyState } from '../ui/feedback'
 import { LoadingButtonContent } from '../ui/loading'
 import AnimatedNumber from '../ui/AnimatedNumber'
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 import StarForceBudget from './StarForceBudget'
 import StarForceProbabilityChart from './StarForceProbabilityChart'
 import { MVP_RANKS } from '../data/equipmentUpgrade'
@@ -78,7 +78,7 @@ export default function StarForceEstimateView({ form, update, updateStarSetting,
       </form>
 
       <ResultCard title="Results" busy={busy} className="starforce-result">
-        {busy ? <LoadingStatus variant="result">Calculating expected costs…</LoadingStatus>
+        {busy ? <LoadingPlaceholder variant="result" label={<>Calculating expected costs…</>} />
           : error ? <p className="error sf-error" role="alert">{error}</p>
             : !result ? <EmptyState title="Set your target" description="Choose an item level and star range to estimate the cost and booms." icon="☆" /> : null}
         <motion.dl className={result ? 'starforce-metrics sf-metrics' : undefined} hidden={!result}
@@ -107,7 +107,7 @@ export default function StarForceEstimateView({ form, update, updateStarSetting,
       <CalculatorPanel title="Cost per tap" description={`${form.shining_starforce_sunday ? 'Shining on' : 'Shining off'} · Level ${form.item_level || '—'} · MVP: ${MVP_RANKS[form.mvp_rank]}`} className="starforce-cost-panel">
         <p className="mw-help mb-4">Shining Star Force Sunday discounts costs at every star. The selected MVP rank discounts non-Superior equipment on attempts up to 17★. Discounts combine multiplicatively; on safeguarded attempts, they apply to the base-cost portion while the safeguard surcharge remains unchanged.
           {form.superior_item ? ' MVP is excluded for this Superior item.' : ''} The Mode 4 cost column shows safeguard costs from 15★ to 17★; Mode 4 rates are unavailable there.</p>
-        {costsBusy ? <LoadingStatus variant="table">Loading tap costs…</LoadingStatus>
+        {costsBusy ? <LoadingPlaceholder variant="table" label={<>Loading tap costs…</>} />
           : costsError ? <p className="error sf-error" role="alert">{costsError}</p>
             : costRows && <div className="sf-table-wrap starforce-table-wrap" tabIndex="0" role="region" aria-label="Star Force costs by star">
               <table className="sf-table starforce-table">
@@ -128,7 +128,7 @@ export default function StarForceEstimateView({ form, update, updateStarSetting,
       <CalculatorPanel title="Success, fail and boom chances" description={`${form.shining_starforce_sunday ? 'Shining on' : 'Shining off'} · All four modes`} className="starforce-cost-panel">
         <p className="mw-help mb-4">Rates below reflect the selected Shining Star Force Sunday setting ({form.shining_starforce_sunday ? '30% lower boom chance at 15★–21★' : 'no event boom reduction'}).
           MVP rank changes costs, not success or boom chances. Compare modes without safeguard. Mode 4 is unavailable from 15★ to 17★. Rates outside 15★–21★ are identical across modes. Fail excludes booms; failures lose one star from 10★–14★ and 22★ onward, and otherwise keep the current star.</p>
-        {costsBusy ? <LoadingStatus variant="table">Loading rates…</LoadingStatus>
+        {costsBusy ? <LoadingPlaceholder variant="table" label={<>Loading rates…</>} />
           : costsError ? <p className="error sf-error" role="alert">{costsError}</p>
             : costRows && <>
               <div className="sf-table-wrap starforce-table-wrap" tabIndex="0" role="region" aria-label="Star Force rates by mode">

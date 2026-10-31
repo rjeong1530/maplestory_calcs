@@ -68,12 +68,6 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image:
-      linear-gradient(to bottom, #eaf7ff35, #eaf7ffb3),
-      var(--workshop-background);
-    background-position: center top;
-    background-size: cover;
-    background-repeat: no-repeat;
   }
   .mw-navbar {
     position: relative;
@@ -188,7 +182,7 @@
     padding: 2rem 1.5rem 4rem;
   }
   .mw-navbar {
-    background: #ffffffd9;
+    background: var(--surface-glass);
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(16px);
   }
@@ -310,12 +304,12 @@
       box-shadow var(--motion-fast);
   }
   .mw-button-primary {
-    color: white;
-    background: var(--primary-hover);
+    color: var(--button-text);
+    background: var(--button-fill);
     box-shadow: 0 2px 6px #2563eb20;
   }
   .mw-button-primary:hover:not(:disabled) {
-    background: var(--primary-ink);
+    background: var(--button-hover);
   }
   .mw-button-secondary {
     color: var(--primary-ink);
@@ -533,12 +527,13 @@
     max-width: min(260px, calc(100vw - 16px));
     padding: 0.55rem 0.75rem;
     border-radius: var(--radius-sm);
-    color: white;
-    background: var(--text-primary);
+    color: var(--tooltip-text);
+    background: var(--tooltip-bg);
     box-shadow: var(--shadow-raised);
     font-size: 12px;
     font-weight: 400;
     pointer-events: none;
+    border: 1px solid var(--border);
   }
   .mw-dialog {
     width: min(560px, calc(100% - 2rem));
@@ -583,7 +578,7 @@
   .mw-skeleton-line {
     height: 14px;
     border-radius: 6px;
-    background: linear-gradient(100deg, #e7f1fb 20%, #f9fcff 45%, #e7f1fb 70%);
+    background: linear-gradient(100deg, var(--shimmer-base) 20%, var(--shimmer-highlight) 45%, var(--shimmer-base) 70%);
     background-size: 220% 100%;
     animation: mw-shimmer 1.6s ease-in-out infinite;
   }
@@ -653,11 +648,11 @@
     inset: 0;
     z-index: 2;
     overflow: auto;
-    background: #eaf7ffb3;
+    background: var(--loading-overlay);
     border-radius: var(--radius-card);
   }
   .mw-calculator-loading-overlay > .mw-loading-surface {
-    background: #ffffffdb;
+    background: var(--surface);
     min-height: 100%;
   }
   .mw-fullpage-loading {
@@ -668,8 +663,8 @@
     overflow: hidden;
     padding: 1rem;
     background:
-      linear-gradient(#eaf7ff80, #eaf7ffdd),
-      url("/images/workshop/floating-islands.png") center / cover;
+      var(--background);
+    isolation: isolate;
   }
   .mw-loading-welcome {
     position: relative;

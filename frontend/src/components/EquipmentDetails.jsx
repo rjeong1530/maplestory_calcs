@@ -1,4 +1,4 @@
-import { EquipmentIcon } from './EquipmentGrid'
+import EquipmentIcon from './EquipmentIcon'
 import { FLAME_SLOTS, FIXED_RING_SLOT, potentialEquipmentType } from '../data/flameEquipment'
 import { supportsStarForce } from '../data/starforce'
 import { POTENTIAL_LABELS, FLAME_LABELS } from '../data/equipmentLines'

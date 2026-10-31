@@ -107,9 +107,6 @@
   .mw-theme.mw-shell .flame-workspace {
     grid-template-columns: minmax(0, 1fr);
   }
-  .mw-theme.mw-shell .upgrade-settings-sidebar .upgrade-weights {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .mw-theme.mw-shell .equipment-transfer-actions {
     flex-wrap: wrap;
   }

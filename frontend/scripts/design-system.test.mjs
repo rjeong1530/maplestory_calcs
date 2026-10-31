@@ -732,6 +732,11 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
         await evaluate(`document.querySelector('.calculator-dropdown').open=true`)
         assert.equal(await evaluate(`(() => {const r=document.querySelector('.calculator-menu').getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})()`), true, `${name} menu fits ${width}px`)
         await evaluate(`document.querySelector('.calculator-dropdown').open=false; (()=>{const menu=document.querySelector('.mw-menu-toggle');if(menu.getAttribute('aria-expanded')==='true')menu.click()})()`)
+        if (process.env.STYLE_SNAPSHOT_DIR) {
+          await mkdir(process.env.STYLE_SNAPSHOT_DIR, {recursive:true})
+          const styles = await evaluate(`[...document.querySelectorAll('.mw-content *')].filter(el=>el.getClientRects().length&&!el.closest('[hidden]')).map(el=>{const s=getComputedStyle(el);return {tag:el.tagName,css:Object.fromEntries(['display','grid-template-columns','gap','padding','margin','width','height','color','background-color','border','border-radius','font-size','font-weight','line-height','text-align','overflow','min-width','min-height'].map(p=>[p,s.getPropertyValue(p)]))}})`)
+          await writeFile(join(process.env.STYLE_SNAPSHOT_DIR, `${name}-${theme}-${width}.json`), JSON.stringify(styles))
+        }
         const shot = await command('Page.captureScreenshot', {format:'png'})
         await writeFile(join(captures, `theme-${name}-${theme}-${width}.png`), Buffer.from(shot.data,'base64'))
       }

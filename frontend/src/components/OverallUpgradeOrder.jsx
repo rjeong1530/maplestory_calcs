@@ -11,7 +11,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
   const { reduced, transition, entrance } = useWorkshopMotion()
   const steps = useMemo(() => overallDisplayRows(plan?.steps ?? []), [plan?.steps])
   return <section aria-label="Overall upgrade order">
-    {plan?.laddering_enabled && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] [&_summary]:cursor-pointer [&_li]:mb-2">
+    {plan?.laddering_enabled && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] [&_summary]:cursor-pointer [&_li]:mb-2">
       <summary>How laddering costs and efficiency work</summary>
       <p>A laddering recommendation includes the <strong>full cost needed before swapping</strong>:</p>
       <ul>
@@ -143,7 +143,7 @@ export default function OverallUpgradeOrder({ plan, settings, cubeType }) {
         </table>
       </div>
     </> : <p role="status">No eligible upgrades with positive score gain and a known meso cost.</p>}
-    {plan?.unavailable?.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] [&_summary]:cursor-pointer [&_li]:mb-2">
+    {plan?.unavailable?.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] [&_summary]:cursor-pointer [&_li]:mb-2">
       <summary>Unavailable estimates ({plan.unavailable.length})</summary>
       <ul>{plan.unavailable.map((entry, index) => <li key={`${entry.category}-${entry.slot}-${index}`}>
         {entry.name} ({entry.slot}) · {UPGRADE_CATEGORIES[entry.category]}: {entry.note}

@@ -1,4 +1,4 @@
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 import { LoadingButtonContent } from '../ui/loading'
 
 
@@ -39,7 +39,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
         <p className="hint text-[12px] text-subtle mb-4.5">Each item's laddering checkbox enforces its starting threshold in the Overall tab. SoS transfer mode shows equipped and spare transfer alternatives.
           Items without laddering settings use standard upgrades. Record second-copy stats in Current equipment stats; minimum scores are calculated automatically.</p>
           <p className="hint">Flame results include Black and Abyssal Flames. Star Force uses each item's enhancement modes.</p></details>
-        <fieldset className="upgrade-categories flex flex-wrap gap-4 mb-4 [&_label]:flex [&_label]:items-center [&_label]:gap-1.6 [&_input]:w-auto">
+        <fieldset className="upgrade-categories flex-wrap mb-4 [&_label]:flex [&_label]:items-center [&_label]:gap-1.6 [&_input]:w-auto">
           <legend>Upgrade orders to calculate</legend>
           {Object.entries(CATEGORIES).map(([key, label]) => <label key={key}>
             <input type="checkbox" checked={settings.categories.includes(key)}
@@ -68,7 +68,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
             onChange={event => onSettingsChange({ ...settings, cube_sale: event.target.checked })} />
           <span>Cube sale (25% off black and red cubes)</span>
         </label>
-        <div className="upgrade-controls flex flex-wrap items-end gap-4.5 my-5 mx-0 [&_label]:[flex:1] [&_label]:min-w-55">
+        <div className="upgrade-controls flex-wrap items-end my-5 mx-0 [&_label]:[flex:1] [&_label]:min-w-55">
           <label>Potential cube
             <select value={settings.cube_type}
               onChange={event => onSettingsChange({ ...settings, cube_type: event.target.value })}>
@@ -79,8 +79,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
           </label>
         </div>
         <div className="upgrade-weight-groups">
-        <fieldset className="upgrade-weights grid grid-cols-[repeat(auto-fit,_minmax(180px,_1fr))] gap-4 mb-6
-        [@media(max-width:480px)]:grid-cols-1 [&_legend]:text-[15px] [&_legend]:mb-3.5">
+        <fieldset className="upgrade-weights grid mb-6 [&_legend]:text-[15px] [&_legend]:mb-3.5">
           <legend>Potential score weights</legend>
           {Object.entries(POTENTIAL_WEIGHT_LABELS).map(([key, label]) => (
             <label key={key}>{label}
@@ -89,8 +88,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
             </label>
           ))}
         </fieldset>
-        <fieldset className="upgrade-weights grid grid-cols-[repeat(auto-fit,_minmax(180px,_1fr))] gap-4 mb-6
-        [@media(max-width:480px)]:grid-cols-1 [&_legend]:text-[15px] [&_legend]:mb-3.5">
+        <fieldset className="upgrade-weights grid mb-6 [&_legend]:text-[15px] [&_legend]:mb-3.5">
           <legend>Shared flame and Star Force weights</legend>
           {Object.entries(FLAME_WEIGHT_LABELS)
             .filter(([key]) => key !== 'secondary_stat_value' || classStats.secondary.length > 0)
@@ -103,7 +101,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
           ))}
         </fieldset>
         </div>
-        <button type="submit" className="primary w-full font-bold bg-accent text-[var(--surface-secondary)] border-accent p-3.5 [&:hover:not(:disabled)]:bg-[var(--warning-ink)]" disabled={busy || !payload.equipment.length || !settings.categories.length}>
+        <button type="submit" className="mw-submit-button font-bold p-3.5" disabled={busy || !payload.equipment.length || !settings.categories.length}>
           <LoadingButtonContent busy={busy} label="Calculating upgrade order…">Calculate upgrade order</LoadingButtonContent>
         </button>
       </form>
@@ -111,19 +109,13 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
       {!settings.categories.length && <p className="hint text-[12px] text-subtle mb-4.5">Select at least one upgrade order.</p>}
       {!payload.equipment.length && <p className="hint text-[12px] text-subtle mb-4.5">Equip an item above to compare upgrades.</p>}
       <div aria-live="polite">
-        {busy && <LoadingStatus variant="table">Calculating expected gains for {payload.equipment.length} items…</LoadingStatus>}
+        {busy && <LoadingPlaceholder variant="table" label={<>Calculating expected gains for {payload.equipment.length} items…</>} />}
         {request && !current && <p className="hint text-[12px] text-subtle mb-4.5">Inputs changed. Calculate again to refresh the rankings.</p>}
       </div>
       {current?.error && <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{current.error}</p>}
       {result && <>
         <div className="upgrade-results-controls flex flex-wrap items-end gap-4.5 my-5 mx-0">
-          <div className="upgrade-category-tabs flex flex-wrap gap-2 p-1.5 border border-solid border-outline rounded-sm bg-input
-        [@media(max-width:540px)]:grid [@media(max-width:540px)]:grid-cols-2 [@media(max-width:540px)]:w-full
-        [&_button]:min-h-11 [&_button]:py-2.75 [&_button]:px-5 [&_button]:border [&_button]:border-solid
-        [&_button]:border-transparent [&_button]:bg-transparent [&_button]:text-[var(--text-secondary)] [&_button]:font-semibold
-        [&_button]:[transition:background-color_150ms,_color_150ms,_border-color_150ms] [&_button:hover]:bg-[var(--surface-secondary)]
-        [&_button:hover]:text-[var(--text-primary)] [&_button[aria-pressed='true']]:bg-accent
-        [&_button[aria-pressed='true']]:border-accent [&_button[aria-pressed='true']]:text-[var(--surface-secondary)]" role="group" aria-label="Upgrade category">
+          <div className="upgrade-category-tabs [&_button]:min-h-11 [&_button]:font-semibold [&_button]:[transition:background-color_150ms,_color_150ms,_border-color_150ms]" role="group" aria-label="Upgrade category">
             {Object.entries(CATEGORIES).filter(([key]) => settings.categories.includes(key)).map(([key, label]) => (
               <button type="button" key={key} aria-pressed={category === key}
                 onClick={() => setCategory(key)}>{label}</button>
@@ -166,7 +158,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
             unavailable={flameRankings.unavailable}
             costPerFlame={result.cost_assumptions_mesos[flameType + '_flame']} />
         </div> : rows.length ? <UpgradeRankTable rows={rows} category={category} equipment={equipment} previousRanks={prior} /> : <p role="status">No eligible items for this ranking. Check the unavailable estimates below.</p>}
-        {category !== 'flames' && category !== 'overall' && rankings.unavailable?.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] [&_summary]:cursor-pointer [&_li]:mb-2">
+        {category !== 'flames' && category !== 'overall' && rankings.unavailable?.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] [&_summary]:cursor-pointer [&_li]:mb-2">
           <summary>Unavailable {CATEGORIES[category]} estimates ({rankings.unavailable.length})</summary>
           <ul>{rankings.unavailable.map(entry => <li key={entry.slot}>
             <strong>{entry.name}</strong> ({slotName(entry.slot)}
@@ -178,7 +170,7 @@ export default function UpgradePlanView({ equipment, equipmentClass, classStats,
             .map(entry => `${entry.name} (${slotName(entry.slot)})`).join(', ')}.
         </p>}
       </>}
-      <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] [&_summary]:cursor-pointer [&_li]:mb-2">
+      <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] [&_summary]:cursor-pointer [&_li]:mb-2">
         <summary>How these estimates work</summary>
         <p>Potential assumes Legendary equipment and uses bundled KMS probabilities, without tier-ups.
           Black cubes and black flames keep the better score. Red cubes replace the current potential.

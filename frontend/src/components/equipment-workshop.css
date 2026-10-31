@@ -57,7 +57,7 @@
   background: var(--surface-hover);
   border-color: var(--primary);
 }
-.mw-theme .workshop-equipment button.primary {
+.mw-theme .workshop-equipment button.mw-submit-button {
   background: var(--primary);
   border-color: var(--primary);
   color: white;
@@ -437,7 +437,7 @@
 }
 .mw-theme
   .workshop-equipment-stats
-  :is(.equipment-laddering, .equipment-analysis, .current-flame-section) {
+  :is(.equipment-laddering, .equipment-analysis) {
   border-color: var(--border);
 }
 .mw-theme .workshop-equipment-stats .equipment-laddering a {

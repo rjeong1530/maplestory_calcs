@@ -1,4 +1,4 @@
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import { POTENTIAL_LABELS, FLAME_LABELS } from '../data/equipmentLines'
@@ -156,7 +156,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
             </p>}
           </>}
           {optionsError ? <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{optionsError}</p>
-            : !availableOptions ? <LoadingStatus>Loading potential options…</LoadingStatus>
+            : !availableOptions ? <LoadingPlaceholder label={<>Loading potential options…</>} />
               : !availableOptions.potential.available ? (
                 <p className="hint text-[12px] text-subtle mb-4.5">No potential chart is available for this equipment and level.</p>
               ) : (
@@ -297,7 +297,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
           <h4>Current flames</h4>
           {!supportsFlames ? <p className="hint text-[12px] text-subtle mb-4.5">Flames are not supported for this slot.</p>
             : optionsError ? <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{optionsError}</p>
-              : !availableOptions ? <LoadingStatus>Loading flame options…</LoadingStatus>
+              : !availableOptions ? <LoadingPlaceholder label={<>Loading flame options…</>} />
                 : (
                   <>
                     {item.needsFlameType && !secondCopy && <label className="flame-checkbox flex-row items-center gap-2 mt-4.5 [&_input]:w-4 [&_input]:h-4 [&_input]:accent-accent [&_input]:m-0">
@@ -335,9 +335,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                                   return (
                                     <td key={stage}>
                                       {stageValue ? <button type="button"
-                                        className="flame-value-cell w-full min-w-0 py-1.75 px-0.5 whitespace-normal [overflow-wrap:anywhere] border-transparent
-        bg-transparent text-[11px] tabular-nums [&[aria-pressed='true']]:text-[var(--surface-secondary)]
-        [&[aria-pressed='true']]:border-accent [&[aria-pressed='true']]:bg-accent [&:disabled]:opacity-40"
+                                        className="flame-value-cell w-full min-w-0 py-1.75 px-0.5 whitespace-normal [overflow-wrap:anywhere] border-transparent text-[11px] tabular-nums [&[aria-pressed='true']]:text-[var(--surface-secondary)] [&[aria-pressed='true']]:border-accent [&[aria-pressed='true']]:bg-accent [&:disabled]:opacity-40"
                                         aria-pressed={isSelected}
                                         aria-label={`${FLAME_LABELS[row.option] || row.option}, tier ${stage}: ${flameValueText(stageValue.values, row.option)}`}
                                         disabled={!isSelected && flameLines.length >= 4
@@ -353,12 +351,7 @@ export default function EquipmentAnalysis({ slot, item, offenseStat, onChange, o
                         </tbody>
                       </table>
                     </div>
-                    <div className="current-flame-totals mt-3.5 py-2.5 px-3 border border-solid border-outline rounded-sm bg-input [&_h5]:mt-0
-        [&_h5]:mx-0 [&_h5]:mb-2 [&_h5]:text-subtle [&_h5]:text-[11px] [&_h5]:uppercase [&_h5]:tracking-[0.04em]
-        [&_ul]:flex [&_ul]:flex-wrap [&_ul]:gap-1.5 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0 [&_li]:flex [&_li]:gap-1.5
-        [&_li]:items-center [&_li]:border [&_li]:border-solid [&_li]:border-outline [&_li]:rounded-[999px] [&_li]:py-1
-        [&_li]:px-2 [&_li]:text-[var(--text-secondary)] [&_li]:text-[11px] [&_li_strong]:text-accent [&_li_strong]:tabular-nums
-        [&_.hint]:m-0 [&_.hint]:text-[11px]" aria-live="polite">
+                    <div className="current-flame-totals mt-3.5 py-2.5 px-3 border border-solid [&_h5]:mt-0 [&_h5]:mx-0 [&_h5]:mb-2 [&_h5]:text-subtle [&_h5]:text-[11px] [&_h5]:uppercase [&_h5]:tracking-[0.04em] [&_ul]:flex [&_ul]:flex-wrap [&_ul]:gap-1.5 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0 [&_li]:flex [&_li]:gap-1.5 [&_li]:items-center [&_li]:border [&_li]:border-solid [&_li]:border-outline [&_li]:rounded-[999px] [&_li]:py-1 [&_li]:px-2 [&_li]:text-[var(--text-secondary)] [&_li]:text-[11px] [&_li_strong]:text-accent [&_li_strong]:tabular-nums [&_.hint]:m-0 [&_.hint]:text-[11px]" aria-live="polite">
                       <h5>Selected flame totals</h5>
                       {Object.keys(flameTotals).length
                         ? <ul>

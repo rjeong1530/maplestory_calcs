@@ -111,7 +111,7 @@
   --tool-base: #0d1b2ec9;
   --equipment-scenery: url("/images/workshop/maple-character-night.webp");
   --equipment-wash: rgb(7 17 31 / 35%);
-  /* Legacy utilities used inside existing calculator controls inherit the palette. */
+  /* Tailwind semantic aliases follow the system theme. */
   --color-accent: var(--primary-ink);
   --color-subtle: var(--text-secondary);
   --color-input: var(--surface-input);
@@ -121,9 +121,6 @@
 }
 
 /* Two static layers crossfade; no route-driven animation or layout changes. */
-.mw-theme .mw-background {
-  background: none;
-}
 .mw-background > div {
   position: absolute;
   inset: 0;
@@ -149,10 +146,6 @@
 .dark .mw-background-night {
   opacity: 1;
 }
-.mw-theme .mw-fullpage-loading {
-  isolation: isolate;
-  background: var(--background);
-}
 @media (max-width: 800px) {
   .mw-background-day {
     background-image:
@@ -166,18 +159,9 @@
   }
 }
 
-.mw-theme .mw-navbar,
 .mw-theme .workshop-about {
   background: var(--surface-glass);
 }
-.mw-theme .mw-button-primary {
-  background: var(--button-fill);
-  color: var(--button-text);
-}
-.mw-theme .mw-button-primary:hover:not(:disabled) {
-  background: var(--button-hover);
-}
-.mw-theme .mw-tooltip,
 .mw-theme .equipment-slot-tooltip {
   background: var(--tooltip-bg);
   color: var(--tooltip-text);
@@ -189,20 +173,6 @@
 }
 .mw-theme .mw-switch::before {
   background: #fff;
-}
-.mw-theme .mw-skeleton-line {
-  background-image: linear-gradient(
-    100deg,
-    var(--shimmer-base) 20%,
-    var(--shimmer-highlight) 45%,
-    var(--shimmer-base) 70%
-  );
-}
-.mw-theme .mw-calculator-loading-overlay {
-  background: var(--loading-overlay);
-}
-.mw-theme .mw-calculator-loading-overlay > .mw-loading-surface {
-  background: var(--surface);
 }
 .mw-theme :is(input, textarea)::placeholder {
   color: var(--text-muted);
@@ -258,7 +228,7 @@
 .dark
   .mw-theme
   :is(.workshop-upgrade-plan, .workshop-equipment)
-  button.primary {
+  button.mw-submit-button {
   background: var(--button-fill);
   color: var(--button-text);
 }

@@ -82,18 +82,10 @@
 .mw-theme .workshop-upgrade-plan .hint {
   line-height: 1.6;
 }
-.mw-theme .upgrade-settings-sidebar > p {
-  font-size: 12px;
-  line-height: 1.6;
-}
 .mw-theme .upgrade-settings-sidebar fieldset {
   border: 0;
   padding: 0;
   min-width: 0;
-}
-.mw-theme .upgrade-settings-sidebar .upgrade-categories {
-  display: grid;
-  gap: 10px;
 }
 .mw-theme .upgrade-settings-sidebar .upgrade-categories label {
   display: flex;
@@ -128,12 +120,6 @@
 .mw-theme .upgrade-settings-sidebar .upgrade-controls label {
   min-width: 0;
 }
-.mw-theme .upgrade-settings-sidebar .upgrade-weights {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
-}
 .mw-theme .upgrade-settings-sidebar .starforce-safeguard-control {
   justify-content: flex-start;
 }
@@ -143,7 +129,7 @@
   border: 1px solid var(--border);
   border-radius: 7px;
 }
-.mw-theme .workshop-upgrade-plan button.primary {
+.mw-theme .workshop-upgrade-plan button.mw-submit-button {
   background: var(--primary);
   color: white;
   border-color: var(--primary);
@@ -325,9 +311,6 @@
   .mw-theme .upgrade-workshop-layout {
     grid-template-columns: minmax(0, 1fr);
   }
-  .mw-theme .upgrade-settings-sidebar .upgrade-weights {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 @media (max-width: 700px) {
   .mw-theme .workshop-upgrade-plan .mw-card {
@@ -399,11 +382,6 @@
   }
   .mw-theme .overall-upgrade-table td:nth-child(8)::before {
     content: "Total mesos so far";
-  }
-}
-@media (max-width: 400px) {
-  .mw-theme .upgrade-settings-sidebar .upgrade-weights {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (prefers-reduced-motion: reduce) {

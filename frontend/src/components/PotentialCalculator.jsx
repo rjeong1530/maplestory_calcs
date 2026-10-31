@@ -1,4 +1,4 @@
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../api'
 import CalculatorForm from './CalculatorForm'
@@ -56,7 +56,7 @@ export default function PotentialCalculator() {
           </SecondaryButton>
         </ContentCard>
       ) : !options ? (
-        <LoadingStatus>Loading calculator options…</LoadingStatus>
+        <LoadingPlaceholder label={<>Loading calculator options…</>} />
       ) : (
         <>
           <div className="potential-calculator">

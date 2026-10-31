@@ -42,10 +42,7 @@ export default function EquipmentPage({ planner, busy, onOpenApproaches }) {
 
   return (
     <div className="equipment-page-layout grid grid-cols-1 items-start gap-5">
-      <nav className="equipment-section-navigation grid grid-cols-2 w-[min(100%,_420px)] gap-2 p-2 border border-solid border-outline
-        rounded-sm bg-surface [&_button]:text-left [&_button]:p-3 [&_button]:text-[13px] [&_button]:border-transparent
-        [&_button[aria-pressed='true']]:bg-[var(--surface-selected)] [&_button[aria-pressed='true']]:text-accent
-        [&_button[aria-pressed='true']]:border-[var(--primary)]" aria-label="Equipment sections">
+      <nav className="equipment-section-navigation grid grid-cols-2 w-[min(100%,_420px)] gap-2 p-2 border border-solid [&_button]:text-left [&_button]:p-3 [&_button]:text-[13px] [&_button]:border-transparent [&_button[aria-pressed='true']]:bg-[var(--surface-selected)] [&_button[aria-pressed='true']]:text-accent [&_button[aria-pressed='true']]:border-[var(--primary)]" aria-label="Equipment sections">
         <button type="button" aria-pressed={view === 'setup'} aria-controls="equipment-setup-view"
           onClick={() => setView('setup')}>Equipment setup</button>
         <button type="button" aria-pressed={view === 'stats'} aria-controls="equipment-stats-view"

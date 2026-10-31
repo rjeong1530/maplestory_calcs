@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { EquipmentIcon } from './EquipmentGrid'
+import EquipmentIcon from './EquipmentIcon'
 import { SLOT_LABELS } from '../data/flameEquipment'
 import { UPGRADE_CATEGORIES } from '../data/equipmentUpgrade'
 import { useWorkshopMotion } from '../ui/motion'

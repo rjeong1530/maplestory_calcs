@@ -53,7 +53,7 @@ export default function EquipmentLaddering({ item, cap, onChange }) {
           <p className="hint text-[12px] text-subtle mb-4.5">Compare equipped and spare transfers in the recommended steps. Enter donor and tier-up costs above. <a href="#sos-transfer-guide">Transfer rules and assumptions</a></p>
         </>}
       </>}
-      {!settings.transfer && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] [&_summary]:cursor-pointer [&_li]:mb-2">
+      {!settings.transfer && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] [&_summary]:cursor-pointer [&_li]:mb-2">
         <summary>How spare scores and costs are calculated</summary>
         <p className="hint text-[12px] text-subtle mb-4.5">The calculator determines the minimum flame and potential scores needed to improve your total score at each target star, including preparation costs for enabled roll categories. Record the second copy's actual stats; missing stats count as zero. Both copies are assumed owned and potential is Legendary; acquisition and tier-up costs are excluded.</p>
       </details>}

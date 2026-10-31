@@ -4,7 +4,7 @@ import { SelectField, SegmentedControl, Toggle, PrimaryButton, SecondaryButton }
 import { RarityBadge } from '../ui/equipment'
 import { LoadingButtonContent } from '../ui/loading'
 import { useWorkshopMotion } from '../ui/motion'
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 import TargetRow from './TargetRow'
 import { effectLabels } from '../ui/potentialLabels'
 import { cubeCostLabel } from '../data/cubeCosts'
@@ -36,7 +36,7 @@ export default function PotentialFormView({ options, busy, onChange, equipment, 
           <h3>Target Stats</h3>
           <p className="mw-help">Minimum totals across three lines. All targets must match. All Stat counts toward each main stat.</p>
           {availableTargets.some(row => row.effect === 'ALL_STAT_PCT') && <p className="mw-help">All Stat adds its percentage to STR, DEX, INT, and LUK targets, including your main and secondary stats. These are combined stat totals; matching rolls do not need a specific All Stat line.</p>}
-          {loadingOptions ? <LoadingStatus>Loading obtainable potential lines…</LoadingStatus> : currentOptions.error ? <div role="alert"><p className="potential-error">{currentOptions.error}</p><SecondaryButton onClick={() => { setItemOptions(null); setRetry(value => value + 1) }}>Retry loading lines</SecondaryButton></div>
+          {loadingOptions ? <LoadingPlaceholder label={<>Loading obtainable potential lines…</>} /> : currentOptions.error ? <div role="alert"><p className="potential-error">{currentOptions.error}</p><SecondaryButton onClick={() => { setItemOptions(null); setRetry(value => value + 1) }}>Retry loading lines</SecondaryButton></div>
             : !currentOptions.potential.available && <p className="mw-help">No potential table is available for this equipment, level, and cube.</p>}
           <div className="target-list"><AnimatePresence initial={false}>{availableTargets.map((row, index) => <motion.div key={row.id} {...entrance} exit={reduced ? undefined : { opacity: 0, y: -4 }} transition={transition}>
             {index > 0 && <div className="potential-and">AND</div>}
@@ -61,7 +61,7 @@ export default function PotentialFormView({ options, busy, onChange, equipment, 
       </div>
     <CalculatorPanel title="Available Potential Values" className="potential-values">
       <p className="mw-help">Obtainable values from the current equipment and cube table, grouped by line.</p>
-      {loadingOptions ? <LoadingStatus>Loading potential values…</LoadingStatus> : !currentOptions?.potential?.values_by_line?.length ? <p className="mw-help">No line values are available for this selection.</p> :
+      {loadingOptions ? <LoadingPlaceholder label={<>Loading potential values…</>} /> : !currentOptions?.potential?.values_by_line?.length ? <p className="mw-help">No line values are available for this selection.</p> :
         currentOptions.potential.values_by_line.map(line => <div className="potential-line-values" key={line.line}><h3>Line {line.line}</h3><dl>{Object.entries(line.values).map(([effect, values]) => <div key={effect}><dt>{effectLabels[effect] ?? effect}</dt><dd>{values.join(' / ')}{effect === 'COOLDOWN_SEC' ? ' sec' : '%'}</dd></div>)}</dl></div>)}
     </CalculatorPanel>
   </div>

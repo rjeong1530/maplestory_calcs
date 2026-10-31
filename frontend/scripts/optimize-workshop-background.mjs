@@ -34,7 +34,7 @@ try {
     ['maple_character_night_large.png', [['maple-character-night.webp',800]]],
   ]) {
     if(process.argv[2] && source !== process.argv[2]) continue
-    const data=(await readFile(new URL(`../public/images/workshop/${source}`,import.meta.url))).toString('base64')
+    const data=(await readFile(new URL(`../assets/workshop-sources/${source}`,import.meta.url))).toString('base64')
     for(const [name,maxWidth] of outputs) {
       const result=await evaluate(`(async()=>{const img=new Image();img.src='data:image/png;base64,${data}';await img.decode();const canvas=document.createElement('canvas');const ratio=Math.min(1,${maxWidth}/img.width);canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/webp',.82).split(',')[1]})()`)
       const bytes=Buffer.from(result,'base64')

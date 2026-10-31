@@ -7,8 +7,7 @@ export default function TargetRow({ row, index, effects, usedEffects, onUpdate, 
   const present = useIsPresent()
   const cooldown = row.effect === 'COOLDOWN_SEC'
   return (
-    <div className="target-row grid grid-cols-[minmax(0,_1fr)_116px_32px] items-end gap-2.5
-        [@media(max-width:480px)]:grid-cols-[minmax(0,_1fr)_88px_28px] [@media(max-width:480px)]:gap-1.75">
+    <div className="target-row grid items-end">
       <label>Potential {index + 1}
         <select disabled={!present} value={row.effect} onChange={event => onUpdate({ effect: event.target.value })}>
           {effects.map(effect => (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import EquipmentAnalysis from './EquipmentAnalysis'
-import EquipmentGrid from './EquipmentGrid'
+import WorkshopEquipmentGrid from './WorkshopEquipmentGrid'
 import EquipmentUpgradePlan from './EquipmentUpgradePlan'
 import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import { CLASS_STATS } from '../data/classStats'
@@ -19,7 +19,7 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenAppro
   const classStats = CLASS_STATS[equipmentClass]
 
   return <>
-    <section className="panel equipment-window workshop-equipment-stats bg-surface border border-solid border-outline rounded-sm p-6 col-span-full m-0 [@media(max-width:480px)]:p-2.5" aria-label="Current equipment stats">
+    <section className="panel equipment-window workshop-equipment-stats border border-solid p-6 col-span-full m-0 [@media(max-width:480px)]:p-2.5" aria-label="Current equipment stats">
       <div className="equipment-window-heading flex flex-wrap items-center justify-between gap-3 mb-4 [&_h2]:m-0 [&_h3]:m-0
         [&_.eyebrow]:text-[9px] [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-[12px]">
         <h2>Current equipment stats</h2>
@@ -51,10 +51,9 @@ export default function EquipmentStats({ planner, busy, onOpenSetup, onOpenAppro
             {slot && !selected && <option value={slot}>Empty {slot}</option>}
           </select>
         </label>
-        <div className="equipment-stats-layout grid grid-cols-[220px_minmax(0,_1fr)] gap-5 items-start
-        [@media(max-width:720px)]:grid-cols-1 [&_>_.equipment-slots]:w-full [&_>_.equipment-slots]:mt-0">
-          <EquipmentGrid equipment={equipment} activeSlot={slot} onActivate={setActiveSlot} busy={busy} />
-          <div className="equipment-editor-panel min-w-0 border border-solid border-outline rounded-sm bg-input p-5 [&_>_h3]:m-0 [&_>_h3]:text-[16px]">
+        <div className="equipment-stats-layout grid gap-5 items-start">
+          <WorkshopEquipmentGrid equipment={equipment} activeSlot={slot} onActivate={setActiveSlot} busy={busy} />
+          <div className="equipment-editor-panel min-w-0 border border-solid p-5 [&_>_h3]:m-0 [&_>_h3]:text-[16px]">
             {selected ? <>
               <h3>{selected.name}</h3>
               <p className="hint text-[12px] text-subtle mb-4.5">{SLOT_LABELS[slot.split('-')[0]]} · Level {selected.config.equipment_level}</p>

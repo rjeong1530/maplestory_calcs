@@ -3,7 +3,8 @@ import { ContentCard } from '../ui/layout'
 import { useWorkshopMotion } from '../ui/motion'
 import { CalculatorLoadingOverlay, LoadingButtonContent } from '../ui/loading'
 import { CLASS_FAMILIES, SLOT_LABELS, FIXED_RING_SLOT } from '../data/flameEquipment'
-import EquipmentGrid, { EquipmentIcon } from './EquipmentGrid'
+import WorkshopEquipmentGrid from './WorkshopEquipmentGrid'
+import EquipmentIcon from './EquipmentIcon'
 import { EQUIPMENT_GROUPS, equipmentGroup } from '../data/equipmentGroups'
 import EquipmentDetails from './EquipmentDetails'
 
@@ -34,7 +35,7 @@ export default function EquipmentSetupView({ equipmentClass, mapleClasses, onMap
  <div className="equipment-workshop-columns">
  <ContentCard className="equipment-character-panel">        <fieldset className="equipment-job-selection [&_legend]:text-[14px] [&_legend]:font-medium [&_legend]:mb-3">
           <legend>1. Select your job type</legend>
-          <div className="equipment-job-controls grid grid-cols-[minmax(0,_1fr)_minmax(0,_1.5fr)] max-w-105 gap-2">
+          <div className="equipment-job-controls grid gap-2">
             <label>Job type
               <select disabled={busy} value={family} onChange={event => {
                 const nextFamily = event.target.value
@@ -56,7 +57,7 @@ export default function EquipmentSetupView({ equipmentClass, mapleClasses, onMap
           </div>
         </fieldset>
           <CalculatorLoadingOverlay loading={importing} variant="equipment" label="Reading equipment file…">
-            <EquipmentGrid equipment={equipment} activeSlot={pickerSlot} onActivate={onActivate} busy={busy} />
+            <WorkshopEquipmentGrid equipment={equipment} activeSlot={pickerSlot} onActivate={onActivate} busy={busy} />
           </CalculatorLoadingOverlay>
           <p className="equipment-summary text-[12px] text-subtle leading-[1.7] mt-4 mx-0 mb-0 [&_strong]:text-[var(--text-primary)]" aria-live="polite">
             {selected ? <><strong>{selected.name}</strong><br />Level {selected.config.equipment_level} · {selected.currentStarForce ?? 0}★ Star Force</>
@@ -66,7 +67,7 @@ export default function EquipmentSetupView({ equipmentClass, mapleClasses, onMap
           <button type="button" onClick={onOpenStats}>Edit stats & upgrades &rarr;</button></ContentCard>
  <ContentCard className="equipment-picker-panel">
  <motion.div key={pickerSlot} {...entrance} transition={transition} className="equipment-editor-heading"><h2>Selected Item</h2><EquipmentDetails item={selected} slot={pickerSlot} onOpenStats={onOpenStats} /></motion.div>
-         <section className="equipment-catalog min-w-0 p-3.5 border border-solid border-outline rounded-sm bg-input" aria-label="Available equipment">
+         <section className="equipment-catalog min-w-0 border-solid rounded-sm" aria-label="Available equipment">
           <div className="equipment-slot-navigation flex items-center justify-between gap-2 mb-3 [&_h3]:m-0 [&_h3]:text-[15px] [&_button]:py-1.5 [&_button]:px-2.5">
             <button type="button" disabled={busy} aria-label="Previous equipment slot"
               onClick={() => onActivate(slots[(slots.indexOf(pickerSlot) - 1 + slots.length) % slots.length])}>&larr;</button>
@@ -102,7 +103,7 @@ export default function EquipmentSetupView({ equipmentClass, mapleClasses, onMap
           : saveError ? 'Equipment could not be saved in this browser.'
             : saveConfirmed ? '✓ Equipment saved in this browser.' : 'No unsaved equipment changes.'}</p>
         <div className="equipment-transfer-actions flex flex-wrap gap-2">
-          <button type="button" className="primary w-full font-bold bg-accent text-[var(--surface-secondary)] border-accent p-3.5 [&:hover:not(:disabled)]:bg-[var(--warning-ink)]" disabled={busy || !dirty} onClick={onSave}>
+          <button type="button" className="mw-submit-button font-bold" disabled={busy || !dirty} onClick={onSave}>
             {saveConfirmed && !dirty && !saveError ? 'Saved equips' : 'Save equips'}
           </button>
           <button type="button" disabled={busy || !dirty} onClick={onDiscard}>Discard changes</button>

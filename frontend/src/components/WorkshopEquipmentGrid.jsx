@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { EQUIPMENT_SLOTS, SLOT_LABELS } from '../data/flameEquipment'
 import { useWorkshopMotion } from '../ui/motion'
-import { EquipmentIcon } from './EquipmentGrid'
+import EquipmentIcon from './EquipmentIcon'
 import { memo, useEffect, useId, useRef, useState } from 'react'
 
 

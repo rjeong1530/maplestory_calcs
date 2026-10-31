@@ -17,8 +17,7 @@ export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerF
   const label = flameType === 'abyssal' ? 'Abyssal Flames' : 'Black Flames'
   return <section className="flame-upgrade-order [&_img]:object-contain [&_img]:[image-rendering:pixelated] [&_img]:[vertical-align:middle]" aria-label={label}>
     <div className="text-center">
-      <h3 className="flame-type-badge py-2.5 px-5.5 mt-1 mx-0 mb-3.5 border border-solid border-[var(--text-muted)] rounded-[7px] bg-[var(--border)]
-        text-[14px] font-semibold inline-flex items-center gap-2">
+      <h3 className="flame-type-badge py-2.5 px-5.5 mt-1 mx-0 mb-3.5 border border-solid border-[var(--text-muted)] rounded-[7px] text-[14px] font-semibold inline-flex items-center gap-2">
         <img src={`/images/flames/${flameType}.png`} alt="" width="32" height="34" />
         {label}
       </h3>
@@ -32,9 +31,7 @@ export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerF
         [&_li:not(:last-child)::after]:text-[26px] [&_li:not(:last-child)::after]:my-0
         [&_li:not(:last-child)::after]:mx-2" aria-label={label + ' upgrade order'}>
       {rows.map(entry => <li key={entry.slot}>
-        <a className="flame-order-item flex flex-col items-center gap-1.75 min-w-14.5 p-1.25 rounded-[6px] text-[var(--text-primary)]
-        no-underline text-[12px] tabular-nums [&:hover]:bg-[var(--surface-hover)] [&:hover]:[outline:2px_solid_#a0967c]
-        [&:focus-visible]:bg-[var(--surface-hover)] [&:focus-visible]:[outline:2px_solid_#a0967c]" href={'#flame-upgrade-' + flameType + '-' + entry.slot}
+        <a className="flame-order-item flex flex-col items-center gap-1.75 min-w-14.5 p-1.25 rounded-[6px] no-underline text-[12px] tabular-nums [&:hover]:bg-[var(--surface-hover)] [&:hover]:[outline:2px_solid_var(--primary-ink)] [&:focus-visible]:bg-[var(--surface-hover)] [&:focus-visible]:[outline:2px_solid_var(--primary-ink)]" href={'#flame-upgrade-' + flameType + '-' + entry.slot}
           title={entry.name + ' / ' + entry.slot + ' / Score ' + entry.current_score}
           aria-label={entry.name + ' (' + entry.slot + '): ' + formatFlameChance(entry.improvement_probability) + ' chance of improvement'}>
           <ItemIcon item={equipment[entry.slot]} name={entry.name} />
@@ -48,7 +45,7 @@ export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerF
         <h4 id={flameType + '-' + metric + '-heading'}>{metric === 'count'
           ? 'Flames needed for an X% chance of a better result'
           : 'Meso cost for an X% chance of a better result'}</h4>
-        <div className="flame-confidence-scroll max-h-82.5 overflow-auto [scrollbar-color:#646258_var(--color-surface)]" role="region" aria-labelledby={flameType + '-' + metric + '-heading'} tabIndex="0">
+        <div className="flame-confidence-scroll max-h-82.5 overflow-auto [scrollbar-color:var(--border)_var(--color-surface)]" role="region" aria-labelledby={flameType + '-' + metric + '-heading'} tabIndex="0">
           <table className="flame-confidence-table border-separate border-spacing-[0] text-[13px] tabular-nums [&_th]:py-2 [&_th]:px-2.5
         [&_th]:text-center [&_th]:border-0 [&_th]:whitespace-nowrap [&_td]:py-2 [&_td]:px-2.5 [&_td]:text-center
         [&_td]:border-0 [&_td]:whitespace-nowrap [&_thead_th]:sticky [&_thead_th]:top-0 [&_thead_th]:bg-surface
@@ -85,7 +82,7 @@ export default function FlameUpgradeOrder({ rows, equipment, flameType, costPerF
         {costPerFlame != null && <> Cost is the number of flames shown multiplied by the fixed price per flame.
           M = million; B = billion; T = trillion mesos.</>}</p>
     </div> : <p className="hint text-[12px] text-subtle mb-4.5">No eligible improvements for {label}.</p>}
-    {unavailable.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] text-[var(--text-secondary)] [&_summary]:cursor-pointer [&_li]:mb-2">
+    {unavailable.length > 0 && <details className="upgrade-notes mt-5 text-[13px] leading-[1.7] [&_summary]:cursor-pointer [&_li]:mb-2">
       <summary>Unavailable {label} estimates ({unavailable.length})</summary>
       <ul>{unavailable.map(entry => <li key={entry.slot}>{entry.name} ({entry.slot}): {entry.note}</li>)}</ul>
     </details>}
