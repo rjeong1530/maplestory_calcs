@@ -8,13 +8,13 @@ Keep the existing `src/index.css` import: it supplies Tailwind's utility output.
 
 ## Review the components
 
-Run `npm run dev:design-system` in `frontend`, then open
-`http://127.0.0.1:5173/design-system.html` (use the port Vite prints if occupied).
+Run `npm run dev:ui-preview` in `frontend`, then open
+`http://127.0.0.1:5173/ui-preview.html` (use the port Vite prints if occupied).
 The preview is a separate HTML entry, not a new application route, and makes no
-API or storage calls. `npm run build:design-system` checks the standalone entry
-and writes `dist/design-system`; normal production builds still use `index.html`.
+API or storage calls. `npm run build:ui-preview` checks the standalone entry
+and writes `dist/ui-preview`; normal production builds still use `index.html`.
 
-`npm run test:design-system` runs headless Chrome with an isolated temporary
+`npm run test:ui-regression` runs headless Chrome with an isolated temporary
 profile (set `CHROME_BINARY` if Chrome is not at the default Windows path). It
 checks native validation, bounded stepping, retained tab panels, keyboard tabs,
 dialog focus/Escape/restoration, tooltip and toast dismissal, reduced motion,

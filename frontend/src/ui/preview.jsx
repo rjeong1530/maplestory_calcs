@@ -82,7 +82,7 @@ export default function Preview() {
       {error ? <ErrorState message="An example connection error. Your inputs are still here." onRetry={() => setError(false)} />
         : <ContentCard><EmptyState title="Retry acknowledged" description="This preview does not send a request." action={<SecondaryButton onClick={() => setError(true)}>Show error again</SecondaryButton>} /></ContentCard>}
     </CalculatorGrid></div>
-    <p className="mt-8 mb-0 text-center text-xs">Maple Workshop · Design system preview · No saved equipment is read or changed</p>
+    <p className="mt-8 mb-0 text-center text-xs">Maple Workshop · UI preview · No saved equipment is read or changed</p>
     <Modal open={modal} onClose={() => setModal(false)} title="A moment before you continue" description="Dialogs keep focus inside, close with Escape, and return focus to the trigger."
       actions={<><SecondaryButton onClick={() => setModal(false)}>Cancel</SecondaryButton><PrimaryButton onClick={() => { setModal(false); setToast(true) }}>Confirm preview</PrimaryButton></>}>
       <InputField label="Example note" placeholder="Try keyboard navigation" />

@@ -91,7 +91,7 @@ test('Workshop controls, retained tabs, dialog focus, responsive layout and syst
   await command('Network.enable')
   await command('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] })
   await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false })
-  await command('Page.navigate', { url: `http://127.0.0.1:${webPort}/design-system.html` })
+  await command('Page.navigate', { url: `http://127.0.0.1:${webPort}/ui-preview.html` })
   await until(() => evaluate(`!!document.querySelector('.mw-shell')`), 'component mount')
   await until(() => evaluate(`[...document.images].every(image => image.complete)`), 'images')
   await t.test('Strategies: keyboard selection, memoized preparation and cancelled request recovery', async () => {
