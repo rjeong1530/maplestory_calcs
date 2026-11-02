@@ -11,9 +11,17 @@ const output = fileURLToPath(new URL('../dist/', import.meta.url))
 const template = await readFile(join(output, 'index.html'), 'utf8')
 if (!template.includes('<div id="root"></div>')) throw new Error('Missing prerender root in built index.html')
 
-for (const page of Object.keys(PAGE_CONTENT)) {
+// Every public route must have searchable content, not just a client-side view.
+const pages = Object.keys(PAGE_PATHS)
+if (pages.length !== Object.keys(PAGE_CONTENT).length || pages.some(page => !Object.hasOwn(PAGE_CONTENT, page))) {
+  throw new Error('Public routes and SEO page content must cover the same pages')
+}
+
+for (const page of pages) {
   const { title, description, canonical } = pageMetadata(page)
+  if (!title || !description || !PAGE_CONTENT[page].heading) throw new Error(`Missing SEO content for ${page}`)
   const metadata = renderToStaticMarkup(h('title', null, title))
+    + renderToStaticMarkup(h('meta', { name: 'robots', content: 'index,follow' }))
     + renderToStaticMarkup(h('meta', { name: 'description', content: description }))
     + renderToStaticMarkup(h('link', { rel: 'canonical', href: canonical }))
     + renderToStaticMarkup(h('meta', { property: 'og:title', content: title }))
@@ -40,7 +48,8 @@ for (const page of Object.keys(PAGE_CONTENT)) {
 }
 
 // Use the same route list for discovery and generated pages.
-const urls = Object.keys(PAGE_CONTENT)
+const urls = pages
   .map(page => `  <url><loc>${SITE_URL}${PAGE_PATHS[page]}</loc></url>`).join('\n')
 await writeFile(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`)
+await writeFile(join(output, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`)
 console.log(`Prerendered ${Object.keys(PAGE_CONTENT).length} public pages.`)
