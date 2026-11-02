@@ -1,9 +1,9 @@
 import { Suspense, useState } from 'react'
 import PageErrorBoundary from './PageErrorBoundary'
-import LoadingStatus from './LoadingStatus'
+import { LoadingPlaceholder } from '../ui/loading'
 
 // Load on first visit, then retain form state across navigation.
-export default function DeferredPage({ active, children }) {
+export default function DeferredPage({ active, children, loadingVariant = 'card' }) {
   const [visited, setVisited] = useState(active)
   if (active && !visited) setVisited(true)
 
@@ -11,7 +11,7 @@ export default function DeferredPage({ active, children }) {
 
   return <div hidden={!active}>
     <PageErrorBoundary>
-      <Suspense fallback={<LoadingStatus />}>
+      <Suspense fallback={<LoadingPlaceholder variant={loadingVariant} service={false} label="Loading calculator tools…" />}>
         {children}
       </Suspense>
     </PageErrorBoundary>
