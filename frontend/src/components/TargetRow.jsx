@@ -1,21 +1,15 @@
-const effectLabels = {
-  STR_PCT: 'STR %', DEX_PCT: 'DEX %', INT_PCT: 'INT %', LUK_PCT: 'LUK %',
-  ALL_STAT_PCT: 'All Stat %',
-  MAX_HP_PCT: 'Max HP %', MAX_MP_PCT: 'Max MP %', ATT_PCT: 'Attack %',
-  MAGIC_ATT_PCT: 'Magic attack %', BOSS_DAMAGE_PCT: 'Boss damage %',
-  DAMAGE_PCT: 'Damage %', IED_PCT: 'Ignore enemy defense %',
-  CRIT_RATE_PCT: 'Critical rate %', CRIT_DAMAGE_PCT: 'Critical damage %',
-  MESO_PCT: 'Meso obtained %', DROP_PCT: 'Item drop rate %',
-  COOLDOWN_SEC: 'Cooldown reduction',
-}
+import { effectLabels } from '../ui/potentialLabels'
+import { useIsPresent } from 'framer-motion'
 
 export default function TargetRow({ row, index, effects, usedEffects, onUpdate, onRemove, canRemove }) {
+  // AnimatePresence retains exiting DOM. Removed requirements must immediately
+  // stop participating in validation, keyboard interaction and form submission.
+  const present = useIsPresent()
   const cooldown = row.effect === 'COOLDOWN_SEC'
   return (
-    <div className="target-row grid grid-cols-[minmax(0,_1fr)_116px_32px] items-end gap-2.5
-        [@media(max-width:480px)]:grid-cols-[minmax(0,_1fr)_88px_28px] [@media(max-width:480px)]:gap-1.75">
+    <div className="target-row grid items-end">
       <label>Potential {index + 1}
-        <select value={row.effect} onChange={event => onUpdate({ effect: event.target.value })}>
+        <select disabled={!present} value={row.effect} onChange={event => onUpdate({ effect: event.target.value })}>
           {effects.map(effect => (
             <option key={effect} value={effect} disabled={usedEffects.includes(effect)}>
               {effectLabels[effect] ?? effect}
@@ -24,10 +18,10 @@ export default function TargetRow({ row, index, effects, usedEffects, onUpdate, 
         </select>
       </label>
       <label>At least ({cooldown ? 'seconds' : '%'})
-        <input type="number" min="0" step="any" required value={row.target}
+        <input disabled={!present} type="number" min="0" step="any" required value={row.target}
           onChange={event => onUpdate({ target: event.target.value })} />
       </label>
-      <button type="button" className="p-0 h-[43px] text-[23px] bg-transparent enabled:hover:bg-[#3c3a32]" disabled={!canRemove}
+      <button type="button" className="p-0 h-[43px] text-[23px] bg-transparent enabled:hover:bg-[var(--surface-hover)]" disabled={!present || !canRemove}
         aria-label={`Remove potential ${index + 1}`} onClick={onRemove}>×</button>
     </div>
   )

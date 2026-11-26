@@ -15,8 +15,8 @@ export default function EquipmentPlanner({ activeTab, onNavigate }) {
   const calculation = useFlameCalculation(planner.form)
 
   return <>
-    {planner.saveError && <p className="error text-[#ffb6b6] bg-[#38242d] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{planner.saveError}</p>}
-    <DeferredPage active={activeTab === 'equipment'}>
+    {planner.saveError && <p className="error text-[var(--danger-ink)] bg-[var(--danger-bg)] p-3.5 rounded-sm [overflow-wrap:anywhere]" role="alert">{planner.saveError}</p>}
+    <DeferredPage active={activeTab === 'equipment'} loadingVariant="equipment">
       <EquipmentPage planner={planner} busy={calculation.busy}
         onOpenApproaches={() => {
           setStarforceView('strategies')

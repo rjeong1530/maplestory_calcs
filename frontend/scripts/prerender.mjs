@@ -11,22 +11,26 @@ const output = fileURLToPath(new URL('../dist/', import.meta.url))
 const template = await readFile(join(output, 'index.html'), 'utf8')
 if (!template.includes('<div id="root"></div>')) throw new Error('Missing prerender root in built index.html')
 
-for (const page of Object.keys(PAGE_CONTENT)) {
+// Every public route must have searchable content, not just a client-side view.
+const pages = Object.keys(PAGE_PATHS)
+if (pages.length !== Object.keys(PAGE_CONTENT).length || pages.some(page => !Object.hasOwn(PAGE_CONTENT, page))) {
+  throw new Error('Public routes and SEO page content must cover the same pages')
+}
+
+for (const page of pages) {
   const { title, description, canonical } = pageMetadata(page)
+  if (!title || !description || !PAGE_CONTENT[page].heading) throw new Error(`Missing SEO content for ${page}`)
   const metadata = renderToStaticMarkup(h('title', null, title))
+    + renderToStaticMarkup(h('meta', { name: 'robots', content: 'index,follow' }))
     + renderToStaticMarkup(h('meta', { name: 'description', content: description }))
     + renderToStaticMarkup(h('link', { rel: 'canonical', href: canonical }))
     + renderToStaticMarkup(h('meta', { property: 'og:title', content: title }))
     + renderToStaticMarkup(h('meta', { property: 'og:description', content: description }))
     + renderToStaticMarkup(h('meta', { property: 'og:url', content: canonical }))
-  const body = renderToStaticMarkup(h('main', null,
-    h('nav', { className: `main-navigation flex flex-wrap items-center gap-y-1 gap-x-4 mb-6 pb-4 border-b border-solid border-b-rule
-      [&_>_a]:py-2 [&_>_a]:px-3 [&_>_a]:border [&_>_a]:border-solid [&_>_a]:border-transparent [&_>_a]:rounded-none
-      [&_>_a]:bg-transparent [&_>_a]:text-[#d0cec3] [&_>_a]:text-[13px] [&_>_a]:cursor-pointer [&_a]:no-underline
-      [&_[aria-current='page']]:text-maple [&_[aria-current='page']]:bg-transparent
-      [&_[aria-current='page']]:[box-shadow:inset_0_-2px_var(--color-maple)] [&_a:hover]:bg-[#3c3a32]`, 'aria-label': 'Main navigation' },
+  const body = renderToStaticMarkup(h('main', { className: 'mw-theme mw-prerender' },
+    h('nav', { className: 'main-navigation mw-navlinks', 'aria-label': 'Main navigation' },
       ...Object.entries(PAGE_CONTENT).map(([key, content]) => h('a', {
-        key, href: PAGE_PATHS[key], 'aria-current': key === page ? 'page' : undefined,
+        key, className: 'mw-navlink', href: PAGE_PATHS[key], 'aria-current': key === page ? 'page' : undefined,
       }, key === 'home' ? 'Home' : content.heading))),
     h(PageHeader, { page }),
     h('p', null, 'The interactive tools load with JavaScript. The guide and links below are available without it.'),
@@ -44,7 +48,8 @@ for (const page of Object.keys(PAGE_CONTENT)) {
 }
 
 // Use the same route list for discovery and generated pages.
-const urls = Object.keys(PAGE_CONTENT)
+const urls = pages
   .map(page => `  <url><loc>${SITE_URL}${PAGE_PATHS[page]}</loc></url>`).join('\n')
 await writeFile(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`)
+await writeFile(join(output, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`)
 console.log(`Prerendered ${Object.keys(PAGE_CONTENT).length} public pages.`)
